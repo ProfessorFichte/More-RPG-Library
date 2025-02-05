@@ -5,12 +5,9 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.tag.EntityTypeTags;
 import net.more_rpg_classes.MRPGCMod;
-import net.spell_power.api.SpellSchools;
 
-import static net.more_rpg_classes.util.CustomMethods.spellSchoolDamageCalculation;
 import static net.more_rpg_classes.util.CustomMethods.stackFreezeStacks;
 
 public class FrostedEffect extends StatusEffect {
@@ -20,9 +17,8 @@ public class FrostedEffect extends StatusEffect {
 
     public void onApplied(LivingEntity livingEntity,  int amplifier) {
         super.onApplied(livingEntity, amplifier);
-        spellSchoolDamageCalculation(SpellSchools.FROST,1.0F,livingEntity, (PlayerEntity) livingEntity.getLastAttacker());
         EntityType<?> type = livingEntity.getType();
-        if(type.isIn(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES)) {
+        if(!type.isIn(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES)) {
             if(!livingEntity.hasStatusEffect(MRPGCEffects.FROZEN_SOLID.registryEntry)){
                 stackFreezeStacks(livingEntity,20);
                 if(amplifier == MRPGCMod.effectsConfig.value.frosted_amplifier_frozen_solid_conversion){
