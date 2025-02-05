@@ -88,7 +88,8 @@ dependencies {
 	modImplementation("dev.emi:trinkets:${project.trinkets_version}")
 	modImplementation("maven.modrinth:spell-power:${project.spell_power_version}-fabric")
 	include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:0.2.0-rc.4")))
-	modImplementation("maven.modrinth:spell-engine:${project.spell_engine_version}")
+	modImplementation(files("run/mods/dev/spell_engine-${project.spell_engine_version}.jar"))
+	//modImplementation("maven.modrinth:spell-engine:${project.spell_engine_version}")
 	modImplementation("mod.azure.azurelibarmor:azurelibarmor-fabric-${project.azure_mc_version}:${project.azure_lib_version}")
 
 

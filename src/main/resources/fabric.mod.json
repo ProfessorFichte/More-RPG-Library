@@ -29,8 +29,7 @@
 		"minecraft": "~1.21",
 		"java": ">=17",
 		"spell_engine": ">=1.0.0",
-		"spell_power": ">=0.10.2",
-		"runes": ">=1.0.3+1.21.1"
+		"spell_power": ">=0.10.2"
 	},
 	"custom": {
 		"modmenu": {

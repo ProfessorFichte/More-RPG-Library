@@ -1,3 +1,12 @@
+# 2.2.0 - 1.21.1
+- Spell Engine 1.5 Prep Update
+- fixed CustomMethods according to API Changes
+- disabled executeSpellSpellEngine Method, will probably not be needed in the future
+
+# 2.1.1 - 1.21.1
+- fix custom attributes not stacking
+- clean up PlayerEntityMixin
+
 # 2.1.0 - 1.21.1
 - Spell Engine 1.4 Update
 - created "vulnerable_to_water_spells" entity type tag, for water spell power spells

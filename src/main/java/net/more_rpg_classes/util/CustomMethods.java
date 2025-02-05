@@ -1,6 +1,5 @@
 package net.more_rpg_classes.util;
 
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -10,17 +9,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.util.Identifier;
-import net.spell_engine.api.spell.registry.SpellRegistry;
-import net.spell_engine.internals.SpellHelper;
-import net.spell_engine.internals.WorldScheduler;
-import net.spell_engine.internals.casting.SpellCast;
-import net.spell_engine.utils.TargetHelper;
 import net.spell_power.api.SpellDamageSource;
 import net.spell_power.api.SpellSchool;
 
 import java.util.*;
-import java.util.function.Predicate;
 
 public class CustomMethods {
     public static boolean clearNegativeEffects(LivingEntity entity, boolean debuff) {
@@ -28,7 +20,7 @@ public class CustomMethods {
         for (var instance : effects) {
             var effect = instance.getEffectType().value();
             if (!effect.isBeneficial()) {
-                ((WorldScheduler)entity.getWorld()).schedule(1, () -> entity.removeStatusEffect(instance.getEffectType()));
+                entity.removeStatusEffect(instance.getEffectType());
             }
         }
         return debuff;
@@ -43,6 +35,7 @@ public class CustomMethods {
         }
     }
 
+    /*
     public static void executeSpellSpellEngine(PlayerEntity player, LivingEntity target, String modId, String pathSpell,
                                                SpellCast.Action spellCastAction, boolean aoe){
         if (FabricLoader.getInstance().isModLoaded("spell_engine")) {
@@ -69,6 +62,7 @@ public class CustomMethods {
         }
 
     }
+     */
 
     public static void spawnCloudEntity(
             ParticleEffect particleType, Entity owner, float radiusCloud, int durationSecondsCloud, float radiusGrowthCloud

@@ -7,7 +7,6 @@ public class CustomStatusEffect extends StatusEffect {
     protected CustomStatusEffect(StatusEffectCategory category, int color) {
         super(category, color);
     }
-
 }
 
 
