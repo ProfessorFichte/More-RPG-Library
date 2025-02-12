@@ -4,7 +4,6 @@ public class EffectsConfig {
     public float molten_armor_armor_reduction_per_stack = -2.0f;
     public float molten_armor_armor_toughness_reduction_per_stack = -1.0f;
     public float fear_attack_damage_reduction = -0.25F;
-    public float fear_increased_damage_taken = 0.20F;
     public float grievous_wounds_increased_damage_taken = 0.15F;
     public float grievous_wounds_healing_taken = 0.25F;
     public float collected_soul_soul_power_per_stack = 0.10F;

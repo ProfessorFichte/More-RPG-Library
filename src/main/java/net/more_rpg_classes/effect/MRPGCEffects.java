@@ -10,6 +10,7 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
 import net.more_rpg_classes.MRPGCMod;
 import net.spell_engine.api.effect.*;
+import net.spell_engine.api.entity.SpellEngineAttributes;
 import net.spell_power.api.SpellSchools;
 
 import java.util.ArrayList;
@@ -63,6 +64,18 @@ public class MRPGCEffects {
                 EntityAttributes.GENERIC_MOVEMENT_SPEED, FROSTED.modifierId(),
                 MRPGCMod.effectsConfig.value.frosted_decreased_movement_speed_per_stack,  EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
         );
+        FROZEN_SOLID.effect.addAttributeModifier(
+                SpellEngineAttributes.DAMAGE_TAKEN.entry, FROZEN_SOLID.modifierId(),
+                MRPGCMod.effectsConfig.value.frozen_solid_increased_damage_taken, EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+        );
+        GRIEVOUS_WOUNDS.effect.addAttributeModifier(
+                SpellEngineAttributes.DAMAGE_TAKEN.entry, GRIEVOUS_WOUNDS.modifierId(),
+                MRPGCMod.effectsConfig.value.grievous_wounds_increased_damage_taken, EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+        );
+        GRIEVOUS_WOUNDS.effect.addAttributeModifier(
+                SpellEngineAttributes.HEALING_TAKEN.entry, GRIEVOUS_WOUNDS.modifierId(),
+                MRPGCMod.effectsConfig.value.grievous_wounds_healing_taken, EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+        );
 
 
         Synchronized.configure(MOLTEN_ARMOR.effect,true);
@@ -79,12 +92,6 @@ public class MRPGCEffects {
         ActionImpairing.configure(STUNNED.effect, EntityActionsAllowed.STUN);
         ActionImpairing.configure(FROZEN_SOLID.effect, EntityActionsAllowed.STUN);
         ActionImpairing.configure(FEAR.effect, EntityActionsAllowed.INCAPACITATE);
-
-        HealthImpacting.configureDamageTaken(FROZEN_SOLID.effect, MRPGCMod.effectsConfig.value.frozen_solid_increased_damage_taken);
-        HealthImpacting.configureDamageTaken(FEAR.effect,  MRPGCMod.effectsConfig.value.fear_increased_damage_taken);
-        HealthImpacting.configureDamageTaken(GRIEVOUS_WOUNDS.effect,  MRPGCMod.effectsConfig.value.grievous_wounds_increased_damage_taken);
-
-        HealthImpacting.configureHealingTaken(GRIEVOUS_WOUNDS.effect,  MRPGCMod.effectsConfig.value.grievous_wounds_healing_taken);
 
         for (var entry: entries) {
             entry.register();

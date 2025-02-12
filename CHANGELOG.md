@@ -2,6 +2,7 @@
 - Spell Engine 1.5 Prep Update
 - fixed CustomMethods according to API Changes
 - disabled executeSpellSpellEngine Method, will probably not be needed in the future
+- Update to Fabric Loom 1.9
 
 # 2.1.1 - 1.21.1
 - fix custom attributes not stacking
