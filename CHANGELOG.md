@@ -1,3 +1,6 @@
+# 2.2.1 - 1.21.1
+- add elemental runes to rune item tag
+
 # 2.2.0 - 1.21.1
 - Spell Engine 1.5 Prep Update
 - fixed CustomMethods according to API Changes
