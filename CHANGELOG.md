@@ -1,3 +1,6 @@
+1.2.11 - 1.20.1
+- Add Frost Crackle Long Sound
+
 1.2.10 - 1.20.1
 - Add new Sounds
 - Added new Spell Animations and improved some old ones

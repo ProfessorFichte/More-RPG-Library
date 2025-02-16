@@ -39,6 +39,8 @@ public class ModSounds {
     public static SoundEvent ARCANE_STRONG_IMPACT = SoundEvent.of(ARCANE_STRONG_IMPACT_ID);
     public static final Identifier HOLY_RELEASE_ID = new Identifier(MRPGCMod.MOD_ID, "holy_release");
     public static SoundEvent HOLY_RELEASE = SoundEvent.of(HOLY_RELEASE_ID);
+    public static final Identifier FROST_CRACKLE_LONG_ID = new Identifier(MRPGCMod.MOD_ID, "frost_crackle_long");
+    public static SoundEvent FROST_CRACKLE_LONG = SoundEvent.of(FROST_CRACKLE_LONG_ID);
 
     public static void register() {
         Registry.register(Registries.SOUND_EVENT, ICICLE_SPELL_ID, ICICLE_SPELL_EVENT);
@@ -57,5 +59,6 @@ public class ModSounds {
         Registry.register(Registries.SOUND_EVENT, FROST_CRACKLE_ID, FROST_CRACKLE);
         Registry.register(Registries.SOUND_EVENT, ARCANE_STRONG_IMPACT_ID, ARCANE_STRONG_IMPACT);
         Registry.register(Registries.SOUND_EVENT, HOLY_RELEASE_ID, HOLY_RELEASE);
+        Registry.register(Registries.SOUND_EVENT, FROST_CRACKLE_LONG_ID, FROST_CRACKLE_LONG);
     }
 }

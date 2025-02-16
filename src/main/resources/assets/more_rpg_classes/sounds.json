@@ -78,5 +78,10 @@
     "sounds": [
       "more_rpg_classes:arcane_strong_impact"
     ]
+  },
+  "frost_crackle_long": {
+    "sounds": [
+      "more_rpg_classes:frost_crackle_long"
+    ]
   }
 }
