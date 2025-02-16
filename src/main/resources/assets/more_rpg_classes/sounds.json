@@ -58,5 +58,25 @@
     "sounds": [
       "more_rpg_classes:air_magic_impact3"
     ]
+  },
+  "air_explosion": {
+    "sounds": [
+      "more_rpg_classes:air_explosion"
+    ]
+  },
+  "frost_crackle": {
+    "sounds": [
+      "more_rpg_classes:frost_crackle"
+    ]
+  },
+  "holy_release": {
+    "sounds": [
+      "more_rpg_classes:holy_release"
+    ]
+  },
+  "arcane_strong_impact": {
+    "sounds": [
+      "more_rpg_classes:arcane_strong_impact"
+    ]
   }
 }
