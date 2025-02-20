@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "spell_power:air",
+    "spell_power:earth",
+    "spell_power:water"
+  ]
+}
