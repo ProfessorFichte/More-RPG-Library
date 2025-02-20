@@ -4,7 +4,6 @@ import net.fabricmc.api.ModInitializer;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.more_rpg_classes.client.particle.MoreParticles;
-import net.more_rpg_classes.compat.CompatDatapackLoader;
 import net.more_rpg_classes.config.EffectsConfig;
 import net.more_rpg_classes.config.EnchantingConfig;
 import net.more_rpg_classes.config.TweaksConfig;

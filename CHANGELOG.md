@@ -1,3 +1,7 @@
+1.2.12 - 1.20.1
+- Add Custom Spell School Damage Types to SpellPower "All" Damage Type Tag
+- Disable to compat resource / datapacks, will be released as own projects
+
 1.2.11 - 1.20.1
 - Add Frost Crackle Long Sound
 
