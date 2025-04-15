@@ -1,5 +1,7 @@
 # 2.2.1 - 1.21.1
 - add elemental runes to rune item tag
+- add sounds, particles and player animations for Loot & Explore 1.21 Port
+- fix DamageReflect Loop with Thorns GitHub Issue #4
 
 # 2.2.0 - 1.21.1
 - Spell Engine 1.5 Prep Update
