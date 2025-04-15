@@ -6,7 +6,9 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.registry.tag.DamageTypeTags;
 import net.more_rpg_classes.entity.attribute.MRPGCEntityAttributes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -30,16 +32,20 @@ public abstract class LivingEntityMixin {
 
     @Inject(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V"))
     private void applyBeforeDamage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
-        EntityAttributeInstance dmgReflect = ((LivingEntity) (Object) this)
-                .getAttributeInstance(MRPGCEntityAttributes.DAMAGE_REFLECT_MODIFIER);
-        int value1 = (int) dmgReflect.getValue();
-        float reflectDamage = 0;
-        if (value1 != 100) {
-            value1 = value1 -100;
-            reflectDamage += reflectMethod(value1, source, amount);
-        }
-        if (reflectDamage > 0) {
-            source.getAttacker().damage(source.getAttacker().getDamageSources().thorns((PlayerEntity) (Object) this), reflectDamage);
+        if(!DamageTypes.THORNS.equals(source.getType())
+        || !source.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY))
+        {
+            EntityAttributeInstance dmgReflect = ((LivingEntity) (Object) this)
+                    .getAttributeInstance(MRPGCEntityAttributes.DAMAGE_REFLECT_MODIFIER);
+            int value1 = (int) dmgReflect.getValue();
+            float reflectDamage = 0;
+            if (value1 != 100) {
+                value1 = value1 -100;
+                reflectDamage += reflectMethod(value1, source, amount);
+            }
+            if (reflectDamage > 0) {
+                source.getAttacker().damage(source.getAttacker().getDamageSources().thorns((PlayerEntity) (Object) this), reflectDamage);
+            }
         }
     }
 

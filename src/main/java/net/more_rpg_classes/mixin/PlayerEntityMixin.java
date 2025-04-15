@@ -17,8 +17,6 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static net.more_rpg_classes.MRPGCMod.tweaksConfig;
-
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin {
 
