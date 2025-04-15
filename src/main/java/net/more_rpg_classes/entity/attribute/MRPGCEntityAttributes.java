@@ -15,6 +15,7 @@ public class MRPGCEntityAttributes{
     public static final RegistryEntry<EntityAttribute> ARCANE_FUSE_MODIFIER= register("arcane_fuse_modifier", 100.0, 100.0, 1024.0);
     public static final RegistryEntry<EntityAttribute> LIFESTEAL_MODIFIER = register("lifesteal_modifier", 100.0, 100.0, 1024.0);
     public static final RegistryEntry<EntityAttribute>RAGE_MODIFIER = register("rage_modifier", 100.0, 100.0, 1024.0);
+    public static final RegistryEntry<EntityAttribute>SPELL_VAMPIRE = register("spell_vampire", 100.0, 100.0, 1024.0);
 
 
     private static RegistryEntry<EntityAttribute> register(final String name, double base, double min, double max) {

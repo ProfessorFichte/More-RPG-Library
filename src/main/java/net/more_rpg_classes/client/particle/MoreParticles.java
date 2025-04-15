@@ -29,6 +29,8 @@ public class MoreParticles {
     public static final SimpleParticleType SMALL_GUST = FabricParticleTypes.simple();
     public static final SimpleParticleType GAS_CLOUD = FabricParticleTypes.simple();
     public static final SimpleParticleType POISON_SMOKE = FabricParticleTypes.simple();
+    public static final SimpleParticleType DRAGON_CLAW = FabricParticleTypes.simple();
+    public static final SimpleParticleType FREEZING_SNOWFLAKE = FabricParticleTypes.simple();
 
 
     public static void register(){
@@ -53,6 +55,8 @@ public class MoreParticles {
         Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "small_gust"), SMALL_GUST);
         Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "gas_cloud"), GAS_CLOUD);
         Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "poison_smoke"), POISON_SMOKE);
+        Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "dragon_claw"), DRAGON_CLAW);
+        Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "freezing_snowflake"), FREEZING_SNOWFLAKE);
     }
 
 }
