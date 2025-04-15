@@ -1,7 +1,8 @@
 # 2.2.1 - 1.21.1
-- add elemental runes to rune item tag
+- add elemental runes to rune item tag for rune pouches
 - add sounds, particles and player animations for Loot & Explore 1.21 Port
 - fix DamageReflect Loop with Thorns GitHub Issue #4
+- Add Spell Vampire Attribute (LifeSteal for Spell Magic Damage)
 
 # 2.2.0 - 1.21.1
 - Spell Engine 1.5 Prep Update

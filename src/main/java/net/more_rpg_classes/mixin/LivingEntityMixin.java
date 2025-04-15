@@ -5,9 +5,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.registry.tag.DamageTypeTags;
 import net.more_rpg_classes.entity.attribute.MRPGCEntityAttributes;
+import net.spell_power.api.SpellPowerTags;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -24,21 +28,46 @@ public abstract class LivingEntityMixin {
                 .add(MRPGCEntityAttributes.DAMAGE_REFLECT_MODIFIER)
                 .add(MRPGCEntityAttributes.LIFESTEAL_MODIFIER)
                 .add(MRPGCEntityAttributes.RAGE_MODIFIER)
+                .add(MRPGCEntityAttributes.SPELL_VAMPIRE)
         ;
     }
 
     @Inject(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V"))
     private void damageReflect$damage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
-        EntityAttributeInstance dmgReflect = ((LivingEntity) (Object) this)
-                .getAttributeInstance(MRPGCEntityAttributes.DAMAGE_REFLECT_MODIFIER);
-        int value1 = (int) dmgReflect.getValue();
-        float reflectDamage = 0;
-        if (value1 != 100) {
-            value1 = value1 -100;
-            reflectDamage += reflectMethod(value1, source, amount);
+        if(!DamageTypes.THORNS.equals(source.getType())
+                || !source.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+            EntityAttributeInstance dmgReflect = ((LivingEntity) (Object) this)
+                    .getAttributeInstance(MRPGCEntityAttributes.DAMAGE_REFLECT_MODIFIER);
+            int value1 = (int) dmgReflect.getValue();
+            float reflectDamage = 0;
+            if (value1 != 100) {
+                value1 = value1 - 100;
+                reflectDamage += reflectMethod(value1, source, amount);
+            }
+            if (reflectDamage > 0) {
+                source.getAttacker().damage(source.getAttacker().getDamageSources().thorns((PlayerEntity) (Object) this), reflectDamage);
+            }
         }
-        if (reflectDamage > 0) {
-            source.getAttacker().damage(source.getAttacker().getDamageSources().thorns((PlayerEntity) (Object) this), reflectDamage);
+    }
+
+    @Inject(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V"))
+    private void spellVampire$damage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+        if(source.isIn(SpellPowerTags.DamageTypes.ALL)) {
+            Entity entity = source.getAttacker();
+            if(entity instanceof PlayerEntity playerEntity){
+                float actual_health = playerEntity.getHealth();
+                float max_health = (float) playerEntity.getAttributeValue(EntityAttributes.GENERIC_MAX_HEALTH);
+                EntityAttributeInstance spellVampire =
+                        playerEntity.getAttributeInstance(MRPGCEntityAttributes.SPELL_VAMPIRE);
+                assert spellVampire != null;
+                int value1 = (int) spellVampire.getValue();
+                if (value1 != 100 && actual_health != max_health ) {
+                    value1 = value1 - 100;
+                    float multiplier = (float) value1 / 100;
+                    float heal = (amount * multiplier );
+                    playerEntity.heal(heal);
+                }
+            }
         }
     }
 
