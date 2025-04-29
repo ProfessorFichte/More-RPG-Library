@@ -1,0 +1,42 @@
+{
+  "itemGroup.more_rpg_classes.general": "MRPGClases",
+
+  "effect.more_rpg_classes.molten_armor": "Armadura Fundida",
+  "effect.more_rpg_classes.molten_armor.description": "Reduce la armadura, la resistencia de la armadura y daña al objetivo si lleva armadura.",
+  "effect.more_rpg_classes.stun": "Aturdido",
+  "effect.more_rpg_classes.stun.description": "No puede moverse, atacar ni saltar.",
+  "effect.more_rpg_classes.frozen_solid": "Congelado Sólido",
+  "effect.more_rpg_classes.frozen_solid.description": "No puede moverse, atacar ni saltar, recibe daño adicional si es golpeado mientras está bajo el efecto activo.",
+  "effect.more_rpg_classes.fear": "Miedo",
+  "effect.more_rpg_classes.fear.description": "Reduce el daño de ataque.",
+  "effect.more_rpg_classes.collected_soul": "Alma Recogida",
+  "effect.more_rpg_classes.collected_soul.description": "Aumenta el poder de los hechizos de alma por cada pila.",
+  "effect.more_rpg_classes.grievous_wounds": "Heridas Graves",
+  "effect.more_rpg_classes.grievous_wounds.description": "Sanación reducida e incremento del daño recibido.",
+  "effect.more_rpg_classes.frosted": "Congelado",
+  "effect.more_rpg_classes.frosted.description": "Reducción de la velocidad de movimiento.",
+  "effect.more_rpg_classes.bleeding": "Sangrado",
+  "effect.more_rpg_classes.bleeding.description": "Daña al objetivo con el tiempo.",
+
+  "item.more_rpg_classes.aqua_stone": "Runa de Agua",
+  "item.more_rpg_classes.terra_stone": "Runa de Tierra",
+  "item.more_rpg_classes.storm_stone": "Runa de Aire",
+  "item.more_rpg_classes.polar_bear_fur": "Piel de Oso Polar",
+  "item.more_rpg_classes.wolf_fur": "Piel de Lobo",
+  "item.more_rpg_classes.hardened_leather": "Cuero Endurecido",
+
+  "death.attack.mrpgc.bleeding": "%1$s se desangró.",
+  "death.attack.mrpgc.molten": "%1$s fue quemado por su armadura fundida.",
+
+  "attribute.name.more_rpg_classes.rage_modifier": "Poder de Ira",
+  "attribute.name.more_rpg_classes.arcane_fuse_modifier": "Fusión Arcana",
+  "attribute.name.more_rpg_classes.lifesteal_modifier": "Robo de Vida",
+  "attribute.name.more_rpg_classes.damage_reflect_modifier": "Reflejo de Daño",
+  "attribute.name.more_rpg_classes.spell_vampire": "Vampiro de Hechizos",
+
+  "advancements.more_rpg_content.root.title": "¡Más Contenido RPG!",
+  "advancements.more_rpg_content.root.description": "¡Explorá los diferentes caminos que podés elegir!",
+
+  "enchantment.more_rpg_classes.elemental": "Maestría Elemental",
+  "enchantment.more_rpg_classes.elemental.desc": "Aumenta el daño de todos los hechizos de aire, tierra y agua que causes"
+}
