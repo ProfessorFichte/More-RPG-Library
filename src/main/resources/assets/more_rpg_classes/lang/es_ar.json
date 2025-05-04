@@ -1,5 +1,5 @@
 {
-  "itemGroup.more_rpg_classes.general": "MRPGClases",
+  "itemGroup.more_rpg_classes.general": "MRPGClasses",
 
   "effect.more_rpg_classes.molten_armor": "Armadura Fundida",
   "effect.more_rpg_classes.molten_armor.description": "Reduce la armadura, la resistencia de la armadura y daña al objetivo si lleva armadura.",
@@ -34,7 +34,7 @@
   "attribute.name.more_rpg_classes.damage_reflect_modifier": "Reflejo de Daño",
   "attribute.name.more_rpg_classes.spell_vampire": "Vampiro de Hechizos",
 
-  "advancements.more_rpg_content.root.title": "¡Más Contenido RPG!",
+  "advancements.more_rpg_content.root.title": "More RPG Content",
   "advancements.more_rpg_content.root.description": "¡Explorá los diferentes caminos que podés elegir!",
 
   "enchantment.more_rpg_classes.elemental": "Maestría Elemental",
