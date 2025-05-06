@@ -18,19 +18,19 @@ public class MoltenArmorEffect extends StatusEffect {
         if (!pLivingEntity.getWorld().isClient()) {
             if(pLivingEntity.hasStackEquipped(EquipmentSlot.CHEST)& pLivingEntity.hasStackEquipped(EquipmentSlot.HEAD)&
                     pLivingEntity.hasStackEquipped(EquipmentSlot.FEET)& pLivingEntity.hasStackEquipped(EquipmentSlot.LEGS)){
-                return  pLivingEntity.damage(new MoltenDamageSource(pLivingEntity.getDamageSources().lava().getTypeRegistryEntry()), damage_fullarmor);
+                pLivingEntity.damage(new MoltenDamageSource(pLivingEntity.getDamageSources().lava().getTypeRegistryEntry()), damage_fullarmor);
             }
             else if(pLivingEntity.hasStackEquipped(EquipmentSlot.CHEST)){
-                return   pLivingEntity.damage(new MoltenDamageSource(pLivingEntity.getDamageSources().lava().getTypeRegistryEntry()), damage_onearmor_piece);
+                pLivingEntity.damage(new MoltenDamageSource(pLivingEntity.getDamageSources().lava().getTypeRegistryEntry()), damage_onearmor_piece);
             }
             else if(pLivingEntity.hasStackEquipped(EquipmentSlot.HEAD)){
-                return pLivingEntity.damage(new MoltenDamageSource(pLivingEntity.getDamageSources().lava().getTypeRegistryEntry()), damage_onearmor_piece);
+               pLivingEntity.damage(new MoltenDamageSource(pLivingEntity.getDamageSources().lava().getTypeRegistryEntry()), damage_onearmor_piece);
             }
             else if(pLivingEntity.hasStackEquipped(EquipmentSlot.FEET)){
-                return  pLivingEntity.damage(new MoltenDamageSource(pLivingEntity.getDamageSources().lava().getTypeRegistryEntry()), damage_onearmor_piece);
+                pLivingEntity.damage(new MoltenDamageSource(pLivingEntity.getDamageSources().lava().getTypeRegistryEntry()), damage_onearmor_piece);
             }
             else if(pLivingEntity.hasStackEquipped(EquipmentSlot.LEGS)){
-                return pLivingEntity.damage(new MoltenDamageSource(pLivingEntity.getDamageSources().lava().getTypeRegistryEntry()), damage_onearmor_piece);
+               pLivingEntity.damage(new MoltenDamageSource(pLivingEntity.getDamageSources().lava().getTypeRegistryEntry()), damage_onearmor_piece);
             }
         }
         if(!pLivingEntity.getWorld().isClient()){
@@ -41,7 +41,6 @@ public class MoltenArmorEffect extends StatusEffect {
                 pLivingEntity.removeStatusEffect(MRPGCEffects.MOLTEN_ARMOR.registryEntry);
             }
         }
-        super.applyUpdateEffect(pLivingEntity, pAmplifier);
         return true;
     }
 

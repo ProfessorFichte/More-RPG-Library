@@ -1,3 +1,7 @@
+# 2.2.2 - 1.21.1
+- add es_ar translation
+- the Bleeding Effect can now kill
+
 # 2.2.1 - 1.21.1
 - add elemental runes to rune item tag for rune pouches
 - add sounds, particles and player animations for Loot & Explore 1.21 Port

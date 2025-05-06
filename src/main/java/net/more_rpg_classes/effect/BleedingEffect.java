@@ -19,10 +19,7 @@ public class BleedingEffect extends StatusEffect {
         if(type.isIn(EntityTypeTags.UNDEAD)){
             entity.removeStatusEffect(MRPGCEffects.BLEEDING.registryEntry);
         }
-        if (entity.getHealth() > 1.0F) {
-            entity.damage(new BleedingDamageSource(entity.getDamageSources().starve().getTypeRegistryEntry()), 1.0F);
-        }
-
+        entity.damage(new BleedingDamageSource(entity.getDamageSources().starve().getTypeRegistryEntry()), 1.0F);
         return true;
     }
 
