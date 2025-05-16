@@ -10,7 +10,7 @@
         "stopTick":10,
         "degrees":false,
         "moves":[
-            
+
             {
                 "tick":7,
                 "easing": "EASEINOUTQUAD",

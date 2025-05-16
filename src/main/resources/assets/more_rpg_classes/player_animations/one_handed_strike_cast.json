@@ -1,7 +1,7 @@
 {
-    "name": "bloody_strike",
+    "name": "one_handed_strike_cast",
     "author": "Fichte",
-    "description": "Bloody Strike",
+    "description": "",
     "emote":{
         "isLoop": "false",
         "returnTick": 0,
@@ -10,7 +10,7 @@
         "stopTick":15,
         "degrees":false,
         "moves":[
-            
+
             {
                 "tick":5,
                 "easing": "EASEINOUTQUAD",

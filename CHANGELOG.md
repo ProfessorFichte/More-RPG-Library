@@ -1,3 +1,7 @@
+# 2.2.3 - 1.21.1
+- fix frosted status effect particle error
+- improve some animation files
+
 # 2.2.2 - 1.21.1
 - add es_ar translation
 - the Bleeding Effect can now kill

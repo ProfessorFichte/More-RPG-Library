@@ -1,5 +1,5 @@
 {
-    "name": "whirl2",
+    "name": "whirl",
     "author": "Fichte",
     "description": "Whirl",
     "emote":{
@@ -10,7 +10,7 @@
         "stopTick":160,
         "degrees":false,
         "moves":[
-            
+
             {
                 "tick":20,
                 "easing": "EASEINOUTQUAD",

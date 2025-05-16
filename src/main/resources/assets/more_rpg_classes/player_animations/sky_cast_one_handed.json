@@ -1,6 +1,6 @@
 {
-    "name": "thunder_call.json",
-    "author": "",
+    "name": "sky_cast_one_handed",
+    "author": "Fichte",
     "description": "",
     "emote":{
         "isLoop": "true",
@@ -10,7 +10,7 @@
         "stopTick":15,
         "degrees":false,
         "moves":[
-            
+
             {
                 "tick":10,
                 "easing": "EASEINOUTQUAD",

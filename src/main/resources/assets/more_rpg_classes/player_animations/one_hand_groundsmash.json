@@ -1,5 +1,5 @@
 {
-    "name": "animation_template",
+    "name": "one_hand_groundsmash",
     "author": "Fichte",
     "description": "1-Hand ground Smash",
     "emote":{
@@ -10,7 +10,7 @@
         "stopTick":20,
         "degrees":false,
         "moves":[
-            
+
             {
                 "tick":3,
                 "easing": "EASEINOUTQUAD",
