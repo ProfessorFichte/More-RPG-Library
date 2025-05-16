@@ -1,6 +1,7 @@
 # 2.2.3 - 1.21.1
 - fix frosted status effect particle error
 - improve some animation files
+- add fireproof tiers mixin for spell engine weapon registry
 
 # 2.2.2 - 1.21.1
 - add es_ar translation
