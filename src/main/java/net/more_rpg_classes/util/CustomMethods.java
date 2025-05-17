@@ -5,6 +5,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.particle.ParticleEffect;
@@ -19,7 +20,7 @@ public class CustomMethods {
         var effects = entity.getStatusEffects();
         for (var instance : effects) {
             var effect = instance.getEffectType().value();
-            if (!effect.isBeneficial()) {
+            if (!effect.isBeneficial() && effect != StatusEffects.TRIAL_OMEN) {
                 entity.removeStatusEffect(instance.getEffectType());
             }
         }

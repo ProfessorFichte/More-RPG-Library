@@ -1,3 +1,7 @@
+# 2.2.4 - 1.21.1
+- Add SpellEngineTiersMixin to mixin.json
+- fix some animations
+
 # 2.2.3 - 1.21.1
 - fix frosted status effect particle error
 - improve some animation files
