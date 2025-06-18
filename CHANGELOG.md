@@ -1,3 +1,6 @@
+# 2.2.5 - 1.21.1
+- fix grievous wounds effect and change it a bit
+
 # 2.2.4 - 1.21.1
 - Add SpellEngineTiersMixin to mixin.json
 - fix some animations
