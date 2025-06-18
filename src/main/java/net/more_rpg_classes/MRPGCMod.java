@@ -28,7 +28,7 @@ public class MRPGCMod implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("more_rpg_classes");
 
 	public static ConfigManager<EffectsConfig> effectsConfig = new ConfigManager<EffectsConfig>
-			("effects", new EffectsConfig())
+			("effects_v1", new EffectsConfig())
 			.builder()
 			.setDirectory(MOD_ID)
 			.sanitize(true)

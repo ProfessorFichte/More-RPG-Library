@@ -1,3 +1,6 @@
+1.2.14 - 1.20.1
+- fix grievous wounds effect and changed it a bit
+
 1.2.13 - 1.20.1
 - fix DamageReflect Loop with Thorns
 
