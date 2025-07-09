@@ -1,3 +1,6 @@
+1.2.15 - 1.20.1
+- Fix attempt: Crash when Using spoorn alongside. #7
+
 1.2.14 - 1.20.1
 - fix grievous wounds effect and changed it a bit
 
