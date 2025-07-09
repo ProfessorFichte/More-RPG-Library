@@ -1,3 +1,6 @@
+# 2.2.6 - 1.21.1
+- fix clearNegativeEffects Method
+
 # 2.2.5 - 1.21.1
 - fix grievous wounds effect and change it a bit
 

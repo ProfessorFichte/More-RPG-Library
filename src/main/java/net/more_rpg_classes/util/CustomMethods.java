@@ -16,15 +16,24 @@ import net.spell_power.api.SpellSchool;
 import java.util.*;
 
 public class CustomMethods {
-    public static boolean clearNegativeEffects(LivingEntity entity, boolean debuff) {
+    public static void clearNegativeEffects(LivingEntity entity, boolean removeOne) {
         var effects = entity.getStatusEffects();
+        var toRemove = new java.util.ArrayList<RegistryEntry<StatusEffect>>();
         for (var instance : effects) {
-            var effect = instance.getEffectType().value();
-            if (!effect.isBeneficial() && effect != StatusEffects.TRIAL_OMEN) {
-                entity.removeStatusEffect(instance.getEffectType());
+            var effectEntry = instance.getEffectType();
+            if (!effectEntry.value().isBeneficial() && !effectEntry.equals(StatusEffects.TRIAL_OMEN)) {
+                toRemove.add(effectEntry);
             }
         }
-        return debuff;
+        if (removeOne) {
+            if (!toRemove.isEmpty()) {
+                entity.removeStatusEffect(toRemove.get(0));
+            }
+        } else {
+            for (var effect : toRemove) {
+                entity.removeStatusEffect(effect);
+            }
+        }
     }
 
     public static void stackFreezeStacks(LivingEntity livingEntity, int amount){
