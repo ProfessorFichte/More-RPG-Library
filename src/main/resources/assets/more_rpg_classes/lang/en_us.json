@@ -17,6 +17,8 @@
   "effect.more_rpg_classes.frosted.description": "Decreased Movement speed.",
   "effect.more_rpg_classes.bleeding": "Bleeding",
   "effect.more_rpg_classes.bleeding.description": "Damages the target overtime.",
+  "effect.more_rpg_classes.stagger": "Stagger",
+  "effect.more_rpg_classes.stagger.description": "Reduces Armor, Attack Damage & Movement Speed and incapacitates the target.",
 
   "item.more_rpg_classes.aqua_stone": "Water Rune",
   "item.more_rpg_classes.terra_stone": "Earth Rune",

@@ -45,12 +45,13 @@ public class MRPGCEffects {
     public static final Entry FROSTED = new Entry("frosted", new FrostedEffect(StatusEffectCategory.HARMFUL, 0x3beeff));
     public static final Entry BLEEDING = new Entry("bleeding", new BleedingEffect(StatusEffectCategory.HARMFUL, 0xdd4e00));
     public static final Entry FEAR = new Entry("fear", new CustomStatusEffect(StatusEffectCategory.HARMFUL, 0x01d9cf));
+    public static final Entry STAGGER = new Entry("stagger", new CustomStatusEffect(StatusEffectCategory.HARMFUL, 0xb3b3b3));
 
 
     public static void register(){
         MOLTEN_ARMOR.effect.addAttributeModifier(
                 EntityAttributes.GENERIC_ARMOR, MOLTEN_ARMOR.modifierId(),
-                        MRPGCMod.effectsConfig.value.molten_armor_armor_reduction_per_stack, EntityAttributeModifier.Operation.ADD_VALUE)
+                        MRPGCMod.effectsConfig.value.molten_armor_armor_reduction_per_stack, EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
                 .addAttributeModifier(EntityAttributes.GENERIC_ARMOR_TOUGHNESS, MOLTEN_ARMOR.modifierId(),
                         MRPGCMod.effectsConfig.value.molten_armor_armor_toughness_reduction_per_stack, EntityAttributeModifier.Operation.ADD_VALUE);
         FEAR.effect.addAttributeModifier(
@@ -70,28 +71,27 @@ public class MRPGCEffects {
         );
         GRIEVOUS_WOUNDS.effect.addAttributeModifier(
                 SpellEngineAttributes.DAMAGE_TAKEN.entry, GRIEVOUS_WOUNDS.modifierId(),
-                MRPGCMod.effectsConfig.value.grievous_wounds_increased_damage_taken, EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
-        );
-        GRIEVOUS_WOUNDS.effect.addAttributeModifier(
-                SpellEngineAttributes.HEALING_TAKEN.entry, GRIEVOUS_WOUNDS.modifierId(),
+                MRPGCMod.effectsConfig.value.grievous_wounds_increased_damage_taken, EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
+                .addAttributeModifier(SpellEngineAttributes.HEALING_TAKEN.entry, GRIEVOUS_WOUNDS.modifierId(),
                 MRPGCMod.effectsConfig.value.grievous_wounds_healing_taken, EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
         );
+        STAGGER.effect.addAttributeModifier(EntityAttributes.GENERIC_ATTACK_DAMAGE, STAGGER.modifierId(),
+                        MRPGCMod.effectsConfig.value.stagger_attack_armor_speed_decrease, EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
+                .addAttributeModifier(EntityAttributes.GENERIC_ARMOR, STAGGER.modifierId(),
+                        MRPGCMod.effectsConfig.value.stagger_attack_armor_speed_decrease, EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
+                .addAttributeModifier(EntityAttributes.GENERIC_MOVEMENT_SPEED, STAGGER.modifierId(),
+                        MRPGCMod.effectsConfig.value.stagger_attack_armor_speed_decrease, EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
 
-        Synchronized.configure(MOLTEN_ARMOR.effect,true);
-        Synchronized.configure(STUNNED.effect,true);
-        Synchronized.configure(FROZEN_SOLID.effect,true);
-        Synchronized.configure(FEAR.effect,true);
-        Synchronized.configure(COLLECTED_SOUL.effect,true);
-        Synchronized.configure(GRIEVOUS_WOUNDS.effect,true);
-        Synchronized.configure(FROSTED.effect,true);
-        Synchronized.configure(BLEEDING.effect,true);
-
+        for (var entry: entries) {
+            Synchronized.configure(entry.effect, true);
+        }
         RemoveOnHit.configure(FROZEN_SOLID.effect, true);
 
         ActionImpairing.configure(STUNNED.effect, EntityActionsAllowed.STUN);
         ActionImpairing.configure(FROZEN_SOLID.effect, EntityActionsAllowed.STUN);
         ActionImpairing.configure(FEAR.effect, EntityActionsAllowed.INCAPACITATE);
+        ActionImpairing.configure(STAGGER.effect, EntityActionsAllowed.INCAPACITATE);
 
         for (var entry: entries) {
             entry.register();
