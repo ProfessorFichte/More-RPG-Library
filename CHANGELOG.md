@@ -1,3 +1,6 @@
+1.2.16 - 1.20.1
+- Spell Power SpellSchool API to create custom damage type for the new spell schools
+
 1.2.15 - 1.20.1
 - Fix attempt: Crash when Using spoorn alongside. #7
 
