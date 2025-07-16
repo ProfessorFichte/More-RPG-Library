@@ -1,6 +1,7 @@
 # 2.2.7 - 1.21.1
 - add the stagger status effect
 - molten armor now reduces the armor by division
+- add untamed wilds compat for white hide
 
 # 2.2.6 - 1.21.1
 - fix clearNegativeEffects Method

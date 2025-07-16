@@ -8,6 +8,10 @@
     {
       "id": "environmentz:polar_bear_fur",
       "required": false
+    },
+    {
+      "id": "untamedwilds:hide_bear_white",
+      "required": false
     }
   ]
 }
