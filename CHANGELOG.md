@@ -1,3 +1,6 @@
+# 2.2.8 - 1.21.1
+- Spell Engine 1.7 Update
+
 # 2.2.7 - 1.21.1
 - add the stagger status effect
 - molten armor now reduces the armor by division
