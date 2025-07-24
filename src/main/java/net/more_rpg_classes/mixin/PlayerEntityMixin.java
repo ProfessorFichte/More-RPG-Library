@@ -40,7 +40,7 @@ public abstract class PlayerEntityMixin {
         }
     }
 
-    @Inject(method = "attack", at = @At("HEAD"))
+    @Inject(method = "attack", at = @At("TAIL"))
     private void mrpgc$boostDamageOnAttack(Entity target, CallbackInfo ci) {
         PlayerEntity player = (PlayerEntity)(Object)this;
         if (target instanceof LivingEntity livingTarget && !player.getWorld().isClient()) {
@@ -53,6 +53,7 @@ public abstract class PlayerEntityMixin {
                 if (rageValue != 0 && health < maxHealth) {
                     float baseDamage = (float) player.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
                     float extraDamage = Math.max(0.1F, baseDamage * rageValue * missing);
+                    livingTarget.timeUntilRegen = 0;
                     livingTarget.damage(player.getDamageSources().playerAttack(player), extraDamage);
                 }
             }

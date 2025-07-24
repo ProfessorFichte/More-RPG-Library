@@ -1,3 +1,6 @@
+1.2.18 - 1.20.1
+- fix: add untamed wilds compat for white hide
+
 1.2.17 - 1.20.1
 - add untamed wilds compat for white hide
 - changed ArcaneFuse & Rage Mixin Logic due to crash(GitHub #8)
