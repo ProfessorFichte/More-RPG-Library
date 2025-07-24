@@ -17,6 +17,8 @@
   "effect.more_rpg_classes.frosted.description": "Reducción de la velocidad de movimiento.",
   "effect.more_rpg_classes.bleeding": "Sangrado",
   "effect.more_rpg_classes.bleeding.description": "Daña al objetivo con el tiempo.",
+  "effect.more_rpg_classes.stagger": "Tambaleo",
+  "effect.more_rpg_classes.stagger.description": "Reduce la armadura, el daño de ataque y la velocidad de movimiento, dejando al objetivo medio aturdido.",
 
   "item.more_rpg_classes.aqua_stone": "Runa de Agua",
   "item.more_rpg_classes.terra_stone": "Runa de Tierra",
