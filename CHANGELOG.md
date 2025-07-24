@@ -1,3 +1,7 @@
+1.2.17 - 1.20.1
+- add untamed wilds compat for white hide
+- changed ArcaneFuse & Rage Mixin Logic due to crash(GitHub #8)
+
 1.2.16 - 1.20.1
 - Spell Power SpellSchool API to create custom damage type for the new spell schools
 

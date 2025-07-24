@@ -49,9 +49,6 @@ public abstract class LivingEntityMixin {
         }
     }
 
-
-
-
     @Unique
     private float reflectMethod(int reflectamount, DamageSource source, float damage) {
         if (reflectamount != 0) {
