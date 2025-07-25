@@ -6,8 +6,8 @@ import net.minecraft.client.particle.*;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particle.SimpleParticleType;
 
-public class DragonClawParticle extends ExplosionLargeParticle {
-    protected DragonClawParticle(ClientWorld world, double x, double y, double z, double d, SpriteProvider spriteProvider) {
+public class ClawParticle extends ExplosionLargeParticle {
+    protected ClawParticle(ClientWorld world, double x, double y, double z, double d, SpriteProvider spriteProvider) {
         super(world, x, y, z, d, spriteProvider);
     }
 
@@ -25,7 +25,7 @@ public class DragonClawParticle extends ExplosionLargeParticle {
         }
 
         public Particle createParticle(SimpleParticleType defaultParticleType, ClientWorld clientWorld, double d, double e, double f, double g, double h, double i) {
-            var particle = new DragonClawParticle(clientWorld, d, e, f, g, this.spriteProvider);
+            var particle = new ClawParticle(clientWorld, d, e, f, g, this.spriteProvider);
             particle.scale = 1.3F;
             particle.red = 1F;
             particle.green = 1F;

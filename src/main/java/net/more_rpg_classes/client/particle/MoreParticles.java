@@ -8,7 +8,6 @@ import net.minecraft.util.Identifier;
 import net.more_rpg_classes.MRPGCMod;
 
 public class MoreParticles {
-    public static final SimpleParticleType STUN_PAR = FabricParticleTypes.simple();
     public static final SimpleParticleType BLOOD_DROP = FabricParticleTypes.simple();
     public static final SimpleParticleType MOLTEN_ARMOR= FabricParticleTypes.simple();
     public static final SimpleParticleType BUBBLE = FabricParticleTypes.simple();
@@ -31,10 +30,11 @@ public class MoreParticles {
     public static final SimpleParticleType POISON_SMOKE = FabricParticleTypes.simple();
     public static final SimpleParticleType DRAGON_CLAW = FabricParticleTypes.simple();
     public static final SimpleParticleType FREEZING_SNOWFLAKE = FabricParticleTypes.simple();
+    public static final SimpleParticleType WATER_DROP = FabricParticleTypes.simple();
+    public static final SimpleParticleType SLASH_CLAW = FabricParticleTypes.simple();
 
 
     public static void register(){
-        Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "stun_particle"), STUN_PAR);
         Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "blood_drop"), BLOOD_DROP);
         Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "molten_armor"), MOLTEN_ARMOR);
         Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "bubble"), BUBBLE);
@@ -57,6 +57,8 @@ public class MoreParticles {
         Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "poison_smoke"), POISON_SMOKE);
         Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "dragon_claw"), DRAGON_CLAW);
         Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "freezing_snowflake"), FREEZING_SNOWFLAKE);
+        Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "water_drop"), WATER_DROP);
+        Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "slash_claw"), SLASH_CLAW);
     }
 
 }
