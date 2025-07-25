@@ -11,6 +11,7 @@ import net.minecraft.util.Identifier;
 import net.more_rpg_classes.MRPGCMod;
 import net.spell_engine.api.effect.*;
 import net.spell_engine.api.entity.SpellEngineAttributes;
+import net.spell_power.api.SpellPower;
 import net.spell_power.api.SpellSchools;
 
 import java.util.ArrayList;
@@ -38,7 +39,6 @@ public class MRPGCEffects {
     }
 
     public static final Entry MOLTEN_ARMOR = new Entry("molten_armor", new MoltenArmorEffect(StatusEffectCategory.HARMFUL,0xdd4e00));
-    public static final Entry STUNNED = new Entry("stun", new StunEffect(StatusEffectCategory.HARMFUL,0xfffeca));
     public static final Entry FROZEN_SOLID = new Entry("frozen_solid", new FrozenSolidEffect(StatusEffectCategory.HARMFUL, 0x3beeff));
     public static final Entry COLLECTED_SOUL = new Entry("collected_soul", new CustomStatusEffect(StatusEffectCategory.BENEFICIAL, 0x01d9cf));
     public static final Entry GRIEVOUS_WOUNDS = new Entry("grievous_wounds", new CustomStatusEffect(StatusEffectCategory.HARMFUL, 0x01d9cf));
@@ -46,6 +46,11 @@ public class MRPGCEffects {
     public static final Entry BLEEDING = new Entry("bleeding", new BleedingEffect(StatusEffectCategory.HARMFUL, 0xdd4e00));
     public static final Entry FEAR = new Entry("fear", new CustomStatusEffect(StatusEffectCategory.HARMFUL, 0x01d9cf));
     public static final Entry STAGGER = new Entry("stagger", new CustomStatusEffect(StatusEffectCategory.HARMFUL, 0xb3b3b3));
+    public static final Entry SOAKED = new Entry("soaked",new SoakedEffect(StatusEffectCategory.HARMFUL, 0x01d9cf)
+            .setVulnerability(SpellSchools.LIGHTNING, new SpellPower.Vulnerability(
+                    0.15F, 0.1F, 0))
+            .setVulnerability(SpellSchools.FROST, new SpellPower.Vulnerability(
+                    0.15F, 0, 0.3F)));
 
 
     public static void register(){
@@ -88,7 +93,6 @@ public class MRPGCEffects {
         }
         RemoveOnHit.configure(FROZEN_SOLID.effect, RemoveOnHit.Trigger.DIRECT_HIT,1,1);
 
-        ActionImpairing.configure(STUNNED.effect, EntityActionsAllowed.STUN);
         ActionImpairing.configure(FROZEN_SOLID.effect, EntityActionsAllowed.STUN);
         ActionImpairing.configure(FEAR.effect, EntityActionsAllowed.INCAPACITATE);
         ActionImpairing.configure(STAGGER.effect, EntityActionsAllowed.INCAPACITATE);

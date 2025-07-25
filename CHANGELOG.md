@@ -1,3 +1,16 @@
+# 2.3.0 - 1.21.1
+### INTERNAL & FUNCTIONAL CHANGES
+- Update es_ar lang file
+- Fix: add untamed wilds compat for white hide
+- changed ArcaneFuse LifeSteal & Rage Mixin Logic due to incompatibility with Synitra Connector
+- Delete Stun Effect & Particles, because Spell Engine 1.7 now has a generic Stun Effect
+- Update Mod Icon
+### NEW CONTENT
+- Added "Fuse"-Attributes for all SpellSchools (expect Soul & Lightning), dealing additional magic damage per hit
+- Add Soaked Effect from Elemental Wizards
+- Add Water Drop Particle
+- Add Slash Claw Particle
+
 # 2.2.8 - 1.21.1
 - Spell Engine 1.7 Update
 

@@ -3,8 +3,6 @@
 
   "effect.more_rpg_classes.molten_armor": "Molten Armor",
   "effect.more_rpg_classes.molten_armor.description": "Reduces armor, armor toughness and damages the target if it wears armor.",
-  "effect.more_rpg_classes.stun": "Stunned",
-  "effect.more_rpg_classes.stun.description": "Cant move, attack or jump.",
   "effect.more_rpg_classes.frozen_solid": "Frozen Solid",
   "effect.more_rpg_classes.frozen_solid.description": "Cant move, attack or jump, takes additional damage if hit during active effect.",
   "effect.more_rpg_classes.fear": "Fear",
@@ -19,6 +17,8 @@
   "effect.more_rpg_classes.bleeding.description": "Damages the target overtime.",
   "effect.more_rpg_classes.stagger": "Stagger",
   "effect.more_rpg_classes.stagger.description": "Reduces Armor, Attack Damage & Movement Speed and incapacitates the target.",
+  "effect.elemental_wizards_rpg.soaked": "Soaked",
+  "effect.elemental_wizards_rpg.soaked.description": "Soaking the target with water extinguishing fire, more vulnerable to frost, lightning and water spells.",
 
   "item.more_rpg_classes.aqua_stone": "Water Rune",
   "item.more_rpg_classes.terra_stone": "Earth Rune",
@@ -31,10 +31,16 @@
   "death.attack.mrpgc.molten": "%1$s is burned by his molten armor.",
 
   "attribute.name.more_rpg_classes.rage_modifier": "Rage Power",
-  "attribute.name.more_rpg_classes.arcane_fuse_modifier": "Arcane Fuse",
   "attribute.name.more_rpg_classes.lifesteal_modifier": "Lifesteal",
   "attribute.name.more_rpg_classes.damage_reflect_modifier": "Damage Reflect",
   "attribute.name.more_rpg_classes.spell_vampire": "Spell Vampire",
+  "attribute.name.more_rpg_classes.air_fuse_modifier": "Air Power Fuse",
+  "attribute.name.more_rpg_classes.arcane_fuse_modifier": "Arcane Power Fuse",
+  "attribute.name.more_rpg_classes.earth_fuse_modifier": "Earth Power Fuse",
+  "attribute.name.more_rpg_classes.fire_fuse_modifier": "Fire Power Fuse",
+  "attribute.name.more_rpg_classes.frost_fuse_modifier": "Frost Power Fuse",
+  "attribute.name.more_rpg_classes.healing_fuse_modifier": "Healing Power Fuse",
+  "attribute.name.more_rpg_classes.water_fuse_modifier": "Water Power Fuse",
 
   "advancements.more_rpg_content.root.title": "More RPG Content!",
   "advancements.more_rpg_content.root.description": "Explore the different paths you can choose!",

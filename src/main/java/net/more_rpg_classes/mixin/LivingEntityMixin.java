@@ -24,7 +24,13 @@ public abstract class LivingEntityMixin {
     @Inject(method = "createLivingAttributes", at = @At("RETURN"))
     private static void mrpgc_lib$createLivingAttributes(CallbackInfoReturnable<DefaultAttributeContainer.Builder> cir) {
         cir.getReturnValue()
+                .add(MRPGCEntityAttributes.AIR_FUSE_MODIFIER)
                 .add(MRPGCEntityAttributes.ARCANE_FUSE_MODIFIER)
+                .add(MRPGCEntityAttributes.EARTH_FUSE_MODIFIER)
+                .add(MRPGCEntityAttributes.FIRE_FUSE_MODIFIER)
+                .add(MRPGCEntityAttributes.FROST_FUSE_MODIFIER)
+                .add(MRPGCEntityAttributes.HEALING_FUSE_MODIFIER)
+                .add(MRPGCEntityAttributes.WATER_FUSE_MODIFIER)
                 .add(MRPGCEntityAttributes.DAMAGE_REFLECT_MODIFIER)
                 .add(MRPGCEntityAttributes.LIFESTEAL_MODIFIER)
                 .add(MRPGCEntityAttributes.RAGE_MODIFIER)
@@ -70,9 +76,6 @@ public abstract class LivingEntityMixin {
             }
         }
     }
-
-
-
 
     @Unique
     private float reflectMethod(int reflectamount, DamageSource source, float damage) {
