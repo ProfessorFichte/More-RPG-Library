@@ -10,6 +10,8 @@
 - Add Soaked Effect from Elemental Wizards
 - Add Water Drop Particle
 - Add Slash Claw Particle
+- Add Custom Spell Impacts (KnockUp & StopArrows)
+- Add Custom SpellEntityPredicates (IsOnGround, IsWet, IsInWater)
 
 # 2.2.8 - 1.21.1
 - Spell Engine 1.7 Update

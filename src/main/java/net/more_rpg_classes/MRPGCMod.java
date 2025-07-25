@@ -6,6 +6,8 @@ import net.more_rpg_classes.client.particle.MoreParticles;
 import net.more_rpg_classes.compat.CompatDatapackLoader;
 import net.more_rpg_classes.config.EffectsConfig;
 import net.more_rpg_classes.config.TweaksConfig;
+import net.more_rpg_classes.custom.CustomSpellEntityPredicate;
+import net.more_rpg_classes.custom.CustomSpellImpacts;
 import net.more_rpg_classes.custom.MoreSpellSchools;
 import net.more_rpg_classes.effect.MRPGCEffects;
 import net.more_rpg_classes.item.MRPGCItems;
@@ -45,6 +47,8 @@ public class MRPGCMod implements ModInitializer {
 			MoreParticles.register();
 			ModSounds.register();
 			MoreSpellSchools.initialize();
+			CustomSpellImpacts.registerCustomImpacts();
+			CustomSpellEntityPredicate.registerCustomPredicates();
 		}
 	public static Identifier id(String path) {
 		return Identifier.of(MOD_ID, path);
