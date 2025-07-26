@@ -1,3 +1,8 @@
+# 2.3.1 - 1.21.1
+- Adjust Custom Knock Up Impact
+- Add Fixed Amount Knock Up Spell Impact
+- Add Pull To Caster Spell Impact
+
 # 2.3.0 - 1.21.1
 ### INTERNAL & FUNCTIONAL CHANGES
 - Update es_ar lang file

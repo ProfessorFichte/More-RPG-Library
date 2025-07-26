@@ -11,9 +11,8 @@ import net.spell_engine.api.spell.event.SpellHandlers;
 import net.spell_engine.internals.SpellHelper;
 import net.spell_power.api.SpellPower;
 
-public class KnockUpSpellImpact implements SpellHandlers.CustomImpact {
-    private float base = 0.1f;
-    private float multiplier = 0.05f;
+public class KnockUpFixedSpellImpact implements SpellHandlers.CustomImpact {
+    private float base = 0.75f;
 
     @Override
     public SpellHandlers.ImpactResult onSpellImpact(
@@ -24,17 +23,12 @@ public class KnockUpSpellImpact implements SpellHandlers.CustomImpact {
             SpellHelper.ImpactContext context
     ) {
         if (!(target instanceof LivingEntity)) return null;
-        int spellTier = spell.value().tier;
-        float power = powerResult != null ? (float) powerResult.baseValue() : 1.0f;
-        float effectiveMultiplier = multiplier * spellTier;
-        double knockAmount = base + (effectiveMultiplier * power);
-        knockAmount = Math.min(knockAmount, 2.5);
 
         ((LivingEntity) target).addStatusEffect(new StatusEffectInstance(StatusEffects.SLOW_FALLING,20,
                 0,false,false,false));
         Vec3d velocity = target.getVelocity();
         target.setVelocity(velocity.x, 0.0, velocity.z);
-        target.addVelocity(0.0, knockAmount, 0.0);
+        target.addVelocity(0.0, base, 0.0);
         target.velocityModified = true;
 
         return new SpellHandlers.ImpactResult(true, false);

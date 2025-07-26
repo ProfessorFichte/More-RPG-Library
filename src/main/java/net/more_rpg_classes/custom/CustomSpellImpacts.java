@@ -16,5 +16,13 @@ public class CustomSpellImpacts {
                 Identifier.of(MOD_ID, "stop_arrows"),
                 new StopArrowsImpact()
         );
+        SpellHandlers.registerCustomImpact(
+                Identifier.of(MOD_ID, "knock_up_fixed"),
+                new KnockUpFixedSpellImpact()
+        );
+        SpellHandlers.registerCustomImpact(
+                Identifier.of(MOD_ID, "pull_to_caster_direct"),
+                new PullInFrontOfCasterSpellImpact()
+        );
     }
 }
