@@ -1,3 +1,18 @@
+# 2.3.2 - 1.21.1
+### Internal
+- Removed Frostiful & EnviromentZ Compat (Extra Datapack will be released)
+- Improve Frosted Particle Status Effect
+### Visual Additions
+- Add Ice Trap & Stone Trap Particle (Credits: ElvGames)
+### Custom Spell Impacts
+- fix stop arrow spell impact
+- The Custom Spell Impact Knock Up's value can now be changed in the tweaks config
+- Impact that spawns a lightning strike on the target (vanilla lightning entity)
+- Pull To Caster Slowly Custom Impact
+- Rush Forward Custom Impact
+- Disengage BackwardDash custom impacts
+- scaled knockback according to how close the target is to the caster (closer = higher knockback)
+
 # 2.3.1 - 1.21.1
 - Adjust Custom Knock Up Impact
 - Add Fixed Amount Knock Up Spell Impact

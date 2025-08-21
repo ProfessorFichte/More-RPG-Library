@@ -3,7 +3,6 @@ package net.more_rpg_classes;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.util.Identifier;
 import net.more_rpg_classes.client.particle.MoreParticles;
-import net.more_rpg_classes.compat.CompatDatapackLoader;
 import net.more_rpg_classes.config.EffectsConfig;
 import net.more_rpg_classes.config.TweaksConfig;
 import net.more_rpg_classes.custom.CustomSpellEntityPredicate;
@@ -29,7 +28,7 @@ public class MRPGCMod implements ModInitializer {
 			.sanitize(true)
 			.build();
 	public static ConfigManager<TweaksConfig> tweaksConfig = new ConfigManager<>
-			("tweaks_v1", new TweaksConfig())
+			("tweaks_v2", new TweaksConfig())
 			.builder()
 			.setDirectory(MOD_ID)
 			.sanitize(true)
@@ -43,7 +42,6 @@ public class MRPGCMod implements ModInitializer {
 			MRPGCItems.registerModItems();
 			MRPGCLootTableEntityModifiers.modifyLootEntityTables();
 			MRPGCEffects.register();
-			CompatDatapackLoader.register();
 			MoreParticles.register();
 			ModSounds.register();
 			MoreSpellSchools.initialize();
