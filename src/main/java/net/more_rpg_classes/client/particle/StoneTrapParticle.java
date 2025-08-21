@@ -14,14 +14,14 @@ import net.spell_engine.client.particle.ShiftedParticle;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IceTrapParticle extends ShiftedParticle {
+public class StoneTrapParticle extends ShiftedParticle {
     private final SpriteProvider spriteProvider;
     private final List<Sprite> frames;
 
-    protected IceTrapParticle(ClientWorld world, double x, double y, double z,
-                              double velocityX, double velocityY, double velocityZ,
-                              SpriteProvider spriteProvider,
-                              List<Sprite> frames) {
+    protected StoneTrapParticle(ClientWorld world, double x, double y, double z,
+                                double velocityX, double velocityY, double velocityZ,
+                                SpriteProvider spriteProvider,
+                                List<Sprite> frames) {
         super(world, x, y, z, velocityX, velocityY, velocityZ, spriteProvider);
         this.frames = frames;
         this.spriteProvider = spriteProvider;
@@ -45,13 +45,12 @@ public class IceTrapParticle extends ShiftedParticle {
         }
 
         final int frameRate = 5;
-        int frame = (this.age / frameRate);
+        int frame = this.age / frameRate;
 
-        if (frame < 7) {
+        if (frame < 3) {
             this.setSprite(frames.get(frame));
         } else {
-            int loopFrame = 7 + ((frame - 7) % 5);
-            this.setSprite(frames.get(loopFrame));
+            this.setSprite(frames.get(3));
         }
     }
 
@@ -61,10 +60,10 @@ public class IceTrapParticle extends ShiftedParticle {
     }
 
     @Environment(EnvType.CLIENT)
-    public static class IceTrapParticleFactory implements ParticleFactory<SimpleParticleType> {
+    public static class StoneTrapParticleFactory implements ParticleFactory<SimpleParticleType> {
         private final SpriteProvider spriteProvider;
 
-        public IceTrapParticleFactory(SpriteProvider spriteProvider) {
+        public StoneTrapParticleFactory(SpriteProvider spriteProvider) {
             this.spriteProvider = spriteProvider;
         }
 
@@ -72,11 +71,11 @@ public class IceTrapParticle extends ShiftedParticle {
         public Particle createParticle(SimpleParticleType type, ClientWorld world,
                                        double x, double y, double z,
                                        double vx, double vy, double vz) {
-            List<Sprite> sprites = new ArrayList<>(12);
-            for (int i = 0; i < 12; i++) {
-                sprites.add(spriteProvider.getSprite(i, 12));
+            List<Sprite> sprites = new ArrayList<>(4);
+            for (int i = 0; i < 4; i++) {
+                sprites.add(spriteProvider.getSprite(i, 4));
             }
-            return new IceTrapParticle(world, x, y, z, vx, vy, vz, spriteProvider, sprites);
+            return new StoneTrapParticle(world, x, y, z, vx, vy, vz, spriteProvider, sprites);
         }
     }
 }

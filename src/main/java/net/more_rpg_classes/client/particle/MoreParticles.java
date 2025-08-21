@@ -33,6 +33,7 @@ public class MoreParticles {
     public static final SimpleParticleType WATER_DROP = FabricParticleTypes.simple();
     public static final SimpleParticleType SLASH_CLAW = FabricParticleTypes.simple();
     public static final SimpleParticleType ICE_TRAP = FabricParticleTypes.simple();
+    public static final SimpleParticleType STONE_TRAP = FabricParticleTypes.simple();
 
 
     public static void register(){
@@ -61,6 +62,7 @@ public class MoreParticles {
         Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "water_drop"), WATER_DROP);
         Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "slash_claw"), SLASH_CLAW);
         Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "ice_trap"), ICE_TRAP);
+        Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "stone_trap"), STONE_TRAP);
     }
 
 }
