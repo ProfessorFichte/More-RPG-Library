@@ -1,16 +1,17 @@
-package net.more_rpg_classes.custom;
+package net.more_rpg_classes.custom.spell_impacts;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.Vec3d;
+import net.more_rpg_classes.MRPGCMod;
 import net.spell_engine.api.spell.Spell;
 import net.spell_engine.api.spell.event.SpellHandlers;
 import net.spell_engine.internals.SpellHelper;
 import net.spell_power.api.SpellPower;
 
 
-public class PullInFrontOfCasterSpellImpact implements SpellHandlers.CustomImpact {
+public class PullInToCasterDirectSpellImpact implements SpellHandlers.CustomImpact {
 
     @Override
     public SpellHandlers.ImpactResult onSpellImpact(
@@ -27,7 +28,7 @@ public class PullInFrontOfCasterSpellImpact implements SpellHandlers.CustomImpac
 
         Vec3d moveVec = desiredPos.subtract(target.getPos()).normalize();
 
-        double speed = 0.8;
+        double speed = MRPGCMod.tweaksConfig.value.custom_spell_impact_pull_to_caster_direct_speed;
         Vec3d velocity = moveVec.multiply(speed);
 
         target.setVelocity(velocity);
