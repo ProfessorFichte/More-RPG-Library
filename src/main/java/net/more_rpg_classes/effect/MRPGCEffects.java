@@ -91,7 +91,7 @@ public class MRPGCEffects {
         for (var entry: entries) {
             Synchronized.configure(entry.effect, true);
         }
-        RemoveOnHit.configure(FROZEN_SOLID.effect, RemoveOnHit.Trigger.DIRECT_HIT,1,1);
+        RemoveOnHit.configure(FROZEN_SOLID.effect, RemoveOnHit.Trigger.ANY_HIT,1,1);
 
         ActionImpairing.configure(FROZEN_SOLID.effect, EntityActionsAllowed.STUN);
         ActionImpairing.configure(FEAR.effect, EntityActionsAllowed.INCAPACITATE);

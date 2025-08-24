@@ -1,0 +1,33 @@
+{
+  "school": "spell_power:physical_melee",
+  "range": 10.0,
+  "tier": 2,
+  "learn": {},
+  "active": {},
+  "release": {
+    "animation": "more_rpg_classes:two_handed_roar"
+  },
+  "target": {
+    "type": "AIM",
+    "aim": {
+      "sticky": true
+    }
+  },
+  "impacts": [
+    {
+      "action": {
+        "type": "CUSTOM",
+        "custom": {
+          "intent": "HARMFUL",
+          "handler": "more_rpg_classes:backward_dash_fixed"
+        }
+      }
+    }
+  ],
+  "cost": {
+    "exhaust": 0.3,
+    "cooldown": {
+      "duration": 20.0
+    }
+  }
+}

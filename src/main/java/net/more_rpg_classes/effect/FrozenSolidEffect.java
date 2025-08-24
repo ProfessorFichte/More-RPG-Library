@@ -5,6 +5,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.registry.tag.EntityTypeTags;
+import net.more_rpg_classes.util.CustomMethods;
 
 import static net.more_rpg_classes.util.CustomMethods.stackFreezeStacks;
 
@@ -18,7 +19,7 @@ public class FrozenSolidEffect extends StatusEffect {
         super.onApplied(livingEntity, amplifier);
         EntityType<?> type = livingEntity.getType();
         if(!type.isIn(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES)) {
-            stackFreezeStacks(livingEntity,40);
+            stackFreezeStacks(livingEntity,10);
         } else{
             livingEntity.removeStatusEffect(MRPGCEffects.FROZEN_SOLID.registryEntry);
         }
@@ -27,7 +28,10 @@ public class FrozenSolidEffect extends StatusEffect {
 
     @Override
     public boolean applyUpdateEffect(LivingEntity livingEntity, int pAmplifier) {
-        stackFreezeStacks(livingEntity,2);
+        EntityType<?> type = livingEntity.getType();
+        if(!type.isIn(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES)) {
+            CustomMethods.freezeDamageTicks(livingEntity);
+        }
         if(livingEntity.isOnFire() || livingEntity.isInLava()){
            return livingEntity.removeStatusEffect(MRPGCEffects.FROZEN_SOLID.registryEntry);
         }

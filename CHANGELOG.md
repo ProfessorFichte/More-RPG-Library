@@ -2,6 +2,10 @@
 ### Internal
 - Removed Frostiful & EnviromentZ Compat (Extra Datapack will be released)
 - Improve Frosted Particle Status Effect
+- Improve stackFreezeStacks HelperMethod
+- Add freezeDamageTicks HelperMethod
+- Frosted & FrozenSolid Status Effect now also slowly stack freezeTicks like Powder Snow Blocks
+- Delete Poison Cloud and Gas Cloud particles because they're obsolete now
 ### Visual Additions
 - Add Ice Trap & Stone Trap Particle (Credits: ElvGames)
 ### Custom Spell Impacts
@@ -9,9 +13,10 @@
 - The Custom Spell Impact Knock Up's value can now be changed in the tweaks config
 - Impact that spawns a lightning strike on the target (vanilla lightning entity)
 - Pull To Caster Slowly Custom Impact
-- Rush Forward Custom Impact
+- Rush Forward Custom Impacts
 - Disengage BackwardDash custom impacts
 - scaled knockback according to how close the target is to the caster (closer = higher knockback)
+- Impact that sets frozen Ticks to a maximum
 
 # 2.3.1 - 1.21.1
 - Adjust Custom Knock Up Impact

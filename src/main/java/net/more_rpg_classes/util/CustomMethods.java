@@ -36,13 +36,20 @@ public class CustomMethods {
         }
     }
 
-    public static void stackFreezeStacks(LivingEntity livingEntity, int amount){
-        int actualFrozenTicks = livingEntity.getFrozenTicks();
-        if(actualFrozenTicks >= 140){
-            livingEntity.setFrozenTicks(actualFrozenTicks + amount);
-        }else{
-            livingEntity.setFrozenTicks(140);
-        }
+    public static void stackFreezeStacks(LivingEntity e, int amount) {
+        if (!e.canFreeze()) return;
+
+        int cap = e.getMinFreezeDamageTicks() +5;
+        int newTicks = Math.min(cap, e.getFrozenTicks() + amount);
+        e.setFrozenTicks(newTicks);
+    }
+
+    public static void freezeDamageTicks(LivingEntity e) {
+        if (!e.canFreeze()) return;
+
+        int cap = e.getMinFreezeDamageTicks() +5;
+        int newTicks = Math.min(cap, e.getFrozenTicks() + 3);
+        e.setFrozenTicks(newTicks);
     }
 
     /*

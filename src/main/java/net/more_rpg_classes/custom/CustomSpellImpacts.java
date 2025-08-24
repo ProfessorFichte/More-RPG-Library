@@ -53,5 +53,13 @@ public class CustomSpellImpacts {
                 Identifier.of(MOD_ID, "range_scaled_knockback"),
                 new KnockbackRangeScaledSpellImpact()
         );
+        SpellHandlers.registerCustomImpact(
+                Identifier.of(MOD_ID, "frozen_ticks"),
+                new FrozenTicksSpellImpact()
+        );
+        SpellHandlers.registerCustomImpact(
+                Identifier.of(MOD_ID, "forward_dash_range"),
+                new ForwardDashRangeSpellImpact()
+        );
     }
 }

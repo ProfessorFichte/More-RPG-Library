@@ -42,8 +42,6 @@ public class MoreRPGClassesClient implements ClientModInitializer {
         ParticleFactoryRegistry.getInstance().register(MoreParticles.STONE_PARTICLE, SpellFlameParticle.HolyFactory::new);
         ParticleFactoryRegistry.getInstance().register(MoreParticles.WIND_VACUUM, CustomSpellExplosionParticle.Factory::new);
         ParticleFactoryRegistry.getInstance().register(MoreParticles.SMALL_GUST,  FlameParticle.Factory::new);
-        ParticleFactoryRegistry.getInstance().register(MoreParticles.GAS_CLOUD, CloudParticle.CloudFactory::new);
-        ParticleFactoryRegistry.getInstance().register(MoreParticles.POISON_SMOKE, ExplosionSmokeParticle.Factory::new);
         ParticleFactoryRegistry.getInstance().register(MoreParticles.DRAGON_CLAW, ClawParticle.Factory::new);
         ParticleFactoryRegistry.getInstance().register(MoreParticles.FREEZING_SNOWFLAKE, SnowflakeParticle.Factory::new);
         ParticleFactoryRegistry.getInstance().register(MoreParticles.WATER_DROP, RainSplashParticle.Factory::new);
