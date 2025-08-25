@@ -20,7 +20,7 @@ public class ForwardDashRangeSpellImpact implements SpellHandlers.CustomImpact {
             SpellHelper.ImpactContext context
     ) {
         if (!caster.getWorld().isClient) {
-            float dashStrength = spell.value().range;
+            float dashStrength = spell.value().range / 4;
             Vec3d look = caster.getRotationVector().normalize();
             double yVel = caster.getVelocity().y > 0 ? caster.getVelocity().y : 0.25;
             Vec3d dashVelocity = new Vec3d(
@@ -30,6 +30,7 @@ public class ForwardDashRangeSpellImpact implements SpellHandlers.CustomImpact {
             );
             caster.setVelocity(dashVelocity);
             caster.velocityModified = true;
+            caster.velocityDirty = true;
         }
         return new SpellHandlers.ImpactResult(true, false);
     }

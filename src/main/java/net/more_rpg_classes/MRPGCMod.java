@@ -1,6 +1,8 @@
 package net.more_rpg_classes;
 
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import net.more_rpg_classes.client.particle.MoreParticles;
 import net.more_rpg_classes.config.EffectsConfig;
@@ -12,6 +14,7 @@ import net.more_rpg_classes.effect.MRPGCEffects;
 import net.more_rpg_classes.item.MRPGCItems;
 import net.more_rpg_classes.sounds.ModSounds;
 import net.more_rpg_classes.util.loot.MRPGCLootTableEntityModifiers;
+import net.more_rpg_classes.util.loot.SpecificSpellScrollPoolLootFunction;
 import net.tinyconfig.ConfigManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +25,7 @@ public class MRPGCMod implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("more_rpg_classes");
 
 	public static ConfigManager<EffectsConfig> effectsConfig = new ConfigManager<EffectsConfig>
-			("effects_v1", new EffectsConfig())
+			("effects_v2", new EffectsConfig())
 			.builder()
 			.setDirectory(MOD_ID)
 			.sanitize(true)
@@ -39,6 +42,10 @@ public class MRPGCMod implements ModInitializer {
 	public void onInitialize() {
 			effectsConfig.refresh();
 			tweaksConfig.refresh();
+			Registry.register(Registries.LOOT_FUNCTION_TYPE,
+					SpecificSpellScrollPoolLootFunction.ID,
+					SpecificSpellScrollPoolLootFunction.TYPE);
+			CustomSpellImpacts.registerCustomImpacts();
 			MRPGCItems.registerModItems();
 			MRPGCLootTableEntityModifiers.modifyLootEntityTables();
 			MRPGCEffects.register();

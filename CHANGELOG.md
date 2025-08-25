@@ -1,3 +1,9 @@
+# 2.3.3 - 1.21.1
+- Reduce Damage Taken of Frozen Solid Spell and Add Frost Spell related vulnerability
+- Add Specific Spell Scroll Loot Function (spell pool, min to max spell-tier can be set)
+- Fix Backward- and Forward dash, that was calculated by spell range
+- nerf Frosted Movement speed slow
+
 # 2.3.2 - 1.21.1
 ### Internal
 - Removed Frostiful & EnviromentZ Compat (Extra Datapack will be released)

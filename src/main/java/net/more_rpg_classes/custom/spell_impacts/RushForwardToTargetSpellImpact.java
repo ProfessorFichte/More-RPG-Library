@@ -30,6 +30,7 @@ public class RushForwardToTargetSpellImpact implements SpellHandlers.CustomImpac
                 Vec3d velocity = direction.normalize().multiply(distance);
                 caster.setVelocity(velocity);
                 caster.velocityModified = true;
+                caster.velocityDirty = true;
             }
         }
 

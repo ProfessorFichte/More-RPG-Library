@@ -20,14 +20,17 @@ public class BackwardDashRangeSpellImpact implements SpellHandlers.CustomImpact 
             SpellHelper.ImpactContext context
     ) {
         if (!caster.getWorld().isClient) {
-            float speed_leaping = -spell.value().range;
-            float leaping_height = 0.65F;
-            caster.velocityDirty = true;
+            float dashStrength = spell.value().range / 4;
+            Vec3d look = caster.getRotationVector().normalize();
+            double yVel = caster.getVelocity().y > 0 ? caster.getVelocity().y : 0.25;
+            Vec3d dashVelocity = new Vec3d(
+                    look.x * (-dashStrength),
+                    yVel,
+                    look.z * (-dashStrength)
+            );
+            caster.setVelocity(dashVelocity);
             caster.velocityModified = true;
-            Vec3d rotationVector = caster.getRotationVector();
-            Vec3d velocity = caster.getVelocity();
-            caster.addVelocity(rotationVector.x * 0.1 + (rotationVector.x * 2.5 - velocity.x) * speed_leaping,
-                    leaping_height, rotationVector.z * 0.1 + (rotationVector.z * 2.5 - velocity.z) * speed_leaping);
+            caster.velocityDirty = true;
         }
 
         return new SpellHandlers.ImpactResult(true, false);
