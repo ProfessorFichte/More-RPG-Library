@@ -3,8 +3,6 @@
 
   "effect.more_rpg_classes.molten_armor": "Armadura Fundida",
   "effect.more_rpg_classes.molten_armor.description": "Reduce la armadura, la resistencia de la armadura y daña al objetivo si lleva armadura.",
-  "effect.more_rpg_classes.stun": "Aturdido",
-  "effect.more_rpg_classes.stun.description": "No puede moverse, atacar ni saltar.",
   "effect.more_rpg_classes.frozen_solid": "Congelado Sólido",
   "effect.more_rpg_classes.frozen_solid.description": "No puede moverse, atacar ni saltar, recibe daño adicional si es golpeado mientras está bajo el efecto activo.",
   "effect.more_rpg_classes.fear": "Miedo",
@@ -19,6 +17,8 @@
   "effect.more_rpg_classes.bleeding.description": "Daña al objetivo con el tiempo.",
   "effect.more_rpg_classes.stagger": "Tambaleo",
   "effect.more_rpg_classes.stagger.description": "Reduce la armadura, el daño de ataque y la velocidad de movimiento, dejando al objetivo medio aturdido.",
+  "effect.elemental_wizards_rpg.soaked": "Empapado",
+  "effect.elemental_wizards_rpg.soaked.description": "Empapa al objetivo con agua, apaga el fuego y lo vuelve más vulnerable a hechizos de escarcha, rayos y agua.",
 
   "item.more_rpg_classes.aqua_stone": "Runa de Agua",
   "item.more_rpg_classes.terra_stone": "Runa de Tierra",
@@ -31,10 +31,16 @@
   "death.attack.mrpgc.molten": "%1$s fue quemado por su armadura fundida.",
 
   "attribute.name.more_rpg_classes.rage_modifier": "Poder de Ira",
-  "attribute.name.more_rpg_classes.arcane_fuse_modifier": "Fusión Arcana",
   "attribute.name.more_rpg_classes.lifesteal_modifier": "Robo de Vida",
   "attribute.name.more_rpg_classes.damage_reflect_modifier": "Reflejo de Daño",
-  "attribute.name.more_rpg_classes.spell_vampire": "Vampiro de Hechizos",
+  "attribute.name.more_rpg_classes.spell_vampire": "Vampirismo Mágico",
+  "attribute.name.more_rpg_classes.air_fuse_modifier": "Fusión de Poder Aéreo",
+  "attribute.name.more_rpg_classes.arcane_fuse_modifier": "Fusión Arcana",
+  "attribute.name.more_rpg_classes.earth_fuse_modifier": "Fusión de Poder Terrestre",
+  "attribute.name.more_rpg_classes.fire_fuse_modifier": "Fusión de Poder Ígneo",
+  "attribute.name.more_rpg_classes.frost_fuse_modifier": "Fusión de Poder Gélido",
+  "attribute.name.more_rpg_classes.healing_fuse_modifier": "Fusión de Poder Sanador",
+  "attribute.name.more_rpg_classes.water_fuse_modifier": "Fusión de Poder Acuoso",
 
   "advancements.more_rpg_content.root.title": "More RPG Content",
   "advancements.more_rpg_content.root.description": "¡Explorá los diferentes caminos que podés elegir!",
