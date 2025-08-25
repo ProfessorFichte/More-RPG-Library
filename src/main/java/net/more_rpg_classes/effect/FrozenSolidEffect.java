@@ -2,14 +2,14 @@ package net.more_rpg_classes.effect;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.registry.tag.EntityTypeTags;
 import net.more_rpg_classes.util.CustomMethods;
+import net.spell_power.api.statuseffects.SpellVulnerabilityStatusEffect;
 
 import static net.more_rpg_classes.util.CustomMethods.stackFreezeStacks;
 
-public class FrozenSolidEffect extends StatusEffect {
+public class FrozenSolidEffect extends SpellVulnerabilityStatusEffect {
 
     public FrozenSolidEffect(StatusEffectCategory statusEffectCategory, int color) {
         super(statusEffectCategory, color);

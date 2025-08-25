@@ -39,7 +39,8 @@ public class MRPGCEffects {
     }
 
     public static final Entry MOLTEN_ARMOR = new Entry("molten_armor", new MoltenArmorEffect(StatusEffectCategory.HARMFUL,0xdd4e00));
-    public static final Entry FROZEN_SOLID = new Entry("frozen_solid", new FrozenSolidEffect(StatusEffectCategory.HARMFUL, 0x3beeff));
+    public static final Entry FROZEN_SOLID = new Entry("frozen_solid", new FrozenSolidEffect(StatusEffectCategory.HARMFUL, 0x3beeff)
+            .setVulnerability(SpellSchools.FROST, new SpellPower.Vulnerability(0, 0.1F, 0.2F)));
     public static final Entry COLLECTED_SOUL = new Entry("collected_soul", new CustomStatusEffect(StatusEffectCategory.BENEFICIAL, 0x01d9cf));
     public static final Entry GRIEVOUS_WOUNDS = new Entry("grievous_wounds", new CustomStatusEffect(StatusEffectCategory.HARMFUL, 0x01d9cf));
     public static final Entry FROSTED = new Entry("frosted", new FrostedEffect(StatusEffectCategory.HARMFUL, 0x3beeff));
@@ -91,7 +92,7 @@ public class MRPGCEffects {
         for (var entry: entries) {
             Synchronized.configure(entry.effect, true);
         }
-        RemoveOnHit.configure(FROZEN_SOLID.effect, RemoveOnHit.Trigger.ANY_HIT,1,1);
+        RemoveOnHit.configure(FROZEN_SOLID.effect, RemoveOnHit.Trigger.DIRECT_HIT,1,1);
 
         ActionImpairing.configure(FROZEN_SOLID.effect, EntityActionsAllowed.STUN);
         ActionImpairing.configure(FEAR.effect, EntityActionsAllowed.INCAPACITATE);
