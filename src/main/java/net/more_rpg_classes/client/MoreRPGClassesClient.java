@@ -5,6 +5,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.minecraft.client.particle.*;
+import net.minecraft.util.Identifier;
 import net.more_rpg_classes.client.effect.*;
 import net.more_rpg_classes.client.particle.*;
 import net.more_rpg_classes.effect.MRPGCEffects;
@@ -16,12 +17,15 @@ import net.spell_engine.client.particle.SpellFlameParticle;
 
 import java.util.List;
 
+import static net.more_rpg_classes.MRPGCMod.MOD_ID;
+
 @Environment(EnvType.CLIENT)
 public class MoreRPGClassesClient implements ClientModInitializer {
 
     public void  onInitializeClient(){
         CustomModels.registerModelIds(List.of(
-                FrozenSolidRenderer.modelId
+                FrozenSolidRenderer.modelId,
+                Identifier.of(MOD_ID, "projectile/falling_icicle")
         ));
 
         ParticleFactoryRegistry.getInstance().register(MoreParticles.BLOOD_DROP, RainSplashParticle.Factory::new);

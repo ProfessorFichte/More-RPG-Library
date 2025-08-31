@@ -1,0 +1,35 @@
+{
+	"format_version": "1.21.6",
+	"credit": "Made with Blockbench",
+	"textures": {
+		"1": "more_rpg_classes:spell_projectile/icicle_projectile"
+	},
+	"elements": [
+		{
+			"from": [3, 0, 8],
+			"to": [13, 23, 8.1],
+			"rotation": {"angle": 0, "axis": "y", "origin": [3, 0, 8]},
+			"faces": {
+				"north": {"uv": [5.5, 0, 11.5, 12], "texture": "#1"},
+				"east": {"uv": [0, 15.5, 0.6, 16], "texture": "#1"},
+				"south": {"uv": [5.5, 0, 11.5, 12], "texture": "#1"},
+				"west": {"uv": [0, 15.5, 0.6, 16], "texture": "#1"},
+				"up": {"uv": [0, 15.5, 0.5, 16], "texture": "#1"},
+				"down": {"uv": [0, 15.5, 0.5, 16], "texture": "#1"}
+			}
+		},
+		{
+			"from": [8, 0, 3],
+			"to": [8.1, 23, 13],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 13]},
+			"faces": {
+				"north": {"uv": [0, 15.5, 0.6, 16], "texture": "#1"},
+				"east": {"uv": [5.5, 0, 11.5, 12], "texture": "#1"},
+				"south": {"uv": [0, 15.5, 0.6, 16], "texture": "#1"},
+				"west": {"uv": [5.5, 0, 11.5, 12], "texture": "#1"},
+				"up": {"uv": [0, 15.5, 0.5, 16], "rotation": 270, "texture": "#1"},
+				"down": {"uv": [0, 15.5, 0.5, 16], "rotation": 90, "texture": "#1"}
+			}
+		}
+	]
+}
