@@ -61,5 +61,9 @@ public class CustomSpellImpacts {
                 Identifier.of(MOD_ID, "forward_dash_range"),
                 new ForwardDashRangeSpellImpact()
         );
+        SpellHandlers.registerCustomImpact(
+                Identifier.of(MOD_ID, "damage_according_to_missing_health"),
+                new DamageToMissingHealthSpellImpact()
+        );
     }
 }
