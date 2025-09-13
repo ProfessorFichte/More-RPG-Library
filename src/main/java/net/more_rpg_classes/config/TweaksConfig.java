@@ -10,4 +10,7 @@ public class TweaksConfig {
     public float custom_spell_impact_pull_to_caster_slow_speed = 0.2F;
     public float custom_spell_impact_backward_dash_range = -1.25F;
     public float custom_spell_impact_backward_dash_height = 0.65F;
+    public float custom_spell_impact_damage_to_missing_health_above_50 = 0.25F;
+    public float custom_spell_impact_damage_to_missing_health_under_50 = 1.0F;
+    public float custom_spell_impact_damage_to_missing_health_under_25 = 1.75F;
 }

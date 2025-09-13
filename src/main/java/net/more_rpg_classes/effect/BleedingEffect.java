@@ -6,6 +6,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.registry.tag.EntityTypeTags;
+import net.more_rpg_classes.MRPGCMod;
 import net.more_rpg_classes.damage.BleedingDamageSource;
 
 public class BleedingEffect extends StatusEffect {
@@ -19,7 +20,20 @@ public class BleedingEffect extends StatusEffect {
         if(type.isIn(EntityTypeTags.UNDEAD)){
             entity.removeStatusEffect(MRPGCEffects.BLEEDING.registryEntry);
         }
-        entity.damage(new BleedingDamageSource(entity.getDamageSources().starve().getTypeRegistryEntry()), 1.0F);
+        float bleedingTickDamage = 1.0F;
+        float currentHealthPercentage = entity.getHealth() / entity.getMaxHealth();
+        if(currentHealthPercentage <= 0.75F){
+            bleedingTickDamage = bleedingTickDamage + (entity.getMaxHealth() * 0.01F);
+        }
+        if(currentHealthPercentage <= 0.5F){
+            bleedingTickDamage = bleedingTickDamage + (entity.getMaxHealth() * 0.025F);
+        }
+        if(currentHealthPercentage <= 0.25F){
+            bleedingTickDamage = bleedingTickDamage + (entity.getMaxHealth() * 0.05F);
+        }
+        MRPGCMod.LOGGER.info("Bleeding Damage" + bleedingTickDamage);
+        entity.timeUntilRegen = 0;
+        entity.damage(new BleedingDamageSource(entity.getDamageSources().starve().getTypeRegistryEntry()), bleedingTickDamage);
         return true;
     }
 
