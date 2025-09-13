@@ -17,9 +17,15 @@ A library add-on for the [Spell Engine Mod](https://github.com/ZsoltMolnarrr/Spe
 - New **Particle Effects**
 
 ### 2. New Spell Schools 🪄
+**🧙‍♂️Magic Spell Schools**
 - **🌪️Air Magic**
 - **🪨Earth Magic**
 - **🌊Water Magic**
+**🏹Ranged Spell Schools**
+- **🔥Fire Ranged**
+- **❄️Frost Ranged**
+**🗡️Melee Spell Schools**
+- **🪓Berserker Melee**
 
 ### 3. New Entity Attributes ⭐
 - To Do
@@ -31,7 +37,7 @@ A library add-on for the [Spell Engine Mod](https://github.com/ZsoltMolnarrr/Spe
 - To Do
 
 ### 6. Conditional Loot Spell Scroll Function 📜
-With this function you can easily add specific spell scrolls from specific spell pools to your loot tables. You can also blacklist spells and set the Minimum and maximum Tier of a spell.
+With this function you can easily add specific spell scrolls from specific spell pools to your loot tables. You can also blacklist spells and set the minimum and maximum tier of a spell.
 
 ```json
 {

@@ -1,3 +1,13 @@
+# 2.3.4 - 1.21.1
+- Buffed the Bleeding Effect
+- it now deals additional damage according to the max health if the target is under a certain hp range
+- added Falling Icicle Projectile
+- Added the Frost- & Fire Ranged Spell School from the Archers Expansion Mod in this Lib
+- Added the Berserker Melee Spell School from the Berserker Mod in this Lib
+- new CustomSpellImpact: damage_according_to_missing_health
+- The less health your target has, the more damage you cause (DamageType is your SpellSchools Damage Type)
+- (above 50% -> 0.25 / below 50% -> 1.0 / below 25% -> 1.75 of your SpellSchools Attribute Power)
+
 # 2.3.3 - 1.21.1
 - Reduce Damage Taken of Frozen Solid Spell and Add Frost Spell related vulnerability
 - Add Specific Spell Scroll Loot Function (spell pool, min to max spell-tier can be set)
