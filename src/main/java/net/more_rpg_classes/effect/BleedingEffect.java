@@ -31,7 +31,6 @@ public class BleedingEffect extends StatusEffect {
         if(currentHealthPercentage <= 0.25F){
             bleedingTickDamage = bleedingTickDamage + (entity.getMaxHealth() * 0.05F);
         }
-        MRPGCMod.LOGGER.info("Bleeding Damage" + bleedingTickDamage);
         entity.timeUntilRegen = 0;
         entity.damage(new BleedingDamageSource(entity.getDamageSources().starve().getTypeRegistryEntry()), bleedingTickDamage);
         return true;
