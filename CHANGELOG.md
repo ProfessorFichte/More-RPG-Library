@@ -1,3 +1,8 @@
+# 2.3.5 - 1.21.1
+- add bleeding immune entity tag
+- remove bleeding testing logger I forgot
+- rename BERSERKER_MELEE Spell School to RAGE_MELEE
+
 # 2.3.4 - 1.21.1
 - Buffed the Bleeding Effect
 - it now deals additional damage according to the max health if the target is under a certain hp range
