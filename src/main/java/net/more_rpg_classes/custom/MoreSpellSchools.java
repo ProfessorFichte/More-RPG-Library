@@ -38,8 +38,8 @@ public class MoreSpellSchools {
             DamageTypes.ARROW,
             rangedDamageAttribute());
 
-    public static final SpellSchool BERSERKER_MELEE = new SpellSchool(SpellSchool.Archetype.MELEE,
-            Identifier.of(SpellPowerMod.ID, "berserker_melee"),
+    public static final SpellSchool RAGE_MELEE = new SpellSchool(SpellSchool.Archetype.MELEE,
+            Identifier.of(SpellPowerMod.ID, "rage_melee"),
             0xb3b3b3,
             DamageTypes.PLAYER_ATTACK,
             EntityAttributes.GENERIC_ATTACK_DAMAGE);
@@ -77,23 +77,23 @@ public class MoreSpellSchools {
         }
 
 
-        BERSERKER_MELEE.addSource(SpellSchool.Trait.POWER, SpellSchool.Apply.ADD, query -> {
+        RAGE_MELEE.addSource(SpellSchool.Trait.POWER, SpellSchool.Apply.ADD, query -> {
             return query.entity().getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE) +
                     ((query.entity().getAttributeValue(MRPGCEntityAttributes.RAGE_MODIFIER)-100) / 50);
         });
-        BERSERKER_MELEE.addSource(SpellSchool.Trait.CRIT_CHANCE, new SpellSchool.Source(SpellSchool.Apply.ADD, query ->  {
+        RAGE_MELEE.addSource(SpellSchool.Trait.CRIT_CHANCE, new SpellSchool.Source(SpellSchool.Apply.ADD, query ->  {
             var value = SpellPowerMod.attributesConfig.value.base_spell_critical_chance_percentage
                     + query.entity().getAttributeValue(MRPGCEntityAttributes.RAGE_MODIFIER )- 100/ 10;
             return (value/ PERCENT_ATTRIBUTE_BASELINE)-1;
         }));
-        BERSERKER_MELEE.addSource(SpellSchool.Trait.CRIT_DAMAGE, new SpellSchool.Source(SpellSchool.Apply.ADD, query -> {
+        RAGE_MELEE.addSource(SpellSchool.Trait.CRIT_DAMAGE, new SpellSchool.Source(SpellSchool.Apply.ADD, query -> {
             var value = SpellPowerMod.attributesConfig.value.base_spell_critical_damage_percentage
                     + query.entity().getAttributeValue(MRPGCEntityAttributes.RAGE_MODIFIER )- 100/ 4;
             return (value/ PERCENT_ATTRIBUTE_BASELINE)-1;
         }));
-        SpellSchools.configureSpellCritDamage(BERSERKER_MELEE);
-        SpellSchools.configureSpellCritChance(BERSERKER_MELEE);
-        SpellSchools.configureSpellHaste(BERSERKER_MELEE);
-        SpellSchools.register(BERSERKER_MELEE);
+        SpellSchools.configureSpellCritDamage(RAGE_MELEE);
+        SpellSchools.configureSpellCritChance(RAGE_MELEE);
+        SpellSchools.configureSpellHaste(RAGE_MELEE);
+        SpellSchools.register(RAGE_MELEE);
     }
 }
