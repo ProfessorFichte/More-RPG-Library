@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "runes:rune_crafting/base/stone"
+    },
+    {
+      "tag": "more_rpg_classes:rune_crafting/reagent/nature_medium"
+    }
+  ],
+  "result": {
+    "count": 4,
+    "id": "more_rpg_classes:nature_stone"
+  }
+}

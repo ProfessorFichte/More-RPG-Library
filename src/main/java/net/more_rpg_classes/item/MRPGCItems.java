@@ -19,6 +19,7 @@ public class MRPGCItems {
     public static final Item AQUA_STONE= registerItem("aqua_stone", new Item(new Item.Settings()));
     public static final Item TERRA_STONE= registerItem("terra_stone", new Item(new Item.Settings()));
     public static final Item STORM_STONE= registerItem("storm_stone", new Item(new Item.Settings()));
+        public static final Item NATURE_STONE= registerItem("nature_stone", new Item(new Item.Settings()));
 
     private static Item registerItem(String name, Item item) {
         return Registry.register(Registries.ITEM, Identifier.of(MOD_ID, name), item);
@@ -36,6 +37,7 @@ public class MRPGCItems {
            entries.add(MRPGCItems.AQUA_STONE);
             entries.add(MRPGCItems.TERRA_STONE);
             entries.add(MRPGCItems.STORM_STONE);
+            entries.add(MRPGCItems.NATURE_STONE);
         });
 
         MRPGCMod.LOGGER.info("Registering Mod Items for " + MOD_ID);
