@@ -11,7 +11,7 @@
           "base": 0.03,
           "per_level_above_first": 0.03
         },
-        "attribute": "spell_power:air",
+        "attribute": "spell_power:earth",
         "id": "more_rpg_classes:stonebloom",
         "operation": "add_multiplied_base"
       },
