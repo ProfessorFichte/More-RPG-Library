@@ -46,6 +46,8 @@
   "advancements.more_rpg_content.root.title": "More RPG Content!",
   "advancements.more_rpg_content.root.description": "Explore the different paths you can choose!",
 
-  "enchantment.more_rpg_classes.elemental" : "Elemental Mastery",
-  "enchantment.more_rpg_classes.elemental.desc" : "Increases all air, earth and water spell damage you deal"
+  "enchantment.more_rpg_classes.typhoon" : "Typhoon",
+  "enchantment.more_rpg_classes.typhoon.desc" : "Increases air and water spell damage you deal.",
+  "enchantment.more_rpg_classes.stonebloom" : "Typhoon",
+  "enchantment.more_rpg_classes.stonebloom.desc" : "Increases air and water spell damage you deal."
 }

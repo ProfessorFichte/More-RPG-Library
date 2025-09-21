@@ -1,7 +1,7 @@
 {
   "anvil_cost": 1,
   "description": {
-    "translate": "enchantment.more_rpg_classes.elemental"
+    "translate": "enchantment.more_rpg_classes.typhoon"
   },
   "effects": {
     "minecraft:attributes": [
@@ -12,17 +12,7 @@
           "per_level_above_first": 0.03
         },
         "attribute": "spell_power:air",
-        "id": "more_rpg_classes:elemental",
-        "operation": "add_multiplied_base"
-      },
-      {
-        "amount": {
-          "type": "minecraft:linear",
-          "base": 0.03,
-          "per_level_above_first": 0.03
-        },
-        "attribute": "spell_power:earth",
-        "id": "more_rpg_classes:elemental",
+        "id": "more_rpg_classes:typhoon",
         "operation": "add_multiplied_base"
       },
       {
@@ -32,7 +22,7 @@
           "per_level_above_first": 0.03
         },
         "attribute": "spell_power:water",
-        "id": "more_rpg_classes:elemental",
+        "id": "more_rpg_classes:typhoon",
         "operation": "add_multiplied_base"
       }
     ]
@@ -50,6 +40,6 @@
   "slots": [
     "armor"
   ],
-  "supported_items": "#more_rpg_classes:enchantable/elemental",
+  "supported_items": "#more_rpg_classes:enchantable/typhoon",
   "weight": 2
 }
