@@ -40,6 +40,21 @@ public class ModSounds {
     public static SoundEvent HOLY_RELEASE = SoundEvent.of(HOLY_RELEASE_ID);
     public static final Identifier FROST_CRACKLE_LONG_ID = Identifier.of(MOD_ID, "frost_crackle_long");
     public static SoundEvent FROST_CRACKLE_LONG = SoundEvent.of(FROST_CRACKLE_LONG_ID);
+    public static final Identifier NATURE_RELEASE_1_ID = Identifier.of(MOD_ID, "nature_release_1");
+    public static SoundEvent NATURE_RELEASE_1 = SoundEvent.of(NATURE_RELEASE_1_ID);
+    public static final Identifier NATURE_RELEASE_2_ID = Identifier.of(MOD_ID, "nature_release_2");
+    public static SoundEvent NATURE_RELEASE_2 = SoundEvent.of(NATURE_RELEASE_2_ID);
+    public static final Identifier NATURE_IMPACT_1_ID = Identifier.of(MOD_ID, "nature_impact_1");
+    public static SoundEvent NATURE_IMPACT_1 = SoundEvent.of(NATURE_IMPACT_1_ID);
+    public static final Identifier NATURE_IMPACT_2_ID = Identifier.of(MOD_ID, "nature_impact_2");
+    public static SoundEvent NATURE_IMPACT_2 = SoundEvent.of(NATURE_IMPACT_2_ID);
+    public static final Identifier NATURE_IMPACT_3_ID = Identifier.of(MOD_ID, "nature_impact_3");
+    public static SoundEvent NATURE_IMPACT_3 = SoundEvent.of(NATURE_IMPACT_3_ID);
+    public static final Identifier NATURE_IMPACT_4_ID = Identifier.of(MOD_ID, "nature_impact_4");
+    public static SoundEvent NATURE_IMPACT_4 = SoundEvent.of(NATURE_IMPACT_4_ID);
+    public static final Identifier NATURE_CAST_1_ID = Identifier.of(MOD_ID, "nature_cast_1");
+    public static SoundEvent NATURE_CAST_1 = SoundEvent.of(NATURE_CAST_1_ID);
+
 
     public static void register() {
         Registry.register(Registries.SOUND_EVENT, ICICLE_CRASH_ID, ICICLE_CRASH_EVENT);
@@ -58,6 +73,13 @@ public class ModSounds {
         Registry.register(Registries.SOUND_EVENT, ARCANE_STRONG_IMPACT_ID, ARCANE_STRONG_IMPACT);
         Registry.register(Registries.SOUND_EVENT, HOLY_RELEASE_ID, HOLY_RELEASE);
         Registry.register(Registries.SOUND_EVENT, FROST_CRACKLE_LONG_ID, FROST_CRACKLE_LONG);
+        Registry.register(Registries.SOUND_EVENT, NATURE_RELEASE_1_ID, NATURE_RELEASE_1);
+        Registry.register(Registries.SOUND_EVENT, NATURE_RELEASE_2_ID, NATURE_RELEASE_2);
+        Registry.register(Registries.SOUND_EVENT, NATURE_IMPACT_1_ID, NATURE_IMPACT_1);
+        Registry.register(Registries.SOUND_EVENT, NATURE_IMPACT_2_ID, NATURE_IMPACT_2);
+        Registry.register(Registries.SOUND_EVENT, NATURE_IMPACT_3_ID, NATURE_IMPACT_3);
+        Registry.register(Registries.SOUND_EVENT, NATURE_IMPACT_4_ID, NATURE_IMPACT_4);
+        Registry.register(Registries.SOUND_EVENT, NATURE_CAST_1_ID, NATURE_CAST_1);
     }
 
 

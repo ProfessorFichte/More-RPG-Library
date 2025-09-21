@@ -83,5 +83,40 @@
     "sounds": [
       "more_rpg_classes:frost_crackle_long"
     ]
+  },
+  "nature_release_1": {
+    "sounds": [
+      "more_rpg_classes:nature_release_1"
+    ]
+  },
+  "nature_release_2": {
+    "sounds": [
+      "more_rpg_classes:nature_release_2"
+    ]
+  },
+  "nature_impact_1": {
+    "sounds": [
+      "more_rpg_classes:nature_impact_1"
+    ]
+  },
+  "nature_impact_2": {
+    "sounds": [
+      "more_rpg_classes:nature_impact_2"
+    ]
+  },
+  "nature_impact_3": {
+    "sounds": [
+      "more_rpg_classes:nature_impact_3"
+    ]
+  },
+  "nature_impact_4": {
+    "sounds": [
+      "more_rpg_classes:nature_impact_4"
+    ]
+  },
+  "nature_cast_1": {
+    "sounds": [
+      "more_rpg_classes:nature_cast_1"
+    ]
   }
 }

@@ -2,6 +2,8 @@
 - Update to Spell Engine 1.8 & Spell Power 1.4
 - Also, Update Tiny Config & Fabric API Version
 - Add Nature Spell Power School and Rune & Leaf Particles (Thanks to Rulft44 for providing the artwork!)
+- Add Sound Effects for Nature Spells
+- Improve Earth Casting Sound Effect
 - Delete Elemental Mastery Enchantment (Spell Power just adds 2 spell schools per enchantment, thats why this was changed)
 - 2 new Enchantments got added: Typhoon (Air & Water) & Stonebloom (Earth & Nature)
 
