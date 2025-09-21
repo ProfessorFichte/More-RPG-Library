@@ -52,6 +52,7 @@ public class MoreRPGClassesClient implements ClientModInitializer {
         ParticleFactoryRegistry.getInstance().register(MoreParticles.SLASH_CLAW, ClawParticle.Factory::new);
         ParticleFactoryRegistry.getInstance().register(MoreParticles.ICE_TRAP, IceTrapParticle.IceTrapParticleFactory::new);
         ParticleFactoryRegistry.getInstance().register(MoreParticles.STONE_TRAP, StoneTrapParticle.StoneTrapParticleFactory::new);
+        ParticleFactoryRegistry.getInstance().register(MoreParticles.LEAF, LeafParticle.Factory::new);
 
         CustomParticleStatusEffect.register(MRPGCEffects.MOLTEN_ARMOR.effect, new MoltenArmorParticles(1));
         CustomParticleStatusEffect.register(MRPGCEffects.BLEEDING.effect, new BleedingParticles(1));
