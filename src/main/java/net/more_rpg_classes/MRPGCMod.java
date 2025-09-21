@@ -15,7 +15,7 @@ import net.more_rpg_classes.item.MRPGCItems;
 import net.more_rpg_classes.sounds.ModSounds;
 import net.more_rpg_classes.util.loot.MRPGCLootTableEntityModifiers;
 import net.more_rpg_classes.util.loot.SpecificSpellScrollPoolLootFunction;
-import net.tinyconfig.ConfigManager;
+import net.tiny_config.ConfigManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

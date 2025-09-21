@@ -1,3 +1,10 @@
+# 2.4.0 - 1.21.1
+- Update to Spell Engine 1.8 & Spell Power 1.4
+- Also, Update Tiny Config & Fabric API Version
+- Add Nature Spell Power School and Rune & Leaf Particles (Thanks to Rulft44 for providing the artwork!)
+- Delete Elemental Mastery Enchantment (Spell Power just adds 2 spell schools per enchantment, thats why this was changed)
+- 2 new Enchantments got added: Typhoon (Air & Water) & Stonebloom (Earth & Nature)
+
 # 2.3.5 - 1.21.1
 - add bleeding immune entity tag
 - remove bleeding testing logger I forgot

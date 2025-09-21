@@ -48,6 +48,6 @@
 
   "enchantment.more_rpg_classes.typhoon" : "Typhoon",
   "enchantment.more_rpg_classes.typhoon.desc" : "Increases air and water spell damage you deal.",
-  "enchantment.more_rpg_classes.stonebloom" : "Typhoon",
-  "enchantment.more_rpg_classes.stonebloom.desc" : "Increases air and water spell damage you deal."
+  "enchantment.more_rpg_classes.stonebloom" : "Stonebloom",
+  "enchantment.more_rpg_classes.stonebloom.desc" : "Increases earth and nature spell damage you deal."
 }
