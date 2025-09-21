@@ -18,6 +18,7 @@ public class MoreSpellSchools {
     public static final SpellSchool EARTH = SpellSchools.register(SpellSchools.createMagic("earth", 0xbd8b00));
     public static final SpellSchool WATER = SpellSchools.register(SpellSchools.createMagic("water", 0x4dd9ff));
     public static final SpellSchool AIR = SpellSchools.register(SpellSchools.createMagic("air", 0xd4e3fe));
+    public static final SpellSchool NATURE = SpellSchools.register(SpellSchools.createMagic("nature", 0x43bf4b));
 
     private static RegistryEntry<EntityAttribute> rangedDamageAttribute() {
         if (FabricLoader.getInstance().isModLoaded("ranged_weapon_api")) {
@@ -48,6 +49,7 @@ public class MoreSpellSchools {
         SpellSchools.register(EARTH);
         SpellSchools.register(WATER);
         SpellSchools.register(AIR);
+        SpellSchools.register(NATURE);
 
         FROST_RANGED.addSource(SpellSchool.Trait.POWER, SpellSchool.Apply.ADD, query -> {
             var second_power = query.entity().getAttributeValue(SpellSchools.FROST.attributeEntry);
