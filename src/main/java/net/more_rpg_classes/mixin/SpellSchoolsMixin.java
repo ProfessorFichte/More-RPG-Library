@@ -14,5 +14,6 @@ public class SpellSchoolsMixin {
         SpellSchools.register(MoreSpellSchools.WATER); // Trigger registration
         SpellSchools.register(MoreSpellSchools.AIR); // Trigger registration
         SpellSchools.register(MoreSpellSchools.EARTH); // Trigger registration
+        SpellSchools.register(MoreSpellSchools.NATURE); // Trigger registration
     }
 }

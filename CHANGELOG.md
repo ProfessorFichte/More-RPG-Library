@@ -1,3 +1,7 @@
+# 2.4.1 - 1.21.1
+- Add Nature Spell School to SpellSchoolMixin registry
+- Forgot some Damage Type Tags regarding the Nature Spell School
+
 # 2.4.0 - 1.21.1
 - Update to Spell Engine 1.8 & Spell Power 1.4
 - Also, Update Tiny Config & Fabric API Version
