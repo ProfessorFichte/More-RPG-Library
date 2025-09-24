@@ -1,34 +1,35 @@
 {
-	"format_version": "1.21.6",
+	"format_version": "1.9.0",
 	"credit": "Made with Blockbench",
 	"textures": {
-		"1": "more_rpg_classes:spell_projectile/icicle_projectile"
+		"0": "more_rpg_classes:spell_projectile/falling_icicle",
+		"particle": "more_rpg_classes:spell_projectile/falling_icicle"
 	},
 	"elements": [
 		{
-			"from": [3, 0, 8],
-			"to": [13, 23, 8.1],
-			"rotation": {"angle": 0, "axis": "y", "origin": [3, 0, 8]},
+			"from": [8, 0, -6],
+			"to": [8.1, 10, 17],
+			"rotation": {"angle": 0, "axis": "x", "origin": [8, 0, -6]},
 			"faces": {
-				"north": {"uv": [5.5, 0, 11.5, 12], "texture": "#1"},
-				"east": {"uv": [0, 15.5, 0.6, 16], "texture": "#1"},
-				"south": {"uv": [5.5, 0, 11.5, 12], "texture": "#1"},
-				"west": {"uv": [0, 15.5, 0.6, 16], "texture": "#1"},
-				"up": {"uv": [0, 15.5, 0.5, 16], "texture": "#1"},
-				"down": {"uv": [0, 15.5, 0.5, 16], "texture": "#1"}
+				"north": {"uv": [0, 15.5, 0.5, 16], "rotation": 270, "texture": "#0"},
+				"east": {"uv": [5.5, 0, 11.5, 12], "rotation": 270, "texture": "#0"},
+				"south": {"uv": [0, 15.5, 0.5, 16], "rotation": 270, "texture": "#0"},
+				"west": {"uv": [5.5, 0, 11.5, 12], "rotation": 90, "texture": "#0"},
+				"up": {"uv": [0, 15.5, 0.6, 16], "rotation": 180, "texture": "#0"},
+				"down": {"uv": [0, 15.5, 0.6, 16], "texture": "#0"}
 			}
 		},
 		{
-			"from": [8, 0, 3],
-			"to": [8.1, 23, 13],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 13]},
+			"from": [3, 4.9, -6],
+			"to": [13, 5, 17],
+			"rotation": {"angle": 0, "axis": "x", "origin": [3, 5, -6]},
 			"faces": {
-				"north": {"uv": [0, 15.5, 0.6, 16], "texture": "#1"},
-				"east": {"uv": [5.5, 0, 11.5, 12], "texture": "#1"},
-				"south": {"uv": [0, 15.5, 0.6, 16], "texture": "#1"},
-				"west": {"uv": [5.5, 0, 11.5, 12], "texture": "#1"},
-				"up": {"uv": [0, 15.5, 0.5, 16], "rotation": 270, "texture": "#1"},
-				"down": {"uv": [0, 15.5, 0.5, 16], "rotation": 90, "texture": "#1"}
+				"north": {"uv": [0, 15.5, 0.5, 16], "rotation": 180, "texture": "#0"},
+				"east": {"uv": [0, 15.5, 0.6, 16], "rotation": 270, "texture": "#0"},
+				"south": {"uv": [0, 15.5, 0.5, 16], "texture": "#0"},
+				"west": {"uv": [0, 15.5, 0.6, 16], "rotation": 90, "texture": "#0"},
+				"up": {"uv": [5.5, 0, 11.5, 12], "rotation": 180, "texture": "#0"},
+				"down": {"uv": [5.5, 0, 11.5, 12], "texture": "#0"}
 			}
 		}
 	]

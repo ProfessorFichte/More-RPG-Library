@@ -1,3 +1,6 @@
+# 2.4.2 - 1.21.1
+- fix falling icicle model
+
 # 2.4.1 - 1.21.1
 - Add Nature Spell School to SpellSchoolMixin registry
 - Forgot some Damage Type Tags regarding the Nature Spell School
