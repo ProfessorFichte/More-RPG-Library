@@ -12,18 +12,20 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.tag.DamageTypeTags;
 import net.more_rpg_classes.effect.MRPGCEffects;
 import net.more_rpg_classes.entity.attribute.MRPGCEntityAttributes;
-import net.more_rpg_classes.util.CustomMethods;
 import net.spell_power.api.SpellPowerTags;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.registry.entry.RegistryEntry;
+import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
+    @Shadow public abstract boolean hasStatusEffect(RegistryEntry<StatusEffect> effect);
 
     @Inject(method = "createLivingAttributes", at = @At("RETURN"))
     private static void mrpgc_lib$createLivingAttributes(CallbackInfoReturnable<DefaultAttributeContainer.Builder> cir) {
@@ -90,6 +92,17 @@ public abstract class LivingEntityMixin {
             }
         }
         return 0;
+    }
+
+    @Inject(method = "baseTick", at = @At("TAIL"))
+    public void baseTickPowderSnowFrostedSolidEffect(CallbackInfo ci) {
+        var entity = (LivingEntity) ((Object)this);
+        entity.inPowderSnow = entity.inPowderSnow || hasStatusEffect(MRPGCEffects.FROSTED.registryEntry);
+    }
+    @Inject(method = "baseTick", at = @At("TAIL"))
+    public void baseTickPowderSnowFrozenSolidEffect(CallbackInfo ci) {
+        var entity = (LivingEntity) ((Object)this);
+        entity.inPowderSnow = entity.inPowderSnow || hasStatusEffect(MRPGCEffects.FROZEN_SOLID.registryEntry);
     }
     
 }

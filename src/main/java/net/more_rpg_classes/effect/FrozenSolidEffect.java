@@ -4,10 +4,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.registry.tag.EntityTypeTags;
-import net.more_rpg_classes.util.CustomMethods;
 import net.spell_power.api.statuseffects.SpellVulnerabilityStatusEffect;
-
-import static net.more_rpg_classes.util.CustomMethods.stackFreezeStacks;
 
 public class FrozenSolidEffect extends SpellVulnerabilityStatusEffect {
 
@@ -18,9 +15,7 @@ public class FrozenSolidEffect extends SpellVulnerabilityStatusEffect {
     public void onApplied(LivingEntity livingEntity,  int amplifier) {
         super.onApplied(livingEntity, amplifier);
         EntityType<?> type = livingEntity.getType();
-        if(!type.isIn(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES)) {
-            stackFreezeStacks(livingEntity,10);
-        } else{
+        if(type.isIn(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES)) {
             livingEntity.removeStatusEffect(MRPGCEffects.FROZEN_SOLID.registryEntry);
         }
 
@@ -28,10 +23,6 @@ public class FrozenSolidEffect extends SpellVulnerabilityStatusEffect {
 
     @Override
     public boolean applyUpdateEffect(LivingEntity livingEntity, int pAmplifier) {
-        EntityType<?> type = livingEntity.getType();
-        if(!type.isIn(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES)) {
-            CustomMethods.freezeDamageTicks(livingEntity);
-        }
         if(livingEntity.isOnFire() || livingEntity.isInLava()){
            return livingEntity.removeStatusEffect(MRPGCEffects.FROZEN_SOLID.registryEntry);
         }
