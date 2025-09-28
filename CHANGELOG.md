@@ -1,3 +1,8 @@
+# 2.4.3 - 1.21.1
+- frozen Ticks are now applied more smoothly
+- Fix Bleeding Effect tick infinitely
+- Add a Cooldown to SpellVampire and Lifesteal Effect (Ticks configurable in the TweaksConfig)
+
 # 2.4.2 - 1.21.1
 - fix falling icicle model
 

@@ -21,11 +21,12 @@ A library add-on for the [Spell Engine Mod](https://github.com/ZsoltMolnarrr/Spe
 - **🌪️Air Magic**
 - **🪨Earth Magic**
 - **🌊Water Magic**
+- **🍃Nature Magic**
 **🏹Ranged Spell Schools**
 - **🔥Fire Ranged**
 - **❄️Frost Ranged**
 **🗡️Melee Spell Schools**
-- **🪓Berserker Melee**
+- **🪓Rage Melee**
 
 ### 3. New Entity Attributes ⭐
 - To Do
