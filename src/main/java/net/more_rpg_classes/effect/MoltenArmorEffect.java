@@ -47,11 +47,10 @@ public class MoltenArmorEffect extends StatusEffect {
 
     @Override
     public boolean canApplyUpdateEffect(int duration, int amplifier) {
-        int i = 25 >> amplifier;
-        if (i > 0) {
-            return duration % i == 0;
-        } else {
-            return true;
+        int interval = 40 >> amplifier;
+        if (interval < 20) {
+            interval = 20;
         }
+        return duration % interval == 0;
     }
 }
