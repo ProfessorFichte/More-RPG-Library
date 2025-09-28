@@ -4,38 +4,23 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
+import net.more_rpg_classes.MRPGCMod;
 import net.more_rpg_classes.custom.MoreSpellSchools;
 import net.more_rpg_classes.entity.attribute.MRPGCEntityAttributes;
 import net.spell_power.api.SpellDamageSource;
-import net.spell_power.api.SpellSchool;
 import net.spell_power.api.SpellSchools;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin {
-
-    @Shadow @Final private static Logger LOGGER;
-
-    @Inject(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;damage(Lnet/minecraft/entity/damage/DamageSource;F)Z", shift = At.Shift.AFTER))
-    private void mrpgc$applyLifesteal(Entity target, CallbackInfo ci) {
-        PlayerEntity player = (PlayerEntity) (Object) this;
-        if (!(target instanceof LivingEntity)) return;
-        float damage = (float) player.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
-        EntityAttributeInstance lifesteal = player.getAttributeInstance(MRPGCEntityAttributes.LIFESTEAL_MODIFIER);
-        if (lifesteal != null && lifesteal.getValue() != 100.0) {
-            float healAmount = damage * ((float) (lifesteal.getValue() - 100) / 100f);
-            player.heal(healAmount);
-        }
-    }
-
 
     @Inject(method = "attack", at = @At("TAIL"))
     private void mrpgc$boostRageDamageOnAttack(Entity target, CallbackInfo ci) {

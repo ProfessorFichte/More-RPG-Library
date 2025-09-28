@@ -10,6 +10,7 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.tag.DamageTypeTags;
+import net.more_rpg_classes.MRPGCMod;
 import net.more_rpg_classes.effect.MRPGCEffects;
 import net.more_rpg_classes.entity.attribute.MRPGCEntityAttributes;
 import net.spell_power.api.SpellPowerTags;
@@ -26,7 +27,8 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
     @Shadow public abstract boolean hasStatusEffect(RegistryEntry<StatusEffect> effect);
-
+    @Unique long lastSpellvampireTick = 0;
+    @Unique private long lastLifestealTick = 0;
     @Inject(method = "createLivingAttributes", at = @At("RETURN"))
     private static void mrpgc_lib$createLivingAttributes(CallbackInfoReturnable<DefaultAttributeContainer.Builder> cir) {
         cir.getReturnValue()
@@ -64,20 +66,54 @@ public abstract class LivingEntityMixin {
 
     @Inject(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V"))
     private void spellVampire$damage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
-        if(source.isIn(SpellPowerTags.DamageTypes.ALL)) {
+        if (source.isIn(SpellPowerTags.DamageTypes.ALL)) {
             Entity entity = source.getAttacker();
-            if(entity instanceof PlayerEntity playerEntity){
-                float actual_health = playerEntity.getHealth();
-                float max_health = (float) playerEntity.getAttributeValue(EntityAttributes.GENERIC_MAX_HEALTH);
+            if (entity instanceof PlayerEntity playerEntity) {
+                long currentTick = playerEntity.getWorld().getTime();
+                if (currentTick - lastSpellvampireTick < MRPGCMod.tweaksConfig.value.spellVampireCooldownTicks) {
+                    return;
+                }
+
+                float actualHealth = playerEntity.getHealth();
+                float maxHealth = (float) playerEntity.getAttributeValue(EntityAttributes.GENERIC_MAX_HEALTH);
                 EntityAttributeInstance spellVampire =
                         playerEntity.getAttributeInstance(MRPGCEntityAttributes.SPELL_VAMPIRE);
-                assert spellVampire != null;
-                int value1 = (int) spellVampire.getValue();
-                if (value1 != 100 && actual_health != max_health ) {
-                    value1 = value1 - 100;
-                    float multiplier = (float) value1 / 100;
-                    float heal = (amount * multiplier );
-                    playerEntity.heal(heal);
+                if (spellVampire != null) {
+                    int value = (int) spellVampire.getValue();
+                    if (value != 100 && actualHealth != maxHealth) {
+                        value = value - 100;
+                        float multiplier = (float) value / 100f;
+                        float heal = amount * multiplier;
+                        playerEntity.heal(heal);
+                        lastSpellvampireTick = currentTick;
+                    }
+                }
+            }
+        }
+    }
+    @Inject(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V"))
+    private void lifesteal$damage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+        if (source.isIn(DamageTypeTags.IS_PLAYER_ATTACK)) {
+            Entity entity = source.getAttacker();
+            if (entity instanceof PlayerEntity playerEntity) {
+                long currentTick = playerEntity.getWorld().getTime();
+                if (currentTick - lastLifestealTick < MRPGCMod.tweaksConfig.value.lifestealCooldownTicks) {
+                    return;
+                }
+
+                float actualHealth = playerEntity.getHealth();
+                float maxHealth = (float) playerEntity.getAttributeValue(EntityAttributes.GENERIC_MAX_HEALTH);
+                EntityAttributeInstance lifesteal =
+                        playerEntity.getAttributeInstance(MRPGCEntityAttributes.LIFESTEAL_MODIFIER);
+                if (lifesteal != null) {
+                    int value = (int) lifesteal.getValue();
+                    if (value != 100 && actualHealth != maxHealth) {
+                        value = value - 100;
+                        float multiplier = (float) value / 100f;
+                        float heal = amount * multiplier;
+                        playerEntity.heal(heal);
+                        lastLifestealTick = currentTick;
+                    }
                 }
             }
         }
