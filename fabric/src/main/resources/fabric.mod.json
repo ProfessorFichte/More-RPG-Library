@@ -1,0 +1,41 @@
+{
+	"schemaVersion": 1,
+	"id": "more_rpg_classes",
+	"version": "${version}",
+	"name": "More RPG Classes",
+	"description": "Explore the world with new weapons and spells!",
+	"authors": ["Fichte"
+	],
+	"contact": {
+		"sources": "https://github.com/ProfessorFichte/More-RPG-Classes"
+	},
+	"license": "MIT",
+	"icon": "icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"client": [
+			"com.mrpg_lib.fabric.client.FabricClient"
+		],
+		"main": [
+          "com.mrpg_lib.fabric.FabricMod"
+		]
+	},
+	"mixins": [
+		"more-rpg-classes.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.14.21",
+		"fabric-api": "*",
+		"minecraft": "~1.21",
+		"java": ">=17",
+		"spell_engine": ">=1.5.0",
+		"spell_power": ">=1.2.0"
+	},
+	"custom": {
+		"modmenu": {
+			"links": {
+				"modmenu.discord": "https://discord.gg/AShKd5XrTu"
+			}
+		}
+	}
+}

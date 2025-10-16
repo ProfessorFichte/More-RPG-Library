@@ -1,3 +1,7 @@
+# 2.5.0 - 1.21.1
+- Move to Architectury multiloader workspace
+- NeoForge Beta!
+
 # 2.4.3 - 1.21.1
 - frozen Ticks are now applied more smoothly
 - Fix Bleeding Effect tick infinitely
