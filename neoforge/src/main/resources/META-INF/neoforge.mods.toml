@@ -1,15 +1,15 @@
 modLoader = "javafml"
 loaderVersion = "[4,)"
 #issueTrackerURL = ""
-license = "Insert License Here"
+license = "MIT"
 
 [[mods]]
 modId = "more_rpg_classes"
 version = "${version}"
 displayName = "More RPG Library"
-authors = "Me!"
+authors = "Fichte"
 description = '''
-This is an example description! Tell everyone what your mod is about!
+Library with status effects, entity attributes & Spell engine API additions.
 '''
 #logoFile = ""
 
@@ -26,6 +26,14 @@ type = "required"
 versionRange = "[1.21.1,)"
 ordering = "NONE"
 side = "BOTH"
+
+[[dependencies.more_rpg_classes]]
+modId = "spell_engine"
+type = "required"
+versionRange = "[${spell_engine_version},)"
+ordering = "NONE"
+side = "BOTH"
+
 
 [[mixins]]
 config = "more-rpg-classes.mixins.json"

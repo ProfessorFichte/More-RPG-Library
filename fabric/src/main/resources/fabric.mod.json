@@ -2,13 +2,16 @@
 	"schemaVersion": 1,
 	"id": "more_rpg_classes",
 	"version": "${version}",
-	"name": "More RPG Classes",
-	"description": "Explore the world with new weapons and spells!",
+	"name": "More RPG Library",
+	"description": "Library with status effects, entity attributes & Spell engine API additions.",
 	"authors": ["Fichte"
 	],
 	"contact": {
 		"sources": "https://github.com/ProfessorFichte/More-RPG-Classes"
 	},
+	"contributors": [
+		"Rulft44 (Leaf particle & Nature Rune)"
+	],
 	"license": "MIT",
 	"icon": "icon.png",
 	"environment": "*",
