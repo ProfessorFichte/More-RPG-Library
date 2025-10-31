@@ -6,8 +6,10 @@ import net.minecraft.util.Identifier;
 import net.more_rpg_classes.client.particle.MoreParticles;
 import net.more_rpg_classes.config.EffectsConfig;
 import net.more_rpg_classes.config.TweaksConfig;
+import net.more_rpg_classes.config.WeaknessConfig;
 import net.more_rpg_classes.custom.CustomSpellEntityPredicate;
 import net.more_rpg_classes.custom.CustomSpellImpacts;
+import net.more_rpg_classes.custom.MoreSpellSchoolWeakness;
 import net.more_rpg_classes.custom.MoreSpellSchools;
 import net.more_rpg_classes.effect.MRPGCEffects;
 import net.more_rpg_classes.item.MRPGCItems;
@@ -35,11 +37,19 @@ public class MRPGCMod {
 			.setDirectory(MOD_ID)
 			.sanitize(true)
 			.build();
+	public static ConfigManager<WeaknessConfig> weaknessConfig = new ConfigManager<>
+			("elemental_weaknesses", MoreSpellSchoolWeakness.createDefault())
+			.builder()
+			.setDirectory(MOD_ID)
+			.sanitize(true)
+			.validate(WeaknessConfig::isValid)
+			.build();
 
 
 	public static void init() {
 			effectsConfig.refresh();
 			tweaksConfig.refresh();
+			weaknessConfig.refresh();
 			CustomSpellImpacts.registerCustomImpacts();
 			MRPGCLootTableEntityModifiers.modifyLootEntityTables();
 			MoreSpellSchools.initialize();

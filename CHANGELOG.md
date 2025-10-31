@@ -1,3 +1,8 @@
+# 2.5.1 - 1.21.1
+- Fix fabric.mod.json and neoforge.mods.roml
+- Fix Particles in NeoForge Client
+- add global elemental weaknesses for MoreSpellSchools
+
 # 2.5.0 - 1.21.1
 - Move to Architectury multiloader workspace
 - NeoForge Beta!
