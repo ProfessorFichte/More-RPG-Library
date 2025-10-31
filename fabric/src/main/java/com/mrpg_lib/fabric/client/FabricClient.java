@@ -7,5 +7,6 @@ public final class FabricClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         MoreRPGClassesClient.init();
+        MoreRPGClassesClient.registerParticleAppearances();
     }
 }

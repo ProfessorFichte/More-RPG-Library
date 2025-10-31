@@ -55,6 +55,34 @@ public class MoreRPGClassesClient{
         CustomParticleStatusEffect.register(MRPGCEffects.FROSTED.effect, new FrostedParticles(10));
         CustomModelStatusEffect.register(MRPGCEffects.FROZEN_SOLID.effect, new FrozenSolidRenderer());
         CustomParticleStatusEffect.register(MRPGCEffects.SOAKED.effect, new SoakedParticles(2));
+    }
+    public static void registerParticleAppearances() {
+        ParticleFactoryRegistry registry = ParticleFactoryRegistry.getInstance();
 
+        registry.register(MoreParticles.BLOOD_DROP, RainSplashParticle.Factory::new);
+        registry.register(MoreParticles.MOLTEN_ARMOR, RainSplashParticle.Factory::new);
+        registry.register(MoreParticles.BUBBLE, FlameParticle.Factory::new);
+        registry.register(MoreParticles.BUBBLE_POP, FlameParticle.Factory::new);
+        registry.register(MoreParticles.WATER_MIST, ExplosionSmokeParticle.Factory::new);
+        registry.register(MoreParticles.SPLASH, FlameParticle.Factory::new);
+        registry.register(MoreParticles.BIG_SPLASH, FlameParticle.Factory::new);
+        registry.register(MoreParticles.WAVE, FishingParticle.Factory::new);
+        registry.register(MoreParticles.DRIPPING_WATER, RainSplashParticle.Factory::new);
+        registry.register(MoreParticles.HOT_SPLASH, FlameParticle.Factory::new);
+        registry.register(MoreParticles.WATER_WHIP, VerticalSlashParticle.DefaultFactory::new);
+        registry.register(MoreParticles.WATER_CIRCLE, CircleGroundParticle.DefaultFactory::new);
+        registry.register(MoreParticles.WATER_HEAL, AbstractParticle.WaterHealingFactory::new);
+        registry.register(MoreParticles.WATER_SPLASH, SpellExplosionParticle.Factory::new);
+        registry.register(MoreParticles.STONE_EXPLOSION, CustomSpellExplosionParticle.Factory::new);
+        registry.register(MoreParticles.STONE_PARTICLE, SpellFlameParticle.HolyFactory::new);
+        registry.register(MoreParticles.WIND_VACUUM, CustomSpellExplosionParticle.Factory::new);
+        registry.register(MoreParticles.SMALL_GUST,  FlameParticle.Factory::new);
+        registry.register(MoreParticles.DRAGON_CLAW, ClawParticle.Factory::new);
+        registry.register(MoreParticles.FREEZING_SNOWFLAKE, SnowflakeParticle.Factory::new);
+        registry.register(MoreParticles.WATER_DROP, RainSplashParticle.Factory::new);
+        registry.register(MoreParticles.SLASH_CLAW, ClawParticle.Factory::new);
+        registry.register(MoreParticles.ICE_TRAP, IceTrapParticle.IceTrapParticleFactory::new);
+        registry.register(MoreParticles.STONE_TRAP, StoneTrapParticle.StoneTrapParticleFactory::new);
+        registry.register(MoreParticles.LEAF, LeafParticle.Factory::new);
     }
 }
