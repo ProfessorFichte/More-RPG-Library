@@ -1,5 +1,6 @@
 package net.more_rpg_classes.custom;
 
+import net.critical_strike.api.CriticalStrikeAttributes;
 import net.fabric_extras.ranged_weapon.api.EntityAttributes_RangedWeapon;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.attribute.EntityAttribute;
@@ -60,9 +61,6 @@ public class MoreSpellSchools {
             return query.entity().getAttributeValue(rangedDamageAttribute()) + second_power;
         });
 
-        SpellSchools.register(FROST_RANGED);
-        SpellSchools.register(FIRE_RANGED);
-
         if (FabricLoader.getInstance().isModLoaded("ranged_weapon_api")) {
             FIRE_RANGED.addSource(SpellSchool.Trait.HASTE, SpellSchool.Apply.ADD, query -> {
                 var haste = query.entity().getAttributeValue(EntityAttributes_RangedWeapon.HASTE.entry);
@@ -78,24 +76,46 @@ public class MoreSpellSchools {
             SpellSchools.configureSpellHaste(FIRE_RANGED);
         }
 
-
         RAGE_MELEE.addSource(SpellSchool.Trait.POWER, SpellSchool.Apply.ADD, query -> {
             return query.entity().getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE) +
                     ((query.entity().getAttributeValue(MRPGCEntityAttributes.RAGE_MODIFIER)-100) / 50);
         });
-        RAGE_MELEE.addSource(SpellSchool.Trait.CRIT_CHANCE, new SpellSchool.Source(SpellSchool.Apply.ADD, query ->  {
-            var value = SpellPowerMod.attributesConfig.value.base_spell_critical_chance_percentage
-                    + query.entity().getAttributeValue(MRPGCEntityAttributes.RAGE_MODIFIER )- 100/ 10;
-            return (value/ PERCENT_ATTRIBUTE_BASELINE)-1;
-        }));
-        RAGE_MELEE.addSource(SpellSchool.Trait.CRIT_DAMAGE, new SpellSchool.Source(SpellSchool.Apply.ADD, query -> {
-            var value = SpellPowerMod.attributesConfig.value.base_spell_critical_damage_percentage
-                    + query.entity().getAttributeValue(MRPGCEntityAttributes.RAGE_MODIFIER )- 100/ 4;
-            return (value/ PERCENT_ATTRIBUTE_BASELINE)-1;
-        }));
-        SpellSchools.configureSpellCritDamage(RAGE_MELEE);
-        SpellSchools.configureSpellCritChance(RAGE_MELEE);
         SpellSchools.configureSpellHaste(RAGE_MELEE);
+        if (FabricLoader.getInstance().isModLoaded("critical_strike")) {
+            FROST_RANGED.addSource(SpellSchool.Trait.CRIT_CHANCE, SpellSchool.Apply.ADD, query ->  {
+                var value = query.entity().getAttributeValue(CriticalStrikeAttributes.CHANCE.attributeEntry);
+                return (double) CriticalStrikeAttributes.CHANCE.asChance(value); // 0.2
+            });
+            FROST_RANGED.addSource(SpellSchool.Trait.CRIT_DAMAGE, SpellSchool.Apply.ADD, query -> {
+                var value = query.entity().getAttributeValue(CriticalStrikeAttributes.DAMAGE.attributeEntry);
+                return CriticalStrikeAttributes.DAMAGE.asMultiplier(value) - 1;
+            });
+            FIRE_RANGED.addSource(SpellSchool.Trait.CRIT_CHANCE, SpellSchool.Apply.ADD, query ->  {
+                var value = query.entity().getAttributeValue(CriticalStrikeAttributes.CHANCE.attributeEntry);
+                return (double) CriticalStrikeAttributes.CHANCE.asChance(value); // 0.2
+            });
+            FIRE_RANGED.addSource(SpellSchool.Trait.CRIT_DAMAGE, SpellSchool.Apply.ADD, query -> {
+                var value = query.entity().getAttributeValue(CriticalStrikeAttributes.DAMAGE.attributeEntry);
+                return CriticalStrikeAttributes.DAMAGE.asMultiplier(value) - 1;
+            });
+            RAGE_MELEE.addSource(SpellSchool.Trait.CRIT_CHANCE, SpellSchool.Apply.ADD, query ->  {
+                var value = query.entity().getAttributeValue(CriticalStrikeAttributes.CHANCE.attributeEntry);
+                return (double) CriticalStrikeAttributes.CHANCE.asChance(value); // 0.2
+            });
+            RAGE_MELEE.addSource(SpellSchool.Trait.CRIT_DAMAGE, SpellSchool.Apply.ADD, query -> {
+                var value = query.entity().getAttributeValue(CriticalStrikeAttributes.DAMAGE.attributeEntry);
+                return CriticalStrikeAttributes.DAMAGE.asMultiplier(value) - 1;
+            });
+            SpellSchools.configureSpellCritDamage(FROST_RANGED);
+            SpellSchools.configureSpellCritChance(FROST_RANGED);
+            SpellSchools.configureSpellCritDamage(FIRE_RANGED);
+            SpellSchools.configureSpellCritChance(FIRE_RANGED);
+            SpellSchools.configureSpellCritDamage(RAGE_MELEE);
+            SpellSchools.configureSpellCritChance(RAGE_MELEE);
+        }
+        SpellSchools.register(FROST_RANGED);
+        SpellSchools.register(FIRE_RANGED);
         SpellSchools.register(RAGE_MELEE);
+
     }
 }
