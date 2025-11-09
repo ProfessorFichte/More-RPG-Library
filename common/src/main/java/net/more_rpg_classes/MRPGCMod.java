@@ -1,10 +1,13 @@
 package net.more_rpg_classes;
 
+import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
-import net.more_rpg_classes.client.particle.MoreParticles;
+import net.more_rpg_classes.compat.armory_rpgs.SmithingIngredients;
 import net.more_rpg_classes.config.EffectsConfig;
+import net.more_rpg_classes.config.LootConfig;
 import net.more_rpg_classes.config.TweaksConfig;
 import net.more_rpg_classes.config.WeaknessConfig;
 import net.more_rpg_classes.custom.CustomSpellEntityPredicate;
@@ -14,7 +17,7 @@ import net.more_rpg_classes.custom.MoreSpellSchools;
 import net.more_rpg_classes.effect.MRPGCEffects;
 import net.more_rpg_classes.item.MRPGCItems;
 import net.more_rpg_classes.sounds.ModSounds;
-import net.more_rpg_classes.util.loot.MRPGCLootTableEntityModifiers;
+import net.more_rpg_classes.util.loot.LootInjector;
 import net.more_rpg_classes.util.loot.SpecificSpellScrollPoolLootFunction;
 import net.tiny_config.ConfigManager;
 import org.slf4j.Logger;
@@ -44,14 +47,23 @@ public class MRPGCMod {
 			.sanitize(true)
 			.validate(WeaknessConfig::isValid)
 			.build();
+	public static final ConfigManager<LootConfig> lootConfig = new ConfigManager<>
+			("loot", LootConfig.example())
+			.builder()
+			.setDirectory(MOD_ID)
+			.sanitize(true)
+			.build();
 
 
 	public static void init() {
 			effectsConfig.refresh();
 			tweaksConfig.refresh();
 			weaknessConfig.refresh();
+			lootConfig.refresh();
 			CustomSpellImpacts.registerCustomImpacts();
-			MRPGCLootTableEntityModifiers.modifyLootEntityTables();
+			LootTableEvents.MODIFY.register((key, tableBuilder, source, registries) -> {
+			LootInjector.configure(registries, key.getValue(), tableBuilder);
+			});
 			MoreSpellSchools.initialize();
 			CustomSpellImpacts.registerCustomImpacts();
 			CustomSpellEntityPredicate.registerCustomPredicates();
@@ -66,6 +78,9 @@ public class MRPGCMod {
 	}
 	public static void registerItems() {
 		MRPGCItems.registerModItems();
+		if(FabricLoader.getInstance().isDevelopmentEnvironment() ||FabricLoader.getInstance().isModLoaded("armory_rpgs")){
+			SmithingIngredients.register();
+		}
 	}
 	public static void registerEffects() {
 		MRPGCEffects.register();

@@ -1,0 +1,20 @@
+{
+  "values": [
+    {
+      "id": "more_rpg_classes:ascetic_upgrade_crystal",
+      "required": false
+    },
+    {
+      "id": "more_rpg_classes:warden_upgrade_crystal",
+      "required": false
+    },
+    {
+      "id": "more_rpg_classes:general_upgrade_crystal",
+      "required": false
+    },
+    {
+      "id": "more_rpg_classes:ravager_upgrade_crystal",
+      "required": false
+    }
+  ]
+}

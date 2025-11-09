@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "more_rpg_classes:item/aqua_stone"
+    "layer0": "more_rpg_classes:item/ascetic_upgrade_crystal"
   }
 }

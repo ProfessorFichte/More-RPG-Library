@@ -21,6 +21,9 @@
 		],
 		"main": [
           "com.mrpg_lib.fabric.FabricMod"
+		],
+		"fabric-datagen": [
+			"net.more_rpg_classes.datagen.MrpgDatagen"
 		]
 	},
 	"mixins": [

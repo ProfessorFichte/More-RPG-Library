@@ -1,3 +1,7 @@
+
+- Added compatibility for Critical Strike mod for Rage Melee, Fire- and FrostRanged SpellSchool
+
+
 # 2.5.1 - 1.21.1
 - Fix fabric.mod.json and neoforge.mods.roml
 - Fix Particles in NeoForge Client
