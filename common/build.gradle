@@ -62,7 +62,6 @@ dependencies {
     /// Compat
     modImplementation("maven.modrinth:ranged-weapon-api:${project.ranged_weapon_api_version}-${platform}")
     modCompileOnly("maven.modrinth:critical-strike:${project.critical_strike_version}-${platform}")
-    modCompileOnly("maven.modrinth:armory-rpg-series:${project.armory_version}-${platform}")
 
     // NeoForge specific
     modCompileOnly "io.wispforest:owo-lib:${project.owo_version}" // Accessories needs this

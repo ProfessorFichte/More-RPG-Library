@@ -124,7 +124,7 @@ public class SmithingIngredients {
         for (var entry : ENTRIES) {
             Registry.register(Registries.ITEM, entry.id(), entry.item().get());
         }
-        ItemGroupEvents.modifyEntriesEvent(Group.KEY).register((content) -> {
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.COMBAT).register((content) -> {
             for (var entry : ENTRIES) {
                 content.add(entry.item().get());
             }

@@ -1,5 +1,10 @@
+# 2.5.3 - 1.21.1
+- fix crash in dev environment
 
+# 2.5.2 - 1.21.1
 - Added compatibility for Critical Strike mod for Rage Melee, Fire- and FrostRanged SpellSchool
+- Change Loot Injection
+- Add Armory Upgrade Crystal Compat for MRPG Classes
 
 
 # 2.5.1 - 1.21.1
