@@ -1,3 +1,7 @@
+# 2.5.4 - 1.21.1
+- Activate Elemental Wizards Armory Upgrade Gems
+- Fix Damage Reflect Mixin, casting Mobs to PlayerEntites
+
 # 2.5.3 - 1.21.1
 - fix crash in dev environment
 
