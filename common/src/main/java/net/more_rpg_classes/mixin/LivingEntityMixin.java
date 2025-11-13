@@ -11,8 +11,10 @@ import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.tag.DamageTypeTags;
 import net.more_rpg_classes.MRPGCMod;
+import net.more_rpg_classes.custom.MoreSpellSchools;
 import net.more_rpg_classes.effect.MRPGCEffects;
 import net.more_rpg_classes.entity.attribute.MRPGCEntityAttributes;
+import net.spell_power.api.SpellDamageSource;
 import net.spell_power.api.SpellPowerTags;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -23,6 +25,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.registry.entry.RegistryEntry;
 import org.spongepowered.asm.mixin.Shadow;
+
+import static net.more_rpg_classes.MRPGCMod.MOD_ID;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
@@ -48,21 +52,26 @@ public abstract class LivingEntityMixin {
 
     @Inject(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V"))
     private void damageReflect$damage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
-        if(!DamageTypes.THORNS.equals(source.getType())
-                || !source.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
-            EntityAttributeInstance dmgReflect = ((LivingEntity) (Object) this)
-                    .getAttributeInstance(MRPGCEntityAttributes.DAMAGE_REFLECT_MODIFIER);
-            int value1 = (int) dmgReflect.getValue();
-            float reflectDamage = 0;
-            if (value1 != 100) {
-                value1 = value1 - 100;
-                reflectDamage += reflectMethod(value1, source, amount);
-            }
-            if (reflectDamage > 0) {
-                source.getAttacker().damage(source.getAttacker().getDamageSources().thorns((PlayerEntity) (Object) this), reflectDamage);
+        if(!DamageTypes.THORNS.equals(source.getType()) && !source.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+            if(source.isDirect()){
+                LivingEntity attackedEntity = ((LivingEntity) (Object) this);
+                Entity attacker = source.getAttacker();
+                EntityAttributeInstance dmgReflect =
+                        attackedEntity.getAttributeInstance(MRPGCEntityAttributes.DAMAGE_REFLECT_MODIFIER);
+                int value1 = (int) dmgReflect.getValue();
+                float reflectDamage = 0;
+                if (value1 != 100 && attacker instanceof LivingEntity livingAttacker && !attacker.getWorld().isClient) {
+                    float reflectMultiplier = (float) (value1 - 100) /100;
+                    reflectDamage = amount * reflectMultiplier;
+                    if(reflectDamage != 0){
+                        livingAttacker.timeUntilRegen = 0;
+                        livingAttacker.damage(source.getAttacker().getDamageSources().thorns(livingAttacker), reflectDamage);
+                    }
+                }
             }
         }
     }
+
 
     @Inject(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V"))
     private void spellVampire$damage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
@@ -117,17 +126,6 @@ public abstract class LivingEntityMixin {
                 }
             }
         }
-    }
-
-    @Unique
-    private float reflectMethod(int reflectamount, DamageSource source, float damage) {
-        if (reflectamount != 0) {
-            Entity attacker = source.getAttacker();
-            if (attacker instanceof LivingEntity && !attacker.getWorld().isClient) {
-                return damage * ((float) reflectamount / 100);
-            }
-        }
-        return 0;
     }
 
     @Inject(method = "baseTick", at = @At("TAIL"))
