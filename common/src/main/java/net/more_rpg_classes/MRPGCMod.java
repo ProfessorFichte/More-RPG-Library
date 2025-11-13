@@ -5,6 +5,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
+import net.more_rpg_classes.compat.CriticalStrikeCompat;
 import net.more_rpg_classes.compat.armory_rpgs.SmithingIngredients;
 import net.more_rpg_classes.config.EffectsConfig;
 import net.more_rpg_classes.config.LootConfig;
@@ -67,6 +68,7 @@ public class MRPGCMod {
 			MoreSpellSchools.initialize();
 			CustomSpellImpacts.registerCustomImpacts();
 			CustomSpellEntityPredicate.registerCustomPredicates();
+			CriticalStrikeCompat.init();
 	}
 	public static void registerLootFunction() {
 		Registry.register(Registries.LOOT_FUNCTION_TYPE,
