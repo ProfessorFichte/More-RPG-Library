@@ -1,7 +1,6 @@
 package net.more_rpg_classes.compat.armory_rpgs;
 
 import com.google.common.base.Suppliers;
-import net.armory_rpgs.item.Group;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.item.Item;
@@ -99,22 +98,22 @@ public class SmithingIngredients {
     public static final boolean berserkerLoaded = FabricLoader.getInstance().isModLoaded("berserker_rpg");
     public static final boolean forcemasterLoaded = FabricLoader.getInstance().isModLoaded("forcemaster_rpg");
     public static void register() {
-        if (devEnvo || forcemasterLoaded /*||elementalWizardsLoaded*/) {
+        if (devEnvo || forcemasterLoaded ||elementalWizardsLoaded) {
             ASCETIC = add(Entry.of("ascetic", List.of(FightClass.AIR_WIZARD, FightClass.FORCEMASTER),
                     new Translations("Ascetic's Lost Crystal")));
         }
-        /*
         if (devEnvo ||  elementalWizardsLoaded) {
             WARDEN = add(Entry.of("warden", List.of(FightClass.EARTH_WIZARD, FightClass.WATER_WIZARD),
                     new Translations("Warden's Lost Crystal")));
         }
-        if (devEnvo || archersExpansionLoaded) {
-            GENERAL = add(Entry.of("general", List.of( FightClass.DEADEYE, FightClass.WAR_ARCHER),
-                    new Translations("General's Lost Crystal")));
-        }
+        /*
         if (devEnvo || archersExpansionLoaded || berserkerLoaded) {
             RAVAGER = add(Entry.of("ravager", List.of(FightClass.BERSERKER, FightClass.TUNDRA_HUNTER),
                     new Translations("Ravager's Lost Crystal")));
+        }
+        if (devEnvo || archersExpansionLoaded) {
+            GENERAL = add(Entry.of("general", List.of( FightClass.DEADEYE, FightClass.WAR_ARCHER),
+                    new Translations("General's Lost Crystal")));
         }
          */
 
