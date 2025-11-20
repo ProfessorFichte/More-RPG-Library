@@ -1,3 +1,6 @@
+# 2.5.5 - 1.21.1
+- Activate Berserker Armory Upgrade Gem
+
 # 2.5.4 - 1.21.1
 - Activate Elemental Wizards Armory Upgrade Gems
 - Fix Damage Reflect Mixin, casting Mobs to PlayerEntites

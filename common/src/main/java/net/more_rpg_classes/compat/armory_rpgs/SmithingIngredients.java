@@ -106,11 +106,11 @@ public class SmithingIngredients {
             WARDEN = add(Entry.of("warden", List.of(FightClass.EARTH_WIZARD, FightClass.WATER_WIZARD),
                     new Translations("Warden's Lost Crystal")));
         }
-        /*
-        if (devEnvo || archersExpansionLoaded || berserkerLoaded) {
+        if (devEnvo || berserkerLoaded /*|| archersExpansionLoaded */) {
             RAVAGER = add(Entry.of("ravager", List.of(FightClass.BERSERKER, FightClass.TUNDRA_HUNTER),
                     new Translations("Ravager's Lost Crystal")));
         }
+                /*
         if (devEnvo || archersExpansionLoaded) {
             GENERAL = add(Entry.of("general", List.of( FightClass.DEADEYE, FightClass.WAR_ARCHER),
                     new Translations("General's Lost Crystal")));
