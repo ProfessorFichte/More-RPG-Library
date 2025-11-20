@@ -18,6 +18,8 @@ import net.more_rpg_classes.custom.MoreSpellSchools;
 import net.more_rpg_classes.effect.MRPGCEffects;
 import net.more_rpg_classes.item.MRPGCItems;
 import net.more_rpg_classes.sounds.ModSounds;
+import net.more_rpg_classes.util.loot.BindSpellFromPoolsLootFunction;
+import net.more_rpg_classes.util.loot.ConditionalItemLootFunction;
 import net.more_rpg_classes.util.loot.LootInjector;
 import net.more_rpg_classes.util.loot.SpecificSpellScrollPoolLootFunction;
 import net.tiny_config.ConfigManager;
@@ -71,9 +73,9 @@ public class MRPGCMod {
 			CriticalStrikeCompat.init();
 	}
 	public static void registerLootFunction() {
-		Registry.register(Registries.LOOT_FUNCTION_TYPE,
-				SpecificSpellScrollPoolLootFunction.ID,
-				SpecificSpellScrollPoolLootFunction.TYPE);
+		Registry.register(Registries.LOOT_FUNCTION_TYPE, SpecificSpellScrollPoolLootFunction.ID, SpecificSpellScrollPoolLootFunction.TYPE);
+		Registry.register(Registries.LOOT_FUNCTION_TYPE, ConditionalItemLootFunction.ID, ConditionalItemLootFunction.TYPE);
+		Registry.register(Registries.LOOT_FUNCTION_TYPE, BindSpellFromPoolsLootFunction.ID, BindSpellFromPoolsLootFunction.TYPE);
 	}
 	public static void registerSounds() {
 		ModSounds.register();

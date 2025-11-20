@@ -1,0 +1,68 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": {
+        "type": "minecraft:uniform",
+        "min": 3,
+        "max": 3
+      },
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:paper",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 1,
+                "max": 4
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:diamond",
+          "functions": [
+            {
+              "function": "more_rpg_classes:conditional_item",
+              "conditional_item": "jewelry:ruby"
+            },
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 1,
+                "max": 4
+              }
+            }
+          ]
+
+        },
+        {
+          "type": "minecraft:item",
+          "name": "wizards:staff_arcane",
+          "functions": [
+            {
+              "function": "more_rpg_classes:bind_spell_from_pools",
+              "spell_pools": ["#wizards:arcane"],
+              "count": 1
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "jewelry:citrine_ring",
+          "functions": [
+            {
+              "function": "more_rpg_classes:bind_spell_from_pools",
+              "spell_pools": ["#arsenal:spell"],
+              "count": 1,
+              "chance": 0.5
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

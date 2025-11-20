@@ -1,3 +1,7 @@
+# 2.5.6 - 1.21.1
+- Add conditional Item Loot Function (Checks if the item is registered, if not uses fallback item)
+- Add Bind Spell From Pools Loot Function (Binds a random spell from a pool to a weapon or jewelry for example)
+
 # 2.5.5 - 1.21.1
 - Activate Berserker Armory Upgrade Gem
 
