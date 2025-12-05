@@ -15,7 +15,7 @@ def changelog_last_section() {
     }
 
     def content = changelogFile.text
-    def sections = content.split(/(?=^# )/m)
+    def sections = content.split(/(?m)(?=^# )/)
 
     // Return the first section (most recent) after the split
     // Remove the first empty element if it exists
