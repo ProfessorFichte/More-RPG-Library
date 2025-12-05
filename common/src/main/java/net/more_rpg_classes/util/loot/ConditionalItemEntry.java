@@ -50,8 +50,7 @@ public class ConditionalItemEntry extends LeafEntry {
 
     @Override
     protected void generateLoot(Consumer<ItemStack> lootConsumer, LootContext context) {
-        // Resolve item safely
-        if (!Registries.ITEM.containsId(itemId)) return; // skip if missing
+        if (!Registries.ITEM.containsId(itemId)) return;
 
         Item item = Registries.ITEM.get(itemId);
         int c = count.map(provider -> provider.nextInt(context)).orElse(1);
@@ -66,7 +65,6 @@ public class ConditionalItemEntry extends LeafEntry {
         lootConsumer.accept(stack);
     }
 
-    // === GETTERS for Codec ===
     public Identifier getItemId() { return this.itemId; }
     public Optional<LootNumberProvider> getCount() { return this.count; }
     public int getWeightValue() { return this.weight; }
@@ -74,7 +72,6 @@ public class ConditionalItemEntry extends LeafEntry {
     public List<LootCondition> getConditionsList() { return this.conditions; }
     public List<LootFunction> getFunctionsList() { return this.functions; }
 
-    // === WORKING CODEC ===
     public static final MapCodec<ConditionalItemEntry> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
                     Codec.STRING.xmap(Identifier::of, Identifier::toString).fieldOf("item").forGetter(e -> e.itemId),
