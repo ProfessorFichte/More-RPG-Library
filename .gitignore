@@ -30,7 +30,10 @@ bin/
 
 # fabric
 
+# Common working directory
 run/
+fabric/run/
+forge/run/
 
 # java
 
@@ -38,3 +41,6 @@ hs_err_*.log
 replay_*.log
 *.hprof
 *.jfr
+
+src/main/generated/.cache
+common/src/main/generated/.cache
