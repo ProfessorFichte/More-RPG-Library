@@ -22,9 +22,11 @@ A library add-on for the [Spell Engine Mod](https://github.com/ZsoltMolnarrr/Spe
 - **🪨Earth Magic**
 - **🌊Water Magic**
 - **🍃Nature Magic**
+
 **🏹Ranged Spell Schools**
 - **🔥Fire Ranged**
 - **❄️Frost Ranged**
+
 **🗡️Melee Spell Schools**
 - **🪓Rage Melee**
 
@@ -39,7 +41,8 @@ A library add-on for the [Spell Engine Mod](https://github.com/ZsoltMolnarrr/Spe
 
 ### 6. Enhancements for Loot Tables
 **Conditional Loot Spell Scroll Function 📜**
-With this function you can easily add specific spell scrolls from specific spell pools to your loot tables. You can also blacklist spells and set the minimum and maximum tier of a spell.
+
+- With this function you can easily add specific spell scrolls from specific spell pools to your loot tables. You can also blacklist spells and set the minimum and maximum tier of a spell.
 ```json
 {
   "type": "minecraft:item",
@@ -58,7 +61,8 @@ With this function you can easily add specific spell scrolls from specific spell
 ```
 
 **Bind specific spells from spell pools on an item**
-This function will bind a random spell from a pool to an item, if the item is no spell container, it will also be a spell container now.
+
+- This function will bind a random spell from a pool to an item, if the item is no spell container, it will also be a spell container now.
 ```json
         {
           "type": "minecraft:item",
@@ -74,7 +78,8 @@ This function will bind a random spell from a pool to an item, if the item is no
 ```
 
 **Conditional Item with Fallback**
-With this function you can add a conditional item to the loot pool, which only gets looted if its registered, otherwise the fallback item will be used.
+
+- With this function you can add a conditional item to the loot pool, which only gets looted if its registered, otherwise the fallback item will be used.
 ```json
         {
           "type": "minecraft:item",
@@ -97,7 +102,8 @@ With this function you can add a conditional item to the loot pool, which only g
 ```
 
 **Conditional Item - Loot Pool Entry**
-With this entry type, you can add a conditional item, without a fallback, the loot table is still functional if when the item is not registered.
+
+- With this entry type, you can add a conditional item, without a fallback, the loot table is still functional if when the item is not registered.
 ```json
         {
           "type": "more_rpg_classes:conditional_item",
