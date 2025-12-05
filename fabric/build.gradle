@@ -149,11 +149,8 @@ if(project.hasProperty('release_type')) {
             addGameVersion "Fabric"
 
             relations {
-                requiredDependency 'fabric-api'
-                requiredDependency 'azurelib-armor'
                 requiredDependency 'spell-engine'
-                requiredDependency 'ranged-weapon-api'
-                requiredDependency 'structure-pool-api'
+                requiredDependency 'spell-power'
             }
 
             mainArtifact(remapJar)
@@ -177,11 +174,8 @@ if(project.hasProperty('release_type')) {
         loaders = ["fabric"] // Must also be an array - no need to specify this if you're using Loom or ForgeGradle
         changelog = changelog_last_section()
         dependencies { // A special DSL for creating dependencies
-            required.project 'fabric-api'
-            required.project 'azurelib-armor'
             required.project 'spell-engine'
-            required.project 'ranged-weapon-api'
-            required.project 'structure-pool-api'
+            required.project 'spell-power'
         }
     }
 
