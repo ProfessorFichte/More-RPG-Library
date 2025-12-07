@@ -20,12 +20,14 @@ public class FriendlyLightningEntity extends Entity {
     private int ambientTick;
     private int remainingActions = 2;
     private LivingEntity owner;
+    public long seed;
 
     public FriendlyLightningEntity(EntityType<? extends FriendlyLightningEntity> entityType, World world) {
         super(entityType, world);
         this.owner = null;
         this.ignoreCameraFrustum = true;
         this.ambientTick = 2;
+        this.seed = this.random.nextLong();
     }
 
     public FriendlyLightningEntity(EntityType<? extends FriendlyLightningEntity> entityType, World world, double x, double y, double z, LivingEntity owner) {
@@ -33,6 +35,7 @@ public class FriendlyLightningEntity extends Entity {
         this.owner = owner;
         this.ignoreCameraFrustum = true;
         this.ambientTick = 2;
+        this.seed = this.random.nextLong();
         this.refreshPositionAndAngles(x, y, z, 0.0F, 0.0F);
     }
 
