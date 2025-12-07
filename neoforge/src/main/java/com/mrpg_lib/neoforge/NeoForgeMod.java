@@ -29,5 +29,8 @@ public final class NeoForgeMod {
         event.register(RegistryKeys.PARTICLE_TYPE, reg -> {
             MoreParticles.register();
         });
+        event.register(RegistryKeys.ENTITY_TYPE, reg -> {
+            MRPGCMod.registerEntities();
+        });
     }
 }

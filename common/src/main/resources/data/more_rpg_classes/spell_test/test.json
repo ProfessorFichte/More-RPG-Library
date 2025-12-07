@@ -19,7 +19,7 @@
         "type": "CUSTOM",
         "custom": {
           "intent": "HARMFUL",
-          "handler": "more_rpg_classes:backward_dash_fixed"
+          "handler": "more_rpg_classes:lightning"
         }
       }
     }

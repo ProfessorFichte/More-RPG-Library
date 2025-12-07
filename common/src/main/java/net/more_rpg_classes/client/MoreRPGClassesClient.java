@@ -1,11 +1,14 @@
 package net.more_rpg_classes.client;
 
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.particle.*;
 import net.minecraft.util.Identifier;
 import net.more_rpg_classes.client.effect.*;
 import net.more_rpg_classes.client.particle.*;
+import net.more_rpg_classes.client.render.FriendlyLightningEntityRenderer;
 import net.more_rpg_classes.effect.MRPGCEffects;
+import net.more_rpg_classes.entity.MRPGCEntities;
 import net.spell_engine.api.effect.CustomModelStatusEffect;
 import net.spell_engine.api.effect.CustomParticleStatusEffect;
 import net.spell_engine.api.render.CustomModels;
@@ -19,6 +22,9 @@ import static net.more_rpg_classes.MRPGCMod.MOD_ID;
 public class MoreRPGClassesClient{
 
     public static void  init(){
+        // Register entity renderers
+        EntityRendererRegistry.register(MRPGCEntities.FRIENDLY_LIGHTNING, FriendlyLightningEntityRenderer::new);
+
         CustomModels.registerModelIds(List.of(
                 FrozenSolidRenderer.modelId,
                 Identifier.of(MOD_ID, "projectile/falling_icicle")
