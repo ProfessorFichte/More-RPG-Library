@@ -1,3 +1,6 @@
+# 2.5.8 - 1.21.1
+- Add FriendlyLightningEntity for the custom spell impact LightningStrikeImpact 
+
 # 2.5.7 - 1.21.1
 - Activate Archers Expansion Armory Upgrade Gem
 New API Additions:

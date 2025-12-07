@@ -17,6 +17,7 @@ import net.more_rpg_classes.custom.CustomSpellImpacts;
 import net.more_rpg_classes.custom.MoreSpellSchoolWeakness;
 import net.more_rpg_classes.custom.MoreSpellSchools;
 import net.more_rpg_classes.effect.MRPGCEffects;
+import net.more_rpg_classes.entity.MRPGCEntities;
 import net.more_rpg_classes.item.MRPGCItems;
 import net.more_rpg_classes.sounds.ModSounds;
 import net.more_rpg_classes.util.loot.*;
@@ -88,6 +89,10 @@ public class MRPGCMod {
 	public static void registerEffects() {
 		MRPGCEffects.register();
 		effectsConfig.save();
+	}
+
+	public static void registerEntities() {
+		MRPGCEntities.register();
 	}
 
 	public static Identifier id(String path) {

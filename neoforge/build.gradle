@@ -152,13 +152,18 @@ remapJar {
     inputFile.set shadowJar.archiveFile
 }
 
-if(project.hasProperty('release_type')) {
-    tasks.register("publishMod") {
-        dependsOn(build)
-        finalizedBy(tasks.curseforge)
-        finalizedBy(tasks.modrinth)
-    }
+// Publishing configuration
+def release_type = project.hasProperty('release_type') ? project.property('release_type') : 'release'
 
+tasks.register('publishMod') {
+    group = 'publishing'
+    description = 'Publishes the mod to CurseForge and Modrinth'
+    dependsOn(tasks.remapJar)
+    finalizedBy(tasks.curseforge)
+    finalizedBy(tasks.modrinth)
+}
+
+if (System.getenv("CURSEFORGE_API_KEY")) {
     curseforge {
         apiKey = System.getenv("CURSEFORGE_API_KEY")
         project {
@@ -170,8 +175,13 @@ if(project.hasProperty('release_type')) {
             addGameVersion "NeoForge"
 
             relations {
+                // Required dependencies
                 requiredDependency 'spell-engine'
-                requiredDependency 'spell-power'
+                requiredDependency 'more-rpg-library'
+                requiredDependency 'archers'
+
+                // Optional dependencies
+                optionalDependency 'lne-archers'
             }
 
             mainArtifact(remapJar)
@@ -183,21 +193,30 @@ if(project.hasProperty('release_type')) {
             }
         }
     }
+}
 
+if (System.getenv("MODRINTH_API_KEY")) {
     modrinth {
         token = System.getenv("MODRINTH_API_KEY")
-        projectId = System.getenv("MODRINTH_PROJECT_ID") // This can be the project ID or the slug. Either will work!
+        projectId = System.getenv("MODRINTH_PROJECT_ID")
+        versionName = "${version}-${platform}"
+        versionNumber = "${version}-${platform}"
+        versionType = release_type
+        uploadFile = remapJar
+        gameVersions = ["${project.minecraft_version}"]
+        loaders = ["neoforge"]
         changelog = changelog_last_section()
-        versionName = "${version}" // You don't need to set this manually. Will fail if Modrinth has this version already
-        versionNumber = "${version}-${platform}" // You don't need to set this manually. Will fail if Modrinth has this version already
-        versionType = release_type // This is the default -- can also be `beta` or `alpha`
-        uploadFile = remapJar // With Loom, this MUST be set to `remapJar` instead of `jar`!
-        gameVersions = ["${project.minecraft_version}", "${project.minecraft_compat_version}"] // Must be an array, even with only one version
-        loaders = ["neoforge"] // Must also be an array - no need to specify this if you're using Loom or ForgeGradle
-        changelog = changelog_last_section()
-        dependencies { // A special DSL for creating dependencies
+        dependencies {
+            // Required dependencies
             required.project 'spell-engine'
             required.project 'spell-power'
         }
     }
+}
+
+if (System.getenv("CURSEFORGE_API_KEY")) {
+    tasks.curseforge.dependsOn remapJar
+}
+if (System.getenv("MODRINTH_API_KEY")) {
+    tasks.modrinth.dependsOn remapJar
 }
