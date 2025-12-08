@@ -16,7 +16,7 @@ public class FrozenSolidEffect extends SpellVulnerabilityStatusEffect {
         super.onApplied(livingEntity, amplifier);
         EntityType<?> type = livingEntity.getType();
         if(type.isIn(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES)) {
-            livingEntity.removeStatusEffect(MRPGCEffects.FROZEN_SOLID.registryEntry);
+            livingEntity.removeStatusEffect(MRPGCEffects.FROZEN_SOLID.entry);
         }
 
     }
@@ -24,7 +24,7 @@ public class FrozenSolidEffect extends SpellVulnerabilityStatusEffect {
     @Override
     public boolean applyUpdateEffect(LivingEntity livingEntity, int pAmplifier) {
         if(livingEntity.isOnFire() || livingEntity.isInLava()){
-           return livingEntity.removeStatusEffect(MRPGCEffects.FROZEN_SOLID.registryEntry);
+           return livingEntity.removeStatusEffect(MRPGCEffects.FROZEN_SOLID.entry);
         }
         super.applyUpdateEffect(livingEntity, pAmplifier);
         return true;

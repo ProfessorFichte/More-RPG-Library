@@ -30,7 +30,7 @@ public class SoakedEffect extends SpellVulnerabilityStatusEffect {
             }
             pLivingEntity.playSound(SoundEvents.BLOCK_FIRE_EXTINGUISH,2,1);
             pLivingEntity.extinguish();
-            pLivingEntity.removeStatusEffect(MRPGCEffects.SOAKED.registryEntry);
+            pLivingEntity.removeStatusEffect(MRPGCEffects.SOAKED.entry);
         }
         if(pLivingEntity.isInLava()){
             if(world.isClient){
@@ -43,7 +43,7 @@ public class SoakedEffect extends SpellVulnerabilityStatusEffect {
                 }
             }
             pLivingEntity.playSound(SoundEvents.BLOCK_FIRE_EXTINGUISH,2,1);
-            pLivingEntity.removeStatusEffect(MRPGCEffects.SOAKED.registryEntry);
+            pLivingEntity.removeStatusEffect(MRPGCEffects.SOAKED.entry);
         }
         return true;
     }
