@@ -1,8 +1,11 @@
 package net.more_rpg_classes.util;
 
+import net.fabric_extras.ranged_weapon.api.EntityAttributes_RangedWeapon;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
@@ -10,8 +13,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.more_rpg_classes.custom.MoreSpellSchools;
 import net.spell_power.api.SpellDamageSource;
 import net.spell_power.api.SpellSchool;
+import net.spell_power.api.SpellSchools;
 
 import java.util.*;
 
@@ -154,5 +159,33 @@ public class CustomMethods {
             damageAmount = damageAmount* critDamage;
         }
         target.damage(SpellDamageSource.create(spellSchool,attacker),damageAmount);
+    }
+
+    public static double getHighestSpellSchoolPower(LivingEntity entity) {
+        double maxPower = 0.0;
+        // Check all SpellSchools
+        // SPELL POWER MOD
+        maxPower = Math.max(maxPower, entity.getAttributeValue(SpellSchools.ARCANE.attributeEntry));
+        maxPower = Math.max(maxPower, entity.getAttributeValue(SpellSchools.FIRE.attributeEntry));
+        maxPower = Math.max(maxPower, entity.getAttributeValue(SpellSchools.FROST.attributeEntry));
+        maxPower = Math.max(maxPower, entity.getAttributeValue(SpellSchools.HEALING.attributeEntry));
+        maxPower = Math.max(maxPower, entity.getAttributeValue(SpellSchools.LIGHTNING.attributeEntry));
+        maxPower = Math.max(maxPower, entity.getAttributeValue(SpellSchools.SOUL.attributeEntry));
+        // MORE RPG LIBRARY
+        maxPower = Math.max(maxPower, entity.getAttributeValue(MoreSpellSchools.EARTH.attributeEntry));
+        maxPower = Math.max(maxPower, entity.getAttributeValue(MoreSpellSchools.WATER.attributeEntry));
+        maxPower = Math.max(maxPower, entity.getAttributeValue(MoreSpellSchools.AIR.attributeEntry));
+        maxPower = Math.max(maxPower, entity.getAttributeValue(MoreSpellSchools.NATURE.attributeEntry));
+
+        return maxPower;
+    }
+    public static double getHighestDamageAttribute(LivingEntity entity) {
+        double entitySpellPower = getHighestSpellSchoolPower(entity);
+        double meleeDamage = entity.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
+        double rangedDamage = 0;
+        if(FabricLoader.getInstance().isModLoaded("ranged_weapon_api")){
+            rangedDamage = entity.getAttributeValue(EntityAttributes_RangedWeapon.DAMAGE.entry);
+        }
+        return Math.max(meleeDamage, Math.max(rangedDamage, entitySpellPower));
     }
 }
