@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "more_rpg_classes:carve",
+      "required": false
+    },
+    {
+      "id": "more_rpg_classes:lightning_strike_melee",
+      "required": false
+    }
+  ]
+}
