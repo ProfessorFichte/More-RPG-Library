@@ -7,11 +7,13 @@ import net.minecraft.util.Identifier;
 import net.more_rpg_classes.client.effect.*;
 import net.more_rpg_classes.client.particle.*;
 import net.more_rpg_classes.client.render.FriendlyLightningEntityRenderer;
+import net.more_rpg_classes.custom.MrpgLibSpells;
 import net.more_rpg_classes.effect.MRPGCEffects;
 import net.more_rpg_classes.entity.MRPGCEntities;
 import net.spell_engine.api.effect.CustomModelStatusEffect;
 import net.spell_engine.api.effect.CustomParticleStatusEffect;
 import net.spell_engine.api.render.CustomModels;
+import net.spell_engine.client.gui.SpellTooltip;
 import net.spell_engine.client.particle.SpellExplosionParticle;
 import net.spell_engine.client.particle.SpellFlameParticle;
 
@@ -22,6 +24,11 @@ import static net.more_rpg_classes.MRPGCMod.MOD_ID;
 public class MoreRPGClassesClient{
 
     public static void  init(){
+        for (var entry: MrpgLibSpells.entries) {
+            if (entry.mutator() != null) {
+                SpellTooltip.addDescriptionMutator(entry.id(), entry.mutator());
+            }
+        }
         // Register entity renderers
         EntityRendererRegistry.register(MRPGCEntities.FRIENDLY_LIGHTNING, FriendlyLightningEntityRenderer::new);
 
@@ -90,5 +97,7 @@ public class MoreRPGClassesClient{
         registry.register(MoreParticles.ICE_TRAP, IceTrapParticle.IceTrapParticleFactory::new);
         registry.register(MoreParticles.STONE_TRAP, StoneTrapParticle.StoneTrapParticleFactory::new);
         registry.register(MoreParticles.LEAF, LeafParticle.Factory::new);
+        registry.register(MoreParticles.RAGE_PAR, DamageParticle.Factory::new);
+        registry.register(MoreParticles.SMALL_THUNDER, SmallThunderParticle.Factory::new);
     }
 }
