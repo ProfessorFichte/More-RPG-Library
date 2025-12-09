@@ -179,6 +179,14 @@ public class MRPGCEffects {
                     )
             ))
     ));
+      public static final Effects.Entry FATAL_POISON = add(new Effects.Entry(
+            Identifier.of(MOD_ID, "fatal_poison"),
+            "",
+            "",
+            new CustomStatusEffect(StatusEffectCategory.HARMFUL, 0xdd4e00),
+            new EffectConfig(List.of(
+            ))
+    ));
 
     public static void register(ConfigFile.Effects config) {
         for (var entry : entries) {

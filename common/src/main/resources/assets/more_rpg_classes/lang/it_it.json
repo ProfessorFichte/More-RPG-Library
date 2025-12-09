@@ -17,6 +17,9 @@
   "effect.more_rpg_classes.frosted.description": "Riduce la velocità di movimento.",
   "effect.more_rpg_classes.bleeding": "Sanguinamento",
   "effect.more_rpg_classes.bleeding.description": "Danneggia nel tempo.",
+  "effect.elemental_wizards_rpg.fatal_poison": "Veleno Fatale",
+  "effect.elemental_wizards_rpg.fatal_poison.description": "Danneggia nel tempo e può uccidere qualsiasi tipo di mob.",
+
 
   "item.more_rpg_classes.aqua_stone": "Runa dell'acqua",
   "item.more_rpg_classes.terra_stone": "Runa della terra",
@@ -26,6 +29,7 @@
   "item.more_rpg_classes.hardened_leather": "Pelle indurita",
 
   "death.attack.mrpgc.bleeding": "%1$s si è dissanguato.",
+  "death.attack.mrpgc.fatal_poison": "%1$s è stato avvelenato.",
   "death.attack.mrpgc.molten": "%1$s si è sciolto nella sua armatura.",
 
   "attribute.name.generic.more_rpg_classes.rage_modifier": "Furia",

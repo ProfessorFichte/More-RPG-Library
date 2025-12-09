@@ -19,6 +19,8 @@
   "effect.more_rpg_classes.stagger.description": "Reduces Armor, Attack Damage & Movement Speed and incapacitates the target.",
   "effect.elemental_wizards_rpg.soaked": "Soaked",
   "effect.elemental_wizards_rpg.soaked.description": "Soaking the target with water extinguishing fire, more vulnerable to frost, lightning and water spells.",
+  "effect.elemental_wizards_rpg.fatal_poison": "Fatal Poison",
+  "effect.elemental_wizards_rpg.fatal_poison.description": "Inflicts damage over time, and can kill both undead and non-undead mobs.",
 
   "item.more_rpg_classes.aqua_stone": "Water Rune",
   "item.more_rpg_classes.terra_stone": "Earth Rune",
@@ -29,6 +31,8 @@
   "item.more_rpg_classes.hardened_leather": "Hardened Leather",
 
   "death.attack.mrpgc.bleeding": "%1$s has bled out.",
+  "death.attack.mrpgc.fatal_poison": "%1$s was fatally poisoned.",
+  "death.attack.mrpgc.fatal_poison.teemo": "%1$s stepped on a suspicious green and purple mushroom.",
   "death.attack.mrpgc.molten": "%1$s is burned by his molten armor.",
 
   "attribute.name.more_rpg_classes.rage_modifier": "Rage Power",

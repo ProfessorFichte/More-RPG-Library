@@ -1,3 +1,6 @@
+# 2.5.9 - 1.21.1
+- Add FatalPoison Effect
+
 # 2.5.8 - 1.21.1
 - Add FriendlyLightningEntity for the custom spell impact LightningStrikeImpact
 - The damage dealt by the LightningEntity is determined by the highest Attribute: 
