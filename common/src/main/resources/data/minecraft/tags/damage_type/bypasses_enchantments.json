@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "more_rpg_classes:bleeding"
+    "more_rpg_classes:bleeding",
+    "more_rpg_classes:fatal_poison"
   ]
 }

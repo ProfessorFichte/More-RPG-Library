@@ -9,6 +9,7 @@ public class MRPGCEntityTags {
 
     public static final TagKey<EntityType<?>> STUN_IMMUNE = register("stun_immune");
     public static final TagKey<EntityType<?>> BLEEDING_IMMUNE = register("bleeding_immune");
+    public static final TagKey<EntityType<?>> POISON_IMMUNE = register("poison_immune");
 
     public static final TagKey<EntityType<?>> WEAK_TO_WATER = register("weak_to_water");
     public static final TagKey<EntityType<?>> WEAK_TO_EARTH = register("weak_to_earth");

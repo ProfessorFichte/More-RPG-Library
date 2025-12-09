@@ -33,6 +33,7 @@ public class MoreParticles {
     public static final SimpleParticleType ICE_TRAP = FabricParticleTypes.simple();
     public static final SimpleParticleType STONE_TRAP = FabricParticleTypes.simple();
     public static final SimpleParticleType LEAF = FabricParticleTypes.simple();
+    public static final SimpleParticleType FATAL_POISON = FabricParticleTypes.simple();
 
 
     public static void register(){
@@ -61,6 +62,7 @@ public class MoreParticles {
         Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "ice_trap"), ICE_TRAP);
         Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "stone_trap"), STONE_TRAP);
         Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "leaf"), LEAF);
+        Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "fatal_poison"), FATAL_POISON);
     }
 
 }

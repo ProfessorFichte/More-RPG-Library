@@ -45,6 +45,7 @@ public class MRPGCEffects {
     public static final Entry GRIEVOUS_WOUNDS = new Entry("grievous_wounds", new CustomStatusEffect(StatusEffectCategory.HARMFUL, 0x01d9cf));
     public static final Entry FROSTED = new Entry("frosted", new FrostedEffect(StatusEffectCategory.HARMFUL, 0x3beeff));
     public static final Entry BLEEDING = new Entry("bleeding", new BleedingEffect(StatusEffectCategory.HARMFUL, 0xdd4e00));
+    public static final Entry FATAL_POISON = new Entry("fatal_poison", new FatalPoisonEffect(StatusEffectCategory.HARMFUL, 0x7e49b4));
     public static final Entry FEAR = new Entry("fear", new CustomStatusEffect(StatusEffectCategory.HARMFUL, 0x01d9cf));
     public static final Entry STAGGER = new Entry("stagger", new CustomStatusEffect(StatusEffectCategory.HARMFUL, 0xb3b3b3));
     public static final Entry SOAKED = new Entry("soaked",new SoakedEffect(StatusEffectCategory.HARMFUL, 0x01d9cf)
