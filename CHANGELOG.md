@@ -1,6 +1,3 @@
-# 2.5.9 - 1.21.1
-- Add FatalPoison Effect
-
 # 2.5.8 - 1.21.1
 - Add FriendlyLightningEntity for the custom spell impact LightningStrikeImpact
 - The damage dealt by the LightningEntity is determined by the highest Attribute: 
@@ -8,6 +5,7 @@
 - Adding Particles, Sounds and Passive Spells from the Berserker Mod to this Library
 - Add new HelperMethods, to determine the highest Spell power Attribute / Damaging Attribute
 - The Rage Attribute now impacts the Power of the RAGE_MELEE School more
+- Add FatalPoison Effect (Thanks Rulft44) Pull request #13
 
 # 2.5.7 - 1.21.1
 - Activate Archers Expansion Armory Upgrade Gem

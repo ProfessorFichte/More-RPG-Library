@@ -181,9 +181,9 @@ public class MRPGCEffects {
     ));
       public static final Effects.Entry FATAL_POISON = add(new Effects.Entry(
             Identifier.of(MOD_ID, "fatal_poison"),
-            "",
-            "",
-            new CustomStatusEffect(StatusEffectCategory.HARMFUL, 0xdd4e00),
+            "Fatal Poison",
+            "Inflicts damage over time, and can kill both undead and non-undead mobs.",
+            new FatalPoisonEffect(StatusEffectCategory.HARMFUL, 0xdd4e00),
             new EffectConfig(List.of(
             ))
     ));
