@@ -15,4 +15,5 @@ public class TweaksConfig {
     public float custom_spell_impact_damage_to_missing_health_under_25 = 1.75F;
     public int lifestealCooldownTicks = 20;
     public int spellVampireCooldownTicks = 20;
+    public int effect_frosted_amplifier_frozen_solid_conversion = 4;
 }

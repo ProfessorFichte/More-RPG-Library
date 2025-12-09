@@ -1,6 +1,9 @@
 package net.more_rpg_classes.entity;
 
+import net.fabric_extras.ranged_weapon.api.EntityAttributes_RangedWeapon;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.*;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
@@ -11,8 +14,11 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
+import net.more_rpg_classes.custom.MoreSpellSchools;
+import net.more_rpg_classes.util.CustomMethods;
 import net.spell_engine.internals.target.EntityRelation;
 import net.spell_engine.internals.target.EntityRelations;
+import net.spell_power.api.SpellSchools;
 
 import java.util.List;
 
@@ -96,7 +102,8 @@ public class FriendlyLightningEntity extends Entity {
             return;
         }
 
-        float damageAmount = 5.0F;
+
+        float damageAmount = 4.0F + (float) CustomMethods.getHighestDamageAttribute(owner);
         double radius = 3.0;
         List<Entity> entities = this.getWorld().getOtherEntities(this,
             new Box(this.getX() - radius, this.getY() - radius, this.getZ() - radius,
@@ -129,6 +136,11 @@ public class FriendlyLightningEntity extends Entity {
         } catch (Exception e) {
             return !EntityRelations.allowedToHurt(owner, target);
         }
+    }
+
+
+    private double getHighestDamage(double meleeDamage, double rangedDamage, double spellPower) {
+        return Math.max(meleeDamage, Math.max(rangedDamage, spellPower));
     }
 
     private void spawnFire() {

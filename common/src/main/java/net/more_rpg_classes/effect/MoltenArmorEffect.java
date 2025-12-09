@@ -35,10 +35,10 @@ public class MoltenArmorEffect extends StatusEffect {
         }
         if(!pLivingEntity.getWorld().isClient()){
             if(pLivingEntity.isInsideWaterOrBubbleColumn()){
-                pLivingEntity.removeStatusEffect(MRPGCEffects.MOLTEN_ARMOR.registryEntry);
+                pLivingEntity.removeStatusEffect(MRPGCEffects.MOLTEN_ARMOR.entry);
             } else if(!pLivingEntity.hasStackEquipped(EquipmentSlot.CHEST)& !pLivingEntity.hasStackEquipped(EquipmentSlot.HEAD)&
                     !pLivingEntity.hasStackEquipped(EquipmentSlot.FEET)& !pLivingEntity.hasStackEquipped(EquipmentSlot.LEGS)){
-                pLivingEntity.removeStatusEffect(MRPGCEffects.MOLTEN_ARMOR.registryEntry);
+                pLivingEntity.removeStatusEffect(MRPGCEffects.MOLTEN_ARMOR.entry);
             }
         }
         return true;

@@ -75,8 +75,8 @@ public class MoreSpellSchools {
         }
 
         RAGE_MELEE.addSource(SpellSchool.Trait.POWER, SpellSchool.Apply.ADD, query -> {
-            return query.entity().getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE) +
-                    ((query.entity().getAttributeValue(MRPGCEntityAttributes.RAGE_MODIFIER)-100) / 50);
+            return query.entity().getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE) *
+                    (1+((query.entity().getAttributeValue(MRPGCEntityAttributes.RAGE_MODIFIER)-100) / 200));
         });
         SpellSchools.configureSpellHaste(RAGE_MELEE);
         if (FabricLoader.getInstance().isModLoaded("critical_strike")) {

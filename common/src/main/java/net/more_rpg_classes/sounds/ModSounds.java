@@ -54,6 +54,8 @@ public class ModSounds {
     public static SoundEvent NATURE_IMPACT_4 = SoundEvent.of(NATURE_IMPACT_4_ID);
     public static final Identifier NATURE_CAST_1_ID = Identifier.of(MOD_ID, "nature_cast_1");
     public static SoundEvent NATURE_CAST_1 = SoundEvent.of(NATURE_CAST_1_ID);
+    public static final Identifier CARVE_ID = Identifier.of(MOD_ID, "cave");
+    public static SoundEvent CARVE = SoundEvent.of(CARVE_ID);
 
 
     public static void register() {
@@ -80,6 +82,7 @@ public class ModSounds {
         Registry.register(Registries.SOUND_EVENT, NATURE_IMPACT_3_ID, NATURE_IMPACT_3);
         Registry.register(Registries.SOUND_EVENT, NATURE_IMPACT_4_ID, NATURE_IMPACT_4);
         Registry.register(Registries.SOUND_EVENT, NATURE_CAST_1_ID, NATURE_CAST_1);
+        Registry.register(Registries.SOUND_EVENT, CARVE_ID, CARVE);
     }
 
 

@@ -5,14 +5,20 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.data.client.BlockStateModelGenerator;
 import net.minecraft.data.client.ItemModelGenerator;
 import net.minecraft.data.client.Models;
+import net.minecraft.registry.tag.TagKey;
+import net.minecraft.util.Identifier;
+import net.more_rpg_classes.custom.MrpgLibSpells;
+import net.spell_engine.api.datagen.SpellGenerator;
+import net.spell_engine.api.spell.registry.SpellRegistry;
 import net.spell_engine.rpg_series.datagen.RPGSeriesDataGen;
 import net.minecraft.registry.*;
 import net.spell_engine.rpg_series.tags.RPGSeriesItemTags;
 import net.more_rpg_classes.compat.armory_rpgs.SmithingIngredients;
-
+import net.spell_engine.api.spell.Spell;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -22,7 +28,8 @@ public class MrpgDatagen implements DataGeneratorEntrypoint {
     public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {
         FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
         pack.addProvider(ItemTagGenerator::new);
-        pack.addProvider(LangGenerator::new);
+        pack.addProvider(SpellGen::new);
+        pack.addProvider(SpellTagGenerator::new);
     }
 
     public static class ItemTagGenerator extends RPGSeriesDataGen.ItemTagGenerator {
@@ -67,6 +74,36 @@ public class MrpgDatagen implements DataGeneratorEntrypoint {
         public void generateItemModels(ItemModelGenerator itemModelGenerator) {
             SmithingIngredients.ENTRIES.forEach(entry -> {
                 itemModelGenerator.register(entry.item().get(), Models.GENERATED);
+            });
+        }
+    }
+
+    public static class SpellGen extends SpellGenerator {
+        public SpellGen(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
+            super(dataOutput, registryLookup);
+        }
+
+        @Override
+        public void generateSpells(Builder builder) {
+            for (var entry: MrpgLibSpells.entries) {
+                builder.add(entry.id(), entry.spell());
+            }
+        }
+    }
+
+    public static class SpellTagGenerator extends FabricTagProvider<Spell> {
+        public SpellTagGenerator(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture) {
+            super(output, SpellRegistry.KEY, registriesFuture);
+        }
+
+        @Override
+        protected void configure(RegistryWrapper.WrapperLookup wrapperLookup) {
+            MrpgLibSpells.entries.forEach(entry -> {
+                for (var category: entry.categories()) {
+                    var tagKey = TagKey.of(SpellRegistry.KEY, Identifier.of("arsenal", category.toString().toLowerCase()));
+                    var tag = getOrCreateTagBuilder(tagKey);
+                    tag.addOptional(entry.id());
+                }
             });
         }
     }

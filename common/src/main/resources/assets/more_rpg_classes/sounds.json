@@ -118,5 +118,10 @@
     "sounds": [
       "more_rpg_classes:nature_cast_1"
     ]
+  },
+  "carve": {
+    "sounds": [
+      "more_rpg_classes:carve"
+    ]
   }
 }

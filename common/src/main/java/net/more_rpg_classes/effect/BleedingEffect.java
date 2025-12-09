@@ -17,7 +17,7 @@ public class BleedingEffect extends StatusEffect {
     public  boolean applyUpdateEffect(LivingEntity entity, int amplifier) {
         EntityType<?> type = ((Entity) entity).getType();
         if(type.isIn(MRPGCEntityTags.BLEEDING_IMMUNE)){
-            entity.removeStatusEffect(MRPGCEffects.BLEEDING.registryEntry);
+            entity.removeStatusEffect(MRPGCEffects.BLEEDING.entry);
         }
         float bleedingTickDamage = 1.0F;
         float currentHealthPercentage = entity.getHealth() / entity.getMaxHealth();

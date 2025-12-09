@@ -131,12 +131,12 @@ public abstract class LivingEntityMixin {
     @Inject(method = "baseTick", at = @At("TAIL"))
     public void baseTickPowderSnowFrostedSolidEffect(CallbackInfo ci) {
         var entity = (LivingEntity) ((Object)this);
-        entity.inPowderSnow = entity.inPowderSnow || hasStatusEffect(MRPGCEffects.FROSTED.registryEntry);
+        entity.inPowderSnow = entity.inPowderSnow || hasStatusEffect(MRPGCEffects.FROSTED.entry);
     }
     @Inject(method = "baseTick", at = @At("TAIL"))
     public void baseTickPowderSnowFrozenSolidEffect(CallbackInfo ci) {
         var entity = (LivingEntity) ((Object)this);
-        entity.inPowderSnow = entity.inPowderSnow || hasStatusEffect(MRPGCEffects.FROZEN_SOLID.registryEntry);
+        entity.inPowderSnow = entity.inPowderSnow || hasStatusEffect(MRPGCEffects.FROZEN_SOLID.entry);
     }
     
 }

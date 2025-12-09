@@ -4,7 +4,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.Vec3d;
 import net.more_rpg_classes.entity.FriendlyLightningEntity;
 import net.more_rpg_classes.entity.MRPGCEntities;
 import net.spell_engine.api.spell.Spell;

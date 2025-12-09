@@ -17,24 +17,24 @@ public class FrostedEffect extends StatusEffect {
         super.onApplied(livingEntity, amplifier);
         EntityType<?> type = livingEntity.getType();
         if(!type.isIn(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES)) {
-            if(!livingEntity.hasStatusEffect(MRPGCEffects.FROZEN_SOLID.registryEntry)){
-                if(amplifier == MRPGCMod.effectsConfig.value.frosted_amplifier_frozen_solid_conversion){
-                    livingEntity.addStatusEffect(new StatusEffectInstance(MRPGCEffects.FROZEN_SOLID.registryEntry,
+            if(!livingEntity.hasStatusEffect(MRPGCEffects.FROZEN_SOLID.entry)){
+                if(amplifier == MRPGCMod.tweaksConfig.value.effect_frosted_amplifier_frozen_solid_conversion){
+                    livingEntity.addStatusEffect(new StatusEffectInstance(MRPGCEffects.FROZEN_SOLID.entry,
                             100,0,false,false,true));
-                    livingEntity.removeStatusEffect(MRPGCEffects.FROSTED.registryEntry);
+                    livingEntity.removeStatusEffect(MRPGCEffects.FROSTED.entry);
                 }
             }else{
-                livingEntity.removeStatusEffect(MRPGCEffects.FROSTED.registryEntry);
+                livingEntity.removeStatusEffect(MRPGCEffects.FROSTED.entry);
             }
         } else{
-            livingEntity.removeStatusEffect(MRPGCEffects.FROSTED.registryEntry);
+            livingEntity.removeStatusEffect(MRPGCEffects.FROSTED.entry);
         }
     }
 
     @Override
     public boolean applyUpdateEffect(LivingEntity livingEntity, int pAmplifier) {
         if(livingEntity.isOnFire() || livingEntity.isInLava()){
-            return livingEntity.removeStatusEffect(MRPGCEffects.FROSTED.registryEntry);
+            return livingEntity.removeStatusEffect(MRPGCEffects.FROSTED.entry);
         }
         super.applyUpdateEffect(livingEntity, pAmplifier);
         return true;
