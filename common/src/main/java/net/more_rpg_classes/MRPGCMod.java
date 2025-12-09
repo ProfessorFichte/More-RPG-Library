@@ -8,10 +8,10 @@ import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import net.more_rpg_classes.compat.CriticalStrikeCompat;
 import net.more_rpg_classes.compat.armory_rpgs.SmithingIngredients;
-import net.more_rpg_classes.config.EffectsConfig;
 import net.more_rpg_classes.config.LootConfig;
 import net.more_rpg_classes.config.TweaksConfig;
 import net.more_rpg_classes.config.WeaknessConfig;
+import net.spell_engine.api.config.ConfigFile;
 import net.more_rpg_classes.custom.CustomSpellEntityPredicate;
 import net.more_rpg_classes.custom.CustomSpellImpacts;
 import net.more_rpg_classes.custom.MoreSpellSchoolWeakness;
@@ -30,8 +30,8 @@ public class MRPGCMod {
 	public static final String MOD_ID = "more_rpg_classes";
 	public static final Logger LOGGER = LoggerFactory.getLogger("more_rpg_classes");
 
-	public static ConfigManager<EffectsConfig> effectsConfig = new ConfigManager<EffectsConfig>
-			("effects_v2", new EffectsConfig())
+	public static ConfigManager<ConfigFile.Effects> effectsConfig = new ConfigManager<>
+			("effects_v3", new ConfigFile.Effects())
 			.builder()
 			.setDirectory(MOD_ID)
 			.sanitize(true)
@@ -87,7 +87,7 @@ public class MRPGCMod {
 		}
 	}
 	public static void registerEffects() {
-		MRPGCEffects.register();
+		MRPGCEffects.register(effectsConfig.value);
 		effectsConfig.save();
 	}
 
