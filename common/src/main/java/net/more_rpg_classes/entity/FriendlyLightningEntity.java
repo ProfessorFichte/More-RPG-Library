@@ -103,7 +103,7 @@ public class FriendlyLightningEntity extends Entity {
         }
 
 
-        float damageAmount = 4.0F + (float) CustomMethods.getHighestDamageAttribute(owner);
+        float damageAmount = 4.0F + ((float) CustomMethods.getHighestDamageAttribute(owner)*0.6F);
         double radius = 3.0;
         List<Entity> entities = this.getWorld().getOtherEntities(this,
             new Box(this.getX() - radius, this.getY() - radius, this.getZ() - radius,
@@ -136,11 +136,6 @@ public class FriendlyLightningEntity extends Entity {
         } catch (Exception e) {
             return !EntityRelations.allowedToHurt(owner, target);
         }
-    }
-
-
-    private double getHighestDamage(double meleeDamage, double rangedDamage, double spellPower) {
-        return Math.max(meleeDamage, Math.max(rangedDamage, spellPower));
     }
 
     private void spawnFire() {
