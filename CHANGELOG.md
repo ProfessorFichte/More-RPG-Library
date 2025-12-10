@@ -1,3 +1,6 @@
+# 2.5.10 - 1.21.1
+- fix wrong spell id for Melee lightning strike passive
+
 # 2.5.9 - 1.21.1
 - The damage dealt by the LightningEntity is now determined by the highest Attribute:
 - (Generic Attack Damage, Ranged Weapon Damage & Magic Spell School)

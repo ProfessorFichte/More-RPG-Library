@@ -66,6 +66,6 @@
 
   "spell.more_rpg_classes.carve.name": "Carve",
   "spell.more_rpg_classes.carve.description": "On melee hit: {trigger_chance} chance to stack armor reduction by {bonus2} and increasing incoming damage by {bonus} for {effect_amplifier_cap} times.",
-  "spell.more_rpg_classes.lightning_strike.name": "Lightning Strike",
-  "spell.more_rpg_classes.lightning_strike.description": "On melee hit: {trigger_chance} chance to spawn a lightning strike."
+  "spell.more_rpg_classes.lightning_strike_melee.name": "Lightning Strike",
+  "spell.more_rpg_classes.lightning_strike_melee.description": "On melee hit: {trigger_chance} chance to spawn a lightning strike."
 }
