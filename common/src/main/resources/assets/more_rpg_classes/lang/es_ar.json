@@ -17,8 +17,10 @@
   "effect.more_rpg_classes.bleeding.description": "Daña al objetivo con el tiempo.",
   "effect.more_rpg_classes.stagger": "Tambaleo",
   "effect.more_rpg_classes.stagger.description": "Reduce la armadura, el daño de ataque y la velocidad de movimiento, dejando al objetivo medio aturdido.",
-  "effect.elemental_wizards_rpg.soaked": "Empapado",
-  "effect.elemental_wizards_rpg.soaked.description": "Empapa al objetivo con agua, apaga el fuego y lo vuelve más vulnerable a hechizos de escarcha, rayos y agua.",
+  "effect.more_rpg_classes.soaked": "Empapado",
+  "effect.more_rpg_classes.soaked.description": "Empapa al objetivo con agua, extinguiendo el fuego y volviéndolo más vulnerable a hechizos de escarcha, rayo y agua.",
+  "effect.more_rpg_classes.fatal_poison": "Veneno fatal",
+  "effect.more_rpg_classes.fatal_poison.description": "Inflige daño con el tiempo y puede matar tanto a criaturas no-muertas como a no-muertas.",
 
   "item.more_rpg_classes.aqua_stone": "Runa de Agua",
   "item.more_rpg_classes.terra_stone": "Runa de Tierra",
@@ -29,6 +31,8 @@
   "item.more_rpg_classes.hardened_leather": "Cuero Endurecido",
 
   "death.attack.mrpgc.bleeding": "%1$s se desangró.",
+  "death.attack.mrpgc.fatal_poison": "%1$s fue envenenado fatalmente.",
+  "death.attack.mrpgc.fatal_poison.teemo": "%1$s pisó un hongo sospechoso verde y violeta.",
   "death.attack.mrpgc.molten": "%1$s fue quemado por su armadura fundida.",
 
   "attribute.name.more_rpg_classes.rage_modifier": "Poder de Ira",
@@ -58,5 +62,10 @@
   "item.more_rpg_classes.upgrade_crystal.general.applies_to": "Armadura de Tirador Certero y Arquero de Guerra",
   "item.more_rpg_classes.upgrade_crystal.ravager.applies_to": "Armadura de Berserker y Cazador de la Tundra",
   "item.more_rpg_classes.upgrade_crystal.warden.applies_to": "Armadura de Mago de Tierra y Mago de Agua",
-  "item.more_rpg_classes.warden_upgrade_crystal": "Cristal Perdido del Guardián"
+  "item.more_rpg_classes.warden_upgrade_crystal": "Cristal Perdido del Guardián",
+
+  "spell.more_rpg_classes.carve.name": "Tajo",
+  "spell.more_rpg_classes.carve.description": "En golpe cuerpo a cuerpo: {trigger_chance} de probabilidad de acumular reducción de armadura en {bonus2} e incrementar el daño recibido en {bonus} hasta {effect_amplifier_cap} veces.",
+  "spell.more_rpg_classes.lightning_strike_melee.name": "Golpe de rayo",
+  "spell.more_rpg_classes.lightning_strike_melee.description": "En golpe cuerpo a cuerpo: {trigger_chance} de probabilidad de invocar un rayo."
 }
