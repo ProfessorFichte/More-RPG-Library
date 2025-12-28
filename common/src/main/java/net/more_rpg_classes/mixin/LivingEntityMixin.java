@@ -11,10 +11,8 @@ import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.tag.DamageTypeTags;
 import net.more_rpg_classes.MRPGCMod;
-import net.more_rpg_classes.custom.MoreSpellSchools;
 import net.more_rpg_classes.effect.MRPGCEffects;
 import net.more_rpg_classes.entity.attribute.MRPGCEntityAttributes;
-import net.spell_power.api.SpellDamageSource;
 import net.spell_power.api.SpellPowerTags;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -26,13 +24,13 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.registry.entry.RegistryEntry;
 import org.spongepowered.asm.mixin.Shadow;
 
-import static net.more_rpg_classes.MRPGCMod.MOD_ID;
-
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
     @Shadow public abstract boolean hasStatusEffect(RegistryEntry<StatusEffect> effect);
     @Unique long lastSpellvampireTick = 0;
     @Unique private long lastLifestealTick = 0;
+    @Unique private float actualDamageDealt = 0;
+    @Unique private float healthBeforeDamage = 0;
     @Inject(method = "createLivingAttributes", at = @At("RETURN"))
     private static void mrpgc_lib$createLivingAttributes(CallbackInfoReturnable<DefaultAttributeContainer.Builder> cir) {
         cir.getReturnValue()
@@ -47,6 +45,13 @@ public abstract class LivingEntityMixin {
                 .add(MRPGCEntityAttributes.LIFESTEAL_MODIFIER)
                 .add(MRPGCEntityAttributes.RAGE_MODIFIER)
                 .add(MRPGCEntityAttributes.SPELL_VAMPIRE)
+                .add(MRPGCEntityAttributes.BURNING_CHANCE)
+                .add(MRPGCEntityAttributes.STAGGER_CHANCE)
+                .add(MRPGCEntityAttributes.ARMOR_PIERCING)
+                .add(MRPGCEntityAttributes.STUN_CHANCE)
+                .add(MRPGCEntityAttributes.POISON_CHANCE)
+                .add(MRPGCEntityAttributes.FREEZE_CHANCE)
+                .add(MRPGCEntityAttributes.BLEEDING_CHANCE)
         ;
     }
 
@@ -72,6 +77,24 @@ public abstract class LivingEntityMixin {
         }
     }
 
+
+
+    @Inject(method = "applyDamage", at = @At("HEAD"))
+    private void captureHealthBeforeApplyDamage(DamageSource damageSource, float damageAmount, CallbackInfo ci) {
+        if (damageSource.getAttacker() instanceof PlayerEntity && damageSource.isIn(DamageTypeTags.IS_PLAYER_ATTACK)) {
+            LivingEntity thisEntity = (LivingEntity)(Object)this;
+            healthBeforeDamage = thisEntity.getHealth();
+        }
+    }
+
+    @Inject(method = "applyDamage", at = @At("TAIL"))
+    private void calculateActualDamageFromHealthChange(DamageSource damageSource, float damageAmount, CallbackInfo ci) {
+        if (damageSource.getAttacker() instanceof PlayerEntity && damageSource.isIn(DamageTypeTags.IS_PLAYER_ATTACK)) {
+            LivingEntity thisEntity = (LivingEntity)(Object)this;
+            float healthAfter = thisEntity.getHealth();
+            this.actualDamageDealt = healthBeforeDamage - healthAfter;
+        }
+    }
 
     @Inject(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V"))
     private void spellVampire$damage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
@@ -100,7 +123,7 @@ public abstract class LivingEntityMixin {
             }
         }
     }
-    @Inject(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V"))
+    @Inject(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V", shift = At.Shift.AFTER))
     private void lifesteal$damage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         if (source.isIn(DamageTypeTags.IS_PLAYER_ATTACK)) {
             Entity entity = source.getAttacker();
@@ -119,10 +142,59 @@ public abstract class LivingEntityMixin {
                     if (value != 100 && actualHealth != maxHealth) {
                         value = value - 100;
                         float multiplier = (float) value / 100f;
-                        float heal = amount * multiplier;
+                        float heal = this.actualDamageDealt * multiplier;
                         playerEntity.heal(heal);
                         lastLifestealTick = currentTick;
                     }
+                }
+            }
+        }
+    }
+
+    @Unique
+    private static final net.minecraft.util.Identifier ARMOR_PIERCING_ID = net.minecraft.util.Identifier.of("more_rpg_classes", "armor_piercing_reduction");
+
+    @Inject(method = "damage", at = @At("HEAD"))
+    private void armorPiercing$modifyArmor(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+        if (source.getAttacker() instanceof PlayerEntity player && source.isIn(DamageTypeTags.IS_PLAYER_ATTACK) && !player.getWorld().isClient()) {
+            EntityAttributeInstance armorPiercing = player.getAttributeInstance(MRPGCEntityAttributes.ARMOR_PIERCING);
+
+            if (armorPiercing != null && armorPiercing.getValue() > 100.0) {
+                float piercingPercent = (float)(armorPiercing.getValue() - 100) / 100f;
+
+                LivingEntity thisEntity = (LivingEntity)(Object)this;
+                EntityAttributeInstance armorAttribute = thisEntity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR);
+                EntityAttributeInstance toughnessAttribute = thisEntity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR_TOUGHNESS);
+
+                if (armorAttribute != null && toughnessAttribute != null) {
+                    double currentArmor = armorAttribute.getValue();
+                    double currentToughness = toughnessAttribute.getValue();
+
+                    double armorReduction = -currentArmor * piercingPercent;
+                    double toughnessReduction = -currentToughness * piercingPercent;
+
+                    armorAttribute.addTemporaryModifier(new net.minecraft.entity.attribute.EntityAttributeModifier(
+                            ARMOR_PIERCING_ID, armorReduction, net.minecraft.entity.attribute.EntityAttributeModifier.Operation.ADD_VALUE));
+                    toughnessAttribute.addTemporaryModifier(new net.minecraft.entity.attribute.EntityAttributeModifier(
+                            ARMOR_PIERCING_ID, toughnessReduction, net.minecraft.entity.attribute.EntityAttributeModifier.Operation.ADD_VALUE));
+                }
+            }
+        }
+    }
+
+    @Inject(method = "damage", at = @At("RETURN"))
+    private void armorPiercing$restoreArmor(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+        if (source.getAttacker() instanceof PlayerEntity player && source.isIn(DamageTypeTags.IS_PLAYER_ATTACK) && !player.getWorld().isClient()) {
+            EntityAttributeInstance armorPiercing = player.getAttributeInstance(MRPGCEntityAttributes.ARMOR_PIERCING);
+
+            if (armorPiercing != null && armorPiercing.getValue() > 100.0) {
+                LivingEntity thisEntity = (LivingEntity)(Object)this;
+                EntityAttributeInstance armorAttribute = thisEntity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR);
+                EntityAttributeInstance toughnessAttribute = thisEntity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR_TOUGHNESS);
+
+                if (armorAttribute != null && toughnessAttribute != null) {
+                    armorAttribute.removeModifier(ARMOR_PIERCING_ID);
+                    toughnessAttribute.removeModifier(ARMOR_PIERCING_ID);
                 }
             }
         }

@@ -4,166 +4,156 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
-import net.more_rpg_classes.MRPGCMod;
 import net.more_rpg_classes.custom.MoreSpellSchools;
+import net.more_rpg_classes.effect.MRPGCEffects;
 import net.more_rpg_classes.entity.attribute.MRPGCEntityAttributes;
+import net.spell_engine.api.effect.SpellEngineEffects;
 import net.spell_power.api.SpellDamageSource;
+import net.spell_power.api.SpellSchool;
 import net.spell_power.api.SpellSchools;
-import org.slf4j.Logger;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.Random;
+import net.minecraft.entity.attribute.EntityAttribute;
+import net.minecraft.registry.entry.RegistryEntry;
 
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin {
 
-    @Inject(method = "attack", at = @At("TAIL"))
-    private void mrpgc$boostRageDamageOnAttack(Entity target, CallbackInfo ci) {
+    @Unique
+    private void applyFuseDamage(PlayerEntity player, LivingEntity target,
+                                 RegistryEntry<EntityAttribute> fuseAttribute,
+                                 SpellSchool spellSchool) {
+        if (target == null || player.getWorld().isClient()) {
+            return;
+        }
+
+        EntityAttributeInstance fuseInstance = player.getAttributeInstance(fuseAttribute);
+        if (fuseInstance != null && fuseInstance.getValue() != 100.0) {
+            float fuseBonus = (float)((fuseInstance.getValue() - 100) / 100f);
+            float spellPower = (float) player.getAttributeValue(spellSchool.attributeEntry);
+            float magicDamage = Math.max(0.1f, fuseBonus * spellPower);
+            target.timeUntilRegen = 0;
+            target.damage(SpellDamageSource.create(spellSchool, player), magicDamage);
+        }
+    }
+
+    @Unique
+    private float calculateRageDamage() {
         PlayerEntity player = (PlayerEntity)(Object)this;
-        if (target instanceof LivingEntity livingTarget && !player.getWorld().isClient()) {
-            EntityAttributeInstance rage = player.getAttributeInstance(MRPGCEntityAttributes.RAGE_MODIFIER);
-            if (rage != null) {
-                float rageValue = (float) (rage.getValue() - 100) / 100f;
-                float health = player.getHealth();
-                float maxHealth = (float) player.getAttributeValue(EntityAttributes.GENERIC_MAX_HEALTH);
+        EntityAttributeInstance rage = player.getAttributeInstance(MRPGCEntityAttributes.RAGE_MODIFIER);
+
+        if (rage != null && rage.getValue() != 100.0) {
+            float rageValue = (float) (rage.getValue() - 100) / 100f;
+            float health = player.getHealth();
+            float maxHealth = (float) player.getAttributeValue(EntityAttributes.GENERIC_MAX_HEALTH);
+
+            if (health < maxHealth) {
                 float missing = (maxHealth - health) / maxHealth;
-                if (rageValue != 0 && health < maxHealth) {
-                    float baseDamage = (float) player.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
-                    float extraDamage = Math.max(0.1F, baseDamage * rageValue * missing);
-                    livingTarget.timeUntilRegen = 0;
-                    livingTarget.damage(player.getDamageSources().playerAttack(player), extraDamage);
-                }
+                float baseDamage = (float) player.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
+                return Math.max(0.1F, baseDamage * rageValue * missing);
             }
         }
+        return 0;
+    }
+
+    @ModifyArg(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;damage(Lnet/minecraft/entity/damage/DamageSource;F)Z"), index = 1)
+    private float mrpgc$addRageDamageToEntityDamage(float damage) {
+        PlayerEntity player = (PlayerEntity)(Object)this;
+        if (!player.getWorld().isClient()) {
+            float rageDamage = calculateRageDamage();
+            float totalDamage = damage + rageDamage;
+            return totalDamage;
+        }
+        return damage;
     }
 
     @Inject(method = "attack", at = @At("TAIL"))
     private void mrpgc$onAttackFuseMagicDamage(Entity target, CallbackInfo ci) {
+        if (!(target instanceof LivingEntity livingTarget)) {
+            return;
+        }
         PlayerEntity player = (PlayerEntity)(Object) this;
-        ///AIR SPELL POWER
-        if (target instanceof LivingEntity livingTarget && !player.getWorld().isClient()) {
-            EntityAttributeInstance airFuse = player.getAttributeInstance(MRPGCEntityAttributes.AIR_FUSE_MODIFIER);
-            if (airFuse != null && airFuse.getValue() != 100.0) {
-                float airBonus = (float) ((airFuse.getValue() - 100) / 100f);
-                float airPower = (float) player.getAttributeValue(MoreSpellSchools.AIR.attributeEntry);
-                float magicDamage = Math.max(0.1f, airBonus * airPower);
-                livingTarget.timeUntilRegen = 0;
-                livingTarget.damage(SpellDamageSource.create(MoreSpellSchools.AIR, player), magicDamage);
-            }
-        }
-        ///ARCANE SPELL POWER
-        if (target instanceof LivingEntity livingTarget && !player.getWorld().isClient()) {
-            EntityAttributeInstance arcaneFuse = player.getAttributeInstance(MRPGCEntityAttributes.ARCANE_FUSE_MODIFIER);
-            if (arcaneFuse != null && arcaneFuse.getValue() != 100.0) {
-                float arcaneBonus = (float) ((arcaneFuse.getValue() - 100) / 100f);
-                float arcanePower = (float) player.getAttributeValue(SpellSchools.ARCANE.attributeEntry);
-                float magicDamage = Math.max(0.1f, arcaneBonus * arcanePower);
-                livingTarget.timeUntilRegen = 0;
-                livingTarget.damage(SpellDamageSource.create(SpellSchools.ARCANE, player), magicDamage);
-            }
-        }
-        ///EARTH SPELL POWER
-        if (target instanceof LivingEntity livingTarget && !player.getWorld().isClient()) {
-            EntityAttributeInstance earthFuse = player.getAttributeInstance(MRPGCEntityAttributes.EARTH_FUSE_MODIFIER);
-            if (earthFuse != null && earthFuse.getValue() != 100.0) {
-                float earthBonus = (float) ((earthFuse.getValue() - 100) / 100f);
-                float earthPower = (float) player.getAttributeValue(MoreSpellSchools.EARTH.attributeEntry);
-                float magicDamage = Math.max(0.1f, earthBonus * earthPower);
-                livingTarget.timeUntilRegen = 0;
-                livingTarget.damage(SpellDamageSource.create(MoreSpellSchools.EARTH, player), magicDamage);
-            }
-        }
-        ///FIRE SPELL POWER
-        if (target instanceof LivingEntity livingTarget && !player.getWorld().isClient()) {
-            EntityAttributeInstance fireFuse = player.getAttributeInstance(MRPGCEntityAttributes.FIRE_FUSE_MODIFIER);
-            if (fireFuse != null && fireFuse.getValue() != 100.0) {
-                float fireBonus = (float) ((fireFuse.getValue() - 100) / 100f);
-                float firePower = (float) player.getAttributeValue(SpellSchools.FIRE.attributeEntry);
-                float magicDamage = Math.max(0.1f, fireBonus * firePower);
-                livingTarget.timeUntilRegen = 0;
-                livingTarget.damage(SpellDamageSource.create(SpellSchools.FIRE, player), magicDamage);
-            }
-        }
-        ///FROST SPELL POWER
-        if (target instanceof LivingEntity livingTarget && !player.getWorld().isClient()) {
-            EntityAttributeInstance frostFuse = player.getAttributeInstance(MRPGCEntityAttributes.FROST_FUSE_MODIFIER);
-            if (frostFuse != null && frostFuse.getValue() != 100.0) {
-                float frostBonus = (float) ((frostFuse.getValue() - 100) / 100f);
-                float frostPower = (float) player.getAttributeValue(SpellSchools.FROST.attributeEntry);
-                float magicDamage = Math.max(0.1f, frostBonus * frostPower);
-                livingTarget.timeUntilRegen = 0;
-                livingTarget.damage(SpellDamageSource.create(SpellSchools.FROST, player), magicDamage);
-            }
-        }
-        ///HEALING SPELL POWER
-        if (target instanceof LivingEntity livingTarget && !player.getWorld().isClient()) {
-            EntityAttributeInstance healingFuse = player.getAttributeInstance(MRPGCEntityAttributes.HEALING_FUSE_MODIFIER);
-            if (healingFuse != null && healingFuse.getValue() != 100.0) {
-                float healingBonus = (float) ((healingFuse.getValue() - 100) / 100f);
-                float healingPower = (float) player.getAttributeValue(SpellSchools.HEALING.attributeEntry);
-                float magicDamage = Math.max(0.1f, healingBonus * healingPower);
-                livingTarget.timeUntilRegen = 0;
-                livingTarget.damage(SpellDamageSource.create(SpellSchools.HEALING, player), magicDamage);
-            }
-        }
-        ///WATER SPELL POWER
-        if (target instanceof LivingEntity livingTarget && !player.getWorld().isClient()) {
-            EntityAttributeInstance waterFuse = player.getAttributeInstance(MRPGCEntityAttributes.WATER_FUSE_MODIFIER);
-            if (waterFuse != null && waterFuse.getValue() != 100.0) {
-                float waterBonus = (float) ((waterFuse.getValue() - 100) / 100f);
-                float waterPower = (float) player.getAttributeValue(MoreSpellSchools.WATER.attributeEntry);
-                float magicDamage = Math.max(0.1f, waterBonus * waterPower);
-                livingTarget.timeUntilRegen = 0;
-                livingTarget.damage(SpellDamageSource.create(MoreSpellSchools.WATER, player), magicDamage);
-            }
-        }
 
+        applyFuseDamage(player, livingTarget, MRPGCEntityAttributes.AIR_FUSE_MODIFIER, MoreSpellSchools.AIR);
+        applyFuseDamage(player, livingTarget, MRPGCEntityAttributes.ARCANE_FUSE_MODIFIER, SpellSchools.ARCANE);
+        applyFuseDamage(player, livingTarget, MRPGCEntityAttributes.EARTH_FUSE_MODIFIER, MoreSpellSchools.EARTH);
+        applyFuseDamage(player, livingTarget, MRPGCEntityAttributes.FIRE_FUSE_MODIFIER, SpellSchools.FIRE);
+        applyFuseDamage(player, livingTarget, MRPGCEntityAttributes.FROST_FUSE_MODIFIER, SpellSchools.FROST);
+        applyFuseDamage(player, livingTarget, MRPGCEntityAttributes.HEALING_FUSE_MODIFIER, SpellSchools.HEALING);
+        applyFuseDamage(player, livingTarget, MRPGCEntityAttributes.WATER_FUSE_MODIFIER, MoreSpellSchools.WATER);
     }
 
-    /*
-    @ModifyArg(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;damage(Lnet/minecraft/entity/damage/DamageSource;F)Z"), index = 1)
-    private float rage$attack(float damage) {
-        PlayerEntity player = (PlayerEntity) (Object) this;
-        int rage_attr = (int) ((LivingEntity) (Object) this).getAttributeValue(MRPGCEntityAttributes.RAGE_MODIFIER) -100;
-        float value1 = (float) rage_attr / 100;
-        float actual_health = player.getHealth();
-        float max_health = (float) player.getAttributeValue(EntityAttributes.GENERIC_MAX_HEALTH);
-        float missing_health_percentage = (max_health - actual_health) / max_health;
-        if (rage_attr != 0 && actual_health != max_health){
-            return damage + (damage * (value1 * missing_health_percentage));
-        }
-        return damage;
-    }
-    @ModifyArg(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;damage(Lnet/minecraft/entity/damage/DamageSource;F)Z"), index = 1)
-    private float arcanefuse$attack(float damage) {
-        PlayerEntity player = (PlayerEntity) (Object) this;
-        int value2 = (int) ((LivingEntity) (Object) this).getAttributeValue(MRPGCEntityAttributes.ARCANE_FUSE_MODIFIER) -100;
-        float arcane_spellpower = (float) player.getAttributeValue(SpellSchools.ARCANE.getAttributeEntry());
-        if(value2 != 0){
-            float multiplier = (float) value2 /100;
-            return damage + (multiplier * arcane_spellpower);
-        }
-        return damage;
-    }
-    @ModifyArg(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;damage(Lnet/minecraft/entity/damage/DamageSource;F)Z"), index = 1)
-    private float lifesteal$attack(float damage) {
-        PlayerEntity player = (PlayerEntity) (Object) this;
-        float actual_health = player.getHealth();
-        float max_health = (float) player.getAttributeValue(EntityAttributes.GENERIC_MAX_HEALTH);
+    @Inject(method = "attack", at = @At("TAIL"))
+    private void mrpgc$applyChanceBasedEffects(Entity target, CallbackInfo ci) {
+        PlayerEntity player = (PlayerEntity)(Object)this;
 
-        int value3 = (int) ((LivingEntity) (Object) this).getAttributeValue(MRPGCEntityAttributes.LIFESTEAL_MODIFIER) -100;
-        if(value3 != 0 && actual_health != max_health){
-            float multiplier = (float) value3 / 100;
-            float heal = (damage * multiplier );
-            player.heal(heal);
-            return damage;
+        if (target instanceof LivingEntity livingTarget && !player.getWorld().isClient()) {
+            Random random = new Random();
+            float attackDamage = (float) player.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
+            int amplifier = (int)(attackDamage * 0.15);
+            // 1. Burning Chance
+            EntityAttributeInstance burningChance = player.getAttributeInstance(MRPGCEntityAttributes.BURNING_CHANCE);
+            if (burningChance != null && burningChance.getValue() > 100.0) {
+                float chance = (float)(burningChance.getValue() - 100) / 100f;
+                if (random.nextFloat() < chance) {
+                    livingTarget.addStatusEffect(new StatusEffectInstance(
+                            MRPGCEffects.IGNITED.entry, 40,amplifier,true,false,true));
+                }
+            }
+            // 2. Stagger Chance
+            EntityAttributeInstance staggerChance = player.getAttributeInstance(MRPGCEntityAttributes.STAGGER_CHANCE);
+            if (staggerChance != null && staggerChance.getValue() > 100.0) {
+                float chance = (float)(staggerChance.getValue() - 100) / 100f;
+                if (random.nextFloat() < chance) {
+                    livingTarget.addStatusEffect(new StatusEffectInstance(
+                            MRPGCEffects.STAGGER.entry, 80, amplifier,true,false,true));
+                }
+            }
+            // 3. Stun Chance
+            EntityAttributeInstance stunChance = player.getAttributeInstance(MRPGCEntityAttributes.STUN_CHANCE);
+            if (stunChance != null && stunChance.getValue() > 100.0) {
+                float chance = (float)(stunChance.getValue() - 100) / 100f;
+                if (random.nextFloat() < chance) {
+                    livingTarget.addStatusEffect(new StatusEffectInstance(
+                            SpellEngineEffects.STUN.entry, 40, 0,true,false,true));
+                }
+            }
+            // 4. Poison Chance
+            EntityAttributeInstance poisonChance = player.getAttributeInstance(MRPGCEntityAttributes.POISON_CHANCE);
+            if (poisonChance != null && poisonChance.getValue() > 100.0) {
+                float chance = (float)(poisonChance.getValue() - 100) / 100f;
+                if (random.nextFloat() < chance) {
+                    livingTarget.addStatusEffect(new StatusEffectInstance(
+                            StatusEffects.POISON, 120, amplifier,true,false,true));
+                }
+            }
+            // 5. Freeze Chance
+            EntityAttributeInstance freezeChance = player.getAttributeInstance(MRPGCEntityAttributes.FREEZE_CHANCE);
+            if (freezeChance != null && freezeChance.getValue() > 100.0) {
+                float chance = (float)(freezeChance.getValue() - 100) / 100f;
+                if (random.nextFloat() < chance) {
+                    livingTarget.addStatusEffect(new StatusEffectInstance(
+                            MRPGCEffects.FROZEN_SOLID.entry, 60, 0,true,false,true));
+                }
+            }
+            // 6. Bleeding Chance
+            EntityAttributeInstance bleedingChance = player.getAttributeInstance(MRPGCEntityAttributes.BLEEDING_CHANCE);
+            if (bleedingChance != null && bleedingChance.getValue() > 100.0) {
+                float chance = (float)(bleedingChance.getValue() - 100) / 100f;
+                if (random.nextFloat() < chance) {
+                    livingTarget.addStatusEffect(new StatusEffectInstance(
+                            MRPGCEffects.BLEEDING.entry, 120, amplifier,true,false,true));
+                }
+            }
         }
-        return damage;
     }
-     */
 }

@@ -19,7 +19,7 @@ public class BleedingEffect extends StatusEffect {
         if(type.isIn(MRPGCEntityTags.BLEEDING_IMMUNE)){
             entity.removeStatusEffect(MRPGCEffects.BLEEDING.entry);
         }
-        float bleedingTickDamage = 1.0F;
+        float bleedingTickDamage = 1.0F + amplifier;
         float currentHealthPercentage = entity.getHealth() / entity.getMaxHealth();
         if(currentHealthPercentage <= 0.75F){
             bleedingTickDamage = bleedingTickDamage + (entity.getMaxHealth() * 0.01F);
