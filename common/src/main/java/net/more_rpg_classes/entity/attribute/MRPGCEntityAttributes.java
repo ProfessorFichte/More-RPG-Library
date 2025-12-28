@@ -22,7 +22,13 @@ public class MRPGCEntityAttributes{
     public static final RegistryEntry<EntityAttribute> FROST_FUSE_MODIFIER= register("frost_fuse_modifier", 100.0, 100.0, 1024.0);
     public static final RegistryEntry<EntityAttribute> HEALING_FUSE_MODIFIER= register("healing_fuse_modifier", 100.0, 100.0, 1024.0);
     public static final RegistryEntry<EntityAttribute> WATER_FUSE_MODIFIER= register("water_fuse_modifier", 100.0, 100.0, 1024.0);
-
+    public static final RegistryEntry<EntityAttribute> BURNING_CHANCE = register("burning_chance", 100.0, 100.0, 200.0);
+    public static final RegistryEntry<EntityAttribute> STAGGER_CHANCE = register("stagger_chance", 100.0, 100.0, 200.0);
+    public static final RegistryEntry<EntityAttribute> STUN_CHANCE = register("stun_chance", 100.0, 100.0, 200.0);
+    public static final RegistryEntry<EntityAttribute> POISON_CHANCE = register("poison_chance", 100.0, 100.0, 200.0);
+    public static final RegistryEntry<EntityAttribute> FREEZE_CHANCE = register("freeze_chance", 100.0, 100.0, 200.0);
+    public static final RegistryEntry<EntityAttribute> BLEEDING_CHANCE = register("bleeding_chance", 100.0, 100.0, 200.0);
+    public static final RegistryEntry<EntityAttribute> ARMOR_PIERCING = register("armor_piercing", 100.0, 100.0, 200.0);
 
     private static RegistryEntry<EntityAttribute> register(final String name, double base, double min, double max) {
         EntityAttribute attribute = new ClampedEntityAttribute("attribute.name." + MOD_ID + '.' + name, base, min, max).setTracked(true);

@@ -188,6 +188,19 @@ public class MRPGCEffects {
             ))
     ));
 
+    public static final Effects.Entry IGNITED = add(new Effects.Entry(
+            Identifier.of(MOD_ID, "ignited"),
+            "Ignited",
+            "Burns the target, dealing damage over time and reduces healing. The target cannot move or attack.",
+            new IgnitedEffect(StatusEffectCategory.HARMFUL, 0xFF6600),
+            new EffectConfig(List.of(
+                    new AttributeModifier(
+                            SpellEngineAttributes.HEALING_TAKEN.id.toString(),
+                            -0.1F,
+                            EntityAttributeModifier.Operation.ADD_MULTIPLIED_BASE
+                    )))
+    ));
+
     public static void register(ConfigFile.Effects config) {
         for (var entry : entries) {
             Synchronized.configure(entry.effect, true);
@@ -195,9 +208,11 @@ public class MRPGCEffects {
 
         RemoveOnHit.configure(FROZEN_SOLID.effect, RemoveOnHit.Trigger.DIRECT_HIT, 1, 1);
 
-        ActionImpairing.configure(FROZEN_SOLID.effect, EntityActionsAllowed.STUN);
+        ActionImpairing.configure(FROZEN_SOLID.effect, MRPGCActionImpairing.FROZEN);
+        ActionImpairing.configure(IGNITED.effect, MRPGCActionImpairing.IGNITED);
         ActionImpairing.configure(FEAR.effect, EntityActionsAllowed.INCAPACITATE);
         ActionImpairing.configure(STAGGER.effect, EntityActionsAllowed.INCAPACITATE);
+
 
         Effects.register(entries, config.effects);
     }

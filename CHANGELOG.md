@@ -1,3 +1,17 @@
+# 2.5.11 - 1.21.1
+**Add new Attributes with melee-attack functionality**
+- burning_chance -> Chance to ignite the target, dealing damage every 10 ticks, reducing the targets healing taken (scaled with attack damage)
+- stagger_chance -> Chance to apply the Stagger Effect
+- stun_chance -> Chance to apply the Stun Effect
+- poison_chance -> Chance to apply the Poison Effect (scaled with attack damage)
+- freeze_chance -> Chance to apply the Frozen Solid
+- bleeding_chance -> Chance to apply the Bleeding Effect (scaled with attack damage)
+- armor_piercing -> Ignores the Armor values of the target in %
+**Internal Changes and Fixes**
+- Fixed missing amplifier scaling for the Bleeding Effect
+- Fixed Lifesteal healing before armor calculation
+- Fix Rage Damage Calculation
+
 # 2.5.10 - 1.21.1
 - fix wrong spell id for Melee lightning strike passive
 

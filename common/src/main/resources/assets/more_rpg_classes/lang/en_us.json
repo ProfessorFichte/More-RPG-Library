@@ -21,6 +21,11 @@
   "effect.more_rpg_classes.soaked.description": "Soaking the target with water extinguishing fire, more vulnerable to frost, lightning and water spells.",
   "effect.more_rpg_classes.fatal_poison": "Fatal Poison",
   "effect.more_rpg_classes.fatal_poison.description": "Inflicts damage over time, and can kill both undead and non-undead mobs.",
+  "effect.more_rpg_classes.ignited": "Ignited",
+  "effect.more_rpg_classes.ignited.description": "Burns the target, dealing damage over time. The target cannot move or attack.",
+
+  "hud.more_rpg_classes.frozen": "Frozen",
+  "hud.more_rpg_classes.ignited": "Ignited",
 
   "item.more_rpg_classes.aqua_stone": "Water Rune",
   "item.more_rpg_classes.terra_stone": "Earth Rune",
@@ -46,6 +51,13 @@
   "attribute.name.more_rpg_classes.frost_fuse_modifier": "Frost Power Fuse",
   "attribute.name.more_rpg_classes.healing_fuse_modifier": "Healing Power Fuse",
   "attribute.name.more_rpg_classes.water_fuse_modifier": "Water Power Fuse",
+  "attribute.name.more_rpg_classes.burning_chance": "Burning Chance",
+  "attribute.name.more_rpg_classes.stagger_chance": "Stagger Chance",
+  "attribute.name.more_rpg_classes.armor_piercing": "Armor Piercing",
+  "attribute.name.more_rpg_classes.stun_chance": "Stun Chance",
+  "attribute.name.more_rpg_classes.poison_chance": "Poison Chance",
+  "attribute.name.more_rpg_classes.freeze_chance": "Freeze Chance",
+  "attribute.name.more_rpg_classes.bleeding_chance": "Bleeding Chance",
 
   "advancements.more_rpg_content.root.title": "More RPG Content!",
   "advancements.more_rpg_content.root.description": "Explore the different paths you can choose!",
