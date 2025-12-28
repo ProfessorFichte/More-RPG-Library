@@ -156,11 +156,7 @@ if (System.getenv("CURSEFORGE_API_KEY")) {
             relations {
                 // Required dependencies
                 requiredDependency 'spell-engine'
-                requiredDependency 'more-rpg-library'
-                requiredDependency 'archers'
-
-                // Optional dependencies
-                optionalDependency 'lne-archers'
+                requiredDependency 'spell-power'
             }
 
             mainArtifact(remapJar)
