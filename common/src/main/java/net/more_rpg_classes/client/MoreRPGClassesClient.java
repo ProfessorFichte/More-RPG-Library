@@ -8,11 +8,14 @@ import net.more_rpg_classes.client.effect.*;
 import net.more_rpg_classes.client.particle.*;
 import net.more_rpg_classes.client.render.FriendlyLightningEntityRenderer;
 import net.more_rpg_classes.custom.MrpgLibSpells;
+import net.more_rpg_classes.effect.MRPGCActionImpairing;
 import net.more_rpg_classes.effect.MRPGCEffects;
 import net.more_rpg_classes.entity.MRPGCEntities;
 import net.spell_engine.api.effect.CustomModelStatusEffect;
 import net.spell_engine.api.effect.CustomParticleStatusEffect;
+import net.spell_engine.api.effect.EntityActionsAllowed;
 import net.spell_engine.api.render.CustomModels;
+import net.spell_engine.client.gui.HudMessages;
 import net.spell_engine.client.gui.SpellTooltip;
 import net.spell_engine.client.particle.SpellExplosionParticle;
 import net.spell_engine.client.particle.SpellFlameParticle;
@@ -63,6 +66,8 @@ public class MoreRPGClassesClient{
         ParticleFactoryRegistry.getInstance().register(MoreParticles.STONE_TRAP, StoneTrapParticle.StoneTrapParticleFactory::new);
         ParticleFactoryRegistry.getInstance().register(MoreParticles.LEAF, LeafParticle.Factory::new);
         ParticleFactoryRegistry.getInstance().register(MoreParticles.FATAL_POISON, SpellFlameParticle.AnimatedFlameFactory::new);
+        ParticleFactoryRegistry.getInstance().register(MoreParticles.RAINBOW_MUSIC_NOTE_0, RainbowMusicNoteParticle.Factory::new);
+        ParticleFactoryRegistry.getInstance().register(MoreParticles.RAINBOW_MUSIC_NOTE_1, RainbowMusicNoteParticle.Factory::new);
 
         CustomParticleStatusEffect.register(MRPGCEffects.MOLTEN_ARMOR.effect, new MoltenArmorParticles(1));
         CustomParticleStatusEffect.register(MRPGCEffects.BLEEDING.effect, new BleedingParticles(1));
@@ -70,6 +75,7 @@ public class MoreRPGClassesClient{
         CustomModelStatusEffect.register(MRPGCEffects.FROZEN_SOLID.effect, new FrozenSolidRenderer());
         CustomParticleStatusEffect.register(MRPGCEffects.SOAKED.effect, new SoakedParticles(2));
         CustomParticleStatusEffect.register(MRPGCEffects.FATAL_POISON.effect, new PoisonParticles(2));
+        CustomParticleStatusEffect.register(MRPGCEffects.IGNITED.effect, new IgnitedParticles(3));
     }
     public static void registerParticleAppearances() {
         ParticleFactoryRegistry registry = ParticleFactoryRegistry.getInstance();
@@ -102,5 +108,7 @@ public class MoreRPGClassesClient{
         registry.register(MoreParticles.RAGE_PAR, DamageParticle.Factory::new);
         registry.register(MoreParticles.SMALL_THUNDER, SmallThunderParticle.Factory::new);
         registry.register(MoreParticles.FATAL_POISON, SpellFlameParticle.AnimatedFlameFactory::new);
+        registry.register(MoreParticles.RAINBOW_MUSIC_NOTE_0, RainbowMusicNoteParticle.Factory::new);
+        registry.register(MoreParticles.RAINBOW_MUSIC_NOTE_1, RainbowMusicNoteParticle.Factory::new);
     }
 }

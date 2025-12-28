@@ -36,6 +36,9 @@ public class MoreParticles {
     public static final SimpleParticleType FATAL_POISON = FabricParticleTypes.simple();
     public static final SimpleParticleType RAGE_PAR = FabricParticleTypes.simple();
     public static final SimpleParticleType SMALL_THUNDER = FabricParticleTypes.simple();
+    public static final SimpleParticleType RAINBOW_MUSIC_NOTE_0 = FabricParticleTypes.simple();
+    public static final SimpleParticleType RAINBOW_MUSIC_NOTE_1 = FabricParticleTypes.simple();
+
 
 
     public static void register(){
@@ -67,6 +70,8 @@ public class MoreParticles {
         Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "fatal_poison"), FATAL_POISON);
         Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "rage_particle"), RAGE_PAR);
         Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "small_thunder"), SMALL_THUNDER);
+        Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "rainbow_music_note_0"), RAINBOW_MUSIC_NOTE_0);
+        Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "rainbow_music_note_1"), RAINBOW_MUSIC_NOTE_1);
     }
 
 }
