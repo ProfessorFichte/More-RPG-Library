@@ -64,10 +64,13 @@ public class MRPGCMod {
 			lootConfig.refresh();
 			CustomSpellImpacts.registerCustomImpacts();
 			LootTableEvents.MODIFY.register((key, tableBuilder, source, registries) -> {
+			var tableId = key.getValue().toString();
+			if (!lootConfig.value.entries.containsKey(tableId)) {
+				return;
+			}
 			LootInjector.configure(registries, key.getValue(), tableBuilder);
 			});
 			MoreSpellSchools.initialize();
-			CustomSpellImpacts.registerCustomImpacts();
 			CustomSpellEntityPredicate.registerCustomPredicates();
 			CriticalStrikeCompat.init();
 	}
