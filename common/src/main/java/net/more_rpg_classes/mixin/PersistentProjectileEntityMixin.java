@@ -1,88 +1,147 @@
 package net.more_rpg_classes.mixin;
 
+import net.fabric_extras.ranged_weapon.api.EntityAttributes_RangedWeapon;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.EntityAttribute;
+import net.minecraft.entity.attribute.EntityAttributeInstance;
+import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.hit.EntityHitResult;
-import net.more_rpg_classes.entity.IProjectileAttributeStorage;
-import net.more_rpg_classes.entity.attribute.ProjectileAttributeData;
-import net.more_rpg_classes.util.ProjectileEffectApplicator;
+import net.more_rpg_classes.custom.MoreSpellSchools;
+import net.more_rpg_classes.effect.MRPGCEffects;
+import net.more_rpg_classes.entity.attribute.MRPGCEntityAttributes;
+import net.spell_engine.api.effect.SpellEngineEffects;
+import net.spell_power.api.SpellDamageSource;
+import net.spell_power.api.SpellSchool;
+import net.spell_power.api.SpellSchools;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.Random;
+
 @Mixin(PersistentProjectileEntity.class)
-public abstract class PersistentProjectileEntityMixin implements IProjectileAttributeStorage {
+public abstract class PersistentProjectileEntityMixin {
 
     @Unique
-    private ProjectileAttributeData mrpgc$attributeData = null;
+    private void applyFuseDamage(PlayerEntity player, LivingEntity target,
+                                 RegistryEntry<EntityAttribute> fuseAttribute,
+                                 SpellSchool spellSchool) {
+        if (target == null || player.getWorld().isClient()) {
+            return;
+        }
 
-    @Override
-    public void mrpgc$setAttributeData(ProjectileAttributeData data) {
-        this.mrpgc$attributeData = data;
-    }
-
-    @Override
-    public ProjectileAttributeData mrpgc$getAttributeData() {
-        return this.mrpgc$attributeData;
-    }
-
-    @Override
-    public boolean mrpgc$hasAttributeData() {
-        return this.mrpgc$attributeData != null;
-    }
-
-    @Inject(method = "setOwner", at = @At("TAIL"))
-    private void mrpgc$captureShooterAttributes(Entity owner, CallbackInfo ci) {
-        if (owner instanceof PlayerEntity player && !player.getWorld().isClient()) {
-            this.mrpgc$attributeData = ProjectileAttributeData.fromPlayer(player);
+        EntityAttributeInstance fuseInstance = player.getAttributeInstance(fuseAttribute);
+        if (fuseInstance != null && fuseInstance.getValue() != 100.0) {
+            float fuseBonus = (float)((fuseInstance.getValue() - 100) / 100f);
+            float spellPower = (float) player.getAttributeValue(spellSchool.attributeEntry);
+            float magicDamage = Math.max(0.1f, fuseBonus * spellPower);
+            target.timeUntilRegen = 0;
+            target.damage(SpellDamageSource.create(spellSchool, player), magicDamage);
         }
     }
 
     @Inject(method = "onEntityHit", at = @At("TAIL"))
     private void mrpgc$applyAttributeEffectsOnHit(EntityHitResult entityHitResult, CallbackInfo ci) {
-        if (this.mrpgc$attributeData == null) {
-            return;
-        }
-
+        PersistentProjectileEntity projectile = (PersistentProjectileEntity)(Object)this;
         Entity hitEntity = entityHitResult.getEntity();
+
+        // Check if hit entity is living and owner is a player
         if (!(hitEntity instanceof LivingEntity target)) {
             return;
         }
 
-        PersistentProjectileEntity projectile = (PersistentProjectileEntity)(Object)this;
-        Entity shooter = projectile.getOwner();
-
-        if (shooter == null || projectile.getWorld().isClient()) {
+        if (!(projectile.getOwner() instanceof PlayerEntity player)) {
             return;
         }
 
-        ProjectileEffectApplicator.applyEffects(
-            this.mrpgc$attributeData,
-            target,
-            shooter,
-            projectile.getWorld()
-        );
-    }
-
-    @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
-    private void mrpgc$writeAttributeDataToNbt(NbtCompound nbt, CallbackInfo ci) {
-        if (this.mrpgc$attributeData != null) {
-            NbtCompound attributeNbt = new NbtCompound();
-            this.mrpgc$attributeData.writeToNbt(attributeNbt);
-            nbt.put("mrpgc_attribute_data", attributeNbt);
+        if (player.getWorld().isClient()) {
+            return;
         }
-    }
 
-    @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
-    private void mrpgc$readAttributeDataFromNbt(NbtCompound nbt, CallbackInfo ci) {
-        if (nbt.contains("mrpgc_attribute_data")) {
-            NbtCompound attributeNbt = nbt.getCompound("mrpgc_attribute_data");
-            this.mrpgc$attributeData = ProjectileAttributeData.readFromNbt(attributeNbt);
+        // Apply all fuse magic damage
+        applyFuseDamage(player, target, MRPGCEntityAttributes.AIR_FUSE_MODIFIER, MoreSpellSchools.AIR);
+        applyFuseDamage(player, target, MRPGCEntityAttributes.ARCANE_FUSE_MODIFIER, SpellSchools.ARCANE);
+        applyFuseDamage(player, target, MRPGCEntityAttributes.EARTH_FUSE_MODIFIER, MoreSpellSchools.EARTH);
+        applyFuseDamage(player, target, MRPGCEntityAttributes.FIRE_FUSE_MODIFIER, SpellSchools.FIRE);
+        applyFuseDamage(player, target, MRPGCEntityAttributes.FROST_FUSE_MODIFIER, SpellSchools.FROST);
+        applyFuseDamage(player, target, MRPGCEntityAttributes.HEALING_FUSE_MODIFIER, SpellSchools.HEALING);
+        applyFuseDamage(player, target, MRPGCEntityAttributes.WATER_FUSE_MODIFIER, MoreSpellSchools.WATER);
+
+        // Apply chance-based effects
+        Random random = new Random();
+        float attackDamage = (float) player.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
+        if (FabricLoader.getInstance().isModLoaded("ranged_weapon_api")) {
+            attackDamage = (float) player.getAttributeValue( EntityAttributes_RangedWeapon.DAMAGE.entry);
+        }
+        int amplifier = (int)(attackDamage * 0.15);
+
+        // 1. Burning Chance
+        EntityAttributeInstance burningChance = player.getAttributeInstance(MRPGCEntityAttributes.BURNING_CHANCE);
+        if (burningChance != null && burningChance.getValue() > 100.0) {
+            float chance = (float)(burningChance.getValue() - 100) / 100f;
+            if (random.nextFloat() < chance) {
+                target.addStatusEffect(new StatusEffectInstance(
+                        MRPGCEffects.IGNITED.entry, 40, amplifier, true, false, true));
+            }
+        }
+
+        // 2. Stagger Chance
+        EntityAttributeInstance staggerChance = player.getAttributeInstance(MRPGCEntityAttributes.STAGGER_CHANCE);
+        if (staggerChance != null && staggerChance.getValue() > 100.0) {
+            float chance = (float)(staggerChance.getValue() - 100) / 100f;
+            if (random.nextFloat() < chance) {
+                target.addStatusEffect(new StatusEffectInstance(
+                        MRPGCEffects.STAGGER.entry, 80, amplifier, true, false, true));
+            }
+        }
+
+        // 3. Stun Chance
+        EntityAttributeInstance stunChance = player.getAttributeInstance(MRPGCEntityAttributes.STUN_CHANCE);
+        if (stunChance != null && stunChance.getValue() > 100.0) {
+            float chance = (float)(stunChance.getValue() - 100) / 100f;
+            if (random.nextFloat() < chance) {
+                target.addStatusEffect(new StatusEffectInstance(
+                        SpellEngineEffects.STUN.entry, 40, 0, true, false, true));
+            }
+        }
+
+        // 4. Poison Chance
+        EntityAttributeInstance poisonChance = player.getAttributeInstance(MRPGCEntityAttributes.POISON_CHANCE);
+        if (poisonChance != null && poisonChance.getValue() > 100.0) {
+            float chance = (float)(poisonChance.getValue() - 100) / 100f;
+            if (random.nextFloat() < chance) {
+                target.addStatusEffect(new StatusEffectInstance(
+                        StatusEffects.POISON, 120, amplifier, true, false, true));
+            }
+        }
+
+        // 5. Freeze Chance
+        EntityAttributeInstance freezeChance = player.getAttributeInstance(MRPGCEntityAttributes.FREEZE_CHANCE);
+        if (freezeChance != null && freezeChance.getValue() > 100.0) {
+            float chance = (float)(freezeChance.getValue() - 100) / 100f;
+            if (random.nextFloat() < chance) {
+                target.addStatusEffect(new StatusEffectInstance(
+                        MRPGCEffects.FROZEN_SOLID.entry, 60, 0, true, false, true));
+            }
+        }
+
+        // 6. Bleeding Chance
+        EntityAttributeInstance bleedingChance = player.getAttributeInstance(MRPGCEntityAttributes.BLEEDING_CHANCE);
+        if (bleedingChance != null && bleedingChance.getValue() > 100.0) {
+            float chance = (float)(bleedingChance.getValue() - 100) / 100f;
+            if (random.nextFloat() < chance) {
+                target.addStatusEffect(new StatusEffectInstance(
+                        MRPGCEffects.BLEEDING.entry, 120, amplifier, true, false, true));
+            }
         }
     }
 }
