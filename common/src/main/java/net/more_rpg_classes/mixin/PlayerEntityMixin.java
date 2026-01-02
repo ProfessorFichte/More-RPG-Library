@@ -11,6 +11,10 @@ import net.more_rpg_classes.custom.MoreSpellSchools;
 import net.more_rpg_classes.effect.MRPGCEffects;
 import net.more_rpg_classes.entity.attribute.MRPGCEntityAttributes;
 import net.spell_engine.api.effect.SpellEngineEffects;
+import net.spell_engine.api.spell.fx.ParticleBatch;
+import net.spell_engine.client.util.Color;
+import net.spell_engine.fx.ParticleHelper;
+import net.spell_engine.fx.SpellEngineParticles;
 import net.spell_power.api.SpellDamageSource;
 import net.spell_power.api.SpellSchool;
 import net.spell_power.api.SpellSchools;
@@ -28,6 +32,28 @@ import net.minecraft.registry.entry.RegistryEntry;
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin {
 
+    @Unique private long lastStrongEffectTick = 0; // Shared cooldown for Burning, Stagger, Stun, Freeze (8 sec)
+    @Unique private long lastWeakEffectTick = 0;   // Shared cooldown for Poison, Bleeding (4 sec)
+    @Unique private static final ParticleBatch BLEEDING_PARTICLES = new ParticleBatch(
+            SpellEngineParticles.dripping_blood.id().toString(),
+            ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.CENTER, null,
+            20, 0.3F, 0.8F, 0).color(Color.RED.toRGBA());
+    @Unique private static final ParticleBatch POISON_PARTICLES = new ParticleBatch(
+            SpellEngineParticles.MagicParticles.get(SpellEngineParticles.MagicParticles.Shape.SKULL,
+                    SpellEngineParticles.MagicParticles.Motion.FLOAT).id().toString(),
+            ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.CENTER, null,
+            20, 0.3F, 0.8F, 0).color(Color.GREEN.toRGBA());
+    @Unique private static final ParticleBatch FREEZE_PARTICLES = new ParticleBatch(
+            SpellEngineParticles.MagicParticles.get(SpellEngineParticles.MagicParticles.Shape.FROST,
+                    SpellEngineParticles.MagicParticles.Motion.BURST).id().toString(),
+            ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.CENTER, null,
+            20, 0.3F, 0.8F, 0).color(Color.FROST.toRGBA());
+    @Unique private static final ParticleBatch FUSE_PARTICLES = new ParticleBatch(
+            SpellEngineParticles.MagicParticles.get(SpellEngineParticles.MagicParticles.Shape.SPELL,
+                    SpellEngineParticles.MagicParticles.Motion.BURST).id().toString(),
+            ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.CENTER, null,
+            20, 0.3F, 0.8F, 0).color(Color.FROST.toRGBA());
+
     @Unique
     private void applyFuseDamage(PlayerEntity player, LivingEntity target,
                                  RegistryEntry<EntityAttribute> fuseAttribute,
@@ -43,6 +69,9 @@ public abstract class PlayerEntityMixin {
             float magicDamage = Math.max(0.1f, fuseBonus * spellPower);
             target.timeUntilRegen = 0;
             target.damage(SpellDamageSource.create(spellSchool, player), magicDamage);
+            if(!target.getWorld().isClient()){
+                ParticleHelper.sendBatches(target, new ParticleBatch[]{FUSE_PARTICLES.color(Color.from(spellSchool.color).toRGBA())});
+            }
         }
     }
 
@@ -97,61 +126,85 @@ public abstract class PlayerEntityMixin {
         PlayerEntity player = (PlayerEntity)(Object)this;
 
         if (target instanceof LivingEntity livingTarget && !player.getWorld().isClient()) {
+            long currentTick = player.getWorld().getTime();
             Random random = new Random();
             float attackDamage = (float) player.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
             int amplifier = (int)(attackDamage * 0.15);
-            // 1. Burning Chance
-            EntityAttributeInstance burningChance = player.getAttributeInstance(MRPGCEntityAttributes.BURNING_CHANCE);
-            if (burningChance != null && burningChance.getValue() > 100.0) {
-                float chance = (float)(burningChance.getValue() - 100) / 100f;
-                if (random.nextFloat() < chance) {
-                    livingTarget.addStatusEffect(new StatusEffectInstance(
-                            MRPGCEffects.IGNITED.entry, 40,amplifier,true,false,true));
+
+            // Check strong effects cooldown (8 seconds = 160 ticks)
+            if (currentTick - lastStrongEffectTick >= 160) {
+                // 1. Burning Chance
+                EntityAttributeInstance burningChance = player.getAttributeInstance(MRPGCEntityAttributes.BURNING_CHANCE);
+                if (burningChance != null && burningChance.getValue() > 100.0) {
+                    float chance = (float)(burningChance.getValue() - 100) / 100f;
+                    if (random.nextFloat() < chance) {
+                        livingTarget.addStatusEffect(new StatusEffectInstance(
+                                MRPGCEffects.IGNITED.entry, 40,amplifier,true,false,true));
+                        lastStrongEffectTick = currentTick;
+                    }
+                }
+                // 2. Stagger Chance
+                EntityAttributeInstance staggerChance = player.getAttributeInstance(MRPGCEntityAttributes.STAGGER_CHANCE);
+                if (staggerChance != null && staggerChance.getValue() > 100.0) {
+                    float chance = (float)(staggerChance.getValue() - 100) / 100f;
+                    if (random.nextFloat() < chance) {
+                        livingTarget.addStatusEffect(new StatusEffectInstance(
+                                MRPGCEffects.STAGGER.entry, 80, amplifier,true,false,true));
+                        lastStrongEffectTick = currentTick;
+                    }
+                }
+                // 3. Stun Chance
+                EntityAttributeInstance stunChance = player.getAttributeInstance(MRPGCEntityAttributes.STUN_CHANCE);
+                if (stunChance != null && stunChance.getValue() > 100.0) {
+                    float chance = (float)(stunChance.getValue() - 100) / 100f;
+                    if (random.nextFloat() < chance) {
+                        livingTarget.addStatusEffect(new StatusEffectInstance(
+                                SpellEngineEffects.STUN.entry, 40, 0,true,false,true));
+                        lastStrongEffectTick = currentTick;
+                    }
+                }
+                // 5. Freeze Chance
+                EntityAttributeInstance freezeChance = player.getAttributeInstance(MRPGCEntityAttributes.FREEZE_CHANCE);
+                if (freezeChance != null && freezeChance.getValue() > 100.0) {
+                    float chance = (float)(freezeChance.getValue() - 100) / 100f;
+                    if (random.nextFloat() < chance) {
+                        livingTarget.addStatusEffect(new StatusEffectInstance(
+                                MRPGCEffects.FROZEN_SOLID.entry, 60, 0,true,false,true));
+                        lastStrongEffectTick = currentTick;
+                        if(!livingTarget.getWorld().isClient()){
+                            ParticleHelper.sendBatches(livingTarget, new ParticleBatch[]{FREEZE_PARTICLES});
+                        }
+                    }
                 }
             }
-            // 2. Stagger Chance
-            EntityAttributeInstance staggerChance = player.getAttributeInstance(MRPGCEntityAttributes.STAGGER_CHANCE);
-            if (staggerChance != null && staggerChance.getValue() > 100.0) {
-                float chance = (float)(staggerChance.getValue() - 100) / 100f;
-                if (random.nextFloat() < chance) {
-                    livingTarget.addStatusEffect(new StatusEffectInstance(
-                            MRPGCEffects.STAGGER.entry, 80, amplifier,true,false,true));
+
+            // Check weak effects cooldown (4 seconds = 80 ticks)
+            if (currentTick - lastWeakEffectTick >= 80) {
+                // 4. Poison Chance
+                EntityAttributeInstance poisonChance = player.getAttributeInstance(MRPGCEntityAttributes.POISON_CHANCE);
+                if (poisonChance != null && poisonChance.getValue() > 100.0) {
+                    float chance = (float)(poisonChance.getValue() - 100) / 100f;
+                    if (random.nextFloat() < chance) {
+                        livingTarget.addStatusEffect(new StatusEffectInstance(
+                                StatusEffects.POISON, 120, amplifier,true,false,true));
+                        lastWeakEffectTick = currentTick;
+                        if(!livingTarget.getWorld().isClient()){
+                            ParticleHelper.sendBatches(livingTarget, new ParticleBatch[]{POISON_PARTICLES});
+                        }
+                    }
                 }
-            }
-            // 3. Stun Chance
-            EntityAttributeInstance stunChance = player.getAttributeInstance(MRPGCEntityAttributes.STUN_CHANCE);
-            if (stunChance != null && stunChance.getValue() > 100.0) {
-                float chance = (float)(stunChance.getValue() - 100) / 100f;
-                if (random.nextFloat() < chance) {
-                    livingTarget.addStatusEffect(new StatusEffectInstance(
-                            SpellEngineEffects.STUN.entry, 40, 0,true,false,true));
-                }
-            }
-            // 4. Poison Chance
-            EntityAttributeInstance poisonChance = player.getAttributeInstance(MRPGCEntityAttributes.POISON_CHANCE);
-            if (poisonChance != null && poisonChance.getValue() > 100.0) {
-                float chance = (float)(poisonChance.getValue() - 100) / 100f;
-                if (random.nextFloat() < chance) {
-                    livingTarget.addStatusEffect(new StatusEffectInstance(
-                            StatusEffects.POISON, 120, amplifier,true,false,true));
-                }
-            }
-            // 5. Freeze Chance
-            EntityAttributeInstance freezeChance = player.getAttributeInstance(MRPGCEntityAttributes.FREEZE_CHANCE);
-            if (freezeChance != null && freezeChance.getValue() > 100.0) {
-                float chance = (float)(freezeChance.getValue() - 100) / 100f;
-                if (random.nextFloat() < chance) {
-                    livingTarget.addStatusEffect(new StatusEffectInstance(
-                            MRPGCEffects.FROZEN_SOLID.entry, 60, 0,true,false,true));
-                }
-            }
-            // 6. Bleeding Chance
-            EntityAttributeInstance bleedingChance = player.getAttributeInstance(MRPGCEntityAttributes.BLEEDING_CHANCE);
-            if (bleedingChance != null && bleedingChance.getValue() > 100.0) {
-                float chance = (float)(bleedingChance.getValue() - 100) / 100f;
-                if (random.nextFloat() < chance) {
-                    livingTarget.addStatusEffect(new StatusEffectInstance(
-                            MRPGCEffects.BLEEDING.entry, 120, amplifier,true,false,true));
+                // 6. Bleeding Chance
+                EntityAttributeInstance bleedingChance = player.getAttributeInstance(MRPGCEntityAttributes.BLEEDING_CHANCE);
+                if (bleedingChance != null && bleedingChance.getValue() > 100.0) {
+                    float chance = (float)(bleedingChance.getValue() - 100) / 100f;
+                    if (random.nextFloat() < chance) {
+                        livingTarget.addStatusEffect(new StatusEffectInstance(
+                                MRPGCEffects.BLEEDING.entry, 120, amplifier,true,false,true));
+                        lastWeakEffectTick = currentTick;
+                        if(!livingTarget.getWorld().isClient()){
+                            ParticleHelper.sendBatches(livingTarget, new ParticleBatch[]{BLEEDING_PARTICLES});
+                        }
+                    }
                 }
             }
         }

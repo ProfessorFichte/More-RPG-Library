@@ -26,6 +26,8 @@
 
   "hud.more_rpg_classes.frozen": "Frozen",
   "hud.more_rpg_classes.ignited": "Ignited",
+  "hud.more_rpg_classes.feared": "Feared",
+  "hud.more_rpg_classes.stagger": "Staggered",
 
   "item.more_rpg_classes.aqua_stone": "Water Rune",
   "item.more_rpg_classes.terra_stone": "Earth Rune",

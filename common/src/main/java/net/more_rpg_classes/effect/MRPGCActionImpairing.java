@@ -31,4 +31,30 @@ public class MRPGCActionImpairing {
             ),
             EntityActionsAllowed.SemanticType.NONE
     );
+    public static final EntityActionsAllowed STAGGER = new EntityActionsAllowed(
+            true,
+            true,
+            new EntityActionsAllowed.PlayersAllowed(
+                    false,
+                    false,
+                    false
+            ),
+            new EntityActionsAllowed.MobsAllowed(
+                    false
+            ),
+            EntityActionsAllowed.SemanticType.NONE
+    );
+    public static final EntityActionsAllowed FEARED = new EntityActionsAllowed(
+            true,
+            true,
+            new EntityActionsAllowed.PlayersAllowed(
+                    false,
+                    false,
+                    false
+            ),
+            new EntityActionsAllowed.MobsAllowed(
+                    false
+            ),
+            EntityActionsAllowed.SemanticType.NONE
+    );
 }

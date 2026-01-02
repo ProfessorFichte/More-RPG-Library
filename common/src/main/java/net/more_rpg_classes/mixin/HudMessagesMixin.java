@@ -32,6 +32,18 @@ public class HudMessagesMixin {
                 ci.cancel();
                 return;
             }
+
+            if (player.hasStatusEffect(MRPGCEffects.FEAR.entry)) {
+                ((HudMessages)(Object)this).error(Text.translatable("hud.more_rpg_classes.feared").formatted(Formatting.RED));
+                ci.cancel();
+                return;
+            }
+
+            if (player.hasStatusEffect(MRPGCEffects.STAGGER.entry)) {
+                ((HudMessages)(Object)this).error(Text.translatable("hud.more_rpg_classes.stagger").formatted(Formatting.RED));
+                ci.cancel();
+                return;
+            }
         }
     }
 }

@@ -9,10 +9,15 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.registry.tag.DamageTypeTags;
 import net.more_rpg_classes.MRPGCMod;
 import net.more_rpg_classes.effect.MRPGCEffects;
 import net.more_rpg_classes.entity.attribute.MRPGCEntityAttributes;
+import net.spell_engine.api.spell.fx.ParticleBatch;
+import net.spell_engine.client.util.Color;
+import net.spell_engine.fx.ParticleHelper;
+import net.spell_engine.fx.SpellEngineParticles;
 import net.spell_power.api.SpellPowerTags;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -31,6 +36,37 @@ public abstract class LivingEntityMixin {
     @Unique private long lastLifestealTick = 0;
     @Unique private float actualDamageDealt = 0;
     @Unique private float healthBeforeDamage = 0;
+    @Unique private static final ParticleBatch LIFESTEAL_PARTICLES = new ParticleBatch(
+            SpellEngineParticles.MagicParticles.get(SpellEngineParticles.MagicParticles.Shape.STRIPE,
+                    SpellEngineParticles.MagicParticles.Motion.FLOAT).id().toString(),
+            ParticleBatch.Shape.WIDE_PIPE, ParticleBatch.Origin.FEET, null,
+            20, 0.18F, 0.5F, 0).color(Color.RED.toRGBA());
+
+    @Unique
+    private boolean isPlayerDamageForLifesteal(DamageSource damageSource) {
+        if (damageSource.getAttacker() instanceof PlayerEntity) {
+            return true;
+        }
+        if (damageSource.getSource() instanceof PersistentProjectileEntity projectile) {
+            return projectile.getOwner() instanceof PlayerEntity;
+        }
+        return false;
+    }
+
+    @Unique
+    private PlayerEntity getPlayerFromDamageSource(DamageSource damageSource) {
+        // First try to get from attacker
+        if (damageSource.getAttacker() instanceof PlayerEntity player) {
+            return player;
+        }
+        // Try from projectile owner
+        if (damageSource.getSource() instanceof PersistentProjectileEntity projectile) {
+            if (projectile.getOwner() instanceof PlayerEntity player) {
+                return player;
+            }
+        }
+        return null;
+    }
     @Inject(method = "createLivingAttributes", at = @At("RETURN"))
     private static void mrpgc_lib$createLivingAttributes(CallbackInfoReturnable<DefaultAttributeContainer.Builder> cir) {
         cir.getReturnValue()
@@ -81,7 +117,11 @@ public abstract class LivingEntityMixin {
 
     @Inject(method = "applyDamage", at = @At("HEAD"))
     private void captureHealthBeforeApplyDamage(DamageSource damageSource, float damageAmount, CallbackInfo ci) {
-        if (damageSource.getAttacker() instanceof PlayerEntity && damageSource.isIn(DamageTypeTags.IS_PLAYER_ATTACK)) {
+        boolean isMelee = damageSource.getAttacker() instanceof PlayerEntity && damageSource.isIn(DamageTypeTags.IS_PLAYER_ATTACK);
+        boolean isProjectile = damageSource.getSource() instanceof PersistentProjectileEntity &&
+                               ((PersistentProjectileEntity)damageSource.getSource()).getOwner() instanceof PlayerEntity;
+
+        if (isMelee || isProjectile) {
             LivingEntity thisEntity = (LivingEntity)(Object)this;
             healthBeforeDamage = thisEntity.getHealth();
         }
@@ -89,7 +129,11 @@ public abstract class LivingEntityMixin {
 
     @Inject(method = "applyDamage", at = @At("TAIL"))
     private void calculateActualDamageFromHealthChange(DamageSource damageSource, float damageAmount, CallbackInfo ci) {
-        if (damageSource.getAttacker() instanceof PlayerEntity && damageSource.isIn(DamageTypeTags.IS_PLAYER_ATTACK)) {
+        boolean isMelee = damageSource.getAttacker() instanceof PlayerEntity && damageSource.isIn(DamageTypeTags.IS_PLAYER_ATTACK);
+        boolean isProjectile = damageSource.getSource() instanceof PersistentProjectileEntity &&
+                               ((PersistentProjectileEntity)damageSource.getSource()).getOwner() instanceof PlayerEntity;
+
+        if (isMelee || isProjectile) {
             LivingEntity thisEntity = (LivingEntity)(Object)this;
             float healthAfter = thisEntity.getHealth();
             this.actualDamageDealt = healthBeforeDamage - healthAfter;
@@ -117,6 +161,9 @@ public abstract class LivingEntityMixin {
                         float multiplier = (float) value / 100f;
                         float heal = amount * multiplier;
                         playerEntity.heal(heal);
+                        if(!playerEntity.getWorld().isClient()){
+                            ParticleHelper.sendBatches(playerEntity, new ParticleBatch[]{LIFESTEAL_PARTICLES});
+                        }
                         lastSpellvampireTick = currentTick;
                     }
                 }
@@ -125,9 +172,9 @@ public abstract class LivingEntityMixin {
     }
     @Inject(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V", shift = At.Shift.AFTER))
     private void lifesteal$damage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
-        if (source.isIn(DamageTypeTags.IS_PLAYER_ATTACK)) {
-            Entity entity = source.getAttacker();
-            if (entity instanceof PlayerEntity playerEntity) {
+        if (isPlayerDamageForLifesteal(source)) {
+            PlayerEntity playerEntity = getPlayerFromDamageSource(source);
+            if (playerEntity != null && !playerEntity.getWorld().isClient()) {
                 long currentTick = playerEntity.getWorld().getTime();
                 if (currentTick - lastLifestealTick < MRPGCMod.tweaksConfig.value.lifestealCooldownTicks) {
                     return;
@@ -144,6 +191,9 @@ public abstract class LivingEntityMixin {
                         float multiplier = (float) value / 100f;
                         float heal = this.actualDamageDealt * multiplier;
                         playerEntity.heal(heal);
+                        if(!playerEntity.getWorld().isClient()){
+                            ParticleHelper.sendBatches(playerEntity, new ParticleBatch[]{LIFESTEAL_PARTICLES});
+                        }
                         lastLifestealTick = currentTick;
                     }
                 }

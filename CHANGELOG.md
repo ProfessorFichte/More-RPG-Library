@@ -1,3 +1,11 @@
+# 2.5.12 - 1.21.1
+- All Attributes, that can inflict status effects, do now also work with ranged weapons
+- Fuse Attributes now only deal Damage with Ranged Weapons
+- Lifesteal now also works with Projectiles
+- Lifesteal only triggers IF the player is actually removing health from the target
+- The Frozen Solid, Fear, Stagger and Ignited Effect now shows their own Hud Message instead of "Stunned"
+- Added some particle Visuals to the Attribute Based Trigger Effects
+
 # 2.5.11 - 1.21.1
 **Add new Attributes with melee-attack functionality**
 - burning_chance -> Chance to ignite the target, dealing damage every 10 ticks, reducing the targets healing taken (scaled with attack damage)
