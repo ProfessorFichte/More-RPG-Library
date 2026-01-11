@@ -1,3 +1,10 @@
+# 2.5.13 - 1.21.1
+- Add Tenacity Attribute -> Everytime a Harmful Status Effect gets applied it will check the Tenacity Attribute
+- The Attribute has a 100 Base and 200 Max Value, 200 Means, that the Entity is fully Immune to Harmful Status Effects
+- Trial-, Raid- & Bad-Omen Effects are excluded from that
+- A value of 150 in Tenacity means, that there is a 50% chance of not applying the Harmful Status Effect
+- Add entityRelationCheck & getRangedDamageAttribute Custom Methods
+
 # 2.5.12 - 1.21.1
 - All Attributes, that can inflict status effects, do now also work with ranged weapons
 - Fuse Attributes now only deal Damage with Ranged Weapons
