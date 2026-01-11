@@ -14,6 +14,7 @@ import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.more_rpg_classes.custom.MoreSpellSchools;
+import net.spell_engine.internals.target.EntityRelations;
 import net.spell_power.api.SpellDamageSource;
 import net.spell_power.api.SpellSchool;
 import net.spell_power.api.SpellSchools;
@@ -187,5 +188,29 @@ public class CustomMethods {
             rangedDamage = entity.getAttributeValue(EntityAttributes_RangedWeapon.DAMAGE.entry);
         }
         return Math.max(meleeDamage, Math.max(rangedDamage, entitySpellPower));
+    }
+
+    public boolean entityRelationCheck(LivingEntity owner, Entity target) {
+        if (owner == null) {
+            return false;
+        }
+        var relation = EntityRelations.getRelation(owner, target);
+        switch (relation) {
+            case ALLY, FRIENDLY -> {
+                return true;
+            }
+            case MIXED, HOSTILE, NEUTRAL -> {
+                return false;
+            }
+        }
+        return false;
+    }
+    public static double getRangedDamageAttribute(LivingEntity entity){
+        if (FabricLoader.getInstance().isModLoaded("ranged_weapon_api")) {
+            return entity.getAttributeValue( EntityAttributes_RangedWeapon.DAMAGE.entry);
+        }
+        else {
+           return entity.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
+        }
     }
 }
