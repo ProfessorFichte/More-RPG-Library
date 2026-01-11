@@ -26,6 +26,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.registry.entry.RegistryEntry;
 import org.spongepowered.asm.mixin.Shadow;
 
@@ -88,6 +90,7 @@ public abstract class LivingEntityMixin {
                 .add(MRPGCEntityAttributes.POISON_CHANCE)
                 .add(MRPGCEntityAttributes.FREEZE_CHANCE)
                 .add(MRPGCEntityAttributes.BLEEDING_CHANCE)
+                .add(MRPGCEntityAttributes.TENACITY)
         ;
     }
 
@@ -260,6 +263,34 @@ public abstract class LivingEntityMixin {
         var entity = (LivingEntity) ((Object)this);
         entity.inPowderSnow = entity.inPowderSnow || hasStatusEffect(MRPGCEffects.FROZEN_SOLID.entry);
     }
-    
+
+    @Inject(method = "addStatusEffect(Lnet/minecraft/entity/effect/StatusEffectInstance;Lnet/minecraft/entity/Entity;)Z", at = @At("HEAD"), cancellable = true)
+    private void tenacity$resistHarmfulEffects(StatusEffectInstance effect, Entity source, CallbackInfoReturnable<Boolean> cir) {
+        LivingEntity thisEntity = (LivingEntity)(Object)this;
+        if (thisEntity.getWorld().isClient()) {
+            return;
+        }
+        if (effect.getEffectType().value().isBeneficial()) {
+            return;
+        }
+        RegistryEntry<StatusEffect> effectType = effect.getEffectType();
+        if (effectType.matchesKey(StatusEffects.BAD_OMEN.getKey().get()) ||
+            effectType.matchesKey(StatusEffects.TRIAL_OMEN.getKey().get()) ||
+            effectType.matchesKey(StatusEffects.RAID_OMEN.getKey().get())) {
+            return;
+        }
+        EntityAttributeInstance tenacityAttribute = thisEntity.getAttributeInstance(MRPGCEntityAttributes.TENACITY);
+        if (tenacityAttribute == null) {
+            return;
+        }
+        double tenacityValue = tenacityAttribute.getValue();
+        // At 100 Tenacity = 0% resist, at 200 Tenacity = 100% resist Harmful Status Effects
+        double resistChance = (tenacityValue - 100.0) / 100.0;
+        resistChance = Math.max(0.0, Math.min(1.0, resistChance));
+        if (resistChance > 0 && thisEntity.getRandom().nextDouble() < resistChance) {
+            cir.setReturnValue(false);
+        }
+    }
+
 }
 

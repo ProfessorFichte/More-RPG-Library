@@ -29,6 +29,7 @@ public class MRPGCEntityAttributes{
     public static final RegistryEntry<EntityAttribute> FREEZE_CHANCE = register("freeze_chance", 100.0, 100.0, 200.0);
     public static final RegistryEntry<EntityAttribute> BLEEDING_CHANCE = register("bleeding_chance", 100.0, 100.0, 200.0);
     public static final RegistryEntry<EntityAttribute> ARMOR_PIERCING = register("armor_piercing", 100.0, 100.0, 200.0);
+    public static final RegistryEntry<EntityAttribute> TENACITY = register("tenacity", 100.0, 100.0, 200.0);
 
     private static RegistryEntry<EntityAttribute> register(final String name, double base, double min, double max) {
         EntityAttribute attribute = new ClampedEntityAttribute("attribute.name." + MOD_ID + '.' + name, base, min, max).setTracked(true);
