@@ -4,6 +4,7 @@
 - Trial-, Raid- & Bad-Omen Effects are excluded from that
 - A value of 150 in Tenacity means, that there is a 50% chance of not applying the Harmful Status Effect
 - Add entityRelationCheck & getRangedDamageAttribute Custom Methods
+- add 2x new Datagen Helper Methods, for Advancements with Spell Engine Requirements & Generating Better Combat Weapon attribute data files
 
 # 2.5.12 - 1.21.1
 - All Attributes, that can inflict status effects, do now also work with ranged weapons
