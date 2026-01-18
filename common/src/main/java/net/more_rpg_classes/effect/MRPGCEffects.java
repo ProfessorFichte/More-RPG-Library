@@ -183,7 +183,7 @@ public class MRPGCEffects {
             Identifier.of(MOD_ID, "fatal_poison"),
             "Fatal Poison",
             "Inflicts damage over time, and can kill both undead and non-undead mobs.",
-            new FatalPoisonEffect(StatusEffectCategory.HARMFUL, 0xdd4e00),
+            new FatalPoisonEffect(StatusEffectCategory.HARMFUL, 0x5d2f8c),
             new EffectConfig(List.of(
             ))
     ));
