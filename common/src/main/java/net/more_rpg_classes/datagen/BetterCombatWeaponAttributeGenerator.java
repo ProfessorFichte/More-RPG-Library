@@ -18,10 +18,10 @@ public class BetterCombatWeaponAttributeGenerator {
 
     /**
      * Generate Better Combat weapon attribute files for a list of weapon entries.
-     * @param outputPath Base output path for data files (usually from FabricDataOutput)
+     * @param outputPath Base output path for data files
      * @param modId The mod ID for folder path
      * @param weaponEntries List of weapon registry entries (must have getId() and item() or get() methods)
-     * @param nameFilter Optional filter string - only items with this string in their ID will be processed (null to process all)
+     * @param nameFilter Optional filter string - only items with this string in their ID will be processed
      * @param parent The Better Combat parent attribute (e.g., "bettercombat:staff", "bettercombat:sword")
      */
     public static <T> void generateBetterCombatWeaponAttributes(
@@ -56,7 +56,6 @@ public class BetterCombatWeaponAttributeGenerator {
         }
     }
 
-    //Helper method to extract Identifier from various entry types
     @SuppressWarnings("unchecked")
     private static <T> Identifier getItemId(T entry) {
         try {
@@ -65,13 +64,16 @@ public class BetterCombatWeaponAttributeGenerator {
             if (result instanceof Identifier) {
                 return (Identifier) result;
             }
+        } catch (Exception ignored) {
+        }
 
+        try {
             var idMethod = entry.getClass().getMethod("id");
-            result = idMethod.invoke(entry);
+            Object result = idMethod.invoke(entry);
             if (result instanceof Identifier) {
                 return (Identifier) result;
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
 
         try {
@@ -92,7 +94,7 @@ public class BetterCombatWeaponAttributeGenerator {
             if (itemResult instanceof Item item) {
                 return Registries.ITEM.getId(item);
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
 
         return null;

@@ -35,7 +35,7 @@ A library add-on for the [Spell Engine Mod](https://github.com/ZsoltMolnarrr/Spe
 - Lifesteal -> The player heals after dealing damage melee attacks or projectiles (200 Lifesteal = the damage you dealt will be 100% healed).
 - Rage -> You'll deal more damage with your melee attacks, the less health you have. Calculation: Base Attack Damage + ( Generic Attack Damage * RageAttribute % * Missing Health % )
 - Spell Vampire -> The player heals after dealing damage with spells (200 Spell Vampire = the damage you dealt will be 100% healed).
-- "Fuse"-Atributes -> These Attributes exist for all SpellSchools (Arcane, Frost, etc.), you deal Magic Damage with your Melee Attacks & Projectiles (Spell Power * Fuse Attribute).
+- "Fuse"-Attributes -> These Attributes exist for all SpellSchools (Arcane, Frost, etc.), you deal Magic Damage with your Melee Attacks & Projectiles (Spell Power * Fuse Attribute).
 - Burning Chance -> Chance to apply the Ignited Effect with Melee Attacks or Projectiles (Amplifier Scales with Attack Damage).
 - Stagger Chance -> Chance to apply the Stagger Effect with Melee Attacks or Projectiles (Amplifier Scales with Attack Damage).
 - Stun Chance -> Chance to apply the Stun Effect with Melee Attacks or Projectiles.
@@ -51,13 +51,14 @@ A library add-on for the [Spell Engine Mod](https://github.com/ZsoltMolnarrr/Spe
 - Frozen Solid -> Increases Damage Taken, The Entity cant move, attack or jump.
 - Grievous Wounds -> Reduces Healing Taken and Increases incoming damage.
 - Frosted -> Reduces Movement Speed, adds Freezing Ticks every tick, at Amplifier 5 when this effect is stacked it gets converted to Frozen Solid Effect.
-- Bleeding -> Damages the target overtime, damage increases with the amplifier, it also increases depending how much %health the entity has. If the entity is under 25% Max Health this Effect will deal a lot damage.
+- Bleeding -> Damages the target overtime, damage increases with the amplifier, it also increases depending on how much %health the entity has. If the entity is under 25% Max Health this Effect will deal a lot of damage.
 - Stagger -> Reduces Armor, Attack Damage & Movement Speed and incapacitates the target.
 - Soaked -> Soaking the target with water extinguishing fire, more vulnerable to frost, lightning and water spells.
 - Carve -> Reduces armor and increases damage taken.
 - Fatal Poison -> Inflicts damage over time, and can kill both undead and non-undead mobs.
 - Ignited -> Burns the target, dealing damage over time and reduces healing. The target cannot move or attack.
-**☘️Benefical Effects**
+- 
+**☘️Beneficial Effects**
 - Collected Soul -> Increases Soul Power
 
 ### 5. Custom Spell Impacts 🪄
@@ -82,8 +83,8 @@ List of Custom Impacts added by this Library:
 - "pull_to_caster_direct" -> Pulls the Target directly in front of the Caster.
 - "pull_to_caster_slow" -> Pulls the Target Slowly to the Caster (For Channeled Spells).
 - "lightning" -> Summons a Lightning Entity to the target.
-- "trembling" -> Throws the target arround in random directions.
-- "rush_forward_to_target" -> The caster travels fast forward to the target.
+- "trembling" -> Throws the target around in random directions.
+- "rush_forward_to_target" -> The caster travels fast-forward to the target.
 - "backward_dash_fixed" -> The Caster Dashes back for a fixed range.
 - "backward_dash_range" -> The Caster Dashes back, range is scaled with the "range" value of your spell.json file.
 - "range_scaled_knockback" -> Ranged Scaled Knockback, the Closer the Target is to the Caster, the higher the Knockback Value is.
