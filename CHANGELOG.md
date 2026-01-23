@@ -1,3 +1,11 @@
+# 2.5.15 - 1.21.1
+- Fix Fatal Poison's wrong Status Effect color
+- fix Carve Status Effect reducing incoming damage instead of increasing it
+- Add new Music Note Particles
+
+# 2.5.14 - 1.21.1
+- Fix Datagen Helpers
+
 # 2.5.13 - 1.21.1
 - Add Tenacity Attribute -> Everytime a Harmful Status Effect gets applied it will check the Tenacity Attribute
 - The Attribute has a 100 Base and 200 Max Value, 200 Means, that the Entity is fully Immune to Harmful Status Effects

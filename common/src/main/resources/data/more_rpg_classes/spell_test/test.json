@@ -16,12 +16,24 @@
   "impacts": [
     {
       "action": {
-        "type": "CUSTOM",
-        "custom": {
-          "intent": "HARMFUL",
-          "handler": "more_rpg_classes:lightning"
+        "type": "DAMAGE",
+        "damage": {
+          "spell_power_coefficient": 0.6,
+          "knockback": 0.5
         }
-      }
+      },
+      "particles": [
+        {
+          "particle_id": "more_rpg_classes:music_note",
+          "origin": "FEET",
+          "shape": "WIDE_PIPE",
+          "count": 15.0,
+          "min_speed": 0.4,
+          "max_speed": 0.8,
+          "extend": 1.5,
+          "color_rgba": 2582052863
+        }
+      ]
     }
   ],
   "cost": {
