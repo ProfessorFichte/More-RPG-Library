@@ -31,7 +31,7 @@ public class MRPGCMod {
 	public static final Logger LOGGER = LoggerFactory.getLogger("more_rpg_classes");
 
 	public static ConfigManager<ConfigFile.Effects> effectsConfig = new ConfigManager<>
-			("effects_v3", new ConfigFile.Effects())
+			("effects_v4", new ConfigFile.Effects())
 			.builder()
 			.setDirectory(MOD_ID)
 			.sanitize(true)

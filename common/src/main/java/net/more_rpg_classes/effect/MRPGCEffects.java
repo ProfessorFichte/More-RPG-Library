@@ -174,7 +174,7 @@ public class MRPGCEffects {
                     ),
                     new AttributeModifier(
                             SpellEngineAttributes.DAMAGE_TAKEN.id.toString(),
-                            -0.05F,
+                            0.05F,
                             EntityAttributeModifier.Operation.ADD_MULTIPLIED_BASE
                     )
             ))
