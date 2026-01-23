@@ -6,6 +6,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import net.more_rpg_classes.MRPGCMod;
+import net.spell_engine.client.particle.TemplateParticleType;
 
 public class MoreParticles {
     public static final SimpleParticleType BLOOD_DROP = FabricParticleTypes.simple();
@@ -38,6 +39,7 @@ public class MoreParticles {
     public static final SimpleParticleType SMALL_THUNDER = FabricParticleTypes.simple();
     public static final SimpleParticleType RAINBOW_MUSIC_NOTE_0 = FabricParticleTypes.simple();
     public static final SimpleParticleType RAINBOW_MUSIC_NOTE_1 = FabricParticleTypes.simple();
+    public static final TemplateParticleType MUSIC_NOTE = new TemplateParticleType();
 
 
 
@@ -72,6 +74,7 @@ public class MoreParticles {
         Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "small_thunder"), SMALL_THUNDER);
         Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "rainbow_music_note_0"), RAINBOW_MUSIC_NOTE_0);
         Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "rainbow_music_note_1"), RAINBOW_MUSIC_NOTE_1);
+        Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "music_note"), MUSIC_NOTE);
     }
 
 }

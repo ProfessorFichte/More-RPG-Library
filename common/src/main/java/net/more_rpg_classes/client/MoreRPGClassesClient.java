@@ -19,6 +19,7 @@ import net.spell_engine.client.gui.HudMessages;
 import net.spell_engine.client.gui.SpellTooltip;
 import net.spell_engine.client.particle.SpellExplosionParticle;
 import net.spell_engine.client.particle.SpellFlameParticle;
+import net.spell_engine.client.particle.SpellSmokeParticle;
 
 import java.util.List;
 
@@ -65,9 +66,12 @@ public class MoreRPGClassesClient{
         ParticleFactoryRegistry.getInstance().register(MoreParticles.ICE_TRAP, IceTrapParticle.IceTrapParticleFactory::new);
         ParticleFactoryRegistry.getInstance().register(MoreParticles.STONE_TRAP, StoneTrapParticle.StoneTrapParticleFactory::new);
         ParticleFactoryRegistry.getInstance().register(MoreParticles.LEAF, LeafParticle.Factory::new);
+        ParticleFactoryRegistry.getInstance().register(MoreParticles.RAGE_PAR, RageParticle.Factory::new);
+        ParticleFactoryRegistry.getInstance().register(MoreParticles.SMALL_THUNDER, SmallThunderParticle.Factory::new);
         ParticleFactoryRegistry.getInstance().register(MoreParticles.FATAL_POISON, SpellFlameParticle.AnimatedFlameFactory::new);
         ParticleFactoryRegistry.getInstance().register(MoreParticles.RAINBOW_MUSIC_NOTE_0, RainbowMusicNoteParticle.Factory::new);
         ParticleFactoryRegistry.getInstance().register(MoreParticles.RAINBOW_MUSIC_NOTE_1, RainbowMusicNoteParticle.Factory::new);
+        ParticleFactoryRegistry.getInstance().register(MoreParticles.MUSIC_NOTE, MusicNoteParticle.MusicNoteFactory::new);
 
         CustomParticleStatusEffect.register(MRPGCEffects.MOLTEN_ARMOR.effect, new MoltenArmorParticles(1));
         CustomParticleStatusEffect.register(MRPGCEffects.BLEEDING.effect, new BleedingParticles(1));
