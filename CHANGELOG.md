@@ -1,3 +1,7 @@
+# 2.5.16 - 1.21.1
+- Added ConditionalJigsawStructure (Specially for LNE-Add-On's)
+- Added PathAdaptionProcessor & WaterPillarProcessor for paths that bend to the environment (Specially for LNE-Add-On's)
+
 # 2.5.15 - 1.21.1
 - Fix Fatal Poison's wrong Status Effect color
 - fix Carve Status Effect reducing incoming damage instead of increasing it

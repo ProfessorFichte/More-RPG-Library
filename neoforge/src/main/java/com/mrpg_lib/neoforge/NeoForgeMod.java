@@ -32,5 +32,8 @@ public final class NeoForgeMod {
         event.register(RegistryKeys.ENTITY_TYPE, reg -> {
             MRPGCMod.registerEntities();
         });
+        event.register(RegistryKeys.STRUCTURE_TYPE, reg -> {
+            MRPGCMod.registerStructures();
+        });
     }
 }

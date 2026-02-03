@@ -21,6 +21,8 @@ import net.more_rpg_classes.entity.MRPGCEntities;
 import net.more_rpg_classes.item.MRPGCItems;
 import net.more_rpg_classes.sounds.ModSounds;
 import net.more_rpg_classes.util.loot.*;
+import net.more_rpg_classes.worldgen.ModStructureProcessorTypes;
+import net.more_rpg_classes.worldgen.ModStructureTypes;
 import net.tiny_config.ConfigManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,6 +98,11 @@ public class MRPGCMod {
 
 	public static void registerEntities() {
 		MRPGCEntities.register();
+	}
+
+	public static void registerStructures() {
+		ModStructureTypes.register();
+		ModStructureProcessorTypes.register();
 	}
 
 	public static Identifier id(String path) {

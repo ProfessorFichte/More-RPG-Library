@@ -15,5 +15,6 @@ public final class FabricMod implements ModInitializer {
         MRPGCMod.registerItems();
         MRPGCMod.registerEffects();
         MRPGCMod.registerEntities();
+        MRPGCMod.registerStructures();
     }
 }
