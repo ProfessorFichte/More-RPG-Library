@@ -1,3 +1,7 @@
+# 2.5.17 - 1.21.1
+- Added a new TerrainBlendingProcessor, which makes Path Structures bend smoother and more natural to terrain
+- fixed some weird looking stuff for the ConditionalJigsawStructure & PathAdaptionProcessor
+
 # 2.5.16 - 1.21.1
 - Added ConditionalJigsawStructure (Specially for LNE-Add-On's)
 - Added PathAdaptionProcessor & WaterPillarProcessor for paths that bend to the environment (Specially for LNE-Add-On's)
