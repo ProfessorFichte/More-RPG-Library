@@ -8,22 +8,14 @@ import net.more_rpg_classes.client.effect.*;
 import net.more_rpg_classes.client.particle.*;
 import net.more_rpg_classes.client.render.FriendlyLightningEntityRenderer;
 import net.more_rpg_classes.custom.MrpgLibSpells;
-import net.more_rpg_classes.effect.MRPGCActionImpairing;
 import net.more_rpg_classes.effect.MRPGCEffects;
 import net.more_rpg_classes.entity.MRPGCEntities;
 import net.spell_engine.api.effect.CustomModelStatusEffect;
 import net.spell_engine.api.effect.CustomParticleStatusEffect;
-import net.spell_engine.api.effect.EntityActionsAllowed;
-import net.spell_engine.api.render.CustomModels;
-import net.spell_engine.client.gui.HudMessages;
+import net.spell_engine.client.render.CustomModelRegistry;
 import net.spell_engine.client.gui.SpellTooltip;
 import net.spell_engine.client.particle.SpellExplosionParticle;
 import net.spell_engine.client.particle.SpellFlameParticle;
-import net.spell_engine.client.particle.SpellSmokeParticle;
-
-import java.util.List;
-
-import static net.more_rpg_classes.MRPGCMod.MOD_ID;
 
 public class MoreRPGClassesClient{
 
@@ -35,11 +27,8 @@ public class MoreRPGClassesClient{
         }
         // Register entity renderers
         EntityRendererRegistry.register(MRPGCEntities.FRIENDLY_LIGHTNING, FriendlyLightningEntityRenderer::new);
-
-        CustomModels.registerModelIds(List.of(
-                FrozenSolidRenderer.modelId,
-                Identifier.of(MOD_ID, "projectile/falling_icicle")
-        ));
+        // Register Status Effect Renderers
+        CustomModelRegistry.modelIds.add(FrozenSolidRenderer.modelId);
 
         ParticleFactoryRegistry.getInstance().register(MoreParticles.BLOOD_DROP, RainSplashParticle.Factory::new);
         ParticleFactoryRegistry.getInstance().register(MoreParticles.MOLTEN_ARMOR, RainSplashParticle.Factory::new);

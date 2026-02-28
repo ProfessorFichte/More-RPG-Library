@@ -1,3 +1,9 @@
+# 2.5.18 - 1.21.1
+- Update for Spell Engine 1.9 Update
+- Delete SpellEngineTiersMixin
+- Fix Spell Scroll Loot Functions
+- Fix Spell Projectile and Status Effect Renders due to the Spell Engine API Changes
+
 # 2.5.17 - 1.21.1
 - Added a new TerrainBlendingProcessor, which makes Path Structures bend smoother and more natural to terrain
 - fixed some weird looking stuff for the ConditionalJigsawStructure & PathAdaptionProcessor

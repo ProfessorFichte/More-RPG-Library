@@ -10,7 +10,7 @@ import net.minecraft.data.DataWriter;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
-import net.spell_engine.api.item.armor.Armor;
+import net.spell_engine.rpg_series.item.Armor;
 
 import java.nio.file.Path;
 import java.util.ArrayList;

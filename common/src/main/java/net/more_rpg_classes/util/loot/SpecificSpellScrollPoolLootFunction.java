@@ -25,7 +25,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -102,8 +101,6 @@ public class SpecificSpellScrollPoolLootFunction extends ConditionalLootFunction
 
     @Override
     public ItemStack process(ItemStack stack, LootContext context) {
-        final var spellTag = getPools();
-
         int a = this.tierMin.nextInt(context);
         int b = this.tierMax.nextInt(context);
         final int min = Math.min(a, b);
@@ -135,23 +132,18 @@ public class SpecificSpellScrollPoolLootFunction extends ConditionalLootFunction
                 .toList();
 
         ArrayList<RegistryEntry<Spell>> selectedSpells = new ArrayList<>();
-        @Nullable var selectedContentType = existingContainer != null ? existingContainer.content() : null;
+        @Nullable SpellContainer.ContentType selectedContentType = existingContainer != null ? existingContainer.access() : null;
 
         if (!spells.isEmpty()) {
             var selectedCount = this.count != null ? this.count.nextInt(context) : 1;
             var retryAttempts = 3;
             for (int i = 0; i < selectedCount; i++) {
                 var entry = spells.get(context.getRandom().nextInt(spells.size()));
-                while ((retryAttempts > 0) && (
-                        selectedSpells.contains(entry)
-                                || (selectedContentType != null &&
-                                Objects.equals(SpellContainerHelper.contentTypeForSpell(entry.value()), selectedContentType))
-                )) {
+                while ((retryAttempts > 0) && selectedSpells.contains(entry)) {
                     entry = spells.get(context.getRandom().nextInt(spells.size()));
                     retryAttempts -= 1;
                 }
                 selectedSpells.add(entry);
-                selectedContentType = SpellContainerHelper.contentTypeForSpell(entry.value());
             }
         }
 

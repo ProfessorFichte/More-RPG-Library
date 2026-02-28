@@ -133,24 +133,16 @@ public class BindSpellFromPoolsLootFunction extends ConditionalLootFunction {
 
         var random = context.getRandom();
         List<RegistryEntry<Spell>> selected = new ArrayList<>();
-        SpellContainer.ContentType contentType = existing.content();
+        SpellContainer.ContentType contentType = existing.access();
 
         for (int i = 0; i < selectedCount; i++) {
             RegistryEntry<Spell> entry = poolSpells.get(random.nextInt(poolSpells.size()));
             int attempts = 3;
-            while (attempts > 0 && (
-                    selected.contains(entry) ||
-                            (contentType != null &&
-                                    Objects.equals(
-                                            SpellContainerHelper.contentTypeForSpell(entry.value()),
-                                            contentType
-                                    ))
-            )) {
+            while (attempts > 0 && selected.contains(entry)) {
                 entry = poolSpells.get(random.nextInt(poolSpells.size()));
                 attempts--;
             }
             selected.add(entry);
-            contentType = SpellContainerHelper.contentTypeForSpell(entry.value());
         }
 
         SpellContainer container = existing.withContentType(
