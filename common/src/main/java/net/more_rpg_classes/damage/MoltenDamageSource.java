@@ -7,12 +7,15 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.Text;
 
 public class MoltenDamageSource extends DamageSource {
+
+    private final String KEY = "death.attack.mrpgc.molten";
+
     public MoltenDamageSource(RegistryEntry<DamageType> type) {
         super(type);
     }
 
     @Override
     public Text getDeathMessage(LivingEntity killed) {
-        return Text.of(killed.getName()  + " has melted");
+        return Text.translatable(KEY, killed.getDisplayName());
     }
 }

@@ -7,12 +7,15 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.text.Text;
 
 public class BleedingDamageSource extends DamageSource {
+
+    private final String KEY = "death.attack.mrpgc.bleeding";
+
     public BleedingDamageSource(RegistryEntry<DamageType> type) {
         super(type);
     }
 
     @Override
     public Text getDeathMessage(LivingEntity killed) {
-        return Text.of(killed.getName() + " has bled out");
+        return Text.translatable(KEY, killed.getDisplayName());
     }
 }
