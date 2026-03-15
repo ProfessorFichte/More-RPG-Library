@@ -13,11 +13,13 @@ public class PoisonDamageSource extends DamageSource {
         super(type);
     }
 
+    private final String KEY = "death.attack.mrpgc.fatal_poison";
+
     @Override
     public Text getDeathMessage(LivingEntity killed) {
         if(killed instanceof PlayerEntity player && player.getMainHandStack().isIn(ConventionalItemTags.MUSHROOMS)) {
-            return Text.translatable("death.attack.mrpgc.fatal_poison.teemo");
+            return Text.translatable(KEY + ".teemo", killed.getDisplayName());
         }
-        return Text.of(killed.getName() + " was fatally poisoned.");
+        return Text.translatable(KEY, killed.getDisplayName());
     }
 }

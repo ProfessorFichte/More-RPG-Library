@@ -3,12 +3,12 @@ package net.more_rpg_classes.effect;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.more_rpg_classes.damage.PoisonDamageSource;
 import net.more_rpg_classes.util.tags.MRPGCEntityTags;
+import net.spell_engine.api.effect.TickingStatusEffect;
 
-public class FatalPoisonEffect extends StatusEffect {
+public class FatalPoisonEffect extends TickingStatusEffect {
     protected FatalPoisonEffect(StatusEffectCategory category, int color) {
         super(category, color);
     }
