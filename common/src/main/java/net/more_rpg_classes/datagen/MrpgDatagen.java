@@ -12,6 +12,8 @@ import net.minecraft.data.client.Models;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.more_rpg_classes.custom.MrpgLibSpells;
+import net.more_rpg_classes.sounds.MRPGLibSounds;
+import net.spell_engine.api.datagen.SimpleSoundGeneratorV2;
 import net.spell_engine.api.datagen.SpellGenerator;
 import net.spell_engine.api.spell.registry.SpellRegistry;
 import net.spell_engine.rpg_series.datagen.RPGSeriesDataGen;
@@ -22,6 +24,8 @@ import net.spell_engine.api.spell.Spell;
 
 import java.util.concurrent.CompletableFuture;
 
+import static net.more_rpg_classes.MRPGCMod.MOD_ID;
+
 
 public class MrpgDatagen implements DataGeneratorEntrypoint {
     @Override
@@ -30,6 +34,7 @@ public class MrpgDatagen implements DataGeneratorEntrypoint {
         pack.addProvider(ItemTagGenerator::new);
         pack.addProvider(SpellGen::new);
         pack.addProvider(SpellTagGenerator::new);
+        pack.addProvider(SoundGen::new);
     }
 
     public static class ItemTagGenerator extends RPGSeriesDataGen.ItemTagGenerator {
@@ -105,6 +110,20 @@ public class MrpgDatagen implements DataGeneratorEntrypoint {
                     tag.addOptional(entry.id());
                 }
             });
+        }
+    }
+    public static class SoundGen extends SimpleSoundGeneratorV2 {
+        public SoundGen(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
+            super(dataOutput, registryLookup);
+        }
+
+        @Override
+        public void generateSounds(Builder builder) {
+            builder.entries.add(new Entry(MOD_ID,
+                    MRPGLibSounds.entries.stream()
+                            .map(entry -> SoundEntry.withVariants(entry.id().getPath(), entry.variants()))
+                            .toList()
+            ));
         }
     }
 
