@@ -150,7 +150,6 @@ if (System.getenv("CURSEFORGE_API_KEY")) {
             changelogType = 'markdown'
             releaseType = release_type
             addGameVersion "${project.minecraft_version}"
-            addGameVersion "${project.minecraft_compat_version}"
             addGameVersion "Fabric"
 
             relations {
