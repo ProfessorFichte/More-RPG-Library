@@ -9,15 +9,12 @@ public class SoakedParticles implements CustomParticleStatusEffect.Spawner{
     private final ParticleBatch particles;
 
 
-    public SoakedParticles(int particleCount) {
-        this.particles = new ParticleBatch(
-                "more_rpg_classes:water_drop",
-                ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.CENTER,
-                null, particleCount, 0.05F, 0.08F, 360);
+    public SoakedParticles() {
+        this.particles =
         new ParticleBatch(
                 "more_rpg_classes:splash",
-                ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.FEET,
-                null, particleCount, 0.2F, 0.3F, 360);
+                ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.CENTER,
+                null, 20, 0.1F, 0.3F, 360);
     }
 
     @Override
