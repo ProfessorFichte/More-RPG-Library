@@ -170,4 +170,78 @@ List of Custom Impacts added by this Library:
         }
 ```
 
+
+### 7. Mob Spell Casting
+
+`MobSpellCastGoal` lets any mob cast SpellEngine spells. Delivery type, particles, sounds, channeling, and cooldown are all driven by the spell JSON — nothing to configure manually.
+**Setup:**
+1. Implement `ISpellCasterEntity`
+```java
+public class MyWizard extends HostileEntity implements ISpellCasterEntity {
+
+    private boolean isCasting = false;
+    private int castingTicks = 0;
+
+    @Override public void startSpellCast(int ticks) { isCasting = true;  castingTicks = ticks; }
+    @Override public void stopSpellCast()           { isCasting = false; castingTicks = 0;     }
+    @Override public boolean isSpellcasting()       { return isCasting; }
+    @Override public MobEntity asMobEntity()        { return this; }
+}
+```
+2. Add goals in `initGoals()`
+The spell argument is a plain spell ID string or a `#`-prefixed tag. Passing the shared `spellGoals` list prevents two goals from firing at the same time.
+```java
+private final List<MobSpellCastGoal> spellGoals = new ArrayList<>();
+
+@Override
+protected void initGoals() {
+    MobSpellCastGoal fireball  = new MobSpellCastGoal(this, "mymod:fireball",  spellGoals);
+    MobSpellCastGoal frostbolt = new MobSpellCastGoal(this, "mymod:frostbolt", spellGoals);
+
+    this.goalSelector.add(1, fireball);
+    this.goalSelector.add(2, frostbolt);
+
+    spellGoals.add(fireball);
+    spellGoals.add(frostbolt);
+}
+```
+To pick randomly from a group of spells, pass a tag instead of a single ID:
+```java
+new MobSpellCastGoal(this, "#mymod:mob/wizard_spells", spellGoals)
+```
+The mob picks one available (off-cooldown) spell from the tag each cast.
+3. Tick the cooldowns
+
+```java
+@Override
+public void tick() {
+    super.tick();
+    for (MobSpellCastGoal goal : spellGoals) {
+        goal.updateCooldown();
+    }
+}
+```
+
+---
+
+**What works automatically**
+
+| Feature | Driven by |
+|---|---|
+| Projectile, Meteor, Cloud, Direct, Area, Beam, Teleport | `spell.json` delivery + target type |
+| Cast duration & channeling | `spell.active.cast.duration` / `channel_ticks` |
+| Cast start sound & particles | `spell.active.cast.start_sound` / `particles` |
+| Release particles & sound | `spell.release.particles` / `sound` |
+| Impact handling | SpellEngine internals |
+| Cooldown | `spell.cost.cooldown.duration` |
+| `particles_scaled_with_ranged` | scaled by `spell.range` automatically |
+
+---
+
+**Healing spells**
+
+Spells whose **entire** impact list is `HEAL` are cast on the nearest wounded ally instead of the combat target.
+
+Spells that mix `HEAL` with damage or other impacts target the combat target normally — SpellEngine's relation system prevents the heal from applying to enemies.
+
 ---

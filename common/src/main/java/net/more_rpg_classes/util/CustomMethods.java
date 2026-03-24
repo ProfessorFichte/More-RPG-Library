@@ -9,6 +9,7 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.particle.ParticleEffect;
@@ -41,7 +42,6 @@ public class CustomMethods {
             }
         }
     }
-
     public static void stackFreezeStacks(LivingEntity e, int amount) {
         if (!e.canFreeze()) return;
 
@@ -49,7 +49,6 @@ public class CustomMethods {
         int newTicks = Math.min(cap, e.getFrozenTicks() + amount);
         e.setFrozenTicks(newTicks);
     }
-
     public static void freezeDamageTicks(LivingEntity e) {
         if (!e.canFreeze()) return;
 
@@ -57,36 +56,6 @@ public class CustomMethods {
         int newTicks = Math.min(cap, e.getFrozenTicks() + 3);
         e.setFrozenTicks(newTicks);
     }
-
-    /*
-    public static void executeSpellSpellEngine(PlayerEntity player, LivingEntity target, String modId, String pathSpell,
-                                               SpellCast.Action spellCastAction, boolean aoe){
-        if (FabricLoader.getInstance().isModLoaded("spell_engine")) {
-            List<Entity> list = new ArrayList<Entity>();
-            if (!aoe) {
-                list.add(target);
-            } else {
-                var spellEntry = SpellRegistry.from(player.getWorld()).getEntry(Identifier.of(modId, pathSpell)).orElse(null);
-                var spell = spellEntry.value();
-                float range = spell.range;
-                Predicate<Entity> selectionPredicate = (target2) -> {
-                    return (TargetHelper.actionAllowed(TargetHelper.TargetingMode.AREA, TargetHelper.Intent.HARMFUL, player, target2)
-                    );
-                };
-                list = player.getWorld().getOtherEntities(player, player.getBoundingBox().expand(range), selectionPredicate);
-            }
-            SpellHelper.performSpell(
-                    player.getWorld(),
-                    player,
-                    Identifier.of(modId, pathSpell),
-                    TargetHelper.SpellTargetResult.of(list),
-                    spellCastAction,
-                    1);
-        }
-
-    }
-     */
-
     public static void spawnCloudEntity(
             ParticleEffect particleType, Entity owner, float radiusCloud, int durationSecondsCloud, float radiusGrowthCloud
             , RegistryEntry<StatusEffect> statusEffect, int durationSecondsStatusEffect, int amplifierStatusEffect) {
@@ -189,12 +158,25 @@ public class CustomMethods {
         }
         return Math.max(meleeDamage, Math.max(rangedDamage, entitySpellPower));
     }
-
-    public boolean entityRelationCheck(LivingEntity owner, Entity target) {
-        if (owner == null) {
+    public static boolean isEntityProtectedCheck(Entity other, LivingEntity owner) {
+        if (other == null || owner == null) {
             return false;
         }
-        var relation = EntityRelations.getRelation(owner, target);
+        if (other instanceof PlayerEntity && owner instanceof MobEntity) {
+            return false;
+        }
+        LivingEntity otherLivingEntity = null;
+        if (other instanceof LivingEntity livingEntity) {
+            otherLivingEntity = livingEntity;
+        } else if (other instanceof ProjectileEntity projectileEntity) {
+            if (projectileEntity.getOwner() instanceof LivingEntity projectileOwnerLiving) {
+                otherLivingEntity = projectileOwnerLiving;
+            }
+        }
+        if (otherLivingEntity == null) {
+            return false;
+        }
+        var relation = EntityRelations.getRelation(owner, otherLivingEntity);
         switch (relation) {
             case ALLY, FRIENDLY -> {
                 return true;
