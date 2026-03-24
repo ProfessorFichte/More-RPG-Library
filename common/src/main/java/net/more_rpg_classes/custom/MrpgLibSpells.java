@@ -3,7 +3,7 @@ package net.more_rpg_classes.custom;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.util.Identifier;
 import net.more_rpg_classes.effect.MRPGCEffects;
-import net.more_rpg_classes.sounds.ModSounds;
+import net.more_rpg_classes.sounds.MRPGLibSounds;
 import net.spell_engine.api.datagen.SpellBuilder;
 import net.spell_engine.api.spell.ExternalSpellSchools;
 import net.spell_engine.api.spell.Spell;
@@ -105,7 +105,7 @@ public class MrpgLibSpells {
                         25, 0.2F, 0.25F)
                         .color(Color.RAGE.toRGBA())
         };
-        debuff.sound = new Sound(ModSounds.CARVE_ID.toString());
+        debuff.sound = new Sound(MRPGLibSounds.CARVE.id().toString());
         spell.impacts = List.of(debuff);
 
         SpellBuilder.Cost.cooldown(spell, 3);

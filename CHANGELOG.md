@@ -1,3 +1,14 @@
+# 2.5.19 - 1.21.1
+- Fix Death Messages and Fatal Poison - Pull Request #17
+- Improved the entityRelationCheck CustomMethod and renamed it to -> isEntityProtectedCheck
+- Renamed CastSpellGoal to MobSpellCastGoal
+- Improved the Goal and ISpellCasterEntity a lot to automatically recognize what Spell Type was chosen and how it needs to be casted
+- A Guide how to add the SpellCastGoal to a Mob has been added in the README
+- Bleeding no longer bypasses resistance
+- Added SimpleSoundGeneratorV2 for Datagen
+- Some Sound Effects got added for future content
+- Magic Fuse Attacks now have a 20 tick cooldown to avoid click spamming
+
 # 2.5.18 - 1.21.1
 - Update for Spell Engine 1.9 Update
 - Delete SpellEngineTiersMixin

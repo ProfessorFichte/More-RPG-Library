@@ -7,8 +7,6 @@ import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
-import net.more_rpg_classes.MRPGCMod;
-
 import static net.more_rpg_classes.MRPGCMod.MOD_ID;
 
 
@@ -40,6 +38,5 @@ public class MRPGCItems {
             entries.add(MRPGCItems.NATURE_STONE);
         });
 
-        MRPGCMod.LOGGER.info("Registering Mod Items for " + MOD_ID);
     }
 }

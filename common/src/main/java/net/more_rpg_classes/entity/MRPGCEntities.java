@@ -5,8 +5,6 @@ import net.minecraft.entity.SpawnGroup;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
-import net.more_rpg_classes.MRPGCMod;
-
 import static net.more_rpg_classes.MRPGCMod.MOD_ID;
 
 public class MRPGCEntities {
@@ -22,6 +20,5 @@ public class MRPGCEntities {
     );
 
     public static void register() {
-        MRPGCMod.LOGGER.info("Registering Entities for " + MOD_ID);
     }
 }

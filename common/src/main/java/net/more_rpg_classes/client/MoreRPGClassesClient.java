@@ -7,6 +7,8 @@ import net.minecraft.util.Identifier;
 import net.more_rpg_classes.client.effect.*;
 import net.more_rpg_classes.client.particle.*;
 import net.more_rpg_classes.client.render.FriendlyLightningEntityRenderer;
+import net.more_rpg_classes.client.render.MobBeamTracker;
+import net.more_rpg_classes.client.render.MobBeamWorldRenderer;
 import net.more_rpg_classes.custom.MrpgLibSpells;
 import net.more_rpg_classes.effect.MRPGCEffects;
 import net.more_rpg_classes.entity.MRPGCEntities;
@@ -19,7 +21,9 @@ import net.spell_engine.client.particle.SpellFlameParticle;
 
 public class MoreRPGClassesClient{
 
-    public static void  init(){
+    public static void init(){
+        MobBeamTracker.register();
+        MobBeamWorldRenderer.setup();
         for (var entry: MrpgLibSpells.entries) {
             if (entry.mutator() != null) {
                 SpellTooltip.addDescriptionMutator(entry.id(), entry.mutator());
@@ -66,7 +70,7 @@ public class MoreRPGClassesClient{
         CustomParticleStatusEffect.register(MRPGCEffects.BLEEDING.effect, new BleedingParticles(1));
         CustomParticleStatusEffect.register(MRPGCEffects.FROSTED.effect, new FrostedParticles(10));
         CustomModelStatusEffect.register(MRPGCEffects.FROZEN_SOLID.effect, new FrozenSolidRenderer());
-        CustomParticleStatusEffect.register(MRPGCEffects.SOAKED.effect, new SoakedParticles(2));
+        CustomParticleStatusEffect.register(MRPGCEffects.SOAKED.effect, new SoakedParticles());
         CustomParticleStatusEffect.register(MRPGCEffects.FATAL_POISON.effect, new PoisonParticles(2));
         CustomParticleStatusEffect.register(MRPGCEffects.IGNITED.effect, new IgnitedParticles(3));
     }
