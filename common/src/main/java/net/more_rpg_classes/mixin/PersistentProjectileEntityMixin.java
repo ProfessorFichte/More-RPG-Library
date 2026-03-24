@@ -34,6 +34,8 @@ import static net.more_rpg_classes.util.CustomMethods.getRangedDamageAttribute;
 public abstract class PersistentProjectileEntityMixin {
 
     @Unique
+    private static final Map<UUID, Long> lastFuseTickMap = new HashMap<>();
+    @Unique
     private static final Map<UUID, Long> lastStrongEffectTickMap = new HashMap<>();
     @Unique
     private static final Map<UUID, Long> lastWeakEffectTickMap = new HashMap<>();
@@ -61,7 +63,6 @@ public abstract class PersistentProjectileEntityMixin {
         PersistentProjectileEntity projectile = (PersistentProjectileEntity)(Object)this;
         Entity hitEntity = entityHitResult.getEntity();
 
-        // Check if hit entity is living and owner is a player
         if (!(hitEntity instanceof LivingEntity target)) {
             return;
         }
@@ -74,26 +75,27 @@ public abstract class PersistentProjectileEntityMixin {
             return;
         }
 
-        // Apply all fuse magic damage
-        applyFuseDamage(player, target, MRPGCEntityAttributes.AIR_FUSE_MODIFIER, MoreSpellSchools.AIR);
-        applyFuseDamage(player, target, MRPGCEntityAttributes.ARCANE_FUSE_MODIFIER, SpellSchools.ARCANE);
-        applyFuseDamage(player, target, MRPGCEntityAttributes.EARTH_FUSE_MODIFIER, MoreSpellSchools.EARTH);
-        applyFuseDamage(player, target, MRPGCEntityAttributes.FIRE_FUSE_MODIFIER, SpellSchools.FIRE);
-        applyFuseDamage(player, target, MRPGCEntityAttributes.FROST_FUSE_MODIFIER, SpellSchools.FROST);
-        applyFuseDamage(player, target, MRPGCEntityAttributes.HEALING_FUSE_MODIFIER, SpellSchools.HEALING);
-        applyFuseDamage(player, target, MRPGCEntityAttributes.WATER_FUSE_MODIFIER, MoreSpellSchools.WATER);
-
-        // Apply chance-based effects with cooldowns
         UUID playerUUID = player.getUuid();
         long currentTick = player.getWorld().getTime();
+
+        long lastFuseTick = lastFuseTickMap.getOrDefault(playerUUID, 0L);
+        if (currentTick - lastFuseTick >= 20) {
+            lastFuseTickMap.put(playerUUID, currentTick);
+            applyFuseDamage(player, target, MRPGCEntityAttributes.AIR_FUSE_MODIFIER, MoreSpellSchools.AIR);
+            applyFuseDamage(player, target, MRPGCEntityAttributes.ARCANE_FUSE_MODIFIER, SpellSchools.ARCANE);
+            applyFuseDamage(player, target, MRPGCEntityAttributes.EARTH_FUSE_MODIFIER, MoreSpellSchools.EARTH);
+            applyFuseDamage(player, target, MRPGCEntityAttributes.FIRE_FUSE_MODIFIER, SpellSchools.FIRE);
+            applyFuseDamage(player, target, MRPGCEntityAttributes.FROST_FUSE_MODIFIER, SpellSchools.FROST);
+            applyFuseDamage(player, target, MRPGCEntityAttributes.HEALING_FUSE_MODIFIER, SpellSchools.HEALING);
+            applyFuseDamage(player, target, MRPGCEntityAttributes.WATER_FUSE_MODIFIER, MoreSpellSchools.WATER);
+        }
+
         Random random = new Random();
         float attackDamage = (float) getRangedDamageAttribute(player);
         int amplifier = (int)(attackDamage * 0.15);
 
-        // Check strong effects cooldown (8 seconds = 160 ticks)
         long lastStrongTick = lastStrongEffectTickMap.getOrDefault(playerUUID, 0L);
         if (currentTick - lastStrongTick >= 160) {
-            // 1. Burning Chance
             EntityAttributeInstance burningChance = player.getAttributeInstance(MRPGCEntityAttributes.BURNING_CHANCE);
             if (burningChance != null && burningChance.getValue() > 100.0) {
                 float chance = (float)(burningChance.getValue() - 100) / 100f;
@@ -104,7 +106,6 @@ public abstract class PersistentProjectileEntityMixin {
                 }
             }
 
-            // 2. Stagger Chance
             EntityAttributeInstance staggerChance = player.getAttributeInstance(MRPGCEntityAttributes.STAGGER_CHANCE);
             if (staggerChance != null && staggerChance.getValue() > 100.0) {
                 float chance = (float)(staggerChance.getValue() - 100) / 100f;
@@ -115,7 +116,6 @@ public abstract class PersistentProjectileEntityMixin {
                 }
             }
 
-            // 3. Stun Chance
             EntityAttributeInstance stunChance = player.getAttributeInstance(MRPGCEntityAttributes.STUN_CHANCE);
             if (stunChance != null && stunChance.getValue() > 100.0) {
                 float chance = (float)(stunChance.getValue() - 100) / 100f;
@@ -126,7 +126,6 @@ public abstract class PersistentProjectileEntityMixin {
                 }
             }
 
-            // 5. Freeze Chance
             EntityAttributeInstance freezeChance = player.getAttributeInstance(MRPGCEntityAttributes.FREEZE_CHANCE);
             if (freezeChance != null && freezeChance.getValue() > 100.0) {
                 float chance = (float)(freezeChance.getValue() - 100) / 100f;
@@ -138,10 +137,8 @@ public abstract class PersistentProjectileEntityMixin {
             }
         }
 
-        // Check weak effects cooldown (4 seconds = 80 ticks)
         long lastWeakTick = lastWeakEffectTickMap.getOrDefault(playerUUID, 0L);
         if (currentTick - lastWeakTick >= 80) {
-            // 4. Poison Chance
             EntityAttributeInstance poisonChance = player.getAttributeInstance(MRPGCEntityAttributes.POISON_CHANCE);
             if (poisonChance != null && poisonChance.getValue() > 100.0) {
                 float chance = (float)(poisonChance.getValue() - 100) / 100f;
@@ -152,7 +149,6 @@ public abstract class PersistentProjectileEntityMixin {
                 }
             }
 
-            // 6. Bleeding Chance
             EntityAttributeInstance bleedingChance = player.getAttributeInstance(MRPGCEntityAttributes.BLEEDING_CHANCE);
             if (bleedingChance != null && bleedingChance.getValue() > 100.0) {
                 float chance = (float)(bleedingChance.getValue() - 100) / 100f;

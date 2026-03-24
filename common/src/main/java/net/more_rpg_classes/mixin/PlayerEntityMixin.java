@@ -32,8 +32,9 @@ import net.minecraft.registry.entry.RegistryEntry;
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin {
 
-    @Unique private long lastStrongEffectTick = 0; // Shared cooldown for Burning, Stagger, Stun, Freeze (8 sec)
-    @Unique private long lastWeakEffectTick = 0;   // Shared cooldown for Poison, Bleeding (4 sec)
+    @Unique private long lastFuseTick = 0;
+    @Unique private long lastStrongEffectTick = 0;
+    @Unique private long lastWeakEffectTick = 0;
     @Unique private static final ParticleBatch BLEEDING_PARTICLES = new ParticleBatch(
             SpellEngineParticles.dripping_blood.id().toString(),
             ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.CENTER, null,
@@ -111,6 +112,15 @@ public abstract class PlayerEntityMixin {
             return;
         }
         PlayerEntity player = (PlayerEntity)(Object) this;
+        if (player.getWorld().isClient()) {
+            return;
+        }
+
+        long currentTick = player.getWorld().getTime();
+        if (currentTick - lastFuseTick < 20) {
+            return;
+        }
+        lastFuseTick = currentTick;
 
         applyFuseDamage(player, livingTarget, MRPGCEntityAttributes.AIR_FUSE_MODIFIER, MoreSpellSchools.AIR);
         applyFuseDamage(player, livingTarget, MRPGCEntityAttributes.ARCANE_FUSE_MODIFIER, SpellSchools.ARCANE);
@@ -131,9 +141,7 @@ public abstract class PlayerEntityMixin {
             float attackDamage = (float) player.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
             int amplifier = (int)(attackDamage * 0.15);
 
-            // Check strong effects cooldown (8 seconds = 160 ticks)
             if (currentTick - lastStrongEffectTick >= 160) {
-                // 1. Burning Chance
                 EntityAttributeInstance burningChance = player.getAttributeInstance(MRPGCEntityAttributes.BURNING_CHANCE);
                 if (burningChance != null && burningChance.getValue() > 100.0) {
                     float chance = (float)(burningChance.getValue() - 100) / 100f;
@@ -143,7 +151,6 @@ public abstract class PlayerEntityMixin {
                         lastStrongEffectTick = currentTick;
                     }
                 }
-                // 2. Stagger Chance
                 EntityAttributeInstance staggerChance = player.getAttributeInstance(MRPGCEntityAttributes.STAGGER_CHANCE);
                 if (staggerChance != null && staggerChance.getValue() > 100.0) {
                     float chance = (float)(staggerChance.getValue() - 100) / 100f;
@@ -153,7 +160,6 @@ public abstract class PlayerEntityMixin {
                         lastStrongEffectTick = currentTick;
                     }
                 }
-                // 3. Stun Chance
                 EntityAttributeInstance stunChance = player.getAttributeInstance(MRPGCEntityAttributes.STUN_CHANCE);
                 if (stunChance != null && stunChance.getValue() > 100.0) {
                     float chance = (float)(stunChance.getValue() - 100) / 100f;
@@ -163,7 +169,6 @@ public abstract class PlayerEntityMixin {
                         lastStrongEffectTick = currentTick;
                     }
                 }
-                // 5. Freeze Chance
                 EntityAttributeInstance freezeChance = player.getAttributeInstance(MRPGCEntityAttributes.FREEZE_CHANCE);
                 if (freezeChance != null && freezeChance.getValue() > 100.0) {
                     float chance = (float)(freezeChance.getValue() - 100) / 100f;
@@ -178,9 +183,7 @@ public abstract class PlayerEntityMixin {
                 }
             }
 
-            // Check weak effects cooldown (4 seconds = 80 ticks)
             if (currentTick - lastWeakEffectTick >= 80) {
-                // 4. Poison Chance
                 EntityAttributeInstance poisonChance = player.getAttributeInstance(MRPGCEntityAttributes.POISON_CHANCE);
                 if (poisonChance != null && poisonChance.getValue() > 100.0) {
                     float chance = (float)(poisonChance.getValue() - 100) / 100f;
@@ -193,7 +196,6 @@ public abstract class PlayerEntityMixin {
                         }
                     }
                 }
-                // 6. Bleeding Chance
                 EntityAttributeInstance bleedingChance = player.getAttributeInstance(MRPGCEntityAttributes.BLEEDING_CHANCE);
                 if (bleedingChance != null && bleedingChance.getValue() > 100.0) {
                     float chance = (float)(bleedingChance.getValue() - 100) / 100f;
