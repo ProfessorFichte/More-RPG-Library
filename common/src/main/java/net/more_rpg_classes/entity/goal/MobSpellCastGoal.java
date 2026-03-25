@@ -71,7 +71,7 @@ public class MobSpellCastGoal extends Goal {
     @Override
     public boolean canStart() {
         MobEntity entity = caster.asMobEntity();
-        if (caster.isSpellcasting()) return false;
+        if (caster.isCastingSpell()) return false;
         if (otherGoals != null) {
             for (MobSpellCastGoal other : otherGoals) {
                 if (other != this && other.isActive()) return false;

@@ -1,3 +1,6 @@
+# 2.5.20 - 1.21.1
+- fixed an MobSpellCaster crash due to wrong class and method naming
+
 # 2.5.19 - 1.21.1
 - Fix Death Messages and Fatal Poison - Pull Request #17
 - Improved the entityRelationCheck CustomMethod and renamed it to -> isEntityProtectedCheck
