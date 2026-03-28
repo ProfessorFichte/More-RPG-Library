@@ -31,19 +31,19 @@ A library add-on for the [Spell Engine Mod](https://github.com/ZsoltMolnarrr/Spe
 - **🪓Rage Melee**
 
 ### 3. New Entity Attributes ⭐
-- Damage Reflect -> Melee Damage you received will be reflected towards the attacker (200 Damage Reflect = the damage you received will be 100% reflected).
-- Lifesteal -> The player heals after dealing damage melee attacks or projectiles (200 Lifesteal = the damage you dealt will be 100% healed).
-- Rage -> You'll deal more damage with your melee attacks, the less health you have. Calculation: Base Attack Damage + ( Generic Attack Damage * RageAttribute % * Missing Health % )
-- Spell Vampire -> The player heals after dealing damage with spells (200 Spell Vampire = the damage you dealt will be 100% healed).
-- "Fuse"-Attributes -> These Attributes exist for all SpellSchools (Arcane, Frost, etc.), you deal Magic Damage with your Melee Attacks & Projectiles (Spell Power * Fuse Attribute).
-- Burning Chance -> Chance to apply the Ignited Effect with Melee Attacks or Projectiles (Amplifier Scales with Attack Damage).
-- Stagger Chance -> Chance to apply the Stagger Effect with Melee Attacks or Projectiles (Amplifier Scales with Attack Damage).
-- Stun Chance -> Chance to apply the Stun Effect with Melee Attacks or Projectiles.
-- Poison Chance -> Chance to apply the Poison Effect with Melee Attacks or Projectiles (Amplifier Scales with Attack Damage).
-- Freeze Chance -> Chance to apply the Frozen Solid Effect with Melee Attacks or Projectiles.
-- Bleeding Chance -> Chance to apply the Bleeding Effect with Melee Attacks or Projectiles (Amplifier Scales with Attack Damage).
-- Armor Piercing -> Ignores Armor values for Melee Attacks before the Damage Calculation (100% / 200 Attribute Value ignores Armor completely).
-- Tenacity -> Attribute to resist Harmful Status Effects, when they're Applied. At 100 Tenacity = 0% resist, at 200 Tenacity = 100% resist Harmful Status Effects.
+- Damage Reflect -> Melee Damage received will be reflected towards the attacker (200 Damage Reflect = the damage received will be 100% reflected). Works for all Living Entities.
+- Lifesteal -> The entity heals after dealing damage with melee attacks or projectiles (200 Lifesteal = the damage dealt will be 100% healed). Works for all Living Entities.
+- Rage -> Deals more damage with melee attacks, the less health the attacker has. Calculation: Base Attack Damage + ( Generic Attack Damage * RageAttribute % * Missing Health % ). Works for all Living Entities.
+- Spell Vampire -> The entity heals after dealing damage with spells (200 Spell Vampire = the damage dealt will be 100% healed). Works for all Living Entities.
+- "Fuse"-Attributes -> These Attributes exist for all SpellSchools (Arcane, Frost, etc.), deals Magic Damage with Melee Attacks & Projectiles (Spell Power * Fuse Attribute). Works for all Living Entities.
+- Burning Chance -> Chance to apply the Ignited Effect with Melee Attacks or Projectiles (Amplifier Scales with Attack Damage). Works for all Living Entities.
+- Stagger Chance -> Chance to apply the Stagger Effect with Melee Attacks or Projectiles (Amplifier Scales with Attack Damage). Works for all Living Entities.
+- Stun Chance -> Chance to apply the Stun Effect with Melee Attacks or Projectiles. Works for all Living Entities.
+- Poison Chance -> Chance to apply the Poison Effect with Melee Attacks or Projectiles (Amplifier Scales with Attack Damage). Works for all Living Entities.
+- Freeze Chance -> Chance to apply the Frozen Solid Effect with Melee Attacks or Projectiles. Works for all Living Entities.
+- Bleeding Chance -> Chance to apply the Bleeding Effect with Melee Attacks or Projectiles (Amplifier Scales with Attack Damage). Works for all Living Entities.
+- Armor Piercing -> Ignores Armor values for Melee Attacks before the Damage Calculation (100% / 200 Attribute Value ignores Armor completely). Works for all Living Entities.
+- Tenacity -> Attribute to resist Harmful Status Effects when they're applied. At 100 Tenacity = 0% resist, at 200 Tenacity = 100% resist Harmful Status Effects. Works for all Living Entities.
 
 ### 4. New Status Effects 🌟
 **💀Harmful Effects** 

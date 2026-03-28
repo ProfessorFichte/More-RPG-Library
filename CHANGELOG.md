@@ -1,3 +1,7 @@
+# 2.5.21 - 1.21.1
+- improved the isEntityProtectedCheck logic because Spell Impacts caused by spell spawned entities did sometimes not work on players that are on another team if pvp was enabled
+- Rage, Spell Power Fuse, Lifesteal and all other attributes that have some technical function. can now all be used by all LivingEntities
+
 # 2.5.20 - 1.21.1
 - fixed an MobSpellCaster crash due to wrong class and method naming
 

@@ -8,7 +8,6 @@
     "EntityRelationsMixin",
     "LivingEntityMixin",
     "PersistentProjectileEntityMixin",
-    "PlayerEntityMixin",
     "SpellSchoolsMixin"
   ],
   "client": [

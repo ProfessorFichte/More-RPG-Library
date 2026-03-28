@@ -6,7 +6,6 @@ import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.hit.EntityHitResult;
@@ -41,20 +40,14 @@ public abstract class PersistentProjectileEntityMixin {
     private static final Map<UUID, Long> lastWeakEffectTickMap = new HashMap<>();
 
     @Unique
-    private void applyFuseDamage(PlayerEntity player, LivingEntity target,
+    private void applyFuseDamage(LivingEntity attacker, LivingEntity target,
                                  RegistryEntry<EntityAttribute> fuseAttribute,
                                  SpellSchool spellSchool) {
-        if (target == null || player.getWorld().isClient()) {
-            return;
-        }
-
-        EntityAttributeInstance fuseInstance = player.getAttributeInstance(fuseAttribute);
+        EntityAttributeInstance fuseInstance = attacker.getAttributeInstance(fuseAttribute);
         if (fuseInstance != null && fuseInstance.getValue() != 100.0) {
-            float fuseBonus = (float)((fuseInstance.getValue() - 100) / 100f);
-            float spellPower = (float) player.getAttributeValue(spellSchool.attributeEntry);
-            float magicDamage = Math.max(0.1f, fuseBonus * spellPower);
+            float magicDamage = Math.max(0.1f, (float)((fuseInstance.getValue() - 100) / 100f) * (float) attacker.getAttributeValue(spellSchool.attributeEntry));
             target.timeUntilRegen = 0;
-            target.damage(SpellDamageSource.create(spellSchool, player), magicDamage);
+            target.damage(SpellDamageSource.create(spellSchool, attacker), magicDamage);
         }
     }
 
@@ -67,95 +60,95 @@ public abstract class PersistentProjectileEntityMixin {
             return;
         }
 
-        if (!(projectile.getOwner() instanceof PlayerEntity player)) {
+        if (!(projectile.getOwner() instanceof LivingEntity attacker)) {
             return;
         }
 
-        if (player.getWorld().isClient()) {
+        if (attacker.getWorld().isClient()) {
             return;
         }
 
-        UUID playerUUID = player.getUuid();
-        long currentTick = player.getWorld().getTime();
+        UUID attackerUUID = attacker.getUuid();
+        long currentTick = attacker.getWorld().getTime();
 
-        long lastFuseTick = lastFuseTickMap.getOrDefault(playerUUID, 0L);
+        long lastFuseTick = lastFuseTickMap.getOrDefault(attackerUUID, 0L);
         if (currentTick - lastFuseTick >= 20) {
-            lastFuseTickMap.put(playerUUID, currentTick);
-            applyFuseDamage(player, target, MRPGCEntityAttributes.AIR_FUSE_MODIFIER, MoreSpellSchools.AIR);
-            applyFuseDamage(player, target, MRPGCEntityAttributes.ARCANE_FUSE_MODIFIER, SpellSchools.ARCANE);
-            applyFuseDamage(player, target, MRPGCEntityAttributes.EARTH_FUSE_MODIFIER, MoreSpellSchools.EARTH);
-            applyFuseDamage(player, target, MRPGCEntityAttributes.FIRE_FUSE_MODIFIER, SpellSchools.FIRE);
-            applyFuseDamage(player, target, MRPGCEntityAttributes.FROST_FUSE_MODIFIER, SpellSchools.FROST);
-            applyFuseDamage(player, target, MRPGCEntityAttributes.HEALING_FUSE_MODIFIER, SpellSchools.HEALING);
-            applyFuseDamage(player, target, MRPGCEntityAttributes.WATER_FUSE_MODIFIER, MoreSpellSchools.WATER);
+            lastFuseTickMap.put(attackerUUID, currentTick);
+            applyFuseDamage(attacker, target, MRPGCEntityAttributes.AIR_FUSE_MODIFIER, MoreSpellSchools.AIR);
+            applyFuseDamage(attacker, target, MRPGCEntityAttributes.ARCANE_FUSE_MODIFIER, SpellSchools.ARCANE);
+            applyFuseDamage(attacker, target, MRPGCEntityAttributes.EARTH_FUSE_MODIFIER, MoreSpellSchools.EARTH);
+            applyFuseDamage(attacker, target, MRPGCEntityAttributes.FIRE_FUSE_MODIFIER, SpellSchools.FIRE);
+            applyFuseDamage(attacker, target, MRPGCEntityAttributes.FROST_FUSE_MODIFIER, SpellSchools.FROST);
+            applyFuseDamage(attacker, target, MRPGCEntityAttributes.HEALING_FUSE_MODIFIER, SpellSchools.HEALING);
+            applyFuseDamage(attacker, target, MRPGCEntityAttributes.WATER_FUSE_MODIFIER, MoreSpellSchools.WATER);
         }
 
         Random random = new Random();
-        float attackDamage = (float) getRangedDamageAttribute(player);
+        float attackDamage = (float) getRangedDamageAttribute(attacker);
         int amplifier = (int)(attackDamage * 0.15);
 
-        long lastStrongTick = lastStrongEffectTickMap.getOrDefault(playerUUID, 0L);
+        long lastStrongTick = lastStrongEffectTickMap.getOrDefault(attackerUUID, 0L);
         if (currentTick - lastStrongTick >= 160) {
-            EntityAttributeInstance burningChance = player.getAttributeInstance(MRPGCEntityAttributes.BURNING_CHANCE);
+            EntityAttributeInstance burningChance = attacker.getAttributeInstance(MRPGCEntityAttributes.BURNING_CHANCE);
             if (burningChance != null && burningChance.getValue() > 100.0) {
                 float chance = (float)(burningChance.getValue() - 100) / 100f;
                 if (random.nextFloat() < chance) {
                     target.addStatusEffect(new StatusEffectInstance(
                             MRPGCEffects.IGNITED.entry, 40, amplifier, true, false, true));
-                    lastStrongEffectTickMap.put(playerUUID, currentTick);
+                    lastStrongEffectTickMap.put(attackerUUID, currentTick);
                 }
             }
 
-            EntityAttributeInstance staggerChance = player.getAttributeInstance(MRPGCEntityAttributes.STAGGER_CHANCE);
+            EntityAttributeInstance staggerChance = attacker.getAttributeInstance(MRPGCEntityAttributes.STAGGER_CHANCE);
             if (staggerChance != null && staggerChance.getValue() > 100.0) {
                 float chance = (float)(staggerChance.getValue() - 100) / 100f;
                 if (random.nextFloat() < chance) {
                     target.addStatusEffect(new StatusEffectInstance(
                             MRPGCEffects.STAGGER.entry, 80, amplifier, true, false, true));
-                    lastStrongEffectTickMap.put(playerUUID, currentTick);
+                    lastStrongEffectTickMap.put(attackerUUID, currentTick);
                 }
             }
 
-            EntityAttributeInstance stunChance = player.getAttributeInstance(MRPGCEntityAttributes.STUN_CHANCE);
+            EntityAttributeInstance stunChance = attacker.getAttributeInstance(MRPGCEntityAttributes.STUN_CHANCE);
             if (stunChance != null && stunChance.getValue() > 100.0) {
                 float chance = (float)(stunChance.getValue() - 100) / 100f;
                 if (random.nextFloat() < chance) {
                     target.addStatusEffect(new StatusEffectInstance(
                             SpellEngineEffects.STUN.entry, 40, 0, true, false, true));
-                    lastStrongEffectTickMap.put(playerUUID, currentTick);
+                    lastStrongEffectTickMap.put(attackerUUID, currentTick);
                 }
             }
 
-            EntityAttributeInstance freezeChance = player.getAttributeInstance(MRPGCEntityAttributes.FREEZE_CHANCE);
+            EntityAttributeInstance freezeChance = attacker.getAttributeInstance(MRPGCEntityAttributes.FREEZE_CHANCE);
             if (freezeChance != null && freezeChance.getValue() > 100.0) {
                 float chance = (float)(freezeChance.getValue() - 100) / 100f;
                 if (random.nextFloat() < chance) {
                     target.addStatusEffect(new StatusEffectInstance(
                             MRPGCEffects.FROZEN_SOLID.entry, 60, 0, true, false, true));
-                    lastStrongEffectTickMap.put(playerUUID, currentTick);
+                    lastStrongEffectTickMap.put(attackerUUID, currentTick);
                 }
             }
         }
 
-        long lastWeakTick = lastWeakEffectTickMap.getOrDefault(playerUUID, 0L);
+        long lastWeakTick = lastWeakEffectTickMap.getOrDefault(attackerUUID, 0L);
         if (currentTick - lastWeakTick >= 80) {
-            EntityAttributeInstance poisonChance = player.getAttributeInstance(MRPGCEntityAttributes.POISON_CHANCE);
+            EntityAttributeInstance poisonChance = attacker.getAttributeInstance(MRPGCEntityAttributes.POISON_CHANCE);
             if (poisonChance != null && poisonChance.getValue() > 100.0) {
                 float chance = (float)(poisonChance.getValue() - 100) / 100f;
                 if (random.nextFloat() < chance) {
                     target.addStatusEffect(new StatusEffectInstance(
                             StatusEffects.POISON, 120, amplifier, true, false, true));
-                    lastWeakEffectTickMap.put(playerUUID, currentTick);
+                    lastWeakEffectTickMap.put(attackerUUID, currentTick);
                 }
             }
 
-            EntityAttributeInstance bleedingChance = player.getAttributeInstance(MRPGCEntityAttributes.BLEEDING_CHANCE);
+            EntityAttributeInstance bleedingChance = attacker.getAttributeInstance(MRPGCEntityAttributes.BLEEDING_CHANCE);
             if (bleedingChance != null && bleedingChance.getValue() > 100.0) {
                 float chance = (float)(bleedingChance.getValue() - 100) / 100f;
                 if (random.nextFloat() < chance) {
                     target.addStatusEffect(new StatusEffectInstance(
                             MRPGCEffects.BLEEDING.entry, 120, amplifier, true, false, true));
-                    lastWeakEffectTickMap.put(playerUUID, currentTick);
+                    lastWeakEffectTickMap.put(attackerUUID, currentTick);
                 }
             }
         }
