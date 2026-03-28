@@ -178,12 +178,9 @@ public class CustomMethods {
         }
         var relation = EntityRelations.getRelation(owner, otherLivingEntity);
         switch (relation) {
-            case ALLY, FRIENDLY -> {
-                return true;
-            }
-            case MIXED, HOSTILE, NEUTRAL -> {
-                return false;
-            }
+            case ALLY -> { return true; }
+            case FRIENDLY -> { return !(owner instanceof PlayerEntity && otherLivingEntity instanceof PlayerEntity); }
+            case MIXED, HOSTILE, NEUTRAL -> { return false; }
         }
         return false;
     }
