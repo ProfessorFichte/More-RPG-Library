@@ -1,6 +1,9 @@
 # 2.5.21 - 1.21.1
 - improved the isEntityProtectedCheck logic because Spell Impacts caused by spell spawned entities did sometimes not work on players that are on another team if pvp was enabled
 - Rage, Spell Power Fuse, Lifesteal and all other attributes that have some technical function. can now all be used by all LivingEntities
+- Heavily Improved MobSpellCastGoal, especially channeled spells like fire breath
+- If you try to run away from a fire breath casting mob it'll follow you while still casting the spell
+- When you come to close while a Mob is casting/channeling a Spell, the entity will walk slowly backwards
 
 # 2.5.20 - 1.21.1
 - fixed an MobSpellCaster crash due to wrong class and method naming

@@ -37,6 +37,8 @@ public class MobSpellCastGoal extends Goal {
 
     private final Map<Identifier, Integer> cooldowns = new HashMap<>();
 
+    private static final float MIN_CAST_DISTANCE = 3.0F;
+
     @Nullable private Identifier activeSpellId;
     private int castingTime;
     private int totalCastTime;
@@ -48,6 +50,8 @@ public class MobSpellCastGoal extends Goal {
     private boolean isBeamCast;
     @Nullable private LivingEntity healingTarget;
     private double healingSpellRange = 8.0;
+    private float castMovementSpeed = 0.2F;
+    private double castSpellRange = 16.0;
 
     public MobSpellCastGoal(ISpellCasterEntity caster, String spellOrTag) {
         this(caster, spellOrTag, null);
@@ -160,6 +164,9 @@ public class MobSpellCastGoal extends Goal {
             releasesDone = 0;
         }
 
+        castMovementSpeed = (spell.active != null && spell.active.cast != null) ? spell.active.cast.movement_speed : 0.2F;
+        castSpellRange = spell.range > 0 ? spell.range : 16.0;
+
         caster.startSpellCast(castingTime);
         if (spell.active != null && spell.active.cast != null) {
             ParticleHelper.sendBatches(caster.asMobEntity(), spell.active.cast.particles);
@@ -182,6 +189,8 @@ public class MobSpellCastGoal extends Goal {
             } else {
                 entity.getNavigation().stop();
             }
+        } else if (!isSelfCast && target != null) {
+            handleCastMovement(target);
         }
 
         castingTime--;
@@ -234,6 +243,8 @@ public class MobSpellCastGoal extends Goal {
         isBeamCast = false;
         healingTarget = null;
         healingSpellRange = 8.0;
+        castMovementSpeed = 0.2F;
+        castSpellRange = 16.0;
     }
 
     private void castSpell(int channelIndex) {
@@ -523,6 +534,31 @@ public class MobSpellCastGoal extends Goal {
             if (impact.action != null && impact.action.type == Spell.Impact.Action.Type.TELEPORT) return true;
         }
         return false;
+    }
+
+    private void handleCastMovement(LivingEntity target) {
+        MobEntity entity = caster.asMobEntity();
+        double dist = Math.sqrt(entity.squaredDistanceTo(target));
+
+        if (channelReleases > 0) {
+            if (dist > castSpellRange) {
+                entity.getNavigation().startMovingTo(target, 1.0);
+            } else if (dist < MIN_CAST_DISTANCE) {
+                Vec3d awayDir = entity.getPos().subtract(target.getPos()).normalize();
+                Vec3d dest = target.getPos().add(awayDir.multiply(MIN_CAST_DISTANCE + 1.5));
+                entity.getNavigation().startMovingTo(dest.x, dest.y, dest.z, castMovementSpeed);
+            } else {
+                entity.getNavigation().stop();
+            }
+        } else {
+            if (dist < MIN_CAST_DISTANCE) {
+                Vec3d awayDir = entity.getPos().subtract(target.getPos()).normalize();
+                Vec3d dest = target.getPos().add(awayDir.multiply(MIN_CAST_DISTANCE + 1.5));
+                entity.getNavigation().startMovingTo(dest.x, dest.y, dest.z, castMovementSpeed);
+            } else {
+                entity.getNavigation().stop();
+            }
+        }
     }
 
     private void faceTarget(@Nullable LivingEntity target) {
