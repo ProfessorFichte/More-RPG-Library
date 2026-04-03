@@ -45,7 +45,9 @@ public abstract class PersistentProjectileEntityMixin {
                                  SpellSchool spellSchool) {
         EntityAttributeInstance fuseInstance = attacker.getAttributeInstance(fuseAttribute);
         if (fuseInstance != null && fuseInstance.getValue() != 100.0) {
-            float magicDamage = Math.max(0.1f, (float)((fuseInstance.getValue() - 100) / 100f) * (float) attacker.getAttributeValue(spellSchool.attributeEntry));
+            EntityAttributeInstance spellPowerInstance = attacker.getAttributeInstance(spellSchool.attributeEntry);
+            if (spellPowerInstance == null) return;
+            float magicDamage = Math.max(0.1f, (float)((fuseInstance.getValue() - 100) / 100f) * (float) spellPowerInstance.getValue());
             target.timeUntilRegen = 0;
             target.damage(SpellDamageSource.create(spellSchool, attacker), magicDamage);
         }
@@ -83,13 +85,26 @@ public abstract class PersistentProjectileEntityMixin {
             applyFuseDamage(attacker, target, MRPGCEntityAttributes.WATER_FUSE_MODIFIER, MoreSpellSchools.WATER);
         }
 
+        EntityAttributeInstance burningChance = attacker.getAttributeInstance(MRPGCEntityAttributes.BURNING_CHANCE);
+        EntityAttributeInstance staggerChance = attacker.getAttributeInstance(MRPGCEntityAttributes.STAGGER_CHANCE);
+        EntityAttributeInstance stunChance = attacker.getAttributeInstance(MRPGCEntityAttributes.STUN_CHANCE);
+        EntityAttributeInstance freezeChance = attacker.getAttributeInstance(MRPGCEntityAttributes.FREEZE_CHANCE);
+        EntityAttributeInstance poisonChance = attacker.getAttributeInstance(MRPGCEntityAttributes.POISON_CHANCE);
+        EntityAttributeInstance bleedingChance = attacker.getAttributeInstance(MRPGCEntityAttributes.BLEEDING_CHANCE);
+
+        boolean anyChanceActive = (burningChance != null && burningChance.getValue() > 100.0)
+                || (staggerChance != null && staggerChance.getValue() > 100.0)
+                || (stunChance != null && stunChance.getValue() > 100.0)
+                || (freezeChance != null && freezeChance.getValue() > 100.0)
+                || (poisonChance != null && poisonChance.getValue() > 100.0)
+                || (bleedingChance != null && bleedingChance.getValue() > 100.0);
+        if (!anyChanceActive) return;
+
         Random random = new Random();
-        float attackDamage = (float) getRangedDamageAttribute(attacker);
-        int amplifier = (int)(attackDamage * 0.15);
+        int amplifier = (int)((float) getRangedDamageAttribute(attacker) * 0.15);
 
         long lastStrongTick = lastStrongEffectTickMap.getOrDefault(attackerUUID, 0L);
         if (currentTick - lastStrongTick >= 160) {
-            EntityAttributeInstance burningChance = attacker.getAttributeInstance(MRPGCEntityAttributes.BURNING_CHANCE);
             if (burningChance != null && burningChance.getValue() > 100.0) {
                 float chance = (float)(burningChance.getValue() - 100) / 100f;
                 if (random.nextFloat() < chance) {
@@ -99,7 +114,6 @@ public abstract class PersistentProjectileEntityMixin {
                 }
             }
 
-            EntityAttributeInstance staggerChance = attacker.getAttributeInstance(MRPGCEntityAttributes.STAGGER_CHANCE);
             if (staggerChance != null && staggerChance.getValue() > 100.0) {
                 float chance = (float)(staggerChance.getValue() - 100) / 100f;
                 if (random.nextFloat() < chance) {
@@ -109,7 +123,6 @@ public abstract class PersistentProjectileEntityMixin {
                 }
             }
 
-            EntityAttributeInstance stunChance = attacker.getAttributeInstance(MRPGCEntityAttributes.STUN_CHANCE);
             if (stunChance != null && stunChance.getValue() > 100.0) {
                 float chance = (float)(stunChance.getValue() - 100) / 100f;
                 if (random.nextFloat() < chance) {
@@ -119,7 +132,6 @@ public abstract class PersistentProjectileEntityMixin {
                 }
             }
 
-            EntityAttributeInstance freezeChance = attacker.getAttributeInstance(MRPGCEntityAttributes.FREEZE_CHANCE);
             if (freezeChance != null && freezeChance.getValue() > 100.0) {
                 float chance = (float)(freezeChance.getValue() - 100) / 100f;
                 if (random.nextFloat() < chance) {
@@ -132,7 +144,6 @@ public abstract class PersistentProjectileEntityMixin {
 
         long lastWeakTick = lastWeakEffectTickMap.getOrDefault(attackerUUID, 0L);
         if (currentTick - lastWeakTick >= 80) {
-            EntityAttributeInstance poisonChance = attacker.getAttributeInstance(MRPGCEntityAttributes.POISON_CHANCE);
             if (poisonChance != null && poisonChance.getValue() > 100.0) {
                 float chance = (float)(poisonChance.getValue() - 100) / 100f;
                 if (random.nextFloat() < chance) {
@@ -142,7 +153,6 @@ public abstract class PersistentProjectileEntityMixin {
                 }
             }
 
-            EntityAttributeInstance bleedingChance = attacker.getAttributeInstance(MRPGCEntityAttributes.BLEEDING_CHANCE);
             if (bleedingChance != null && bleedingChance.getValue() > 100.0) {
                 float chance = (float)(bleedingChance.getValue() - 100) / 100f;
                 if (random.nextFloat() < chance) {

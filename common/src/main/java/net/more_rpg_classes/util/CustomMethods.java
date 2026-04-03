@@ -184,12 +184,13 @@ public class CustomMethods {
         }
         return false;
     }
-    public static double getRangedDamageAttribute(LivingEntity entity){
+    public static double getRangedDamageAttribute(LivingEntity entity) {
         if (FabricLoader.getInstance().isModLoaded("ranged_weapon_api")) {
-            return entity.getAttributeValue( EntityAttributes_RangedWeapon.DAMAGE.entry);
-        }
-        else {
-           return entity.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
+            var instance = entity.getAttributeInstance(EntityAttributes_RangedWeapon.DAMAGE.entry);
+            return instance != null ? instance.getValue() : 0.0;
+        } else {
+            var instance = entity.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE);
+            return instance != null ? instance.getValue() : 0.0;
         }
     }
 }

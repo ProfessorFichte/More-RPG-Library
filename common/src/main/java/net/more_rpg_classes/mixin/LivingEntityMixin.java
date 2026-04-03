@@ -126,6 +126,7 @@ public abstract class LivingEntityMixin {
                 LivingEntity attackedEntity = (LivingEntity)(Object)this;
                 Entity attacker = source.getAttacker();
                 EntityAttributeInstance dmgReflect = attackedEntity.getAttributeInstance(MRPGCEntityAttributes.DAMAGE_REFLECT_MODIFIER);
+                if (dmgReflect == null) return;
                 int value1 = (int) dmgReflect.getValue();
                 if (value1 != 100 && attacker instanceof LivingEntity livingAttacker && !attacker.getWorld().isClient) {
                     float reflectMultiplier = (float)(value1 - 100) / 100;
@@ -210,8 +211,9 @@ public abstract class LivingEntityMixin {
         float maxHealth = (float) attacker.getAttributeValue(EntityAttributes.GENERIC_MAX_HEALTH);
         if (health < maxHealth) {
             float missing = (maxHealth - health) / maxHealth;
-            float baseDamage = (float) attacker.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
-            float rageDamage = Math.max(0.1f, baseDamage * ((float)(rage.getValue() - 100) / 100f) * missing);
+            EntityAttributeInstance attackDamage = attacker.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE);
+            if (attackDamage == null) return;
+            float rageDamage = Math.max(0.1f, (float) attackDamage.getValue() * ((float)(rage.getValue() - 100) / 100f) * missing);
             args.set(1, (float) args.get(1) + rageDamage);
             RAGE_COOLDOWN.put(attackerId, currentTick);
         }
@@ -241,7 +243,9 @@ public abstract class LivingEntityMixin {
     private void applyFuse(LivingEntity attacker, LivingEntity target, RegistryEntry<EntityAttribute> fuseAttribute, SpellSchool spellSchool) {
         EntityAttributeInstance fuseInstance = attacker.getAttributeInstance(fuseAttribute);
         if (fuseInstance == null || fuseInstance.getValue() == 100.0) return;
-        float magicDamage = Math.max(0.1f, (float)((fuseInstance.getValue() - 100) / 100f) * (float) attacker.getAttributeValue(spellSchool.attributeEntry));
+        EntityAttributeInstance spellPowerInstance = attacker.getAttributeInstance(spellSchool.attributeEntry);
+        if (spellPowerInstance == null) return;
+        float magicDamage = Math.max(0.1f, (float)((fuseInstance.getValue() - 100) / 100f) * (float) spellPowerInstance.getValue());
         target.timeUntilRegen = 0;
         target.damage(SpellDamageSource.create(spellSchool, attacker), magicDamage);
         ParticleHelper.sendBatches(target, new ParticleBatch[]{FUSE_PARTICLES.color(Color.from(spellSchool.color).toRGBA())});
@@ -252,30 +256,43 @@ public abstract class LivingEntityMixin {
         if (source.isIn(SpellPowerTags.DamageTypes.ALL)) return;
         LivingEntity attacker = getLivingAttackerFromDamageSource(source);
         if (attacker == null || attacker.getWorld().isClient()) return;
+
+        EntityAttributeInstance burningChance = attacker.getAttributeInstance(MRPGCEntityAttributes.BURNING_CHANCE);
+        EntityAttributeInstance staggerChance = attacker.getAttributeInstance(MRPGCEntityAttributes.STAGGER_CHANCE);
+        EntityAttributeInstance stunChance = attacker.getAttributeInstance(MRPGCEntityAttributes.STUN_CHANCE);
+        EntityAttributeInstance freezeChance = attacker.getAttributeInstance(MRPGCEntityAttributes.FREEZE_CHANCE);
+        EntityAttributeInstance poisonChance = attacker.getAttributeInstance(MRPGCEntityAttributes.POISON_CHANCE);
+        EntityAttributeInstance bleedingChance = attacker.getAttributeInstance(MRPGCEntityAttributes.BLEEDING_CHANCE);
+
+        boolean anyActive = (burningChance != null && burningChance.getValue() > 100.0)
+                || (staggerChance != null && staggerChance.getValue() > 100.0)
+                || (stunChance != null && stunChance.getValue() > 100.0)
+                || (freezeChance != null && freezeChance.getValue() > 100.0)
+                || (poisonChance != null && poisonChance.getValue() > 100.0)
+                || (bleedingChance != null && bleedingChance.getValue() > 100.0);
+        if (!anyActive) return;
+
         LivingEntity target = (LivingEntity)(Object)this;
         long currentTick = attacker.getWorld().getTime();
         UUID attackerId = attacker.getUuid();
-        int amplifier = (int)((float) attacker.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE) * 0.15);
+        EntityAttributeInstance attackDamageInstance = attacker.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE);
+        int amplifier = attackDamageInstance != null ? (int)(attackDamageInstance.getValue() * 0.15) : 0;
         Random random = new Random();
 
         Long lastStrong = STRONG_EFFECT_COOLDOWN.get(attackerId);
         if (lastStrong == null || currentTick - lastStrong >= 160) {
-            EntityAttributeInstance burningChance = attacker.getAttributeInstance(MRPGCEntityAttributes.BURNING_CHANCE);
             if (burningChance != null && burningChance.getValue() > 100.0 && random.nextFloat() < (float)(burningChance.getValue() - 100) / 100f) {
                 target.addStatusEffect(new StatusEffectInstance(MRPGCEffects.IGNITED.entry, 40, amplifier, true, false, true));
                 STRONG_EFFECT_COOLDOWN.put(attackerId, currentTick);
             }
-            EntityAttributeInstance staggerChance = attacker.getAttributeInstance(MRPGCEntityAttributes.STAGGER_CHANCE);
             if (staggerChance != null && staggerChance.getValue() > 100.0 && random.nextFloat() < (float)(staggerChance.getValue() - 100) / 100f) {
                 target.addStatusEffect(new StatusEffectInstance(MRPGCEffects.STAGGER.entry, 80, amplifier, true, false, true));
                 STRONG_EFFECT_COOLDOWN.put(attackerId, currentTick);
             }
-            EntityAttributeInstance stunChance = attacker.getAttributeInstance(MRPGCEntityAttributes.STUN_CHANCE);
             if (stunChance != null && stunChance.getValue() > 100.0 && random.nextFloat() < (float)(stunChance.getValue() - 100) / 100f) {
                 target.addStatusEffect(new StatusEffectInstance(SpellEngineEffects.STUN.entry, 40, 0, true, false, true));
                 STRONG_EFFECT_COOLDOWN.put(attackerId, currentTick);
             }
-            EntityAttributeInstance freezeChance = attacker.getAttributeInstance(MRPGCEntityAttributes.FREEZE_CHANCE);
             if (freezeChance != null && freezeChance.getValue() > 100.0 && random.nextFloat() < (float)(freezeChance.getValue() - 100) / 100f) {
                 target.addStatusEffect(new StatusEffectInstance(MRPGCEffects.FROZEN_SOLID.entry, 60, 0, true, false, true));
                 STRONG_EFFECT_COOLDOWN.put(attackerId, currentTick);
@@ -285,13 +302,11 @@ public abstract class LivingEntityMixin {
 
         Long lastWeak = WEAK_EFFECT_COOLDOWN.get(attackerId);
         if (lastWeak == null || currentTick - lastWeak >= 80) {
-            EntityAttributeInstance poisonChance = attacker.getAttributeInstance(MRPGCEntityAttributes.POISON_CHANCE);
             if (poisonChance != null && poisonChance.getValue() > 100.0 && random.nextFloat() < (float)(poisonChance.getValue() - 100) / 100f) {
                 target.addStatusEffect(new StatusEffectInstance(StatusEffects.POISON, 120, amplifier, true, false, true));
                 WEAK_EFFECT_COOLDOWN.put(attackerId, currentTick);
                 ParticleHelper.sendBatches(target, new ParticleBatch[]{POISON_PARTICLES});
             }
-            EntityAttributeInstance bleedingChance = attacker.getAttributeInstance(MRPGCEntityAttributes.BLEEDING_CHANCE);
             if (bleedingChance != null && bleedingChance.getValue() > 100.0 && random.nextFloat() < (float)(bleedingChance.getValue() - 100) / 100f) {
                 target.addStatusEffect(new StatusEffectInstance(MRPGCEffects.BLEEDING.entry, 120, amplifier, true, false, true));
                 WEAK_EFFECT_COOLDOWN.put(attackerId, currentTick);
