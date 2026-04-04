@@ -5,6 +5,8 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.particle.*;
 import net.minecraft.util.Identifier;
 import net.more_rpg_classes.client.effect.*;
+import net.more_rpg_classes.client.heart.HeartRegistry;
+import net.more_rpg_classes.client.heart.HeartTypes;
 import net.more_rpg_classes.client.particle.*;
 import net.more_rpg_classes.client.render.FriendlyLightningEntityRenderer;
 import net.more_rpg_classes.client.render.MobBeamTracker;
@@ -19,6 +21,8 @@ import net.spell_engine.client.gui.SpellTooltip;
 import net.spell_engine.client.particle.SpellExplosionParticle;
 import net.spell_engine.client.particle.SpellFlameParticle;
 
+import java.util.Arrays;
+
 public class MoreRPGClassesClient{
 
     public static void init(){
@@ -29,6 +33,8 @@ public class MoreRPGClassesClient{
                 SpellTooltip.addDescriptionMutator(entry.id(), entry.mutator());
             }
         }
+        // Register heart types
+        HeartTypes.getHeartTypes().forEach(HeartRegistry::register);
         // Register entity renderers
         EntityRendererRegistry.register(MRPGCEntities.FRIENDLY_LIGHTNING, FriendlyLightningEntityRenderer::new);
         // Register Status Effect Renderers
