@@ -38,6 +38,11 @@ public class MobSpellCastGoal extends Goal {
     private final Map<Identifier, Integer> cooldowns = new HashMap<>();
 
     private static final float MIN_CAST_DISTANCE = 3.0F;
+    private static final float INTELLIGENT_SELF_HEAL_THRESHOLD = 0.5F;
+    private static final float INTELLIGENT_KILL_THRESHOLD = 0.3F;
+    private static final float INTELLIGENT_ALLY_HEAL_THRESHOLD = 0.6F;
+
+    private boolean intelligentSpellcasting = false;
 
     @Nullable private Identifier activeSpellId;
     private int castingTime;
@@ -62,6 +67,11 @@ public class MobSpellCastGoal extends Goal {
         this.spellOrTag = spellOrTag;
         this.otherGoals = otherGoals;
         this.setControls(EnumSet.of(Control.MOVE, Control.LOOK));
+    }
+
+    public MobSpellCastGoal withIntelligentSpellcasting() {
+        this.intelligentSpellcasting = true;
+        return this;
     }
 
     private List<RegistryEntry<Spell>> resolveSpells(net.minecraft.world.World world) {
@@ -124,8 +134,50 @@ public class MobSpellCastGoal extends Goal {
         }
 
         if (candidates.isEmpty()) return false;
+
+        if (intelligentSpellcasting) {
+            candidates = applyIntelligentFilters(entity, target, candidates);
+            if (candidates.isEmpty()) return false;
+        }
+
         activeSpellId = candidates.get(entity.getRandom().nextInt(candidates.size()));
         return true;
+    }
+
+    private List<Identifier> applyIntelligentFilters(MobEntity entity, @Nullable LivingEntity target, List<Identifier> candidates) {
+        var registry = SpellRegistry.from(entity.getWorld());
+
+        candidates = new ArrayList<>(candidates);
+        candidates.removeIf(id -> !SpellBehaviorRegistry.shouldCast(entity, healingTarget != null ? healingTarget : target, id));
+        if (candidates.isEmpty()) return candidates;
+
+        float selfHpFrac = entity.getHealth() / entity.getMaxHealth();
+        if (selfHpFrac < INTELLIGENT_SELF_HEAL_THRESHOLD) {
+            List<Identifier> selfHeal = candidates.stream().filter(id -> {
+                var e = registry.getEntry(id).orElse(null);
+                if (e == null) return false;
+                Spell.Target.Type t = e.value().target != null ? e.value().target.type : Spell.Target.Type.CASTER;
+                return t == Spell.Target.Type.CASTER && hasHealingImpact(e.value());
+            }).collect(java.util.stream.Collectors.toList());
+            if (!selfHeal.isEmpty()) {
+                healingTarget = null;
+                return selfHeal;
+            }
+        }
+
+        if (target != null) {
+            float targetHpFrac = target.getHealth() / target.getMaxHealth();
+            if (targetHpFrac < INTELLIGENT_KILL_THRESHOLD) {
+                List<Identifier> damaging = candidates.stream().filter(id -> {
+                    var e = registry.getEntry(id).orElse(null);
+                    if (e == null) return false;
+                    return !onlyHasHealingImpacts(e.value());
+                }).collect(java.util.stream.Collectors.toList());
+                if (!damaging.isEmpty()) return damaging;
+            }
+        }
+
+        return candidates;
     }
 
     @Override
@@ -542,7 +594,7 @@ public class MobSpellCastGoal extends Goal {
 
         if (channelReleases > 0) {
             if (dist > castSpellRange) {
-                entity.getNavigation().startMovingTo(target, 1.0);
+                entity.getNavigation().startMovingTo(target, castMovementSpeed);
             } else if (dist < MIN_CAST_DISTANCE) {
                 Vec3d awayDir = entity.getPos().subtract(target.getPos()).normalize();
                 Vec3d dest = target.getPos().add(awayDir.multiply(MIN_CAST_DISTANCE + 1.5));
