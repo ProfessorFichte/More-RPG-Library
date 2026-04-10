@@ -1,7 +1,6 @@
 {
   "school": "spell_power:physical_melee",
-  "range": 0.0,
-  "tier": 8,
+  "tier": 1,
   "type": "PASSIVE",
   "passive": {
     "triggers": [
@@ -45,6 +44,7 @@
   ],
   "cost": {
     "batching": true,
+    "durability": 0,
     "cooldown": {
       "duration": 3.0
     }

@@ -1,0 +1,78 @@
+{
+  "school": "spell_power:soul",
+  "range": 5.0,
+  "tier": 8,
+  "type": "PASSIVE",
+  "passive": {
+    "triggers": [
+      {
+        "type": "MELEE_IMPACT",
+        "chance": 0.3,
+        "equipment_condition": "MAINHAND"
+      }
+    ]
+  },
+  "release": {
+    "particles": [
+      {
+        "particle_id": "smoke",
+        "origin": "FEET",
+        "shape": "CIRCLE",
+        "count": 15.0,
+        "min_speed": 0.05,
+        "max_speed": 0.5
+      }
+    ]
+  },
+  "target": {
+    "type": "AREA",
+    "area": {
+      "angle_degrees": 90.0
+    }
+  },
+  "impacts": [
+    {
+      "attribute": "minecraft:generic.attack_damage",
+      "action": {
+        "type": "DAMAGE",
+        "damage": {
+          "spell_power_coefficient": 0.5,
+          "knockback": 0.0
+        }
+      },
+      "particles": [
+        {
+          "particle_id": "spell_engine:magic_skull_decelerate",
+          "origin": "CENTER",
+          "shape": "SPHERE",
+          "count": 25.0,
+          "min_speed": 0.2,
+          "max_speed": 0.5,
+          "color_rgba": 858993663
+        }
+      ],
+      "sound": {
+        "id": "spell_engine:generic_soul_impact"
+      }
+    },
+    {
+      "action": {
+        "type": "STATUS_EFFECT",
+        "status_effect": {
+          "effect_id": "wither",
+          "duration": 8.0,
+          "amplifier": 1,
+          "amplifier_power_multiplier": 0.15,
+          "amplifier_cap": 10,
+          "show_particles": true
+        }
+      }
+    }
+  ],
+  "cost": {
+    "durability": 0,
+    "cooldown": {
+      "duration": 10.0
+    }
+  }
+}

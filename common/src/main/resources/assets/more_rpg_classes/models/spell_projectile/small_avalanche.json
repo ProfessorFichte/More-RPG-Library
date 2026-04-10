@@ -1,0 +1,35 @@
+{
+	"credit": "Made with Blockbench",
+	"textures": {
+		"0": "more_rpg_classes:spell_projectile/small_avalanche",
+		"particle": "more_rpg_classes:spell_projectile/small_avalanche"
+	},
+	"elements": [
+		{
+			"from": [6, 5, 4],
+			"to": [10, 9, 8],
+			"rotation": {"angle": -22.5, "axis": "x", "origin": [6, 5, 6]},
+			"faces": {
+				"north": {"uv": [8, 0, 12, 4], "texture": "#0"},
+				"east": {"uv": [0, 0, 4, 4], "texture": "#0"},
+				"south": {"uv": [4, 0, 8, 4], "texture": "#0"},
+				"west": {"uv": [4, 4, 8, 8], "texture": "#0"},
+				"up": {"uv": [16, 4, 12, 0], "texture": "#0"},
+				"down": {"uv": [4, 4, 0, 8], "texture": "#0"}
+			}
+		},
+		{
+			"from": [7, 6, 4],
+			"to": [11, 10, 8],
+			"rotation": {"angle": -45, "axis": "y", "origin": [7, 6, 6]},
+			"faces": {
+				"north": {"uv": [0, 0, 4, 4], "texture": "#0"},
+				"east": {"uv": [0, 4, 4, 8], "texture": "#0"},
+				"south": {"uv": [4, 0, 8, 4], "texture": "#0"},
+				"west": {"uv": [4, 4, 8, 8], "texture": "#0"},
+				"up": {"uv": [16, 4, 12, 0], "texture": "#0"},
+				"down": {"uv": [12, 0, 8, 4], "texture": "#0"}
+			}
+		}
+	]
+}

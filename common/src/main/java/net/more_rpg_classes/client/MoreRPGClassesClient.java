@@ -71,6 +71,8 @@ public class MoreRPGClassesClient{
         ParticleFactoryRegistry.getInstance().register(MoreParticles.RAINBOW_MUSIC_NOTE_0, RainbowMusicNoteParticle.Factory::new);
         ParticleFactoryRegistry.getInstance().register(MoreParticles.RAINBOW_MUSIC_NOTE_1, RainbowMusicNoteParticle.Factory::new);
         ParticleFactoryRegistry.getInstance().register(MoreParticles.MUSIC_NOTE, MusicNoteParticle.MusicNoteFactory::new);
+        ParticleFactoryRegistry.getInstance().register(MoreParticles.STAR, StarParticle.Factory::new);
+        ParticleFactoryRegistry.getInstance().register(MoreParticles.POPUP, new PopupParticle.Factory());
 
         CustomParticleStatusEffect.register(MRPGCEffects.MOLTEN_ARMOR.effect, new MoltenArmorParticles(1));
         CustomParticleStatusEffect.register(MRPGCEffects.BLEEDING.effect, new BleedingParticles(1));
@@ -113,5 +115,6 @@ public class MoreRPGClassesClient{
         registry.register(MoreParticles.FATAL_POISON, SpellFlameParticle.AnimatedFlameFactory::new);
         registry.register(MoreParticles.RAINBOW_MUSIC_NOTE_0, RainbowMusicNoteParticle.Factory::new);
         registry.register(MoreParticles.RAINBOW_MUSIC_NOTE_1, RainbowMusicNoteParticle.Factory::new);
+        registry.register(MoreParticles.STAR, StarParticle.Factory::new);
     }
 }

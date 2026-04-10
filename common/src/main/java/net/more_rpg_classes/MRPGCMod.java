@@ -86,6 +86,7 @@ public class MRPGCMod {
 		Registry.register(Registries.LOOT_FUNCTION_TYPE, SpecificSpellScrollPoolLootFunction.ID, SpecificSpellScrollPoolLootFunction.TYPE);
 		Registry.register(Registries.LOOT_FUNCTION_TYPE, ConditionalItemLootFunction.ID, ConditionalItemLootFunction.TYPE);
 		Registry.register(Registries.LOOT_FUNCTION_TYPE, BindSpellFromPoolsLootFunction.ID, BindSpellFromPoolsLootFunction.TYPE);
+		Registry.register(Registries.LOOT_FUNCTION_TYPE, ItemTagPickerLootFunction.ID, ItemTagPickerLootFunction.TYPE);
 		Registry.register(Registries.LOOT_POOL_ENTRY_TYPE, ConditionalItemEntry.ID, new LootPoolEntryType(ConditionalItemEntry.CODEC));
 	}
 	public static void registerSounds() {

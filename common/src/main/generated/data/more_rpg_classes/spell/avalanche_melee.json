@@ -1,0 +1,115 @@
+{
+  "school": "spell_power:frost",
+  "tier": 8,
+  "type": "PASSIVE",
+  "passive": {
+    "triggers": [
+      {
+        "type": "MELEE_IMPACT",
+        "chance": 0.4,
+        "equipment_condition": "MAINHAND"
+      }
+    ]
+  },
+  "target": {
+    "type": "FROM_TRIGGER"
+  },
+  "deliver": {
+    "type": "METEOR",
+    "meteor": {
+      "launch_height": 4.0,
+      "launch_radius": 2.0,
+      "launch_properties": {
+        "velocity": 0.5,
+        "extra_launch_count": 3
+      },
+      "projectile": {
+        "client_data": {
+          "light_level": 12,
+          "travel_particles": [
+            {
+              "particle_id": "snowflake",
+              "origin": "CENTER",
+              "shape": "CIRCLE",
+              "rotation": "LOOK",
+              "count": 3.0,
+              "max_speed": 0.1
+            }
+          ],
+          "model": {
+            "model_id": "more_rpg_classes:spell_projectile/small_avalanche"
+          }
+        }
+      }
+    }
+  },
+  "impacts": [
+    {
+      "target_modifiers": [
+        {
+          "conditions": [
+            {
+              "entity_type": "#minecraft:freeze_immune_entity_types"
+            }
+          ],
+          "execute": "DENY"
+        }
+      ],
+      "action": {
+        "type": "STATUS_EFFECT",
+        "status_effect": {
+          "effect_id": "more_rpg_classes:frosted",
+          "amplifier": 1,
+          "amplifier_cap": 3,
+          "refresh_duration": false,
+          "apply_mode": "ADD"
+        }
+      }
+    },
+    {
+      "attribute": "minecraft:generic.attack_damage",
+      "action": {
+        "type": "DAMAGE",
+        "damage": {
+          "spell_power_coefficient": 0.3
+        }
+      },
+      "particles": [
+        {
+          "particle_id": "spell_engine:magic_frost_burst",
+          "origin": "CENTER",
+          "shape": "SPHERE",
+          "count": 15.0,
+          "min_speed": 0.2,
+          "max_speed": 0.4,
+          "color_rgba": 1724710911
+        }
+      ],
+      "sound": {
+        "id": "spell_engine:generic_frost_impact"
+      }
+    }
+  ],
+  "area_impact": {
+    "radius": 2.0,
+    "area": {
+      "distance_dropoff": "SQUARED"
+    },
+    "particles": [
+      {
+        "particle_id": "snowflake",
+        "origin": "CENTER",
+        "shape": "CIRCLE",
+        "count": 10.0,
+        "min_speed": 0.5,
+        "max_speed": 2.0
+      }
+    ]
+  },
+  "cost": {
+    "durability": 0,
+    "cooldown": {
+      "duration": 8.0
+    }
+  }
+}

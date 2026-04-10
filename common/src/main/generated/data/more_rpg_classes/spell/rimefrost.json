@@ -1,0 +1,100 @@
+{
+  "school": "spell_power:frost",
+  "tier": 8,
+  "type": "PASSIVE",
+  "passive": {
+    "triggers": [
+      {
+        "type": "SPELL_IMPACT_SPECIFIC",
+        "chance": 0.3,
+        "spell": {
+          "school": "spell_power:frost",
+          "type": "ACTIVE"
+        },
+        "impact": {
+          "impact_type": "DAMAGE"
+        }
+      }
+    ]
+  },
+  "target": {
+    "type": "FROM_TRIGGER"
+  },
+  "deliver": {
+    "type": "CLOUD",
+    "clouds": [
+      {
+        "volume": {
+          "radius": 3.0,
+          "area": {
+            "vertical_range_multiplier": 0.5
+          },
+          "sound": {
+            "id": "more_rpg_classes:frost_crackle_long"
+          }
+        },
+        "time_to_live_seconds": 7.0,
+        "client_data": {
+          "light_level": 6,
+          "particles": [
+            {
+              "particle_id": "more_rpg_classes:freezing_snowflake",
+              "origin": "FEET",
+              "shape": "PILLAR",
+              "count": 10.0,
+              "min_speed": 0.1,
+              "max_speed": 0.12
+            }
+          ],
+          "particle_spawn_interval": 12
+        },
+        "spawn": {
+          "sound": {
+            "id": "spell_engine:generic_frost_casting"
+          }
+        }
+      }
+    ]
+  },
+  "impacts": [
+    {
+      "target_modifiers": [
+        {
+          "conditions": [
+            {
+              "entity_type": "#minecraft:freeze_immune_entity_types"
+            }
+          ],
+          "execute": "DENY"
+        }
+      ],
+      "action": {
+        "type": "STATUS_EFFECT",
+        "status_effect": {
+          "effect_id": "more_rpg_classes:frosted",
+          "duration": 2.0,
+          "amplifier": 1,
+          "amplifier_cap": 4,
+          "apply_mode": "ADD"
+        }
+      },
+      "particles": [
+        {
+          "particle_id": "more_rpg_classes:freezing_snowflake",
+          "origin": "CENTER",
+          "shape": "SPHERE",
+          "count": 25.0,
+          "min_speed": 0.2,
+          "max_speed": 0.25
+        }
+      ]
+    }
+  ],
+  "cost": {
+    "durability": 0,
+    "cooldown": {
+      "duration": 4.0,
+      "hosting_item": false
+    }
+  }
+}

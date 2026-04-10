@@ -1,3 +1,15 @@
+# 2.5.23 - 1.21.1
+- Add custom heart-renderer #19 - Rulft44
+- added a new particle type - star
+- added a new PopupParticle, that can render spell icon & mob effect textures
+- added BackAway & Flee Goals for Entities (Mainly for LNE-Entities)
+- Fixed Bleeding Effect Damage bypassing the Resistance Effect
+- Improved Mob Spellcasting with optional Intelligence Settings
+- Added a new Lightning Strike Passive Spell for Ranged Weapons
+- Added all Weapon Passive Spells from Loot&Explore +Add On's to this project because they might be used by multiple projects
+- Weapon Skills from Berserker and Forcemaster got added to this project, so they could be used by other mods as well without having these mods installed
+- Added some SpellBuilder Helper methods
+
 # 2.5.22 - 1.21.1
 - Fixed a crash due to LivingEntityMixin with the Ender Dragon attacking
 - Added Safeguards and Null checks to check if the entity even has the attribute that the custom function could run

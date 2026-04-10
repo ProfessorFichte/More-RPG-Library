@@ -1,0 +1,123 @@
+{
+  "school": "spell_power:physical_melee",
+  "range": 20.0,
+  "tier": 8,
+  "type": "PASSIVE",
+  "passive": {
+    "triggers": [
+      {
+        "type": "SHIELD_BLOCK",
+        "chance": 0.3
+      }
+    ]
+  },
+  "release": {
+    "particles": [
+      {
+        "particle_id": "smoke",
+        "origin": "CENTER",
+        "shape": "SPHERE",
+        "count": 40.0,
+        "min_speed": 0.6,
+        "max_speed": 0.8
+      }
+    ]
+  },
+  "target": {
+    "type": "AIM",
+    "aim": {}
+  },
+  "deliver": {
+    "type": "PROJECTILE",
+    "projectile": {
+      "direction_offsets": [
+        {},
+        {
+          "yaw": 30.0
+        },
+        {
+          "yaw": -30.0
+        }
+      ],
+      "direct_towards_target": true,
+      "launch_properties": {
+        "extra_launch_count": 2,
+        "extra_launch_delay": 10
+      },
+      "projectile": {
+        "divergence": 5.0,
+        "client_data": {
+          "travel_particles": [
+            {
+              "particle_id": "smoke",
+              "origin": "CENTER",
+              "shape": "CIRCLE",
+              "rotation": "LOOK",
+              "count": 2.0,
+              "min_speed": 0.6,
+              "max_speed": 0.9
+            }
+          ],
+          "model": {
+            "model_id": "more_rpg_classes:spell_projectile/wither_skull",
+            "scale": 1.5,
+            "rotate_degrees_per_tick": 0.0
+          }
+        }
+      }
+    }
+  },
+  "impacts": [
+    {
+      "action": {
+        "type": "STATUS_EFFECT",
+        "status_effect": {
+          "effect_id": "wither",
+          "duration": 5.0,
+          "amplifier": 1,
+          "amplifier_power_multiplier": 0.25
+        }
+      },
+      "particles": [
+        {
+          "particle_id": "spell_engine:magic_skull_decelerate",
+          "origin": "CENTER",
+          "shape": "SPHERE",
+          "count": 25.0,
+          "min_speed": 0.2,
+          "max_speed": 0.25,
+          "color_rgba": 858993663
+        }
+      ]
+    },
+    {
+      "action": {
+        "type": "DAMAGE",
+        "damage": {
+          "spell_power_coefficient": 0.1,
+          "knockback": 0.25
+        }
+      },
+      "particles": [
+        {
+          "particle_id": "smoke",
+          "origin": "CENTER",
+          "shape": "SPHERE",
+          "count": 10.0,
+          "min_speed": 0.3,
+          "max_speed": 0.35
+        }
+      ],
+      "sound": {
+        "id": "minecraft:entity.generic.explode"
+      }
+    }
+  ],
+  "cost": {
+    "batching": true,
+    "cooldown": {
+      "duration": 10.0,
+      "hosting_item": false
+    }
+  }
+}

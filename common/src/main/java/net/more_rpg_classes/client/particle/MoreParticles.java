@@ -1,6 +1,10 @@
 package net.more_rpg_classes.client.particle;
 
+import com.mojang.serialization.MapCodec;
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
+import net.minecraft.network.RegistryByteBuf;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.particle.ParticleType;
 import net.minecraft.particle.SimpleParticleType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -40,10 +44,24 @@ public class MoreParticles {
     public static final SimpleParticleType RAINBOW_MUSIC_NOTE_0 = FabricParticleTypes.simple();
     public static final SimpleParticleType RAINBOW_MUSIC_NOTE_1 = FabricParticleTypes.simple();
     public static final TemplateParticleType MUSIC_NOTE = new TemplateParticleType();
-
-
+    public static final TemplateParticleType STAR = new TemplateParticleType();
+    public static ParticleType<PopupParticleEffect> POPUP;
 
     public static void register(){
+        POPUP = Registry.register(
+            Registries.PARTICLE_TYPE,
+            Identifier.of(MRPGCMod.MOD_ID, "popup"),
+            new ParticleType<PopupParticleEffect>(false) {
+                @Override
+                public MapCodec<PopupParticleEffect> getCodec() {
+                    return PopupParticleEffect.createCodec(this);
+                }
+                @Override
+                public PacketCodec<? super RegistryByteBuf, PopupParticleEffect> getPacketCodec() {
+                    return PopupParticleEffect.createPacketCodec(this);
+                }
+            }
+        );
         Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "blood_drop"), BLOOD_DROP);
         Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "molten_armor"), MOLTEN_ARMOR);
         Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "bubble"), BUBBLE);
@@ -75,6 +93,7 @@ public class MoreParticles {
         Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "rainbow_music_note_0"), RAINBOW_MUSIC_NOTE_0);
         Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "rainbow_music_note_1"), RAINBOW_MUSIC_NOTE_1);
         Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "music_note"), MUSIC_NOTE);
+        Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "star"), STAR);
     }
 
 }

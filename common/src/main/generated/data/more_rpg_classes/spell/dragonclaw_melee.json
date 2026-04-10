@@ -1,0 +1,75 @@
+{
+  "school": "spell_power:arcane",
+  "tier": 8,
+  "type": "PASSIVE",
+  "passive": {
+    "triggers": [
+      {
+        "type": "MELEE_IMPACT",
+        "chance": 0.35,
+        "chance_batching": true,
+        "equipment_condition": "MAINHAND"
+      }
+    ]
+  },
+  "target": {
+    "type": "FROM_TRIGGER"
+  },
+  "impacts": [
+    {
+      "attribute": "minecraft:generic.attack_damage",
+      "action": {
+        "type": "DAMAGE",
+        "damage": {
+          "spell_power_coefficient": 0.6,
+          "knockback": 0.0
+        }
+      },
+      "particles": [
+        {
+          "particle_id": "spell_engine:magic_arcane_impact_burst",
+          "origin": "CENTER",
+          "shape": "SPHERE",
+          "count": 30.0,
+          "min_speed": 0.2,
+          "max_speed": 0.7
+        },
+        {
+          "particle_id": "more_rpg_classes:dragon_claw",
+          "origin": "CENTER",
+          "shape": "SPHERE",
+          "count": 2.0,
+          "min_speed": 0.2,
+          "max_speed": 0.5
+        }
+      ]
+    },
+    {
+      "attribute_from_target": true,
+      "attribute": "minecraft:generic.max_health",
+      "action": {
+        "type": "HEAL",
+        "heal": {
+          "spell_power_coefficient": 0.025
+        }
+      },
+      "particles": [
+        {
+          "particle_id": "spell_engine:magic_arcane_ascend",
+          "origin": "FEET",
+          "shape": "WIDE_PIPE",
+          "count": 1.0,
+          "min_speed": 0.05,
+          "max_speed": 0.1,
+          "color_rgba": 4284940287
+        }
+      ]
+    }
+  ],
+  "cost": {
+    "durability": 0,
+    "cooldown": {
+      "duration": 5.0
+    }
+  }
+}

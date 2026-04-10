@@ -1,0 +1,91 @@
+{
+  "school": "spell_power:physical_melee",
+  "range": 2.5,
+  "tier": 8,
+  "type": "PASSIVE",
+  "passive": {
+    "triggers": [
+      {
+        "type": "SHIELD_BLOCK",
+        "chance": 0.2
+      }
+    ]
+  },
+  "release": {
+    "particles": [
+      {
+        "particle_id": "spell_engine:snowflake",
+        "origin": "CENTER",
+        "shape": "CIRCLE",
+        "count": 60.0,
+        "min_speed": 0.1,
+        "max_speed": 0.3
+      },
+      {
+        "particle_id": "spell_engine:frost_shard",
+        "origin": "CENTER",
+        "shape": "CIRCLE",
+        "count": 60.0,
+        "min_speed": 0.3,
+        "max_speed": 0.6
+      }
+    ],
+    "particles_scaled_with_ranged": [
+      {
+        "particle_id": "spell_engine:area_effect_293",
+        "origin": "GROUND",
+        "shape": "SPHERE",
+        "count": 1.0,
+        "max_speed": 0.0,
+        "color_rgba": 2582052863,
+        "scale": 0.4
+      }
+    ],
+    "sound": {
+      "id": "spell_engine:generic_frost_release"
+    }
+  },
+  "target": {
+    "type": "AREA",
+    "area": {}
+  },
+  "impacts": [
+    {
+      "action": {
+        "type": "STATUS_EFFECT",
+        "status_effect": {
+          "effect_id": "more_rpg_classes:frozen_solid",
+          "duration": 3.0
+        }
+      },
+      "particles": [
+        {
+          "particle_id": "spell_engine:snowflake",
+          "origin": "CENTER",
+          "shape": "SPHERE",
+          "count": 25.0,
+          "min_speed": 0.1,
+          "max_speed": 0.4
+        },
+        {
+          "particle_id": "spell_engine:magic_frost_burst",
+          "origin": "CENTER",
+          "shape": "SPHERE",
+          "count": 30.0,
+          "min_speed": 0.2,
+          "max_speed": 0.7
+        }
+      ],
+      "sound": {
+        "id": "spell_engine:generic_frost_impact"
+      }
+    }
+  ],
+  "cost": {
+    "batching": true,
+    "cooldown": {
+      "duration": 10.0,
+      "hosting_item": false
+    }
+  }
+}

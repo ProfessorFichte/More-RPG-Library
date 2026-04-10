@@ -4,13 +4,16 @@ import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.util.Identifier;
+import net.more_rpg_classes.custom.MoreSpellSchools;
 import net.spell_engine.api.config.AttributeModifier;
 import net.spell_engine.api.config.ConfigFile;
 import net.spell_engine.api.config.EffectConfig;
 import net.spell_engine.api.effect.*;
 import net.spell_engine.api.entity.SpellEngineAttributes;
 import net.spell_power.api.SpellPower;
+import net.spell_power.api.SpellPowerMechanics;
 import net.spell_power.api.SpellSchools;
+import net.spell_power.api.statuseffects.SpellVulnerabilityStatusEffect;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -200,6 +203,51 @@ public class MRPGCEffects {
                             EntityAttributeModifier.Operation.ADD_MULTIPLIED_BASE
                     )))
     ));
+    public static final Effects.Entry WITHERS_CURSE = add(new Effects.Entry(
+            Identifier.of(MOD_ID, "withers_curse"),
+            "Wither's Curse",
+            "Increases Incoming Damage, the amplifier increases with each harmful status effect.",
+            new WithersCurseEffect(StatusEffectCategory.HARMFUL, 0x2a1b01),
+            new EffectConfig(List.of(
+                    new AttributeModifier(
+                            SpellEngineAttributes.DAMAGE_TAKEN.id.toString(),
+                            0.05F,
+                            EntityAttributeModifier.Operation.ADD_MULTIPLIED_BASE
+                    )
+            ))
+    ));
+
+    public static Effects.Entry ARCANE_PRECISION = add(new Effects.Entry(Identifier.of(MOD_ID, "arcane_precision"),
+            "Arcane Precision",
+            "Makes targets more vulnerable to Arcane Spell Damage & Crits",
+            new SpellVulnerabilityStatusEffect(StatusEffectCategory.HARMFUL, SpellSchools.ARCANE.color)
+                    .setVulnerability(SpellSchools.ARCANE, new SpellPower.Vulnerability(
+                            0.025F, 0.05F, 0.1F)),
+            new EffectConfig(
+                    List.of(
+                    )
+            )
+    ));
+    public static Effects.Entry ZEPHYRS_SPEED = add(new Effects.Entry(Identifier.of(MOD_ID, "zephyrs_speed"),
+            "Zephyrs Speed",
+            "Increasing the Crit Chance & Movement Speed of the caster.",
+            new CustomStatusEffect(StatusEffectCategory.BENEFICIAL, MoreSpellSchools.AIR.color),
+            new EffectConfig(
+                    List.of(
+                            new AttributeModifier(
+                                    SpellPowerMechanics.CRITICAL_CHANCE.id.toString(),
+                                    0.03F,
+                                    EntityAttributeModifier.Operation.ADD_MULTIPLIED_BASE
+                            ),
+                            new AttributeModifier(
+                                    EntityAttributes.GENERIC_MOVEMENT_SPEED.getIdAsString(),
+                                    0.05F,
+                                    EntityAttributeModifier.Operation.ADD_MULTIPLIED_BASE
+                            )
+                    )
+            )
+    ));
+
 
     public static void register(ConfigFile.Effects config) {
         for (var entry : entries) {

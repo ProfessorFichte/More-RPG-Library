@@ -5,9 +5,8 @@
   "passive": {
     "triggers": [
       {
-        "type": "MELEE_IMPACT",
-        "chance": 0.15,
-        "equipment_condition": "MAINHAND"
+        "type": "ARROW_IMPACT",
+        "chance": 0.15
       }
     ]
   },

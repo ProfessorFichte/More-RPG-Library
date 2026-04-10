@@ -1,0 +1,108 @@
+{
+  "school": "spell_power:earth",
+  "range": 20.0,
+  "tier": 8,
+  "type": "PASSIVE",
+  "passive": {
+    "triggers": [
+      {
+        "type": "SPELL_IMPACT_SPECIFIC",
+        "chance": 0.25,
+        "spell": {
+          "type": "ACTIVE"
+        },
+        "impact": {
+          "impact_type": "DAMAGE"
+        }
+      }
+    ]
+  },
+  "target": {
+    "type": "FROM_TRIGGER"
+  },
+  "deliver": {
+    "type": "PROJECTILE",
+    "projectile": {
+      "direction_offsets": [
+        {},
+        {
+          "yaw": -360.0
+        },
+        {
+          "yaw": 270.0
+        },
+        {
+          "yaw": -270.0
+        },
+        {
+          "yaw": 180.0
+        },
+        {
+          "yaw": -180.0
+        },
+        {
+          "yaw": 90.0
+        },
+        {
+          "yaw": -90.0
+        }
+      ],
+      "direct_towards_target": true,
+      "launch_properties": {
+        "velocity": 1.3,
+        "extra_launch_count": 7,
+        "extra_launch_delay": 0,
+        "sound": {
+          "id": "more_rpg_classes:earth_magic_cast1",
+          "volume": 0.6
+        }
+      },
+      "projectile": {
+        "homing_angle": 0.0,
+        "perks": {
+          "pierce": 999
+        },
+        "hitbox": {},
+        "client_data": {
+          "model": {
+            "model_id": "more_rpg_classes:spell_projectile/obsidian_shards",
+            "scale": 0.5,
+            "rotate_degrees_per_tick": 0.0
+          }
+        }
+      }
+    }
+  },
+  "impacts": [
+    {
+      "action": {
+        "type": "DAMAGE",
+        "damage": {
+          "spell_power_coefficient": 0.25,
+          "knockback": 0.5
+        }
+      },
+      "particles": [
+        {
+          "particle_id": "campfire_cosy_smoke",
+          "origin": "CENTER",
+          "shape": "CIRCLE",
+          "count": 3.0,
+          "min_speed": 0.005,
+          "max_speed": 0.008
+        }
+      ],
+      "sound": {
+        "id": "minecraft:block.pointed_dripstone.break",
+        "volume": 1.5
+      }
+    }
+  ],
+  "cost": {
+    "durability": 0,
+    "cooldown": {
+      "duration": 5.0,
+      "hosting_item": false
+    }
+  }
+}

@@ -84,6 +84,10 @@ public class MRPGLibSounds {
     public static final Entry NATURE_IMPACT_4 = add(new Entry("nature_impact_4"));
     public static final Entry NATURE_CAST_1 = add(new Entry("nature_cast_1"));
     public static final Entry CARVE = add(new Entry("carve"));
+    public static final Entry DECAPITATE_IMPACT = add(new Entry("decapitate_impact"));
+    public static final Entry DECAPITATE_RELEASE = add(new Entry("decapitate_release"));
+    public static final Entry DECAPITATE_SWING = add(new Entry("decapitate_swing"));
+    public static final Entry FIST_ATTACK = add(new Entry("fist_attack"));
 
     public static void register() {
         for (var entry : entries) {

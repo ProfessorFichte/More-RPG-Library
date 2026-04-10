@@ -1,0 +1,54 @@
+{
+  "school": "spell_power:air",
+  "tier": 8,
+  "type": "PASSIVE",
+  "passive": {
+    "triggers": [
+      {
+        "target_override": "CASTER",
+        "type": "SPELL_IMPACT_SPECIFIC",
+        "chance": 0.35,
+        "spell": {
+          "type": "ACTIVE"
+        },
+        "impact": {
+          "impact_type": "DAMAGE"
+        }
+      }
+    ]
+  },
+  "target": {
+    "type": "FROM_TRIGGER"
+  },
+  "impacts": [
+    {
+      "action": {
+        "type": "STATUS_EFFECT",
+        "status_effect": {
+          "effect_id": "more_rpg_classes:zephyrs_speed",
+          "amplifier": 1,
+          "amplifier_cap": 9,
+          "apply_mode": "ADD"
+        }
+      },
+      "particles": [
+        {
+          "particle_id": "more_rpg_classes:gust",
+          "origin": "CENTER",
+          "shape": "SPHERE",
+          "count": 4.0,
+          "min_speed": 0.5,
+          "max_speed": 0.8,
+          "extent": 1.0
+        }
+      ]
+    }
+  ],
+  "cost": {
+    "durability": 0,
+    "cooldown": {
+      "duration": 5.0,
+      "hosting_item": false
+    }
+  }
+}

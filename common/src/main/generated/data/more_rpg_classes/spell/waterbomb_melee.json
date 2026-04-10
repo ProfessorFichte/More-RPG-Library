@@ -1,0 +1,88 @@
+{
+  "school": "spell_power:water",
+  "range": 7.5,
+  "tier": 8,
+  "type": "PASSIVE",
+  "passive": {
+    "triggers": [
+      {
+        "type": "MELEE_IMPACT",
+        "chance": 0.4,
+        "equipment_condition": "MAINHAND"
+      }
+    ]
+  },
+  "release": {
+    "particles": [
+      {
+        "particle_id": "more_rpg_classes:big_splash",
+        "origin": "FEET",
+        "shape": "CIRCLE",
+        "count": 30.0,
+        "min_speed": 0.5,
+        "max_speed": 0.75
+      },
+      {
+        "particle_id": "more_rpg_classes:water_circle",
+        "origin": "FEET",
+        "shape": "CIRCLE",
+        "count": 1.0,
+        "min_speed": 0.2
+      }
+    ]
+  },
+  "target": {
+    "type": "AREA",
+    "area": {
+      "angle_degrees": 360.0
+    }
+  },
+  "impacts": [
+    {
+      "attribute": "minecraft:generic.attack_damage",
+      "action": {
+        "type": "DAMAGE",
+        "damage": {
+          "spell_power_coefficient": 0.4,
+          "knockback": 0.0
+        }
+      },
+      "particles": [
+        {
+          "particle_id": "more_rpg_classes:big_splash",
+          "origin": "FEET",
+          "shape": "PILLAR",
+          "count": 20.0,
+          "min_speed": 0.05,
+          "max_speed": 0.2
+        },
+        {
+          "particle_id": "more_rpg_classes:splash",
+          "origin": "FEET",
+          "shape": "CIRCLE",
+          "count": 15.0,
+          "min_speed": 0.05,
+          "max_speed": 0.2
+        },
+        {
+          "particle_id": "more_rpg_classes:splash",
+          "origin": "CENTER",
+          "shape": "SPHERE",
+          "count": 25.0,
+          "min_speed": 1.0,
+          "max_speed": 1.2
+        }
+      ],
+      "sound": {
+        "id": "more_rpg_classes:water_magic_impact1",
+        "volume": 0.4
+      }
+    }
+  ],
+  "cost": {
+    "durability": 0,
+    "cooldown": {
+      "duration": 5.0
+    }
+  }
+}

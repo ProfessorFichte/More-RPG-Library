@@ -24,5 +24,6 @@ public class SpellBuilderHelper {
         spell.tooltip.show_activation = false;
         return spell;
     }
+    /// COLORS
     public static final Color ORANGE_COLOR = new Color(255.0F, 165.0F, 0.0F);
 }

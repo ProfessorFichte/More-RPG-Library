@@ -1,0 +1,67 @@
+{
+  "school": "spell_power:fire",
+  "tier": 8,
+  "type": "PASSIVE",
+  "passive": {
+    "triggers": [
+      {
+        "type": "SPELL_IMPACT_SPECIFIC",
+        "chance": 0.2,
+        "target_conditions": [
+          {
+            "entity_predicate_id": "spell_engine:is_on_fire"
+          }
+        ],
+        "spell": {},
+        "impact": {
+          "impact_type": "DAMAGE"
+        }
+      }
+    ]
+  },
+  "target": {
+    "type": "FROM_TRIGGER"
+  },
+  "impacts": [
+    {
+      "action": {
+        "type": "COOLDOWN",
+        "apply_to_caster": true,
+        "cooldown": {
+          "actives": {
+            "school": "spell_power:fire",
+            "duration_multiplier": 0.7
+          }
+        }
+      },
+      "particles": [
+        {
+          "particle_id": "spell_engine:sign_hourglass",
+          "origin": "CENTER",
+          "shape": "LINE_VERTICAL",
+          "count": 1.0,
+          "min_speed": 0.75,
+          "max_speed": 0.75,
+          "color_rgba": 4282850047,
+          "scale": 1.2,
+          "follow_entity": true
+        }
+      ]
+    },
+    {
+      "action": {
+        "type": "DAMAGE",
+        "damage": {
+          "spell_power_coefficient": 0.3
+        }
+      }
+    }
+  ],
+  "cost": {
+    "durability": 0,
+    "cooldown": {
+      "duration": 10.0,
+      "hosting_item": false
+    }
+  }
+}

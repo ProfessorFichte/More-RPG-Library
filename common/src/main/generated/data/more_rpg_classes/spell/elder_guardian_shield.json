@@ -1,0 +1,76 @@
+{
+  "school": "spell_power:physical_melee",
+  "range": 0.0,
+  "tier": 8,
+  "type": "PASSIVE",
+  "passive": {
+    "triggers": [
+      {
+        "type": "SHIELD_BLOCK",
+        "chance": 0.5
+      }
+    ]
+  },
+  "target": {
+    "type": "FROM_TRIGGER"
+  },
+  "impacts": [
+    {
+      "target_modifiers": [
+        {
+          "conditions": [
+            {
+              "entity_type": "#minecraft:undead"
+            }
+          ],
+          "execute": "DENY"
+        }
+      ],
+      "action": {
+        "type": "STATUS_EFFECT",
+        "status_effect": {
+          "effect_id": "more_rpg_classes:bleeding",
+          "duration": 7.0,
+          "amplifier_power_multiplier": 0.3
+        }
+      },
+      "particles": [
+        {
+          "particle_id": "spell_engine:dripping_blood",
+          "origin": "CENTER",
+          "shape": "SPHERE",
+          "count": 10.0,
+          "min_speed": 0.05,
+          "max_speed": 0.3
+        }
+      ]
+    },
+    {
+      "action": {
+        "type": "DAMAGE",
+        "damage": {
+          "spell_power_coefficient": 0.2,
+          "knockback": 0.25
+        }
+      },
+      "particles": [
+        {
+          "particle_id": "spell_engine:magic_spark_float",
+          "origin": "CENTER",
+          "shape": "SPHERE",
+          "count": 10.0,
+          "min_speed": 0.3,
+          "max_speed": 0.35,
+          "color_rgba": 3217014783
+        }
+      ]
+    }
+  ],
+  "cost": {
+    "batching": true,
+    "cooldown": {
+      "duration": 10.0,
+      "hosting_item": false
+    }
+  }
+}

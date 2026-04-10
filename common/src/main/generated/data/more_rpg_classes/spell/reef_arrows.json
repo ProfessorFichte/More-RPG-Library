@@ -1,0 +1,89 @@
+{
+  "school": "spell_power:water",
+  "range": 0.0,
+  "tier": 8,
+  "type": "PASSIVE",
+  "passive": {
+    "triggers": [
+      {
+        "type": "ARROW_IMPACT",
+        "chance": 0.5
+      }
+    ]
+  },
+  "target": {
+    "type": "FROM_TRIGGER"
+  },
+  "impacts": [
+    {
+      "attribute": "ranged_weapon:damage",
+      "target_modifiers": [
+        {
+          "conditions": [
+            {
+              "entity_type": "#minecraft:undead"
+            }
+          ],
+          "execute": "DENY"
+        }
+      ],
+      "action": {
+        "type": "STATUS_EFFECT",
+        "status_effect": {
+          "effect_id": "more_rpg_classes:bleeding",
+          "duration": 5.0,
+          "amplifier_power_multiplier": 0.2
+        }
+      },
+      "particles": [
+        {
+          "particle_id": "spell_engine:dripping_blood",
+          "origin": "CENTER",
+          "shape": "SPHERE",
+          "count": 10.0,
+          "min_speed": 0.05,
+          "max_speed": 0.3
+        }
+      ]
+    },
+    {
+      "attribute": "ranged_weapon:damage",
+      "action": {
+        "type": "DAMAGE",
+        "damage": {
+          "spell_power_coefficient": 0.5,
+          "knockback": 0.5
+        }
+      },
+      "particles": [
+        {
+          "particle_id": "more_rpg_classes:big_splash",
+          "origin": "FEET",
+          "shape": "PILLAR",
+          "count": 20.0,
+          "min_speed": 0.05,
+          "max_speed": 0.2
+        },
+        {
+          "particle_id": "more_rpg_classes:splash",
+          "origin": "FEET",
+          "shape": "CIRCLE",
+          "count": 15.0,
+          "min_speed": 0.05,
+          "max_speed": 0.2
+        }
+      ],
+      "sound": {
+        "id": "more_rpg_classes:water_magic_impact1",
+        "volume": 0.4
+      }
+    }
+  ],
+  "cost": {
+    "batching": true,
+    "cooldown": {
+      "duration": 4.0,
+      "hosting_item": false
+    }
+  }
+}

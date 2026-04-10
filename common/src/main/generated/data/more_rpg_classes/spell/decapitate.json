@@ -1,0 +1,71 @@
+{
+  "school": "spell_power:rage_melee",
+  "range": 0.0,
+  "range_mechanic": "MELEE",
+  "tier": 1,
+  "learn": {},
+  "active": {
+    "cast": {
+      "duration": 0.75,
+      "animation": {
+        "id": "more_rpg_classes:decapitate_charge",
+        "speed": 1.5
+      },
+      "animation_pitch": false
+    }
+  },
+  "release": {
+    "sound": {
+      "id": "more_rpg_classes:decapitate_release"
+    }
+  },
+  "target": {
+    "type": "NONE"
+  },
+  "deliver": {
+    "type": "MELEE",
+    "melee": {
+      "attacks": [
+        {
+          "damage_bonus": 0.25,
+          "attack_speed_multiplier": 1.25,
+          "delay": 0.1,
+          "forward_momentum": 1.5,
+          "hitbox": {
+            "height": 0.7,
+            "roll": 15.0,
+            "arc": 180.0
+          },
+          "animation": {
+            "id": "more_rpg_classes:decapitate_release"
+          },
+          "swing_sound": {
+            "id": "more_rpg_classes:decapitate_swing"
+          },
+          "impact_sound": {
+            "id": "more_rpg_classes:decapitate_impact"
+          },
+          "impact_sound_cap": 1
+        }
+      ]
+    }
+  },
+  "impacts": [
+    {
+      "action": {
+        "type": "DISRUPT",
+        "disrupt": {
+          "shield_blocking": true,
+          "item_usage_seconds": 2.0
+        }
+      }
+    }
+  ],
+  "cost": {
+    "cooldown": {
+      "group": "weapon",
+      "attempt_duration": 1.0,
+      "duration": 15.0
+    }
+  }
+}

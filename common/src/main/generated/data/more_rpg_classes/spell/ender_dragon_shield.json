@@ -1,0 +1,71 @@
+{
+  "school": "spell_power:physical_melee",
+  "range": 3.5,
+  "tier": 8,
+  "type": "PASSIVE",
+  "passive": {
+    "triggers": [
+      {
+        "type": "SHIELD_BLOCK",
+        "chance": 0.4
+      }
+    ]
+  },
+  "release": {
+    "particles": [
+      {
+        "particle_id": "spell_engine:magic_arcane_burst",
+        "origin": "CENTER",
+        "shape": "CIRCLE",
+        "count": 130.0,
+        "min_speed": 0.2,
+        "max_speed": 1.5,
+        "color_rgba": 4284940287
+      },
+      {
+        "particle_id": "spell_engine:magic_stripe_burst",
+        "origin": "CENTER",
+        "shape": "CIRCLE",
+        "count": 130.0,
+        "min_speed": 0.8,
+        "max_speed": 1.9,
+        "color_rgba": 4284940287
+      }
+    ],
+    "sound": {
+      "id": "minecraft:entity.generic.explode"
+    }
+  },
+  "target": {
+    "type": "AREA",
+    "area": {}
+  },
+  "impacts": [
+    {
+      "action": {
+        "type": "DAMAGE",
+        "damage": {
+          "spell_power_coefficient": 0.4
+        }
+      },
+      "particles": [
+        {
+          "particle_id": "spell_engine:magic_spell_burst",
+          "origin": "CENTER",
+          "shape": "SPHERE",
+          "count": 30.0,
+          "min_speed": 0.2,
+          "max_speed": 1.2,
+          "color_rgba": 4284940287
+        }
+      ]
+    }
+  ],
+  "cost": {
+    "batching": true,
+    "cooldown": {
+      "duration": 10.0,
+      "hosting_item": false
+    }
+  }
+}

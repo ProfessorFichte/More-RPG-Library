@@ -1,0 +1,101 @@
+{
+  "school": "spell_power:physical_melee",
+  "range": 5.5,
+  "tier": 1,
+  "learn": {},
+  "active": {
+    "cast": {
+      "duration": 0.5,
+      "animation": {
+        "id": "more_rpg_classes:burstcrack_cast"
+      },
+      "movement_speed": 0.25
+    }
+  },
+  "release": {
+    "animation": {
+      "id": "more_rpg_classes:burstcrack_release"
+    },
+    "particles": [
+      {
+        "particle_id": "spell_engine:smoke_medium",
+        "origin": "CENTER",
+        "shape": "CIRCLE",
+        "count": 50.0,
+        "min_speed": 0.2,
+        "max_speed": 0.3
+      }
+    ],
+    "particles_scaled_with_ranged": [
+      {
+        "particle_id": "spell_engine:area_effect_658",
+        "origin": "GROUND",
+        "shape": "SPHERE",
+        "count": 1.0,
+        "max_speed": 0.0,
+        "color_rgba": 1093695897855,
+        "scale": 0.5
+      }
+    ],
+    "sound": {
+      "id": "minecraft:entity.generic.explode",
+      "volume": 0.4
+    }
+  },
+  "target": {
+    "type": "AREA",
+    "area": {
+      "angle_degrees": 360.0
+    }
+  },
+  "impacts": [
+    {
+      "action": {
+        "type": "DAMAGE",
+        "damage": {
+          "spell_power_coefficient": 0.5,
+          "knockback": 0.0
+        }
+      },
+      "particles": [
+        {
+          "particle_id": "spell_engine:smoke_medium",
+          "origin": "CENTER",
+          "shape": "PIPE",
+          "count": 20.0,
+          "min_speed": 0.1,
+          "max_speed": 3.0
+        }
+      ],
+      "sound": {
+        "id": "more_rpg_classes:fist_attack"
+      }
+    },
+    {
+      "target_modifiers": [
+        {
+          "conditions": [
+            {
+              "entity_type": "#c:bosses"
+            }
+          ],
+          "execute": "DENY"
+        }
+      ],
+      "action": {
+        "type": "CUSTOM",
+        "custom": {
+          "intent": "HARMFUL",
+          "handler": "more_rpg_classes:knock_up"
+        }
+      }
+    }
+  ],
+  "cost": {
+    "cooldown": {
+      "group": "weapon",
+      "attempt_duration": 1.5,
+      "duration": 15.0
+    }
+  }
+}
