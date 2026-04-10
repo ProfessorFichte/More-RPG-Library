@@ -171,7 +171,81 @@ List of Custom Impacts added by this Library:
 ```
 
 
-### 7. Mob Spell Casting
+### 7. Spellcaster Flee & Positioning Goals
+
+Three ready-made AI goals for spell-casting mobs that need to keep their distance and flee when low on health.
+
+---
+
+**`IConditionalFleeEntity`**
+
+Implement this interface on your entity to unlock the two goals below. Your entity must extend `PathAwareEntity` (or any subclass) to use `LowHealthFleeGoal`. All methods have sensible defaults to override only what you need:
+
+```java
+public class MyWizard extends PathAwareEntity implements ISpellCasterEntity, IConditionalFleeEntity {
+
+    @Override public float getFleeDistance()         { return 4.0F; }
+    @Override public float getLowHealthFleeDistance() { return 6.0F; }
+
+    // Effect IDs on the caster that suppress fleeing (e.g. a damage-immunity shield)
+    @Override public List<Identifier> getFleeImmuneEffects() {
+        return List.of(Identifier.of("mymod", "arcane_shield"));
+    }
+
+    // Effect IDs on the target that suppress fleeing (e.g. a snare/root)
+    @Override public List<Identifier> getFleeIgnoreIfTargetHasEffects() {
+        return List.of(Identifier.of("mymod", "frost_snare"));
+    }
+
+    // If the target's HP fraction is below this value, stop fleeing and keep attacking. 0 = disabled.
+    @Override public float getFleeIgnoreTargetHpThreshold() { return 0.3f; }
+}
+```
+
+---
+
+**`LowHealthFleeGoal<T extends PathAwareEntity & IConditionalFleeEntity>`**
+
+Flees from players when the mob drops below **35% HP**. Flee is suppressed when any of the three conditions from `IConditionalFleeEntity` are met (caster is immune, target is snared, or target is nearly dead).
+
+```java
+this.goalSelector.add(1, new LowHealthFleeGoal<>(this));
+```
+
+---
+
+**`BackAwayGoal<T extends MobEntity & ISpellCasterEntity>`**
+
+Backs away from the combat target whenever it closes within `minDistance` blocks. Stops immediately once safe so spells can fire right away. Does nothing while the mob is already casting.
+
+```java
+// (mob, minDistance, speed)
+this.goalSelector.add(2, new BackAwayGoal<>(this, 4.0F, 1.2));
+```
+
+---
+
+**Full example**
+
+```java
+@Override
+protected void initGoals() {
+    this.goalSelector.add(0, new SwimGoal(this));
+    this.goalSelector.add(1, new LowHealthFleeGoal<>(this));          // flee at low HP
+    this.goalSelector.add(2, new BackAwayGoal<>(this, 4.0F, 1.2));   // keep distance while casting
+
+    MobSpellCastGoal fireball  = new MobSpellCastGoal(this, "mymod:fireball",  spellGoals);
+    MobSpellCastGoal frostbolt = new MobSpellCastGoal(this, "mymod:frostbolt", spellGoals);
+    this.goalSelector.add(3, fireball);
+    this.goalSelector.add(4, frostbolt);
+    spellGoals.add(fireball);
+    spellGoals.add(frostbolt);
+}
+```
+
+---
+
+### 8. Mob Spell Casting
 
 `MobSpellCastGoal` lets any mob cast SpellEngine spells. Delivery type, particles, sounds, channeling, and cooldown are all driven by the spell JSON — nothing to configure manually.
 **Setup:**
@@ -243,5 +317,35 @@ public void tick() {
 Spells whose **entire** impact list is `HEAL` are cast on the nearest wounded ally instead of the combat target.
 
 Spells that mix `HEAL` with damage or other impacts target the combat target normally — SpellEngine's relation system prevents the heal from applying to enemies.
+
+---
+
+**Intelligent Spellcasting**
+
+Enable situational spell selection per goal by calling `.withIntelligentSpellcasting()`:
+```java
+MobSpellCastGoal fireball = new MobSpellCastGoal(this, "mymod:fireball", spellGoals)
+        .withIntelligentSpellcasting();
+```
+
+When enabled, before casting the goal runs these filters in order:
+- **Self-heal priority** — if the caster is below 50% HP and has a pure heal spell available, only heal spells are considered.
+- **Ally-heal priority** — if an ally is below 60% HP and a heal spell is available, only heal spells are considered.
+- **Kill priority** — if the target is below 30% HP, pure heal spells are skipped so the mob focuses on finishing the target.
+- **`SpellBehaviorRegistry`** — any custom per-spell condition registered externally (see below).
+
+---
+
+**SpellBehaviorRegistry**
+
+Register custom cast conditions for specific spells. Conditions registered here are checked when `intelligentSpellcasting` is active:
+```java
+SpellBehaviorRegistry.register(
+    Identifier.of("mymod", "updraft"),
+    (caster, target, spellId) -> target != null && !target.isOnGround()
+);
+```
+
+The condition receives the caster, the current target (nullable), and the spell ID. Return `false` to skip this spell this tick — the goal moves on to the next available spell.
 
 ---
