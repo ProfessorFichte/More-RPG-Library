@@ -36,4 +36,4 @@ side = "BOTH"
 
 
 [[mixins]]
-config = "more-rpg-classes.mixins.json"
+config="more-rpg-classes.mixins.json"

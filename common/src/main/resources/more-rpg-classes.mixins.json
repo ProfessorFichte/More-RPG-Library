@@ -11,6 +11,7 @@
     "SpellSchoolsMixin"
   ],
   "client": [
+    "DrawHeartsMixin",
     "HudMessagesMixin"
   ],
   "injectors": {

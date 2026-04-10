@@ -67,3 +67,7 @@ dependencies {
     modCompileOnly "io.wispforest:owo-lib:${project.owo_version}" // Accessories needs this
     modImplementation("io.wispforest:accessories-common:${project.accessories_version}")
 }
+
+loom {
+    accessWidenerPath = file("src/main/resources/more-rpg-classes.accesswidener")
+}
