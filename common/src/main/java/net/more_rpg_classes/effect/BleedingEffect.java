@@ -31,7 +31,11 @@ public class BleedingEffect extends StatusEffect {
             bleedingTickDamage = bleedingTickDamage + (entity.getMaxHealth() * 0.05F);
         }
         entity.timeUntilRegen = 0;
-        entity.damage(new BleedingDamageSource(entity.getDamageSources().starve().getTypeRegistryEntry()), bleedingTickDamage);
+        var bleedingType = entity.getWorld().getRegistryManager()
+                .getOptional(net.minecraft.registry.RegistryKeys.DAMAGE_TYPE)
+                .<net.minecraft.registry.entry.RegistryEntry<net.minecraft.entity.damage.DamageType>>flatMap(reg -> reg.getEntry(net.minecraft.util.Identifier.of("more_rpg_classes", "bleeding")))
+                .orElseGet(() -> entity.getDamageSources().starve().getTypeRegistryEntry());
+        entity.damage(new BleedingDamageSource(bleedingType), bleedingTickDamage);
         return true;
     }
 
