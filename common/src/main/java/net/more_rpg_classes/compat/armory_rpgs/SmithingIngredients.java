@@ -118,7 +118,7 @@ public class SmithingIngredients {
         }
 
         if (devEnvo || bardsLoaded) {
-            VIRTUOSO = add(Entry.of("virtuoso", List.of( FightClass.BARD),
+            VIRTUOSO = add(Entry.of("virtuoso", List.of(FightClass.BARD),
                     new Translations("Virtuoso's Lost Crystal")));
         }
 

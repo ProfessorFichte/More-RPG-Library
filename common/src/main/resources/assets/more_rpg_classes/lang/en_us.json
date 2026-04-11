@@ -72,10 +72,12 @@
   "item.more_rpg_classes.ascetic_upgrade_crystal": "Ascetic's Lost Crystal",
   "item.more_rpg_classes.general_upgrade_crystal": "General's Lost Crystal",
   "item.more_rpg_classes.ravager_upgrade_crystal": "Ravager's Lost Crystal",
+  "item.more_rpg_classes.virtuoso_upgrade_crystal": "Virtuoso's Lost Crystal",
   "item.more_rpg_classes.upgrade_crystal.ascetic.applies_to": "Air Wizard and Forcemaster armor",
   "item.more_rpg_classes.upgrade_crystal.general.applies_to": "Deadeye and War Archer armor",
   "item.more_rpg_classes.upgrade_crystal.ravager.applies_to": "Berserker and Tundra Hunter armor",
   "item.more_rpg_classes.upgrade_crystal.warden.applies_to": "Earth Wizard and Water Wizard armor",
+  "item.more_rpg_classes.upgrade_crystal.virtuoso.applies_to": "Bard armor",
   "item.more_rpg_classes.warden_upgrade_crystal": "Warden's Lost Crystal",
 
   "spell.more_rpg_classes.carve.name": "Carve",
