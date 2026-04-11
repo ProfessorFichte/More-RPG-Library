@@ -1,0 +1,51 @@
+{
+  "school": "spell_power:physical_melee",
+  "range": 0.0,
+  "range_mechanic": "MELEE",
+  "tier": 1,
+  "learn": {},
+  "active": {
+    "cast": {
+      "duration": 1.0,
+      "animation": {
+        "id": "more_rpg_classes:puncture_release"
+      }
+    }
+  },
+  "target": {
+    "type": "NONE"
+  },
+  "deliver": {
+    "type": "MELEE",
+    "melee": {
+      "allow_airborne": false,
+      "attacks": [
+        {
+          "delay": 0.1,
+          "additional_strikes": 5,
+          "additional_strike_delay": 0.15,
+          "additional_hits_on_same_target": false,
+          "forward_momentum": 2.0,
+          "movement_slipperiness": 0.4,
+          "hitbox": {
+            "height": 0.2,
+            "arc": 80.0
+          },
+          "animation": {},
+          "swing_sound": {
+            "id": "more_rpg_classes:puncture_charge"
+          },
+          "impact_sound": {
+            "id": "more_rpg_classes:puncture_impact"
+          }
+        }
+      ]
+    }
+  },
+  "cost": {
+    "cooldown": {
+      "group": "weapon",
+      "duration": 10.0
+    }
+  }
+}

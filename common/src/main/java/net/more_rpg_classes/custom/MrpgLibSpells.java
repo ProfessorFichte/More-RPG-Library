@@ -33,10 +33,17 @@ public class MrpgLibSpells {
         MELEE, RANGED, SPELL, HEAL, SHIELD
     }
     public record Entry(Identifier id, Spell spell, String title, String description,
-                        @Nullable SpellTooltip.DescriptionMutator mutator, @Nullable EnumSet<Category> categories) {
-        public Entry(Identifier id, Spell spell, String title, String description,
-                     @Nullable SpellTooltip.DescriptionMutator mutator, @Nullable Category category) {
-            this(id, spell, title, description, mutator, category != null ? EnumSet.of(category) : null);
+                        @Nullable SpellTooltip.DescriptionMutator mutator, 
+                        @Nullable Category categories) {
+        
+        public Entry(Identifier id, Spell spell, String title, String description) {
+            this(id, spell, title, description, null,null);
+        }
+        public Entry mutator(SpellTooltip.DescriptionMutator mutator) {
+            return new Entry(id, spell, title, description, mutator,categories);
+        }
+        public Entry categories(Category  categories) {
+            return new Entry(id, spell, title, description, mutator,categories);
         }
     }
 
@@ -90,7 +97,7 @@ public class MrpgLibSpells {
         SpellBuilder.Cost.cooldown(spell, 15);
         spell.cost.cooldown.attempt_duration = 1F;
 
-        return new Entry(id, spell, title, description, null, (Category) null);
+        return new Entry(id, spell, title, description);
     }
     public static final Entry burstcrack = add(burstcrack());
     private static Entry burstcrack() {
@@ -146,7 +153,47 @@ public class MrpgLibSpells {
         SpellBuilder.Cost.cooldown(spell, 15);
         spell.cost.cooldown.attempt_duration = 1.5F;
 
-        return new Entry(id, spell, title, description, null, (Category) null);
+        return new Entry(id, spell, title, description);
+    }
+    public static Entry puncture = add(puncture());
+    private static Entry puncture() {
+        var id = Identifier.of(MOD_ID, "puncture");
+        var title = "Puncture";
+        var description = "Charges in a designated direction, striking all enemies.";
+        var spell = SpellBuilder.createMeleeSpell();
+
+        SpellBuilder.Casting.cast(spell, 0.7F, "more_rpg_classes:puncture_charge");
+        spell.active.cast.movement_speed = 0.0F;
+
+        SpellBuilder.Target.none(spell);
+
+        var attack = new Spell.Delivery.Melee.Attack();
+        attack.attack_speed_multiplier = 1F;
+        attack.hitbox = new Spell.Delivery.Melee.HitBox();
+        attack.hitbox.arc = 80;
+        attack.hitbox.length = 1.0F;
+        attack.hitbox.height = 0.2F;
+        attack.forward_momentum = 2.0F;
+        attack.movement_slipperiness = 0.4F;
+        attack.delay = 0.1F;
+        attack.damage_bonus = 0.2F;
+        attack.additional_strikes = 5;
+        attack.additional_strike_delay = 0.15F;
+        attack.additional_hits_on_same_target = false;
+        SpellBuilder.Casting.cast(spell, 1F, "more_rpg_classes:puncture_release");
+        attack.animation = new PlayerAnimation();
+        attack.animation.speed = 1F;
+        attack.swing_sound = Sound.of(MRPGLibSounds.PUNCTURE_CHARGE.id());
+        attack.impact_sound = Sound.of(MRPGLibSounds.PUNCTURE_IMPACT.id());
+
+        SpellBuilder.Deliver.melee(spell, List.of(attack));
+        spell.deliver.melee.allow_airborne = false;
+
+        spell.impacts = List.of();
+
+        SpellBuilder.Cost.cooldown(spell, 10);
+
+        return new Entry(id, spell, title, description);
     }
     ///PASSIVES
     //MELEE
@@ -197,7 +244,7 @@ public class MrpgLibSpells {
         SpellBuilder.Cost.cooldown(spell, 3);
         spell.cost.batching = true;
 
-        return new Entry(id, spell, title, description, mutator,Category.MELEE);
+        return new Entry(id, spell, title, description).mutator(mutator).categories(Category.MELEE);
     }
     public static Entry lightning_strike_melee = add(lightning_strike_melee());
     private static Entry lightning_strike_melee() {
@@ -226,7 +273,7 @@ public class MrpgLibSpells {
         SpellBuilder.Cost.cooldown(spell, 5);
         spell.cost.batching = true;
 
-        return new Entry(id, spell, title, description, null,(Category) null);
+        return new Entry(id, spell, title, description).categories(Category.MELEE);
     }
 
     public static Entry dragonclaw_melee = add(dragonclaw_melee());
@@ -277,7 +324,7 @@ public class MrpgLibSpells {
         spell.impacts = List.of(damage, heal);
         SpellBuilder.Cost.cooldown(spell, 5.0F);
 
-        return new Entry(id, spell, title, description, null, (Category) null);
+        return new Entry(id, spell, title, description);
     }
 
     public static Entry waterbomb_melee = add(waterbomb_melee());
@@ -335,7 +382,7 @@ public class MrpgLibSpells {
         spell.impacts = List.of(damage);
         SpellBuilder.Cost.cooldown(spell, 5.0F);
 
-        return new Entry(id, spell, title, description, null,(Category) null);
+        return new Entry(id, spell, title, description);
     }
 
     public static Entry wither_pulse_melee = add(wither_pulse_melee());
@@ -357,7 +404,7 @@ public class MrpgLibSpells {
 
         spell.target.type = Spell.Target.Type.AREA;
         spell.target.area = new Spell.Target.Area();
-        spell.target.area.angle_degrees = 90.0F; // 90 degree cone
+        spell.target.area.angle_degrees = 90.0F;
         spell.target.area.horizontal_range_multiplier = 1.0F;
 
         spell.release.particles = new ParticleBatch[]{
@@ -389,7 +436,7 @@ public class MrpgLibSpells {
         spell.impacts = List.of(damage, witherEffect);
         SpellBuilder.Cost.cooldown(spell, 10.0F);
 
-        return new Entry(id, spell, title, description, null,(Category) null);
+        return new Entry(id, spell, title, description);
     }
     public static Entry avalanche_melee = add(avalanche_melee());
     private static Entry avalanche_melee() {
@@ -409,7 +456,6 @@ public class MrpgLibSpells {
 
         spell.target.type = Spell.Target.Type.FROM_TRIGGER;
 
-        // Meteor delivery
         spell.deliver = new Spell.Delivery();
         spell.deliver.type = Spell.Delivery.Type.METEOR;
         spell.deliver.meteor = new Spell.Delivery.Meteor();
@@ -466,7 +512,7 @@ public class MrpgLibSpells {
 
         SpellBuilder.Cost.cooldown(spell, 8.0F);
 
-        return new Entry(id, spell, title, description, null,(Category) null);
+        return new Entry(id, spell, title, description);
     }
     //RANGED
     public static Entry lightning_strike_ranged = add(lightning_strike_ranged());
@@ -494,7 +540,7 @@ public class MrpgLibSpells {
         SpellBuilder.Cost.cooldown(spell, 5);
         spell.cost.batching = true;
 
-        return new Entry(id, spell, title, description, null,Category.RANGED);
+        return new Entry(id, spell, title, description).categories(Category.RANGED);
     }
     public static Entry dragon_breath_ranged = add(dragon_breath_ranged());
     private static Entry dragon_breath_ranged() {
@@ -569,7 +615,7 @@ public class MrpgLibSpells {
         spell.cost.batching = true;
         spell.cost.cooldown.hosting_item = false;
 
-        return new Entry(id, spell, title, description, null,(Category) null);
+        return new Entry(id, spell, title, description);
     }
 
     public static Entry reef_arrows = add(reef_arrows());
@@ -630,7 +676,7 @@ public class MrpgLibSpells {
         spell.cost.batching = true;
         spell.cost.cooldown.hosting_item = false;
 
-        return new Entry(id, spell, title, description, null,(Category) null);
+        return new Entry(id, spell, title, description);
     }
 
     public static Entry glacial_splitter = add(glacial_splitter());
@@ -740,7 +786,7 @@ public class MrpgLibSpells {
         spell.cost.batching = true;
         spell.cost.cooldown.hosting_item = false;
 
-        return new Entry(id, spell, title, description, null,(Category) null);
+        return new Entry(id, spell, title, description);
     }
     public static Entry cursed_wither_bolt = add(cursed_wither_bolt());
     private static Entry cursed_wither_bolt() {
@@ -789,7 +835,7 @@ public class MrpgLibSpells {
         spell.cost.batching = true;
         spell.cost.cooldown.hosting_item = false;
 
-        return new Entry(id, spell, title, description, null,(Category) null);
+        return new Entry(id, spell, title, description);
     }
     //SHIELD
     public static Entry elder_guardian_shield = add(elder_guardian_shield());
@@ -844,7 +890,7 @@ public class MrpgLibSpells {
         spell.cost.batching = true;
         spell.cost.cooldown.hosting_item = false;
 
-        return new Entry(id, spell, title, description, null,(Category) null);
+        return new Entry(id, spell, title, description);
     }
 
     public static Entry glacial_shield = add(glacial_shield());
@@ -916,7 +962,7 @@ public class MrpgLibSpells {
         spell.cost.batching = true;
         spell.cost.cooldown.hosting_item = false;
 
-        return new Entry(id, spell, title, description, null,(Category) null);
+        return new Entry(id, spell, title, description);
     }
 
     public static Entry wither_shield = add(wither_shield());
@@ -1013,7 +1059,7 @@ public class MrpgLibSpells {
         spell.cost.batching = true;
         spell.cost.cooldown.hosting_item = false;
 
-        return new Entry(id, spell, title, description, null,(Category) null);
+        return new Entry(id, spell, title, description);
     }
 
     public static Entry ender_dragon_shield = add(ender_dragon_shield());
@@ -1073,7 +1119,7 @@ public class MrpgLibSpells {
         spell.cost.batching = true;
         spell.cost.cooldown.hosting_item = false;
 
-        return new Entry(id, spell, title, description, null,(Category) null);
+        return new Entry(id, spell, title, description);
     }
     //HEALING
     public static Entry sirens_tears = add(sirens_tears());
@@ -1123,7 +1169,7 @@ public class MrpgLibSpells {
         SpellBuilder.Cost.cooldown(spell,20);
         spell.cost.batching = true;
 
-        return new Entry(id, spell, title, description, null,(Category) null);
+        return new Entry(id, spell, title, description);
     }
     //SPELL
     public static Entry arcane_precision = add(arcane_precision());
@@ -1162,7 +1208,7 @@ public class MrpgLibSpells {
         SpellBuilder.Cost.cooldown(spell, 1);
         spell.cost.cooldown.hosting_item = false;
 
-        return new Entry(id, spell, title, description, null,(Category) null);
+        return new Entry(id, spell, title, description);
     }
 
     public static Entry pyromaniac = add(pyromaniac());
@@ -1205,7 +1251,7 @@ public class MrpgLibSpells {
         SpellBuilder.Cost.cooldown(spell, 10);
         spell.cost.cooldown.hosting_item = false;
 
-        return new Entry(id, spell, title, description, null,(Category) null);
+        return new Entry(id, spell, title, description);
     }
     public static Entry rimefrost = add(rimefrost());
     private static Entry rimefrost() {
@@ -1265,7 +1311,7 @@ public class MrpgLibSpells {
         SpellBuilder.Cost.cooldown(spell, 4);
         spell.cost.cooldown.hosting_item = false;
 
-        return new Entry(id, spell, title, description, null,(Category) null);
+        return new Entry(id, spell, title, description);
     }
     public static Entry water_flow = add(water_flow());
     private static Entry water_flow() {
@@ -1342,7 +1388,7 @@ public class MrpgLibSpells {
         SpellBuilder.Cost.cooldown(spell, 5);
         spell.cost.cooldown.hosting_item = false;
 
-        return new Entry(id, spell, title, description, null,(Category) null);
+        return new Entry(id, spell, title, description);
     }
     public static Entry zephyrs_speed = add(zephyrs_speed());
     private static Entry zephyrs_speed() {
@@ -1386,7 +1432,7 @@ public class MrpgLibSpells {
         SpellBuilder.Cost.cooldown(spell, 5);
         spell.cost.cooldown.hosting_item = false;
 
-        return new Entry(id, spell, title, description, null,(Category) null);
+        return new Entry(id, spell, title, description);
     }
     public static Entry obsidian_shards = add(obsidian_shards());
     private static Entry obsidian_shards() {
@@ -1451,6 +1497,6 @@ public class MrpgLibSpells {
         SpellBuilder.Cost.cooldown(spell, 5);
         spell.cost.cooldown.hosting_item = false;
 
-        return new Entry(id, spell, title, description, null,(Category) null);
+        return new Entry(id, spell, title, description);
     }
 }
