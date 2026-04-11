@@ -12,6 +12,7 @@ import net.minecraft.data.client.Models;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.more_rpg_classes.custom.MrpgLibSpells;
+import net.more_rpg_classes.effect.MRPGCEffects;
 import net.more_rpg_classes.sounds.MRPGLibSounds;
 import net.spell_engine.api.datagen.SimpleSoundGeneratorV2;
 import net.spell_engine.api.datagen.SpellGenerator;
@@ -35,6 +36,7 @@ public class MrpgDatagen implements DataGeneratorEntrypoint {
         pack.addProvider(SpellGen::new);
         pack.addProvider(SpellTagGenerator::new);
         pack.addProvider(SoundGen::new);
+        pack.addProvider(LangGenerator::new);
     }
 
     public static class ItemTagGenerator extends RPGSeriesDataGen.ItemTagGenerator {
@@ -53,14 +55,28 @@ public class MrpgDatagen implements DataGeneratorEntrypoint {
     }
     public static class LangGenerator extends FabricLanguageProvider {
         protected LangGenerator(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
-            super(dataOutput, "en_us", registryLookup);
+            super(dataOutput, "en_us_2", registryLookup);
         }
 
         @Override
         public void generateTranslations(RegistryWrapper.WrapperLookup wrapperLookup, TranslationBuilder translationBuilder) {
+            /*
             SmithingIngredients.ENTRIES.forEach(entry -> {
                 translationBuilder.add(entry.id().toTranslationKey("item"), entry.translations().itemName());
                 translationBuilder.add(entry.appliesToTranslationKey(), entry.appliesToClassesTranslation());
+            });
+            MrpgLibSpells.entries.forEach(entry -> {
+                var id = entry.id();
+                translationBuilder.add("spell." + id.getNamespace() + "." + id.getPath() + ".name" , entry.title());
+                translationBuilder.add("spell." + id.getNamespace() + "." + id.getPath() + ".description" , entry.description());
+            });
+            translationBuilder.add("message." + MOD_ID + ".spellthief.spell_stolen", "Stole and cast %s from %s");
+            translationBuilder.add("message." + MOD_ID + ".spellthief.effect_stolen", "Stole %s from %s");
+            
+             */
+            MRPGCEffects.entries.forEach(entry -> {
+                translationBuilder.add(entry.effect.getTranslationKey(), entry.title);
+                translationBuilder.add(entry.effect.getTranslationKey() + ".description", entry.description);
             });
         }
     }
