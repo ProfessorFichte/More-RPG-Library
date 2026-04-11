@@ -97,6 +97,7 @@ public class SmithingIngredients {
     public static final boolean elementalWizardsLoaded = FabricLoader.getInstance().isModLoaded("elemental_wizards_rpg");
     public static final boolean berserkerLoaded = FabricLoader.getInstance().isModLoaded("berserker_rpg");
     public static final boolean forcemasterLoaded = FabricLoader.getInstance().isModLoaded("forcemaster_rpg");
+    public static final boolean bardsLoaded = FabricLoader.getInstance().isModLoaded("bards_rpg");
     public static void register() {
         if (devEnvo || forcemasterLoaded ||elementalWizardsLoaded) {
             ASCETIC = add(Entry.of("ascetic", List.of(FightClass.AIR_WIZARD, FightClass.FORCEMASTER),
@@ -116,6 +117,11 @@ public class SmithingIngredients {
                     new Translations("General's Lost Crystal")));
         }
 
+        if (devEnvo || bardsLoaded) {
+            VIRTUOSO = add(Entry.of("virtuoso", List.of( FightClass.BARD),
+                    new Translations("Virtuoso's Lost Crystal")));
+        }
+
 
 
 
@@ -127,6 +133,5 @@ public class SmithingIngredients {
                 content.add(entry.item().get());
             }
         });
-
     }
 }

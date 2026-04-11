@@ -8,7 +8,8 @@ public enum FightClass {
     FORCEMASTER("Forcemaster"),
     DEADEYE("Deadeye"),
     WAR_ARCHER("War Archer"),
-    TUNDRA_HUNTER("Tundra Hunter");
+    TUNDRA_HUNTER("Tundra Hunter"),
+    BARD("Bard");
 
     final String translation;
 
