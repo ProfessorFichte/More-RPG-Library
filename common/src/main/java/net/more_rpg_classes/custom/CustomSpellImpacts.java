@@ -65,5 +65,9 @@ public class CustomSpellImpacts {
                 Identifier.of(MOD_ID, "damage_according_to_missing_health"),
                 new DamageToMissingHealthSpellImpact()
         );
+        SpellHandlers.registerCustomImpact(
+                Identifier.of(MOD_ID, "spellthief_impact"),
+                new SpellthiefImpact()
+        );
     }
 }

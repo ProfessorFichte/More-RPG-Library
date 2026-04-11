@@ -8,6 +8,7 @@ import net.more_rpg_classes.util.tags.MRPGCEntityTags;
 import net.spell_engine.api.spell.Spell;
 import net.spell_engine.api.spell.weakness.ScopedWeakness;
 import net.spell_engine.api.tags.SpellEngineEntityTags;
+import net.spell_power.SpellPowerMod;
 import net.spell_power.api.SpellSchool;
 
 import java.util.List;
@@ -75,7 +76,7 @@ public class MoreSpellSchoolWeakness {
         fireWeakness.conditions = List.of(fireCondition);
         fireWeakness.modifier = new Spell.Impact.Modifier();
         fireWeakness.modifier.critical_chance_bonus = 0.3f;
-        config.school_weaknesses.put(MoreSpellSchools.FIRE_RANGED.id.toString(), List.of(
+        config.school_weaknesses.put(Identifier.of(SpellPowerMod.ID, "fire_ranged").toString(), List.of(
                 new ScopedWeakness(Spell.Impact.Action.Type.DAMAGE, fireWeakness)
         ));
 
@@ -92,7 +93,7 @@ public class MoreSpellSchoolWeakness {
         frostResistance.conditions = List.of(frostResistanceCondition);
         frostResistance.modifier = new Spell.Impact.Modifier();
         frostResistance.modifier.power_multiplier = -0.3f;
-        config.school_weaknesses.put(MoreSpellSchools.FROST_RANGED.id.toString(), List.of(
+        config.school_weaknesses.put(Identifier.of(SpellPowerMod.ID, "frost_ranged").toString(), List.of(
                 new ScopedWeakness(null, frostWeakness),
                 new ScopedWeakness(null, frostResistance)
         ));

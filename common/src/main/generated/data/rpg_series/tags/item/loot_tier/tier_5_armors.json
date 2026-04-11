@@ -15,6 +15,10 @@
     {
       "id": "more_rpg_classes:general_upgrade_crystal",
       "required": false
+    },
+    {
+      "id": "more_rpg_classes:virtuoso_upgrade_crystal",
+      "required": false
     }
   ]
 }

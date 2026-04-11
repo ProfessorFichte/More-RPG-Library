@@ -44,6 +44,21 @@
       "more_rpg_classes:crippling_strike"
     ]
   },
+  "decapitate_impact": {
+    "sounds": [
+      "more_rpg_classes:decapitate_impact"
+    ]
+  },
+  "decapitate_release": {
+    "sounds": [
+      "more_rpg_classes:decapitate_release"
+    ]
+  },
+  "decapitate_swing": {
+    "sounds": [
+      "more_rpg_classes:decapitate_swing"
+    ]
+  },
   "earth_magic_cast1": {
     "sounds": [
       "more_rpg_classes:earth_magic_cast1"
@@ -62,6 +77,11 @@
   "earth_magic_impact3": {
     "sounds": [
       "more_rpg_classes:earth_magic_impact3"
+    ]
+  },
+  "fist_attack": {
+    "sounds": [
+      "more_rpg_classes:fist_attack"
     ]
   },
   "frost_crackle": {
@@ -117,6 +137,16 @@
   "nature_release_2": {
     "sounds": [
       "more_rpg_classes:nature_release_2"
+    ]
+  },
+  "puncture_charge": {
+    "sounds": [
+      "more_rpg_classes:puncture_charge"
+    ]
+  },
+  "puncture_impact": {
+    "sounds": [
+      "more_rpg_classes:puncture_impact"
     ]
   },
   "strong_attack": {

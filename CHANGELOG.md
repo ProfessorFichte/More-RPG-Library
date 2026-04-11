@@ -1,3 +1,8 @@
+# 2.5.24 - 1.21.1
+- Add Puncture Weapon Skills for the Bard Rapier's
+- Fixed crash happening after Launch on Neoforge
+- Added the Armory Upgrade Gem for the Bard's T5 Armor Set 
+
 # 2.5.23 - 1.21.1
 - Add custom heart-renderer #19 - Rulft44
 - added a new particle type - star

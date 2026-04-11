@@ -37,3 +37,6 @@ side = "BOTH"
 
 [[mixins]]
 config="more-rpg-classes.mixins.json"
+
+[[mixins]]
+config="more-rpg-classes-neoforge.mixins.json"

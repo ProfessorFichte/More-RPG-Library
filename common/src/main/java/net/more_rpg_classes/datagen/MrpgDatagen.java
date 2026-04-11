@@ -104,8 +104,8 @@ public class MrpgDatagen implements DataGeneratorEntrypoint {
         @Override
         protected void configure(RegistryWrapper.WrapperLookup wrapperLookup) {
             MrpgLibSpells.entries.forEach(entry -> {
-                for (var category: entry.categories()) {
-                    var tagKey = TagKey.of(SpellRegistry.KEY, Identifier.of("arsenal", category.toString().toLowerCase()));
+                if (entry.categories() != null) {
+                    var tagKey = TagKey.of(SpellRegistry.KEY, Identifier.of("arsenal", entry.categories().toString().toLowerCase()));
                     var tag = getOrCreateTagBuilder(tagKey);
                     tag.addOptional(entry.id());
                 }

@@ -88,6 +88,8 @@ public class MRPGLibSounds {
     public static final Entry DECAPITATE_RELEASE = add(new Entry("decapitate_release"));
     public static final Entry DECAPITATE_SWING = add(new Entry("decapitate_swing"));
     public static final Entry FIST_ATTACK = add(new Entry("fist_attack"));
+    public static final Entry PUNCTURE_CHARGE = add(new Entry("puncture_charge"));
+    public static final Entry PUNCTURE_IMPACT = add(new Entry("puncture_impact"));
 
     public static void register() {
         for (var entry : entries) {
