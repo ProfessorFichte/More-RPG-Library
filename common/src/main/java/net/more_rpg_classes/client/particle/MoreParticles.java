@@ -46,6 +46,7 @@ public class MoreParticles {
     public static final TemplateParticleType MUSIC_NOTE = new TemplateParticleType();
     public static final TemplateParticleType STAR = new TemplateParticleType();
     public static ParticleType<PopupParticleEffect> POPUP;
+    public static ParticleType<PopupParticleEffect> SPELL_STOLEN_POPUP;
 
     public static void register(){
         POPUP = Registry.register(
@@ -61,6 +62,20 @@ public class MoreParticles {
                     return PopupParticleEffect.createPacketCodec(this);
                 }
             }
+        );
+        SPELL_STOLEN_POPUP = Registry.register(
+                Registries.PARTICLE_TYPE,
+                MRPGCMod.id("spell_stolen_popup"),
+                new ParticleType<PopupParticleEffect>(false) {
+                    @Override
+                    public MapCodec<PopupParticleEffect> getCodec() {
+                        return PopupParticleEffect.createCodec(this);
+                    }
+                    @Override
+                    public PacketCodec<? super RegistryByteBuf, PopupParticleEffect> getPacketCodec() {
+                        return PopupParticleEffect.createPacketCodec(this);
+                    }
+                }
         );
         Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "blood_drop"), BLOOD_DROP);
         Registry.register(Registries.PARTICLE_TYPE, Identifier.of(MRPGCMod.MOD_ID, "molten_armor"), MOLTEN_ARMOR);
