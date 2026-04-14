@@ -223,10 +223,7 @@ public class MRPGCEffects {
             new SpellVulnerabilityStatusEffect(StatusEffectCategory.HARMFUL, SpellSchools.ARCANE.color)
                     .setVulnerability(SpellSchools.ARCANE, new SpellPower.Vulnerability(
                             0.025F, 0.05F, 0.1F)),
-            new EffectConfig(
-                    List.of(
-                    )
-            )
+            new EffectConfig(List.of())
     ));
     public static Effects.Entry ZEPHYRS_SPEED = add(new Effects.Entry(Identifier.of(MOD_ID, "zephyrs_speed"),
             "Zephyrs Speed",
@@ -247,6 +244,30 @@ public class MRPGCEffects {
                     )
             )
     ));
+
+    public static final Effects.Entry SIRENS_TEAR = add(new Effects.Entry(
+            Identifier.of(MOD_ID, "sirens_tear"),
+            "Siren's Tear",
+            "Heals a percentage of max health every second, scaling with missing health.",
+            new SirensTearEffect(StatusEffectCategory.BENEFICIAL, 0x7abfff),
+            new EffectConfig(List.of())
+    ));
+
+    public static final Effects.Entry DUELISTS_FOCUS_OWNER = add(new Effects.Entry(
+            Identifier.of(MOD_ID, "duelists_focus_owner"),
+            "Duelist's Focus",
+            "Reduces incoming damage by 25% from attackers who are not marked.",
+            new CustomStatusEffect(StatusEffectCategory.BENEFICIAL, 0xCC6600),
+            new EffectConfig(List.of())
+    ));
+    public static final Effects.Entry DUELISTS_FOCUS_TARGET = add(new Effects.Entry(
+            Identifier.of(MOD_ID, "duelists_focus_target"),
+            "Marked by the Duelist",
+            "Other entities deal reduced damage to the attacker who marked you and you receive increased damage.",
+            new CustomStatusEffect(StatusEffectCategory.HARMFUL, 0xCC6600),
+            new EffectConfig(List.of())
+    ));
+
 
 
     public static void register(ConfigFile.Effects config) {

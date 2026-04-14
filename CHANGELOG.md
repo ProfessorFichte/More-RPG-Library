@@ -1,3 +1,10 @@
+# 2.5.25 - 1.21.1
+- Fixed the Range Passives applying cooldown on Range Weapons
+- Fixed the Puncture Charge Animation
+- The Spellthief Custom Impact can now also perform Beam Spells
+- Added a new Status Effect for the Sirens Tear's passive, that regenerates health every second, the heal scales with missing health
+- Added a new Melee Weapon Passive -> Duelist's Focus: You mark your actual target, all other targets expect the marked target deal 25% reduced damage to you, and only you deal 25% increased damage to the target
+
 # 2.5.24 - 1.21.1
 - Add Puncture Weapon Skills for the Bard Rapier's
 - Fixed crash happening after Launch on Neoforge

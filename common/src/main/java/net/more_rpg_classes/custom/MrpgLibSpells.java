@@ -180,8 +180,7 @@ public class MrpgLibSpells {
         attack.additional_strikes = 5;
         attack.additional_strike_delay = 0.15F;
         attack.additional_hits_on_same_target = false;
-        SpellBuilder.Casting.cast(spell, 1F, "more_rpg_classes:puncture_release");
-        attack.animation = new PlayerAnimation();
+        attack.animation =  PlayerAnimation.of("more_rpg_classes:puncture_release");
         attack.animation.speed = 1F;
         attack.swing_sound = Sound.of(MRPGLibSounds.PUNCTURE_CHARGE.id());
         attack.impact_sound = Sound.of(MRPGLibSounds.PUNCTURE_IMPACT.id());
@@ -514,6 +513,35 @@ public class MrpgLibSpells {
 
         return new Entry(id, spell, title, description);
     }
+    public static Entry duelists_focus = add(duelists_focus());
+    private static Entry duelists_focus() {
+        var id = Identifier.of(MOD_ID, "duelists_focus");
+        var title = "Duelist's Focus";
+        var description = "On melee hit: {trigger_chance} to mark the target, all other entities deal 25%% damage on you and only you deal 25%% increased damage on your target.";
+        var spell = SpellBuilder.createSpellPassive();
+        spell.school = ExternalSpellSchools.PHYSICAL_MELEE;
+
+        var triggers =  SpellBuilder.Triggers.withConditionMustWield(
+                List.of(SpellBuilder.Triggers.meleeAttackImpact())
+        );
+        triggers.forEach(trigger -> {
+            trigger.chance_batching = true;
+            trigger.chance = 0.1F;
+        });
+        spell.passive.triggers = triggers;
+
+        spell.target.type = Spell.Target.Type.FROM_TRIGGER;
+
+        var focusTarget = SpellBuilder.Impacts.effectSet(MRPGCEffects.DUELISTS_FOCUS_TARGET.id.toString(), 5,0);
+        var focusOwner = SpellBuilder.Impacts.effectSet(MRPGCEffects.DUELISTS_FOCUS_OWNER.id.toString(), 5,0);
+        focusOwner.action.apply_to_caster = true;
+        spell.impacts = List.of(focusTarget);
+
+        SpellBuilder.Cost.cooldown(spell, 20.0F);
+        spell.cost.batching = true;
+
+        return new Entry(id, spell, title, description, null, Category.MELEE);
+    }
     //RANGED
     public static Entry lightning_strike_ranged = add(lightning_strike_ranged());
     private static Entry lightning_strike_ranged() {
@@ -538,7 +566,7 @@ public class MrpgLibSpells {
         spell.impacts = List.of(custom);
 
         SpellBuilder.Cost.cooldown(spell, 5);
-        spell.cost.batching = true;
+        spell.cost.cooldown.hosting_item = false;
 
         return new Entry(id, spell, title, description).categories(Category.RANGED);
     }
@@ -1126,7 +1154,7 @@ public class MrpgLibSpells {
     private static Entry sirens_tears() {
         var id = Identifier.of(MOD_ID, "sirens_tears");
         var title = "Siren's Tears";
-        var description = "On healing: {trigger_chance} chance to remove harmful effects and apply regeneration for {effect_duration} seconds.";
+        var description = "On healing: {trigger_chance} chance to remove a harmful effect and apply regeneration that scales with missing health for {effect_duration} seconds.";
 
         var spell = new Spell();
         spell.school = SpellSchools.HEALING;
@@ -1160,8 +1188,7 @@ public class MrpgLibSpells {
                 ).color(4294954239L)
         };
 
-        var regenEffect = SpellBuilder.Impacts.effectSet("regeneration",6,0);
-        regenEffect.action.status_effect.amplifier_power_multiplier = 0.15F;
+        var regenEffect = SpellBuilder.Impacts.effectSet(MRPGCEffects.SIRENS_TEAR.id.toString(),6,0);
         regenEffect.action.status_effect.show_particles = false;
 
         spell.impacts = List.of(removeEffects, regenEffect);

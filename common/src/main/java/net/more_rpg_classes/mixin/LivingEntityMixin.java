@@ -219,6 +219,30 @@ public abstract class LivingEntityMixin {
         }
     }
 
+    @ModifyArgs(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V"))
+    private void duelistsFocus$reduceDamage(Args args) {
+        LivingEntity thisEntity = (LivingEntity)(Object)this;
+        if (!hasStatusEffect(MRPGCEffects.DUELISTS_FOCUS_OWNER.entry)) return;
+        if (thisEntity.getWorld().isClient()) return;
+        DamageSource source = args.get(0);
+        Entity attacker = source.getAttacker();
+        if (attacker instanceof LivingEntity livingAttacker && !livingAttacker.hasStatusEffect(MRPGCEffects.DUELISTS_FOCUS_TARGET.entry)) {
+            args.set(1, (float) args.get(1) * 0.75F);
+        }
+    }
+
+    @ModifyArgs(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V"))
+    private void duelistsFocus$increaseDamageToTarget(Args args) {
+        LivingEntity thisEntity = (LivingEntity)(Object)this;
+        if (!thisEntity.hasStatusEffect(MRPGCEffects.DUELISTS_FOCUS_TARGET.entry)) return;
+        if (thisEntity.getWorld().isClient()) return;
+        DamageSource source = args.get(0);
+        Entity attacker = source.getAttacker();
+        if (attacker instanceof LivingEntity livingAttacker && livingAttacker.hasStatusEffect(MRPGCEffects.DUELISTS_FOCUS_OWNER.entry)) {
+            args.set(1, (float) args.get(1) * 1.25F);
+        }
+    }
+
     @Inject(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V", shift = At.Shift.AFTER))
     private void fuse$applyFuseDamage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         if (source.isIn(SpellPowerTags.DamageTypes.ALL)) return;
