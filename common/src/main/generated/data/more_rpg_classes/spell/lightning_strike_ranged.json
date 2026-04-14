@@ -25,10 +25,10 @@
     }
   ],
   "cost": {
-    "batching": true,
     "durability": 0,
     "cooldown": {
-      "duration": 5.0
+      "duration": 5.0,
+      "hosting_item": false
     }
   }
 }

@@ -54,7 +54,7 @@ public class RainbowMusicNoteSpawner {
             double velocityZ = Math.cos(angle) * 0.05 + (world.random.nextDouble() - 0.5) * 0.1;
 
             world.spawnParticles(
-                MoreParticles.RAINBOW_MUSIC_NOTE_0,
+                MoreParticles.RAINBOW_MUSIC_NOTE,
                 x, y, z,
                 1,
                 0, 0, 0,

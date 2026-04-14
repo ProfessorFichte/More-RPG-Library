@@ -68,8 +68,7 @@ public class MoreRPGClassesClient{
         ParticleFactoryRegistry.getInstance().register(MoreParticles.RAGE_PAR, RageParticle.Factory::new);
         ParticleFactoryRegistry.getInstance().register(MoreParticles.SMALL_THUNDER, SmallThunderParticle.Factory::new);
         ParticleFactoryRegistry.getInstance().register(MoreParticles.FATAL_POISON, SpellFlameParticle.AnimatedFlameFactory::new);
-        ParticleFactoryRegistry.getInstance().register(MoreParticles.RAINBOW_MUSIC_NOTE_0, RainbowMusicNoteParticle.Factory::new);
-        ParticleFactoryRegistry.getInstance().register(MoreParticles.RAINBOW_MUSIC_NOTE_1, RainbowMusicNoteParticle.Factory::new);
+        ParticleFactoryRegistry.getInstance().register(MoreParticles.RAINBOW_MUSIC_NOTE, RainbowMusicNoteParticle.Factory::new);
         ParticleFactoryRegistry.getInstance().register(MoreParticles.MUSIC_NOTE, MusicNoteParticle.MusicNoteFactory::new);
         ParticleFactoryRegistry.getInstance().register(MoreParticles.STAR, StarParticle.Factory::new);
         ParticleFactoryRegistry.getInstance().register(MoreParticles.POPUP, new PopupParticle.Factory());
@@ -113,8 +112,7 @@ public class MoreRPGClassesClient{
         registry.register(MoreParticles.RAGE_PAR, DamageParticle.Factory::new);
         registry.register(MoreParticles.SMALL_THUNDER, SmallThunderParticle.Factory::new);
         registry.register(MoreParticles.FATAL_POISON, SpellFlameParticle.AnimatedFlameFactory::new);
-        registry.register(MoreParticles.RAINBOW_MUSIC_NOTE_0, RainbowMusicNoteParticle.Factory::new);
-        registry.register(MoreParticles.RAINBOW_MUSIC_NOTE_1, RainbowMusicNoteParticle.Factory::new);
+        registry.register(MoreParticles.RAINBOW_MUSIC_NOTE, RainbowMusicNoteParticle.Factory::new);
         registry.register(MoreParticles.STAR, StarParticle.Factory::new);
     }
 }

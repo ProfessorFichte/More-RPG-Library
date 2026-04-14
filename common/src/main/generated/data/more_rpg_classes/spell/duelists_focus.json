@@ -1,0 +1,36 @@
+{
+  "school": "spell_power:physical_melee",
+  "tier": 1,
+  "type": "PASSIVE",
+  "passive": {
+    "triggers": [
+      {
+        "type": "MELEE_IMPACT",
+        "chance": 0.1,
+        "chance_batching": true,
+        "equipment_condition": "MAINHAND"
+      }
+    ]
+  },
+  "target": {
+    "type": "FROM_TRIGGER"
+  },
+  "impacts": [
+    {
+      "action": {
+        "type": "STATUS_EFFECT",
+        "status_effect": {
+          "effect_id": "more_rpg_classes:duelists_focus_target",
+          "duration": 5.0
+        }
+      }
+    }
+  ],
+  "cost": {
+    "batching": true,
+    "durability": 0,
+    "cooldown": {
+      "duration": 20.0
+    }
+  }
+}

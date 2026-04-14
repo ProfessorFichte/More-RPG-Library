@@ -60,7 +60,6 @@ public class MrpgDatagen implements DataGeneratorEntrypoint {
 
         @Override
         public void generateTranslations(RegistryWrapper.WrapperLookup wrapperLookup, TranslationBuilder translationBuilder) {
-            /*
             SmithingIngredients.ENTRIES.forEach(entry -> {
                 translationBuilder.add(entry.id().toTranslationKey("item"), entry.translations().itemName());
                 translationBuilder.add(entry.appliesToTranslationKey(), entry.appliesToClassesTranslation());
@@ -72,8 +71,7 @@ public class MrpgDatagen implements DataGeneratorEntrypoint {
             });
             translationBuilder.add("message." + MOD_ID + ".spellthief.spell_stolen", "Stole and cast %s from %s");
             translationBuilder.add("message." + MOD_ID + ".spellthief.effect_stolen", "Stole %s from %s");
-            
-             */
+
             MRPGCEffects.entries.forEach(entry -> {
                 translationBuilder.add(entry.effect.getTranslationKey(), entry.title);
                 translationBuilder.add(entry.effect.getTranslationKey() + ".description", entry.description);

@@ -7,6 +7,10 @@
     {
       "id": "more_rpg_classes:lightning_strike_melee",
       "required": false
+    },
+    {
+      "id": "more_rpg_classes:duelists_focus",
+      "required": false
     }
   ]
 }

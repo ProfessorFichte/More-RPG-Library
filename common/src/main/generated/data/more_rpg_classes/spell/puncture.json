@@ -6,10 +6,11 @@
   "learn": {},
   "active": {
     "cast": {
-      "duration": 1.0,
+      "duration": 0.7,
       "animation": {
-        "id": "more_rpg_classes:puncture_release"
-      }
+        "id": "more_rpg_classes:puncture_charge"
+      },
+      "movement_speed": 0.0
     }
   },
   "target": {
@@ -32,7 +33,9 @@
             "height": 0.2,
             "arc": 80.0
           },
-          "animation": {},
+          "animation": {
+            "id": "more_rpg_classes:puncture_release"
+          },
           "swing_sound": {
             "id": "more_rpg_classes:puncture_charge"
           },
