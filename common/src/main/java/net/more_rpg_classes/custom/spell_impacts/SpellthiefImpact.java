@@ -13,10 +13,12 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.more_rpg_classes.client.particle.MoreParticles;
 import net.more_rpg_classes.client.particle.PopupParticleEffect;
 import net.more_rpg_classes.custom.MoreSpellSchools;
 import net.more_rpg_classes.entity.ISpellCasterEntity;
+import net.more_rpg_classes.network.MobBeamPacket;
 import net.spell_engine.api.spell.ExternalSpellSchools;
 import net.spell_engine.api.spell.Spell;
 import net.spell_engine.api.spell.event.SpellHandlers;
@@ -39,7 +41,7 @@ public class SpellthiefImpact implements SpellHandlers.CustomImpact {
     private static final Set<UUID> stealingCasters = new HashSet<>();
     private static final Map<Identifier, List<RegistryEntry<Spell>>> mobSpellCache = new HashMap<>();
 
-    private enum DeliveryType { PROJECTILE, CLOUD, METEOR, AREA, DIRECT }
+    private enum DeliveryType { PROJECTILE, CLOUD, METEOR, AREA, DIRECT, BEAM }
 
     @Override
     public SpellHandlers.ImpactResult onSpellImpact(
@@ -175,6 +177,10 @@ public class SpellthiefImpact implements SpellHandlers.CustomImpact {
 
         WorldScheduler scheduler = (WorldScheduler) caster.getWorld();
 
+        if (delivery == DeliveryType.BEAM && stolenSpell.target != null && stolenSpell.target.beam != null) {
+            sendBeamPacket(caster, target, spellEntry.getKey().get().getValue());
+        }
+
         for (int releaseIndex = 0; releaseIndex < releaseCount; releaseIndex++) {
             final int delay = releaseIndex * tickInterval;
             Runnable release = () -> {
@@ -231,6 +237,37 @@ public class SpellthiefImpact implements SpellHandlers.CustomImpact {
                                     stolenSpell.impacts, ctx, false, null);
                         }
                     }
+                    case BEAM -> {
+                        if (!target.isAlive()) {
+                            sendBeamClearPacket(caster);
+                            return;
+                        }
+                        SpellHelper.ImpactContext ctx = new SpellHelper.ImpactContext()
+                                .power(power).position(caster.getEyePos()).target(SpellTarget.FocusMode.AREA);
+                        if (hasSpawn) {
+                            SpellHelper.ImpactContext spawnCtx = new SpellHelper.ImpactContext()
+                                    .power(power).position(target.getPos()).target(SpellTarget.FocusMode.DIRECT);
+                            SpellHelper.performImpacts(caster.getWorld(), caster, caster, caster, spellEntry,
+                                    stolenSpell.impacts, spawnCtx, false, Spell.Impact.Action.Type.SPAWN);
+                        }
+                        SpellHelper.performImpacts(caster.getWorld(), caster, target, caster, spellEntry,
+                                stolenSpell.impacts, ctx, false, null);
+                        double beamRange = stolenSpell.range > 0 ? stolenSpell.range : 32.0;
+                        Vec3d beamFrom = caster.getEyePos();
+                        Vec3d beamDir = target.getEyePos().subtract(beamFrom).normalize();
+                        if (caster.getWorld() instanceof ServerWorld beamWorld) {
+                            for (Entity candidate : beamWorld.getOtherEntities(caster,
+                                    caster.getBoundingBox().expand(beamRange),
+                                    e -> e instanceof LivingEntity && e.isAlive() && e != target)) {
+                                Vec3d toCandidate = candidate.getBoundingBox().getCenter().subtract(beamFrom);
+                                double projection = toCandidate.dotProduct(beamDir);
+                                if (projection < 0 || projection > beamRange) continue;
+                                if (toCandidate.subtract(beamDir.multiply(projection)).lengthSquared() > 4.0) continue;
+                                SpellHelper.performImpacts(caster.getWorld(), caster, candidate, caster, spellEntry,
+                                        stolenSpell.impacts, ctx, false, null);
+                            }
+                        }
+                    }
                     case DIRECT -> {
                         LivingEntity directTarget = isHelpful ? caster : target;
                         Vec3d contextPos = (isHelpful || !harmfulCustomSpawn) ? caster.getEyePos() : target.getPos();
@@ -261,6 +298,23 @@ public class SpellthiefImpact implements SpellHandlers.CustomImpact {
                 scheduler.schedule(delay, release);
             }
         }
+
+        if (delivery == DeliveryType.BEAM && stolenSpell.target != null && stolenSpell.target.beam != null) {
+            int clearDelay = releaseCount > 1 ? (releaseCount - 1) * tickInterval + 2 : 2;
+            scheduler.schedule(clearDelay, () -> sendBeamClearPacket(caster));
+        }
+    }
+
+    private static void sendBeamPacket(LivingEntity caster, LivingEntity target, Identifier spellId) {
+        if (!(caster.getWorld() instanceof ServerWorld sw)) return;
+        var packet = new MobBeamPacket(caster.getId(), target.getId(), spellId);
+        sw.getPlayers().forEach(player -> ServerPlayNetworking.send(player, packet));
+    }
+
+    private static void sendBeamClearPacket(LivingEntity caster) {
+        if (!(caster.getWorld() instanceof ServerWorld sw)) return;
+        var packet = new MobBeamPacket(caster.getId(), -1, null);
+        sw.getPlayers().forEach(player -> ServerPlayNetworking.send(player, packet));
     }
 
     private SpellPower.Result getHighestPower(LivingEntity caster) {
@@ -292,8 +346,9 @@ public class SpellthiefImpact implements SpellHandlers.CustomImpact {
     }
 
     private DeliveryType deriveDelivery(Spell spell) {
-        if (spell.target != null && spell.target.type == Spell.Target.Type.AREA) {
-            return DeliveryType.AREA;
+        if (spell.target != null) {
+            if (spell.target.type == Spell.Target.Type.AREA) return DeliveryType.AREA;
+            if (spell.target.type == Spell.Target.Type.BEAM) return DeliveryType.BEAM;
         }
         if (spell.deliver != null) {
             return switch (spell.deliver.type) {
