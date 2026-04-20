@@ -1,3 +1,9 @@
+# 2.5.26 - 1.21.1
+- fix Duelists Focus not applying the effect to the caster
+- New Weapon Passive: Dragonslayer's Fury
+- When applying heals or buffs on an ally under 20% max health, they gain increased crit damage
+- SpellBuilderHelper Additions (Mostly RBG Color Codes)
+
 # 2.5.25 - 1.21.1
 - Fixed the Range Passives applying cooldown on Range Weapons
 - Fixed the Puncture Charge Animation

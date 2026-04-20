@@ -1,0 +1,66 @@
+{
+  "school": "spell_power:arcane",
+  "range": 0.0,
+  "tier": 7,
+  "type": "PASSIVE",
+  "passive": {
+    "triggers": [
+      {
+        "type": "SPELL_IMPACT_SPECIFIC",
+        "target_conditions": [
+          {
+            "health_percent_above": 0.01,
+            "health_percent_below": 0.2
+          }
+        ],
+        "impact": {
+          "impact_type": "HEAL"
+        }
+      },
+      {
+        "type": "SPELL_IMPACT_SPECIFIC",
+        "target_conditions": [
+          {
+            "health_percent_above": 0.01,
+            "health_percent_below": 0.2
+          }
+        ],
+        "impact": {
+          "impact_type": "STATUS_EFFECT"
+        }
+      }
+    ]
+  },
+  "target": {
+    "type": "FROM_TRIGGER"
+  },
+  "impacts": [
+    {
+      "action": {
+        "type": "STATUS_EFFECT",
+        "status_effect": {
+          "effect_id": "more_rpg_classes:dragonslayers_fury",
+          "duration": 8.0
+        }
+      },
+      "particles": [
+        {
+          "particle_id": "spell_engine:magic_skull_decelerate",
+          "origin": "CENTER",
+          "shape": "SPHERE",
+          "count": 10.0,
+          "min_speed": 0.5,
+          "max_speed": 0.8,
+          "extent": 0.25,
+          "color_rgba": 4284940287
+        }
+      ]
+    }
+  ],
+  "cost": {
+    "batching": true,
+    "cooldown": {
+      "duration": 35.0
+    }
+  }
+}

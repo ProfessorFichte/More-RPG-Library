@@ -24,6 +24,16 @@
           "duration": 5.0
         }
       }
+    },
+    {
+      "action": {
+        "type": "STATUS_EFFECT",
+        "apply_to_caster": true,
+        "status_effect": {
+          "effect_id": "more_rpg_classes:duelists_focus_owner",
+          "duration": 5.0
+        }
+      }
     }
   ],
   "cost": {

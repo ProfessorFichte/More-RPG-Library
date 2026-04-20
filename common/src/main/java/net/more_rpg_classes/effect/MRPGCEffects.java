@@ -267,6 +267,26 @@ public class MRPGCEffects {
             new CustomStatusEffect(StatusEffectCategory.HARMFUL, 0xCC6600),
             new EffectConfig(List.of())
     ));
+    public static float critDamageIncrease = 0.3F;
+    public static Effects.Entry DRAGON_SLAYERS_FURY = add(new Effects.Entry(Identifier.of(MOD_ID, "dragonslayers_fury"),
+            "Dragonslayer's Fury",
+            "Increases Critical Damage.",
+            new CustomStatusEffect(StatusEffectCategory.BENEFICIAL, 0x9999ff),
+            new EffectConfig(
+                    List.of(
+                            new AttributeModifier(
+                                    SpellPowerMechanics.CRITICAL_DAMAGE.id,
+                                    critDamageIncrease,
+                                    EntityAttributeModifier.Operation.ADD_MULTIPLIED_BASE
+                            ),
+                            new AttributeModifier(
+                                    "critical_strike:damage",
+                                    critDamageIncrease,
+                                    EntityAttributeModifier.Operation.ADD_MULTIPLIED_BASE
+                            )
+                    )
+            )
+    ));
 
 
 

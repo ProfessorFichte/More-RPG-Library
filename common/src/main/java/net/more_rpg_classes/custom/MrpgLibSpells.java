@@ -517,7 +517,7 @@ public class MrpgLibSpells {
     private static Entry duelists_focus() {
         var id = Identifier.of(MOD_ID, "duelists_focus");
         var title = "Duelist's Focus";
-        var description = "On melee hit: {trigger_chance} to mark the target, all other entities deal 25%% damage on you and only you deal 25%% increased damage on your target.";
+        var description = "On melee hit: {trigger_chance} to mark the target, all other entities deal 25%% reduced damage on you and only you deal 25%% increased damage on your marked target.";
         var spell = SpellBuilder.createSpellPassive();
         spell.school = ExternalSpellSchools.PHYSICAL_MELEE;
 
@@ -535,7 +535,7 @@ public class MrpgLibSpells {
         var focusTarget = SpellBuilder.Impacts.effectSet(MRPGCEffects.DUELISTS_FOCUS_TARGET.id.toString(), 5,0);
         var focusOwner = SpellBuilder.Impacts.effectSet(MRPGCEffects.DUELISTS_FOCUS_OWNER.id.toString(), 5,0);
         focusOwner.action.apply_to_caster = true;
-        spell.impacts = List.of(focusTarget);
+        spell.impacts = List.of(focusTarget,focusOwner);
 
         SpellBuilder.Cost.cooldown(spell, 20.0F);
         spell.cost.batching = true;
@@ -1197,6 +1197,60 @@ public class MrpgLibSpells {
         spell.cost.batching = true;
 
         return new Entry(id, spell, title, description);
+    }
+    public static Entry dragonslayers_fury = add(dragonslayers_fury());
+    private static Entry dragonslayers_fury() {
+        var threshold = 0.2F;
+        var id = Identifier.of(MOD_ID, "dragonslayers_fury");
+        var title = "Dragonslayer's Fury";
+        var effect = MRPGCEffects.DRAGON_SLAYERS_FURY;
+        var description = "Healing or buffing allies under {threshold} health, grants them increased critical damage by {bonus} for {effect_duration} seconds.";
+        SpellTooltip.DescriptionMutator mutator = (args) -> {
+            var modifier = effect.config().firstModifier();
+            var bonus = SpellTooltip.bonus(modifier.value, modifier.operation);
+            return args.description().replace("{threshold}", SpellTooltip.percent(threshold))
+                    .replace("{bonus}", bonus);
+        };
+
+        var spell = new Spell();
+        spell.school = SpellSchools.ARCANE;
+        spell.range = 0.0F;
+        spell.tier = 7;
+        spell.type = Spell.Type.PASSIVE;
+        spell.passive = new Spell.Passive();
+
+        var triggerHeal = new Spell.Trigger();
+        triggerHeal.type = Spell.Trigger.Type.SPELL_IMPACT_SPECIFIC;
+        triggerHeal.impact = new Spell.Trigger.ImpactCondition();
+        triggerHeal.impact.impact_type = Spell.Impact.Action.Type.HEAL.toString();
+        triggerHeal.target_conditions = List.of(SpellBuilderHelper.healthRangeCondition(threshold,0.01F));
+        var triggerEffect= new Spell.Trigger();
+        triggerEffect.type = Spell.Trigger.Type.SPELL_IMPACT_SPECIFIC;
+        triggerEffect.impact = new Spell.Trigger.ImpactCondition();
+        triggerEffect.impact.impact_type = Spell.Impact.Action.Type.STATUS_EFFECT.toString();
+        triggerEffect.target_conditions = List.of(SpellBuilderHelper.healthRangeCondition(threshold,0.01F));
+        spell.passive.triggers = List.of(triggerHeal,triggerEffect);
+
+        spell.target.type = Spell.Target.Type.FROM_TRIGGER;
+
+        var buffEffect = SpellBuilder.Impacts.effectSet(MRPGCEffects.DRAGON_SLAYERS_FURY.id.toString(),8,0);
+        buffEffect.action.status_effect.show_particles = false;
+        buffEffect.particles = new ParticleBatch[]{
+                new ParticleBatch(
+                        SpellEngineParticles.MagicParticles.get(
+                                SpellEngineParticles.MagicParticles.Shape.SKULL,
+                                SpellEngineParticles.MagicParticles.Motion.DECELERATE
+                        ).id().toString(),
+                        ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.CENTER,
+                        10, 0.5F, 0.8F).color(Color.ARCANE.toRGBA()).extent(0.25F)
+        };
+
+        spell.impacts = List.of(buffEffect);
+
+        SpellBuilder.Cost.cooldown(spell,35);
+        spell.cost.batching = true;
+
+        return new Entry(id, spell, title, description).mutator(mutator);
     }
     //SPELL
     public static Entry arcane_precision = add(arcane_precision());
