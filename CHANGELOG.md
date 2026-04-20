@@ -1,3 +1,6 @@
+# 2.5.27 - 1.21.1
+- fix music note particles causing lags on neoforge
+
 # 2.5.26 - 1.21.1
 - fix Duelists Focus not applying the effect to the caster
 - New Weapon Passive: Dragonslayer's Fury

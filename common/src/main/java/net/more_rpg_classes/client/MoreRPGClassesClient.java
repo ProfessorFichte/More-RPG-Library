@@ -113,6 +113,7 @@ public class MoreRPGClassesClient{
         registry.register(MoreParticles.SMALL_THUNDER, SmallThunderParticle.Factory::new);
         registry.register(MoreParticles.FATAL_POISON, SpellFlameParticle.AnimatedFlameFactory::new);
         registry.register(MoreParticles.RAINBOW_MUSIC_NOTE, RainbowMusicNoteParticle.Factory::new);
+        registry.register(MoreParticles.MUSIC_NOTE, MusicNoteParticle.MusicNoteFactory::new);
         registry.register(MoreParticles.STAR, StarParticle.Factory::new);
     }
 }
