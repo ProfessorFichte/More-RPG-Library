@@ -1,3 +1,7 @@
+# 2.5.28 - 1.21.1
+- Add Visual Renderer for the Duelists Focus Effect
+- Add Particle Spawner for Sirens Tear Effect
+
 # 2.5.27 - 1.21.1
 - fix music note particles causing lags on neoforge
 

@@ -3,7 +3,6 @@ package net.more_rpg_classes.client;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.particle.*;
-import net.minecraft.util.Identifier;
 import net.more_rpg_classes.client.effect.*;
 import net.more_rpg_classes.client.heart.HeartRegistry;
 import net.more_rpg_classes.client.heart.HeartTypes;
@@ -12,16 +11,17 @@ import net.more_rpg_classes.client.render.FriendlyLightningEntityRenderer;
 import net.more_rpg_classes.client.render.MobBeamTracker;
 import net.more_rpg_classes.client.render.MobBeamWorldRenderer;
 import net.more_rpg_classes.custom.MrpgLibSpells;
+import net.more_rpg_classes.custom.SpellBuilderHelper;
 import net.more_rpg_classes.effect.MRPGCEffects;
 import net.more_rpg_classes.entity.MRPGCEntities;
 import net.spell_engine.api.effect.CustomModelStatusEffect;
 import net.spell_engine.api.effect.CustomParticleStatusEffect;
+import net.spell_engine.api.render.BuffParticleSpawner;
 import net.spell_engine.client.render.CustomModelRegistry;
 import net.spell_engine.client.gui.SpellTooltip;
 import net.spell_engine.client.particle.SpellExplosionParticle;
 import net.spell_engine.client.particle.SpellFlameParticle;
-
-import java.util.Arrays;
+import net.spell_engine.fx.SpellEngineParticles;
 
 public class MoreRPGClassesClient{
 
@@ -39,6 +39,11 @@ public class MoreRPGClassesClient{
         EntityRendererRegistry.register(MRPGCEntities.FRIENDLY_LIGHTNING, FriendlyLightningEntityRenderer::new);
         // Register Status Effect Renderers
         CustomModelRegistry.modelIds.add(FrozenSolidRenderer.modelId);
+        CustomModelRegistry.modelIds.add(DuelistsFocusRenderer.OWNER_MODEL);
+        CustomModelRegistry.modelIds.add(DuelistsFocusRenderer.TARGET_MODEL);
+        CustomModelStatusEffect.register(MRPGCEffects.DUELISTS_FOCUS_OWNER.effect, new DuelistsFocusRenderer(DuelistsFocusRenderer.OWNER_MODEL));
+        CustomModelStatusEffect.register(MRPGCEffects.DUELISTS_FOCUS_TARGET.effect, new DuelistsFocusRenderer(DuelistsFocusRenderer.TARGET_MODEL));
+        registerEffectParticles();
 
         ParticleFactoryRegistry.getInstance().register(MoreParticles.BLOOD_DROP, RainSplashParticle.Factory::new);
         ParticleFactoryRegistry.getInstance().register(MoreParticles.MOLTEN_ARMOR, RainSplashParticle.Factory::new);
@@ -115,5 +120,18 @@ public class MoreRPGClassesClient{
         registry.register(MoreParticles.RAINBOW_MUSIC_NOTE, RainbowMusicNoteParticle.Factory::new);
         registry.register(MoreParticles.MUSIC_NOTE, MusicNoteParticle.MusicNoteFactory::new);
         registry.register(MoreParticles.STAR, StarParticle.Factory::new);
+    }
+    private static void registerEffectParticles() {
+        CustomParticleStatusEffect.register(
+                MRPGCEffects.SIRENS_TEAR.effect,
+                new BuffParticleSpawner(
+                        BuffParticleSpawner.defaultBatch(
+                                SpellEngineParticles.MagicParticles.get(
+                                        SpellEngineParticles.MagicParticles.Shape.SPARK,
+                                        SpellEngineParticles.MagicParticles.Motion.FLOAT).id().toString(),
+                                4,
+                                SpellBuilderHelper.BRIGHT_CYAN.toRGBA()).extent(0.5F)
+                ).invertFrequency().withFrequency(20).scaleWithAmplifier(false)
+        );
     }
 }
