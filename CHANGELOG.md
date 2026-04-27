@@ -1,3 +1,6 @@
+# 2.5.29 - 1.21.1
+- Fix Duelists Focus Renderer on Neoforge
+
 # 2.5.28 - 1.21.1
 - Add Visual Renderer for the Duelists Focus Effect
 - Add Particle Spawner for Sirens Tear Effect
