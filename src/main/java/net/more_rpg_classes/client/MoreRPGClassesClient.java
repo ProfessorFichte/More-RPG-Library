@@ -53,6 +53,22 @@ public class MoreRPGClassesClient implements ClientModInitializer {
         ParticleFactoryRegistry.getInstance().register(MoreParticles.POISON_SMOKE, ExplosionSmokeParticle.Factory::new);
         ParticleFactoryRegistry.getInstance().register(MoreParticles.DRAGON_CLAW, DragonClawParticle.Factory::new);
         ParticleFactoryRegistry.getInstance().register(MoreParticles.FREEZING_SNOWFLAKE, SnowflakeParticle.Factory::new);
+        ParticleFactoryRegistry.getInstance().register(MoreParticles.RAGE_PAR, RageParticle.Factory::new);
+        ParticleFactoryRegistry.getInstance().register(MoreParticles.MUSIC_NOTE_WHITE, MusicNoteParticle.WhiteFactory::new);
+        ParticleFactoryRegistry.getInstance().register(MoreParticles.MUSIC_NOTE_RED, MusicNoteParticle.RedFactory::new);
+        ParticleFactoryRegistry.getInstance().register(MoreParticles.MUSIC_NOTE_PURPLE, MusicNoteParticle.PurpleFactory::new);
+        ParticleFactoryRegistry.getInstance().register(MoreParticles.MUSIC_NOTE_GREEN, MusicNoteParticle.GreenFactory::new);
+        ParticleFactoryRegistry.getInstance().register(MoreParticles.MUSIC_NOTE_YELLOW, MusicNoteParticle.YellowFactory::new);
+        ParticleFactoryRegistry.getInstance().register(MoreParticles.MUSIC_NOTE_BLUE, MusicNoteParticle.BlueFactory::new);
+        ParticleFactoryRegistry.getInstance().register(MoreParticles.MUSIC_NOTE_CYAN, MusicNoteParticle.CyanFactory::new);
+        ParticleFactoryRegistry.getInstance().register(MoreParticles.MUSIC_NOTE_GOLD, MusicNoteParticle.GoldFactory::new);
+        ParticleFactoryRegistry.getInstance().register(MoreParticles.MUSIC_NOTE_BRIGHT_GREEN, MusicNoteParticle.BrightGreenFactory::new);
+        ParticleFactoryRegistry.getInstance().register(MoreParticles.MUSIC_NOTE_YELLOW_GREEN, MusicNoteParticle.YellowGreenFactory::new);
+        ParticleFactoryRegistry.getInstance().register(MoreParticles.MUSIC_NOTE_MAGENTA, MusicNoteParticle.MagentaFactory::new);
+        ParticleFactoryRegistry.getInstance().register(MoreParticles.MUSIC_NOTE_BRIGHT_MAGENTA, MusicNoteParticle.BrightMagentaFactory::new);
+        ParticleFactoryRegistry.getInstance().register(MoreParticles.MUSIC_NOTE_MID_MAGENTA, MusicNoteParticle.MidMagentaFactory::new);
+        ParticleFactoryRegistry.getInstance().register(MoreParticles.MUSIC_NOTE_ARCANE, MusicNoteParticle.ArcaneFactory::new);
+        ParticleFactoryRegistry.getInstance().register(MoreParticles.MUSIC_NOTE_RAGE, MusicNoteParticle.RageFactory::new);
 
 
         CustomParticleStatusEffect.register(MRPGCEffects.STUNNED, new StunParticleSpawner());

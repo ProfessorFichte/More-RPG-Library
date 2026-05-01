@@ -1,3 +1,11 @@
+1.2.19 - 1.20.1
+- Backport Features from the 1.21.1 Mod-Version:
+- All functional attributes from 1.21.1 and they're now handled via LivingEntityMixin
+- Music Note- & Rage Particle's
+- some Helper Methods
+- Mob Spell Caster & Flee Goals (Entity Spell Casting)
+- Damage- & Healing-Taken Attribute from Spell Engine 1.21.1
+
 1.2.18 - 1.20.1
 - fix: add untamed wilds compat for white hide
 

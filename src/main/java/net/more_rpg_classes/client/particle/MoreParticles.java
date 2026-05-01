@@ -34,7 +34,22 @@ public class MoreParticles {
     public static final DefaultParticleType POISON_SMOKE = FabricParticleTypes.simple();
     public static final DefaultParticleType DRAGON_CLAW = FabricParticleTypes.simple();
     public static final DefaultParticleType FREEZING_SNOWFLAKE = FabricParticleTypes.simple();
-
+    public static final DefaultParticleType RAGE_PAR = FabricParticleTypes.simple();
+    public static final DefaultParticleType MUSIC_NOTE_WHITE = FabricParticleTypes.simple();
+    public static final DefaultParticleType MUSIC_NOTE_RED = FabricParticleTypes.simple();
+    public static final DefaultParticleType MUSIC_NOTE_PURPLE = FabricParticleTypes.simple();
+    public static final DefaultParticleType MUSIC_NOTE_GREEN = FabricParticleTypes.simple();
+    public static final DefaultParticleType MUSIC_NOTE_YELLOW = FabricParticleTypes.simple();
+    public static final DefaultParticleType MUSIC_NOTE_BLUE = FabricParticleTypes.simple();
+    public static final DefaultParticleType MUSIC_NOTE_CYAN = FabricParticleTypes.simple();
+    public static final DefaultParticleType MUSIC_NOTE_GOLD = FabricParticleTypes.simple();
+    public static final DefaultParticleType MUSIC_NOTE_BRIGHT_GREEN = FabricParticleTypes.simple();
+    public static final DefaultParticleType MUSIC_NOTE_YELLOW_GREEN = FabricParticleTypes.simple();
+    public static final DefaultParticleType MUSIC_NOTE_MAGENTA = FabricParticleTypes.simple();
+    public static final DefaultParticleType MUSIC_NOTE_BRIGHT_MAGENTA = FabricParticleTypes.simple();
+    public static final DefaultParticleType MUSIC_NOTE_MID_MAGENTA = FabricParticleTypes.simple();
+    public static final DefaultParticleType MUSIC_NOTE_ARCANE = FabricParticleTypes.simple();
+    public static final DefaultParticleType MUSIC_NOTE_RAGE = FabricParticleTypes.simple();
 
     public static void register(){
         Registry.register(Registries.PARTICLE_TYPE, new Identifier(MOD_ID, "stun_particle"), STUN_PAR);
@@ -61,6 +76,22 @@ public class MoreParticles {
         Registry.register(Registries.PARTICLE_TYPE, new Identifier(MOD_ID, "poison_smoke"), POISON_SMOKE);
         Registry.register(Registries.PARTICLE_TYPE, new Identifier(MOD_ID, "dragon_claw"), DRAGON_CLAW);
         Registry.register(Registries.PARTICLE_TYPE, new Identifier(MOD_ID, "freezing_snowflake"), FREEZING_SNOWFLAKE);
+        Registry.register(Registries.PARTICLE_TYPE, new Identifier(MOD_ID, "rage_particle"), RAGE_PAR);
+        Registry.register(Registries.PARTICLE_TYPE, new Identifier(MOD_ID, "music_note_white"), MUSIC_NOTE_WHITE);
+        Registry.register(Registries.PARTICLE_TYPE, new Identifier(MOD_ID, "music_note_red"), MUSIC_NOTE_RED);
+        Registry.register(Registries.PARTICLE_TYPE, new Identifier(MOD_ID, "music_note_purple"), MUSIC_NOTE_PURPLE);
+        Registry.register(Registries.PARTICLE_TYPE, new Identifier(MOD_ID, "music_note_green"), MUSIC_NOTE_GREEN);
+        Registry.register(Registries.PARTICLE_TYPE, new Identifier(MOD_ID, "music_note_yellow"), MUSIC_NOTE_YELLOW);
+        Registry.register(Registries.PARTICLE_TYPE, new Identifier(MOD_ID, "music_note_blue"), MUSIC_NOTE_BLUE);
+        Registry.register(Registries.PARTICLE_TYPE, new Identifier(MOD_ID, "music_note_cyan"), MUSIC_NOTE_CYAN);
+        Registry.register(Registries.PARTICLE_TYPE, new Identifier(MOD_ID, "music_note_gold"), MUSIC_NOTE_GOLD);
+        Registry.register(Registries.PARTICLE_TYPE, new Identifier(MOD_ID, "music_note_bright_green"), MUSIC_NOTE_BRIGHT_GREEN);
+        Registry.register(Registries.PARTICLE_TYPE, new Identifier(MOD_ID, "music_note_yellow_green"), MUSIC_NOTE_YELLOW_GREEN);
+        Registry.register(Registries.PARTICLE_TYPE, new Identifier(MOD_ID, "music_note_magenta"), MUSIC_NOTE_MAGENTA);
+        Registry.register(Registries.PARTICLE_TYPE, new Identifier(MOD_ID, "music_note_bright_magenta"), MUSIC_NOTE_BRIGHT_MAGENTA);
+        Registry.register(Registries.PARTICLE_TYPE, new Identifier(MOD_ID, "music_note_mid_magenta"), MUSIC_NOTE_MID_MAGENTA);
+        Registry.register(Registries.PARTICLE_TYPE, new Identifier(MOD_ID, "music_note_arcane"), MUSIC_NOTE_ARCANE);
+        Registry.register(Registries.PARTICLE_TYPE, new Identifier(MOD_ID, "music_note_rage"), MUSIC_NOTE_RAGE);
     }
 
 }
