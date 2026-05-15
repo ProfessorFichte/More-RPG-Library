@@ -37,6 +37,8 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -341,34 +343,49 @@ public abstract class LivingEntityMixin {
 
     @Unique
     private static final net.minecraft.util.Identifier ARMOR_PIERCING_ID = net.minecraft.util.Identifier.of("more_rpg_classes", "armor_piercing_reduction");
+    // Damage handlers can re-enter before RETURN runs, so keep one modifier active until the outermost hit finishes.
+    @Unique
+    private final Deque<Boolean> armorPiercing$appliedStack = new ArrayDeque<>();
+    @Unique
+    private int armorPiercing$depth = 0;
 
     @Inject(method = "damage", at = @At("HEAD"))
     private void armorPiercing$modifyArmor(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
-        if (source.isIn(SpellPowerTags.DamageTypes.ALL)) return;
-        LivingEntity attacker = getLivingAttackerFromDamageSource(source);
-        if (attacker == null || attacker.getWorld().isClient()) return;
-        EntityAttributeInstance armorPiercing = attacker.getAttributeInstance(MRPGCEntityAttributes.ARMOR_PIERCING);
-        if (armorPiercing != null && armorPiercing.getValue() > 100.0) {
-            float piercingPercent = (float)(armorPiercing.getValue() - 100) / 100f;
-            LivingEntity thisEntity = (LivingEntity)(Object)this;
-            EntityAttributeInstance armorAttribute = thisEntity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR);
-            EntityAttributeInstance toughnessAttribute = thisEntity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR_TOUGHNESS);
-            if (armorAttribute != null && toughnessAttribute != null) {
-                armorAttribute.addTemporaryModifier(new net.minecraft.entity.attribute.EntityAttributeModifier(
-                        ARMOR_PIERCING_ID, -armorAttribute.getValue() * piercingPercent, net.minecraft.entity.attribute.EntityAttributeModifier.Operation.ADD_VALUE));
-                toughnessAttribute.addTemporaryModifier(new net.minecraft.entity.attribute.EntityAttributeModifier(
-                        ARMOR_PIERCING_ID, -toughnessAttribute.getValue() * piercingPercent, net.minecraft.entity.attribute.EntityAttributeModifier.Operation.ADD_VALUE));
+        boolean applied = false;
+        if (!source.isIn(SpellPowerTags.DamageTypes.ALL)) {
+            LivingEntity attacker = getLivingAttackerFromDamageSource(source);
+            if (attacker != null && !attacker.getWorld().isClient()) {
+                EntityAttributeInstance armorPiercing = attacker.getAttributeInstance(MRPGCEntityAttributes.ARMOR_PIERCING);
+                if (armorPiercing != null && armorPiercing.getValue() > 100.0) {
+                    if (armorPiercing$depth == 0) {
+                        float piercingPercent = (float)(armorPiercing.getValue() - 100) / 100f;
+                        LivingEntity thisEntity = (LivingEntity)(Object)this;
+                        EntityAttributeInstance armorAttribute = thisEntity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR);
+                        EntityAttributeInstance toughnessAttribute = thisEntity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR_TOUGHNESS);
+                        if (armorAttribute != null && toughnessAttribute != null) {
+                            armorAttribute.removeModifier(ARMOR_PIERCING_ID);
+                            toughnessAttribute.removeModifier(ARMOR_PIERCING_ID);
+                            armorAttribute.addTemporaryModifier(new net.minecraft.entity.attribute.EntityAttributeModifier(
+                                    ARMOR_PIERCING_ID, -armorAttribute.getValue() * piercingPercent, net.minecraft.entity.attribute.EntityAttributeModifier.Operation.ADD_VALUE));
+                            toughnessAttribute.addTemporaryModifier(new net.minecraft.entity.attribute.EntityAttributeModifier(
+                                    ARMOR_PIERCING_ID, -toughnessAttribute.getValue() * piercingPercent, net.minecraft.entity.attribute.EntityAttributeModifier.Operation.ADD_VALUE));
+                        }
+                    }
+                    armorPiercing$depth++;
+                    applied = true;
+                }
             }
         }
+        armorPiercing$appliedStack.push(applied);
     }
 
     @Inject(method = "damage", at = @At("RETURN"))
     private void armorPiercing$restoreArmor(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
-        if (source.isIn(SpellPowerTags.DamageTypes.ALL)) return;
-        LivingEntity attacker = getLivingAttackerFromDamageSource(source);
-        if (attacker == null || attacker.getWorld().isClient()) return;
-        EntityAttributeInstance armorPiercing = attacker.getAttributeInstance(MRPGCEntityAttributes.ARMOR_PIERCING);
-        if (armorPiercing != null && armorPiercing.getValue() > 100.0) {
+        boolean applied = !armorPiercing$appliedStack.isEmpty() && armorPiercing$appliedStack.pop();
+        if (applied && armorPiercing$depth > 0) {
+            armorPiercing$depth--;
+        }
+        if (applied && armorPiercing$depth == 0) {
             LivingEntity thisEntity = (LivingEntity)(Object)this;
             EntityAttributeInstance armorAttribute = thisEntity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR);
             EntityAttributeInstance toughnessAttribute = thisEntity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR_TOUGHNESS);
