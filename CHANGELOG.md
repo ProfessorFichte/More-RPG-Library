@@ -1,3 +1,7 @@
+# 2.5.30 - 1.21.1
+- PR #22 - Fix Armor Piercing Crash - Thx rexlManu
+- Changed the Dragon Claw healing spell description from hearts to health to match rpg series descriptions
+
 # 2.5.29 - 1.21.1
 - Fix Duelists Focus Renderer on Neoforge
 

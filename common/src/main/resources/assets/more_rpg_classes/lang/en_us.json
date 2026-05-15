@@ -110,7 +110,7 @@
   "spell.more_rpg_classes.decapitate.name": "Decapitate",
   "spell.more_rpg_classes.dragon_breath.description": "On arrow hit: {trigger_chance} chance to create a dragon breath cloud, dealing {damage} damage per second.",
   "spell.more_rpg_classes.dragon_breath.name": "Ender Dragon's Breath",
-  "spell.more_rpg_classes.dragonclaw_melee.description": "On melee hit: {trigger_chance} chance to deal extra {damage} to the target damage and heals the user for {heal} hearts.",
+  "spell.more_rpg_classes.dragonclaw_melee.description": "On melee hit: {trigger_chance} chance to deal extra {damage} to the target damage and heals the user for {heal} health.",
   "spell.more_rpg_classes.dragonclaw_melee.name": "Dragonclaw",
   "spell.more_rpg_classes.dragonslayers_fury.description": "Healing or buffing allies under {threshold} health, grants them increased critical damage by {bonus} for {effect_duration} seconds.",
   "spell.more_rpg_classes.dragonslayers_fury.name": "Dragonslayer's Fury",

@@ -279,7 +279,7 @@ public class MrpgLibSpells {
     private static Entry dragonclaw_melee() {
         var id = Identifier.of(MOD_ID, "dragonclaw_melee");
         var title = "Dragonclaw";
-        var description = "On melee hit: {trigger_chance} chance to deal extra {damage} to the target damage and heals the user for {heal} hearts.";
+        var description = "On melee hit: {trigger_chance} chance to deal extra {damage} to the target damage and heals the user for {heal} health.";
 
         var spell = SpellBuilder.createSpellPassive();
         spell.school = SpellSchools.ARCANE;
