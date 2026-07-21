@@ -334,7 +334,7 @@ public abstract class LivingEntityMixin {
                 ParticleHelper.sendBatches(target, new ParticleBatch[]{POISON_PARTICLES});
             }
             if (bleedingChance != null && bleedingChance.getValue() > 100.0 && random.nextFloat() < (float)(bleedingChance.getValue() - 100) / 100f) {
-                target.addStatusEffect(new StatusEffectInstance(MRPGCEffects.BLEEDING.entry, 120, amplifier, true, false, true));
+                target.addStatusEffect(new StatusEffectInstance(SpellEngineEffects.BLEED.entry, 120, amplifier, true, false, true));
                 WEAK_EFFECT_COOLDOWN.put(attackerId, currentTick);
                 ParticleHelper.sendBatches(target, new ParticleBatch[]{BLEEDING_PARTICLES});
             }

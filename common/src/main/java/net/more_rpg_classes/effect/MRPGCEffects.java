@@ -108,6 +108,8 @@ public class MRPGCEffects {
             ))
     ));
 
+    /** @deprecated superseded by {@link SpellEngineEffects#BLEED}; kept registered only so existing worlds/saves referencing this effect id don't break. */
+    @Deprecated
     public static final Effects.Entry BLEEDING = add(new Effects.Entry(
             Identifier.of(MOD_ID, "bleeding"),
             "Bleeding",

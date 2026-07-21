@@ -8,6 +8,8 @@ import net.minecraft.entity.effect.StatusEffectCategory;
 import net.more_rpg_classes.damage.BleedingDamageSource;
 import net.more_rpg_classes.util.tags.MRPGCEntityTags;
 
+/** @deprecated superseded by Spell Engine's built-in {@code spell_engine:bleed}; kept only for save compatibility. */
+@Deprecated
 public class BleedingEffect extends StatusEffect {
     protected BleedingEffect(StatusEffectCategory category, int color) {
         super(category, color);

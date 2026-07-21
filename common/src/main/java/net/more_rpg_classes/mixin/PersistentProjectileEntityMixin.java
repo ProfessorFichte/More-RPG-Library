@@ -157,7 +157,7 @@ public abstract class PersistentProjectileEntityMixin {
                 float chance = (float)(bleedingChance.getValue() - 100) / 100f;
                 if (random.nextFloat() < chance) {
                     target.addStatusEffect(new StatusEffectInstance(
-                            MRPGCEffects.BLEEDING.entry, 120, amplifier, true, false, true));
+                            SpellEngineEffects.BLEED.entry, 120, amplifier, true, false, true));
                     lastWeakEffectTickMap.put(attackerUUID, currentTick);
                 }
             }
