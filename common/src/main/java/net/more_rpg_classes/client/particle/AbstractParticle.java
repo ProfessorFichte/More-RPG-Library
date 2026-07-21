@@ -13,9 +13,23 @@ public class AbstractParticle extends SpellFlameParticle {
     }
 
     @Environment(EnvType.CLIENT)
-    public static class WaterHealingFactory extends ColorableFactory {
+    public static class WaterHealingFactory extends ConfiguredFactory {
         public WaterHealingFactory(SpriteProvider spriteProvider) {
-            super(spriteProvider, Color.from(0x7affff));
+            super(spriteProvider, config().color(Color.from(0x7affff)).randomDarken());
+        }
+    }
+
+    @Environment(EnvType.CLIENT)
+    public static class HolyFactory extends ConfiguredFactory {
+        public HolyFactory(SpriteProvider spriteProvider) {
+            super(spriteProvider, config().color(Color.HOLY).randomDarken());
+        }
+    }
+
+    @Environment(EnvType.CLIENT)
+    public static class AnimatedFlameFactory extends ConfiguredFactory {
+        public AnimatedFlameFactory(SpriteProvider spriteProvider) {
+            super(spriteProvider, config().animated());
         }
     }
 }

@@ -170,7 +170,7 @@ public class SpellthiefImpact implements SpellHandlers.CustomImpact {
         }
 
         int channelCount = (stolenSpell.active != null && stolenSpell.active.cast != null)
-                ? stolenSpell.active.cast.channel_ticks : 0;
+                ? stolenSpell.active.cast.channelTicks() : 0;
         int releaseCount = channelCount > 0 ? channelCount : 1;
         int tickInterval = (channelCount > 0 && stolenSpell.active.cast.duration > 0)
                 ? Math.max(1, (int)(stolenSpell.active.cast.duration * 20 / channelCount)) : 0;

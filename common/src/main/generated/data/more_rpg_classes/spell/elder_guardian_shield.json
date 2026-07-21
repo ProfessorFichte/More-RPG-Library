@@ -16,22 +16,13 @@
   },
   "impacts": [
     {
-      "target_modifiers": [
-        {
-          "conditions": [
-            {
-              "entity_type": "#minecraft:undead"
-            }
-          ],
-          "execute": "DENY"
-        }
-      ],
       "action": {
         "type": "STATUS_EFFECT",
         "status_effect": {
-          "effect_id": "more_rpg_classes:bleeding",
+          "effect_id": "spell_engine:bleed",
           "duration": 7.0,
-          "amplifier_power_multiplier": 0.3
+          "amplifier_power_multiplier": 0.3,
+          "amplifier_cap": 2
         }
       },
       "particles": [

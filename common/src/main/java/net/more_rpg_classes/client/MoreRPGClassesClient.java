@@ -20,7 +20,6 @@ import net.spell_engine.api.render.BuffParticleSpawner;
 import net.spell_engine.client.render.CustomModelRegistry;
 import net.spell_engine.client.gui.SpellTooltip;
 import net.spell_engine.client.particle.SpellExplosionParticle;
-import net.spell_engine.client.particle.SpellFlameParticle;
 import net.spell_engine.fx.SpellEngineParticles;
 
 public class MoreRPGClassesClient{
@@ -60,7 +59,7 @@ public class MoreRPGClassesClient{
         ParticleFactoryRegistry.getInstance().register(MoreParticles.WATER_HEAL, AbstractParticle.WaterHealingFactory::new);
         ParticleFactoryRegistry.getInstance().register(MoreParticles.WATER_SPLASH, SpellExplosionParticle.Factory::new);
         ParticleFactoryRegistry.getInstance().register(MoreParticles.STONE_EXPLOSION, CustomSpellExplosionParticle.Factory::new);
-        ParticleFactoryRegistry.getInstance().register(MoreParticles.STONE_PARTICLE, SpellFlameParticle.HolyFactory::new);
+        ParticleFactoryRegistry.getInstance().register(MoreParticles.STONE_PARTICLE, AbstractParticle.HolyFactory::new);
         ParticleFactoryRegistry.getInstance().register(MoreParticles.WIND_VACUUM, CustomSpellExplosionParticle.Factory::new);
         ParticleFactoryRegistry.getInstance().register(MoreParticles.SMALL_GUST,  FlameParticle.Factory::new);
         ParticleFactoryRegistry.getInstance().register(MoreParticles.DRAGON_CLAW, ClawParticle.Factory::new);
@@ -72,7 +71,7 @@ public class MoreRPGClassesClient{
         ParticleFactoryRegistry.getInstance().register(MoreParticles.LEAF, LeafParticle.Factory::new);
         ParticleFactoryRegistry.getInstance().register(MoreParticles.RAGE_PAR, RageParticle.Factory::new);
         ParticleFactoryRegistry.getInstance().register(MoreParticles.SMALL_THUNDER, SmallThunderParticle.Factory::new);
-        ParticleFactoryRegistry.getInstance().register(MoreParticles.FATAL_POISON, SpellFlameParticle.AnimatedFlameFactory::new);
+        ParticleFactoryRegistry.getInstance().register(MoreParticles.FATAL_POISON, AbstractParticle.AnimatedFlameFactory::new);
         ParticleFactoryRegistry.getInstance().register(MoreParticles.RAINBOW_MUSIC_NOTE, RainbowMusicNoteParticle.Factory::new);
         ParticleFactoryRegistry.getInstance().register(MoreParticles.MUSIC_NOTE, MusicNoteParticle.MusicNoteFactory::new);
         ParticleFactoryRegistry.getInstance().register(MoreParticles.STAR, StarParticle.Factory::new);
@@ -104,7 +103,7 @@ public class MoreRPGClassesClient{
         registry.register(MoreParticles.WATER_HEAL, AbstractParticle.WaterHealingFactory::new);
         registry.register(MoreParticles.WATER_SPLASH, SpellExplosionParticle.Factory::new);
         registry.register(MoreParticles.STONE_EXPLOSION, CustomSpellExplosionParticle.Factory::new);
-        registry.register(MoreParticles.STONE_PARTICLE, SpellFlameParticle.HolyFactory::new);
+        registry.register(MoreParticles.STONE_PARTICLE, AbstractParticle.HolyFactory::new);
         registry.register(MoreParticles.WIND_VACUUM, CustomSpellExplosionParticle.Factory::new);
         registry.register(MoreParticles.SMALL_GUST,  FlameParticle.Factory::new);
         registry.register(MoreParticles.DRAGON_CLAW, ClawParticle.Factory::new);
@@ -116,7 +115,7 @@ public class MoreRPGClassesClient{
         registry.register(MoreParticles.LEAF, LeafParticle.Factory::new);
         registry.register(MoreParticles.RAGE_PAR, DamageParticle.Factory::new);
         registry.register(MoreParticles.SMALL_THUNDER, SmallThunderParticle.Factory::new);
-        registry.register(MoreParticles.FATAL_POISON, SpellFlameParticle.AnimatedFlameFactory::new);
+        registry.register(MoreParticles.FATAL_POISON, AbstractParticle.AnimatedFlameFactory::new);
         registry.register(MoreParticles.RAINBOW_MUSIC_NOTE, RainbowMusicNoteParticle.Factory::new);
         registry.register(MoreParticles.MUSIC_NOTE, MusicNoteParticle.MusicNoteFactory::new);
         registry.register(MoreParticles.STAR, StarParticle.Factory::new);

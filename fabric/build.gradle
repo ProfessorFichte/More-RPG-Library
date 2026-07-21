@@ -1,6 +1,6 @@
 plugins {
     id 'com.gradleup.shadow'
-    id "com.matthewprenger.cursegradle" version "1.4.0"
+    id "net.darkhax.curseforgegradle" version "1.1.28"
     id "com.github.breadmoirai.github-release" version "2.4.1"
     id "com.modrinth.minotaur" version "2.+"
 }
@@ -132,38 +132,24 @@ remapJar {
 // Publishing configuration
 def release_type = project.hasProperty('release_type') ? project.property('release_type') : 'release'
 
-tasks.register('publishMod') {
-    group = 'publishing'
-    description = 'Publishes the mod to CurseForge, Modrinth, and GitHub'
-    dependsOn(tasks.remapJar)
-    finalizedBy(tasks.curseforge)
-    finalizedBy(tasks.modrinth)
-    finalizedBy(tasks.githubRelease)
-}
-
 if (System.getenv("CURSEFORGE_API_KEY")) {
-    curseforge {
-        apiKey = System.getenv("CURSEFORGE_API_KEY")
-        project {
-            id = System.getenv("CURSEFORGE_PROJECT_ID")
-            changelog = changelog_last_section()
-            changelogType = 'markdown'
-            releaseType = release_type
-            addGameVersion "${project.minecraft_version}"
-            addGameVersion "Fabric"
+    tasks.register('curseforge', net.darkhax.curseforgegradle.TaskPublishCurseForge) {
+        apiToken = System.getenv("CURSEFORGE_API_KEY")
 
-            relations {
-                // Required dependencies
-                requiredDependency 'spell-engine'
-                requiredDependency 'spell-power'
-            }
+        def mainFile = upload(System.getenv("CURSEFORGE_PROJECT_ID"), remapJar)
+        mainFile.changelog = changelog_last_section()
+        mainFile.changelogType = 'markdown'
+        mainFile.releaseType = release_type
+        mainFile.addGameVersion("${project.minecraft_version}")
+        mainFile.addModLoader("Fabric")
+        mainFile.addEnvironment("Client")
+        mainFile.addEnvironment("Server")
 
-            mainArtifact(remapJar)
-            afterEvaluate {
-                uploadTask.dependsOn(remapJar)
-            }
-        }
+        // Required dependencies
+        mainFile.addRequirement('spell-engine')
+        mainFile.addRequirement('spell-power')
     }
+    tasks.curseforge.dependsOn remapJar
 }
 
 if (System.getenv("MODRINTH_API_KEY")) {
@@ -183,6 +169,7 @@ if (System.getenv("MODRINTH_API_KEY")) {
             required.project 'spell-power'
         }
     }
+    tasks.modrinth.dependsOn remapJar
 }
 
 if (System.getenv("GH_API_KEY")) {
@@ -197,16 +184,23 @@ if (System.getenv("GH_API_KEY")) {
         body changelog_last_section()
         draft false
         prerelease false
+        overwrite true
         releaseAssets remapJar.archiveFile
     }
+    tasks.githubRelease.dependsOn remapJar
 }
 
-if (System.getenv("CURSEFORGE_API_KEY")) {
-    tasks.curseforge.dependsOn remapJar
-}
-if (System.getenv("MODRINTH_API_KEY")) {
-    tasks.modrinth.dependsOn remapJar
-}
-if (System.getenv("GH_API_KEY")) {
-    tasks.githubRelease.dependsOn remapJar
+tasks.register('publishMod') {
+    group = 'publishing'
+    description = 'Publishes the mod to CurseForge, Modrinth, and GitHub'
+    dependsOn(tasks.remapJar)
+    if (System.getenv("CURSEFORGE_API_KEY")) {
+        finalizedBy(tasks.curseforge)
+    }
+    if (System.getenv("MODRINTH_API_KEY")) {
+        finalizedBy(tasks.modrinth)
+    }
+    if (System.getenv("GH_API_KEY")) {
+        finalizedBy(tasks.githubRelease)
+    }
 }

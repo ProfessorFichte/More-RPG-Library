@@ -64,10 +64,16 @@
         },
         "hitbox": {},
         "client_data": {
-          "model": {
-            "model_id": "more_rpg_classes:spell_projectile/obsidian_shards",
-            "scale": 0.5,
-            "rotate_degrees_per_tick": 0.0
+          "composite_model": {
+            "models": [
+              {
+                "rotate_degrees_per_tick": 0.0,
+                "fx": {
+                  "model_id": "more_rpg_classes:spell_projectile/obsidian_shards",
+                  "scale": 0.5
+                }
+              }
+            ]
           }
         }
       }

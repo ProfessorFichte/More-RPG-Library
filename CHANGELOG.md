@@ -1,3 +1,7 @@
+# 2.6.0 - 1.21.1
+- Update for the newest Spell Engine Version
+- Deprecate Bleeding Effect from this Mod, because Spell Engine now provides one
+
 # 2.5.30 - 1.21.1
 - PR #22 - Fix Armor Piercing Crash - Thx rexlManu
 - Changed the Dragon Claw healing spell description from hearts to health to match rpg series descriptions

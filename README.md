@@ -1,5 +1,5 @@
 # More RPG Library — Spell Engine Add-On Lib
-![Title](mrpg_lib_title.png)
+![Title](.media/mrpg_lib_title.png)
 A library add-on for the [Spell Engine Mod](https://github.com/ZsoltMolnarrr/SpellEngine) that expands its functionality with new content and Features. Feel free to use this library as a dependency for your mod!
 
 [![Fabric](https://img.shields.io/badge/loader-fabric-black?style=for-the-badge&labelColor=black&color=grey)](https://fabricmc.net/)
@@ -51,7 +51,6 @@ A library add-on for the [Spell Engine Mod](https://github.com/ZsoltMolnarrr/Spe
 - Frozen Solid -> Increases Damage Taken, The Entity cant move, attack or jump.
 - Grievous Wounds -> Reduces Healing Taken and Increases incoming damage.
 - Frosted -> Reduces Movement Speed, adds Freezing Ticks every tick, at Amplifier 5 when this effect is stacked it gets converted to Frozen Solid Effect.
-- Bleeding -> Damages the target overtime, damage increases with the amplifier, it also increases depending on how much %health the entity has. If the entity is under 25% Max Health this Effect will deal a lot of damage.
 - Stagger -> Reduces Armor, Attack Damage & Movement Speed and incapacitates the target.
 - Soaked -> Soaking the target with water extinguishing fire, more vulnerable to frost, lightning and water spells.
 - Carve -> Reduces armor and increases damage taken.
@@ -303,7 +302,7 @@ public void tick() {
 | Feature | Driven by |
 |---|---|
 | Projectile, Meteor, Cloud, Direct, Area, Beam, Teleport | `spell.json` delivery + target type |
-| Cast duration & channeling | `spell.active.cast.duration` / `channel_ticks` |
+| Cast duration, channeling & charging | `spell.active.cast.duration` / `type` (`CHANNEL` / `CHARGE`) |
 | Cast start sound & particles | `spell.active.cast.start_sound` / `particles` |
 | Release particles & sound | `spell.release.particles` / `sound` |
 | Impact handling | SpellEngine internals |
@@ -317,6 +316,12 @@ public void tick() {
 Spells whose **entire** impact list is `HEAL` are cast on the nearest wounded ally instead of the combat target.
 
 Spells that mix `HEAL` with damage or other impacts target the combat target normally — SpellEngine's relation system prevents the heal from applying to enemies.
+
+---
+
+**Charge spells**
+
+For a spell authored with `spell.active.cast.type = CHARGE`, the mob tries to hold for the full duration (full power), but releases early — at reduced, curve-scaled power — the moment a target closes within melee range, so the mob doesn't just eat a hit while charging. If forced to release before the spell's `min_release_ratio`, the cast fizzles instead of firing.
 
 ---
 

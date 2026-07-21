@@ -6,6 +6,7 @@ import net.minecraft.util.Identifier;
 import net.more_rpg_classes.effect.MRPGCEffects;
 import net.more_rpg_classes.sounds.MRPGLibSounds;
 import net.spell_engine.api.datagen.SpellBuilder;
+import net.spell_engine.api.effect.SpellEngineEffects;
 import net.spell_engine.api.entity.SpellEntityPredicates;
 import net.spell_engine.api.spell.ExternalSpellSchools;
 import net.spell_engine.api.spell.Spell;
@@ -473,8 +474,7 @@ public class MrpgLibSpells {
                         3, 0.0F, 0.1F)
                         .rotate(ParticleBatch.Rotation.LOOK)
         };
-        projectile.client_data.model = new Spell.ProjectileModel();
-        projectile.client_data.model.model_id = "more_rpg_classes:spell_projectile/small_avalanche";
+        projectile.client_data.composite_model = SpellBuilder.ProjectileModels.single("more_rpg_classes:spell_projectile/small_avalanche");
         spell.deliver.meteor.projectile = projectile;
 
         var freezingEffect = SpellBuilder.Impacts.effectAdd("more_rpg_classes:frosted", 10.0F,1,3);
@@ -666,12 +666,10 @@ public class MrpgLibSpells {
 
         spell.target.type = Spell.Target.Type.FROM_TRIGGER;
 
-        var bleedingEffect = SpellBuilder.Impacts.effectSet("more_rpg_classes:bleeding", 5.0F, 0);
+        var bleedingEffect = SpellBuilder.Impacts.effectSet(SpellEngineEffects.BLEED.id.toString(), 5.0F, 0);
         bleedingEffect.attribute = "ranged_weapon:damage";
-        bleedingEffect.target_modifiers = List.of(
-                SpellBuilderHelper.targetModifier("#minecraft:undead", TriState.DENY)
-        );
         bleedingEffect.action.status_effect.amplifier_power_multiplier = 0.2F;
+        bleedingEffect.action.status_effect.amplifier_cap = 2;
         bleedingEffect.action.status_effect.show_particles = false;
         bleedingEffect.particles = new ParticleBatch[]{
                 new ParticleBatch(
@@ -763,10 +761,9 @@ public class MrpgLibSpells {
         spell.deliver.projectile.projectile.homing_angle = 0.0F;
 
         spell.deliver.projectile.projectile.client_data = new Spell.ProjectileData.Client();
-        spell.deliver.projectile.projectile.client_data.model = new Spell.ProjectileModel();
-        spell.deliver.projectile.projectile.client_data.model.model_id = "more_rpg_classes:spell_projectile/glacial_arrow";
-        spell.deliver.projectile.projectile.client_data.model.scale = 2.0F;
-        spell.deliver.projectile.projectile.client_data.model.rotate_degrees_per_tick = 0.0F;
+        var glacialArrowModel = SpellBuilder.ProjectileModels.model("more_rpg_classes:spell_projectile/glacial_arrow", 2.0F);
+        glacialArrowModel.rotate_degrees_per_tick = 0.0F;
+        spell.deliver.projectile.projectile.client_data.composite_model = SpellBuilder.ProjectileModels.composite(glacialArrowModel);
 
         spell.release.particles = new ParticleBatch[]{
                 new ParticleBatch(
@@ -887,11 +884,9 @@ public class MrpgLibSpells {
 
         spell.target.type = Spell.Target.Type.FROM_TRIGGER;
 
-        var bleedingEffect = SpellBuilder.Impacts.effectSet("more_rpg_classes:bleeding",7,0);
-        bleedingEffect.target_modifiers = List.of(
-                SpellBuilderHelper.targetModifier("#minecraft:undead", TriState.DENY)
-        );
+        var bleedingEffect = SpellBuilder.Impacts.effectSet(SpellEngineEffects.BLEED.id.toString(),7,0);
         bleedingEffect.action.status_effect.amplifier_power_multiplier = 0.3F;
+        bleedingEffect.action.status_effect.amplifier_cap = 2;
         bleedingEffect.action.status_effect.show_particles = false;
         bleedingEffect.particles = new ParticleBatch[]{
                 new ParticleBatch(
@@ -1053,10 +1048,9 @@ public class MrpgLibSpells {
         spell.deliver.projectile.projectile.client_data.travel_particles = new ParticleBatch[]{
                 travelParticle
         };
-        spell.deliver.projectile.projectile.client_data.model = new Spell.ProjectileModel();
-        spell.deliver.projectile.projectile.client_data.model.model_id = "more_rpg_classes:spell_projectile/wither_skull";
-        spell.deliver.projectile.projectile.client_data.model.scale = 1.5F;
-        spell.deliver.projectile.projectile.client_data.model.rotate_degrees_per_tick = 0.0F;
+        var witherSkullModel = SpellBuilder.ProjectileModels.model("more_rpg_classes:spell_projectile/wither_skull", 1.5F);
+        witherSkullModel.rotate_degrees_per_tick = 0.0F;
+        spell.deliver.projectile.projectile.client_data.composite_model = SpellBuilder.ProjectileModels.composite(witherSkullModel);
 
         var witherEffect = SpellBuilder.Impacts.effectSet("wither",5,1);
         witherEffect.action.status_effect.amplifier_power_multiplier = 0.25F;
@@ -1558,10 +1552,9 @@ public class MrpgLibSpells {
         projectile.hitbox.width = 0.5F;
         projectile.hitbox.height = 0.5F;
         projectile.client_data = new Spell.ProjectileData.Client();
-        projectile.client_data.model = new Spell.ProjectileModel();
-        projectile.client_data.model.model_id = "more_rpg_classes:spell_projectile/obsidian_shards";
-        projectile.client_data.model.scale = 0.5F;
-        projectile.client_data.model.rotate_degrees_per_tick = 0.0F;
+        var obsidianShardsModel = SpellBuilder.ProjectileModels.model("more_rpg_classes:spell_projectile/obsidian_shards", 0.5F);
+        obsidianShardsModel.rotate_degrees_per_tick = 0.0F;
+        projectile.client_data.composite_model = SpellBuilder.ProjectileModels.composite(obsidianShardsModel);
         spell.deliver.projectile.projectile = projectile;
 
         var damage = SpellBuilder.Impacts.damage(0.25F, 0.5F);

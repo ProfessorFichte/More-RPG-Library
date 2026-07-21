@@ -68,10 +68,16 @@
       "projectile": {
         "homing_angle": 0.0,
         "client_data": {
-          "model": {
-            "model_id": "more_rpg_classes:spell_projectile/glacial_arrow",
-            "scale": 2.0,
-            "rotate_degrees_per_tick": 0.0
+          "composite_model": {
+            "models": [
+              {
+                "rotate_degrees_per_tick": 0.0,
+                "fx": {
+                  "model_id": "more_rpg_classes:spell_projectile/glacial_arrow",
+                  "scale": 2.0
+                }
+              }
+            ]
           }
         }
       }
