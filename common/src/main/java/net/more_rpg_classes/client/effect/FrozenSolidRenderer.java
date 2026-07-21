@@ -18,7 +18,7 @@ public class FrozenSolidRenderer implements CustomModelStatusEffect.Renderer{
     public static final Identifier modelId = Identifier.of(MRPGCMod.MOD_ID, "effect/frozen_solid");
 
     @Override
-    public void renderEffect(int amplifier, LivingEntity livingEntity, float delta, MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, int light) {
+    public void renderEffect(long appliedAtWorldTime, int amplifier, LivingEntity livingEntity, float delta, MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, int light) {
         matrixStack.push();
         matrixStack.translate(0, 0.6, 0);
         float scale = livingEntity.getScale();
