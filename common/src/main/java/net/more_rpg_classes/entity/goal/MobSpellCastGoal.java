@@ -121,6 +121,12 @@ public class MobSpellCastGoal extends Goal {
                     if (entity.getHealth() < entity.getMaxHealth() || findWoundedAlly(entity, 16.0) != null) {
                         candidates.add(id);
                     }
+                } else if (hasOffensiveImpact(spell)) {
+                    boolean hasCombatTarget = target != null && target.isAlive()
+                            && Math.sqrt(entity.squaredDistanceTo(target)) <= range;
+                    if (hasCombatTarget) {
+                        candidates.add(id);
+                    }
                 } else {
                     candidates.add(id);
                 }
@@ -590,6 +596,14 @@ public class MobSpellCastGoal extends Goal {
             if (impact.action == null || impact.action.type != Spell.Impact.Action.Type.SPAWN) return false;
         }
         return true;
+    }
+
+    private static boolean hasOffensiveImpact(Spell spell) {
+        if (spell.impacts == null) return false;
+        for (var impact : spell.impacts) {
+            if (impact.action != null && impact.action.type == Spell.Impact.Action.Type.DAMAGE) return true;
+        }
+        return false;
     }
 
     private static boolean hasHealingImpact(Spell spell) {

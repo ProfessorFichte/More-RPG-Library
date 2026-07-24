@@ -1,3 +1,6 @@
+# 2.6.1 - 1.21.1
+- Fixed Mobs using the "MobSpellCastGoal", casting CLOUD spells with no set spell range all the time, with no enemies in sight
+
 # 2.6.0 - 1.21.1
 - Update for the newest Spell Engine Version
 - Deprecate Bleeding Effect from this Mod, because Spell Engine now provides one

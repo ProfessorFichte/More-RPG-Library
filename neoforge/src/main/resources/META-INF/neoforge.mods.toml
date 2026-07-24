@@ -30,7 +30,7 @@ side = "BOTH"
 [[dependencies.more_rpg_classes]]
 modId = "spell_engine"
 type = "required"
-versionRange = "[${spell_engine_version},)"
+versionRange = "*"
 ordering = "NONE"
 side = "BOTH"
 
