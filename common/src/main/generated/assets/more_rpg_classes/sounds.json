@@ -149,6 +149,11 @@
       "more_rpg_classes:puncture_impact"
     ]
   },
+  "stealth_vanish": {
+    "sounds": [
+      "more_rpg_classes:stealth_vanish"
+    ]
+  },
   "strong_attack": {
     "sounds": [
       "more_rpg_classes:strong_attack"

@@ -1,7 +1,11 @@
+# 2.6.2 - 1.21.1
+- Add generalized Stealth Status Effect for multiple projects using the Stealth Mechanic
+- Burst Crack is now a charged Weapon Skill -> increasing Damage & Range 
+- Deprecated a lot of velocity based Custom Spell Impacts
+
 # 2.6.1 - 1.21.1
 - Fixed Mobs using the "MobSpellCastGoal", casting CLOUD spells with no set spell range all the time, with no enemies in sight
 - PR: Update/Correction es_ar.json #24 - Texaliuz
- 
 
 # 2.6.0 - 1.21.1
 - Update for the newest Spell Engine Version

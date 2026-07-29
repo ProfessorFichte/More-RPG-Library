@@ -7,12 +7,15 @@
     "EntityAttributesMixin",
     "EntityRelationsMixin",
     "LivingEntityMixin",
+    "LivingEntityStealth",
     "PersistentProjectileEntityMixin",
-    "SpellSchoolsMixin"
+    "SpellSchoolsMixin",
+    "TrackTargetGoalStealth"
   ],
   "client": [
     "DrawHeartsMixin",
-    "HudMessagesMixin"
+    "HudMessagesMixin",
+    "LivingEntityRenderStealth"
   ],
   "injectors": {
     "defaultRequire": 1

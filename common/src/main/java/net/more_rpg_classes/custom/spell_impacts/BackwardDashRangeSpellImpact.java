@@ -9,6 +9,7 @@ import net.spell_engine.api.spell.event.SpellHandlers;
 import net.spell_engine.internals.SpellHelper;
 import net.spell_power.api.SpellPower;
 
+@Deprecated
 public class BackwardDashRangeSpellImpact implements SpellHandlers.CustomImpact {
 
     @Override

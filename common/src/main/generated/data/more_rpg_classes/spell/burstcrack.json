@@ -5,7 +5,17 @@
   "learn": {},
   "active": {
     "cast": {
-      "duration": 0.5,
+      "duration": 1.5,
+      "type": "CHARGE",
+      "charge": {
+        "min_release_ratio": 0.3,
+        "bonus": {
+          "range_add": 3.0,
+          "power_modifier": {
+            "power_multiplier": 0.5
+          }
+        }
+      },
       "animation": {
         "id": "more_rpg_classes:burstcrack_cast"
       },
@@ -83,10 +93,14 @@
         }
       ],
       "action": {
-        "type": "CUSTOM",
-        "custom": {
-          "intent": "HARMFUL",
-          "handler": "more_rpg_classes:knock_up"
+        "type": "VELOCITY",
+        "velocity": {
+          "push": {
+            "x": 0.0,
+            "y": 0.1,
+            "z": 0.0
+          },
+          "power_coefficient": 0.5
         }
       }
     }

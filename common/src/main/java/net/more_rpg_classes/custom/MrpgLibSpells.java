@@ -21,6 +21,7 @@ import net.spell_engine.fx.SpellEngineSounds;
 import net.spell_engine.internals.target.SpellTarget;
 import net.spell_power.api.SpellSchools;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -104,13 +105,18 @@ public class MrpgLibSpells {
     private static Entry burstcrack() {
         var id = Identifier.of(MOD_ID, "burstcrack");
         var title = "Burstcrack";
-        var description = "Unleashes a shockwave around you, knocking up enemies and dealing physical {damage_1} & {damage_2} arcane-damage.";
+        var description = "Charge a shockwave around you, then release it - the longer the charge, the further it reaches and the harder it hits. Knocks up enemies and deals physical {damage_1} & {damage_2} arcane-damage.";
         var spell = SpellBuilder.createWeaponSpell();
         spell.school = ExternalSpellSchools.PHYSICAL_MELEE;
         spell.range = 5.5F;
 
+        var charge = SpellBuilder.Casting.charge(spell, 1.5F);
+        charge.min_release_ratio = 0.3F;
+        charge.bonus.range_add = 3.0F;
+        charge.bonus.power_modifier = new Spell.Impact.Modifier();
+        charge.bonus.power_modifier.power_multiplier = 0.5F;
+
         spell.active.cast.movement_speed = 0.25F;
-        spell.active.cast.duration = 0.5F;
         spell.active.cast.animation = PlayerAnimation.of("more_rpg_classes:burstcrack_cast");
 
         spell.release.animation = PlayerAnimation.of("more_rpg_classes:burstcrack_release");
@@ -140,17 +146,13 @@ public class MrpgLibSpells {
         };
         damage.sound = new Sound(MRPGLibSounds.FIST_ATTACK.id().toString());
 
-        var custom = new Spell.Impact();
-        custom.target_modifiers = List.of(
+        var knockUp = SpellBuilder.Impacts.velocity(Spell.Impact.Action.Velocity.Frame.ORIGIN, new Vector3f(0, 0.1F, 0));
+        knockUp.action.velocity.power_coefficient = 0.5F;
+        knockUp.target_modifiers = List.of(
                 SpellBuilderHelper.targetModifier("#c:bosses",TriState.DENY)
         );
-        custom.action = new Spell.Impact.Action();
-        custom.action.custom = new Spell.Impact.Action.Custom();
-        custom.action.type = Spell.Impact.Action.Type.CUSTOM;
-        custom.action.custom.intent = SpellTarget.Intent.HARMFUL;
-        custom.action.custom.handler = "more_rpg_classes:knock_up";
 
-        spell.impacts = List.of(damage, custom);
+        spell.impacts = List.of(damage, knockUp);
         SpellBuilder.Cost.cooldown(spell, 15);
         spell.cost.cooldown.attempt_duration = 1.5F;
 

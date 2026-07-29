@@ -90,6 +90,7 @@ public class MRPGLibSounds {
     public static final Entry FIST_ATTACK = add(new Entry("fist_attack"));
     public static final Entry PUNCTURE_CHARGE = add(new Entry("puncture_charge"));
     public static final Entry PUNCTURE_IMPACT = add(new Entry("puncture_impact"));
+    public static final Entry STEALTH_VANISH = add(new Entry("stealth_vanish"));
 
     public static void register() {
         for (var entry : entries) {
