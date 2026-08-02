@@ -15,8 +15,13 @@ import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.more_rpg_classes.custom.MoreSpellSchools;
+import net.spell_engine.api.spell.Spell;
+import net.spell_engine.api.spell.registry.SpellRegistry;
+import net.spell_engine.compat.CriticalStrikeCompat;
+import net.spell_engine.internals.SpellModifiers;
 import net.spell_engine.internals.target.EntityRelations;
 import net.spell_power.api.SpellDamageSource;
+import net.spell_power.api.SpellPower;
 import net.spell_power.api.SpellSchool;
 import net.spell_power.api.SpellSchools;
 
@@ -118,17 +123,40 @@ public class CustomMethods {
             }
     }
 
-    public static void spellSchoolDamageCalculation(SpellSchool spellSchool, float damageMultiplication, LivingEntity target, PlayerEntity attacker){
-        float spellPower = (float) spellSchool.getValue(SpellSchool.Trait.POWER,new SpellSchool.QueryArgs(attacker));
-        float critChance = (float) spellSchool.getValue(SpellSchool.Trait.CRIT_CHANCE,new SpellSchool.QueryArgs(attacker));
-        float critDamage = (float) spellSchool.getValue(SpellSchool.Trait.CRIT_DAMAGE,new SpellSchool.QueryArgs(attacker));
-        
-        float damageAmount = spellPower * damageMultiplication;
-        float random = new Random().nextFloat(1.0F);
-        if(random < critChance){
-            damageAmount = damageAmount* critDamage;
+    public static void spellSchoolDamageCalculation(Spell spell, float damageMultiplication, LivingEntity target, LivingEntity caster){
+        var school = spell.school;
+        var power = SpellPower.getSpellPower(school, caster);
+
+        var registry = SpellRegistry.from(caster.getWorld());
+        var spellId = registry.getId(spell);
+        var spellEntry = spellId != null ? registry.getEntry(spellId).orElse(null) : null;
+
+        if (spellEntry != null) {
+            var bonusPower = 1F;
+            var bonusCritChance = 0F;
+            var bonusCritDamage = 0F;
+            for (var modifier : SpellModifiers.of(caster, spellEntry, null)) {
+                if (modifier.power_modifier != null) {
+                    bonusPower += modifier.power_modifier.power_multiplier;
+                    bonusCritChance += modifier.power_modifier.critical_chance_bonus;
+                    bonusCritDamage += modifier.power_modifier.critical_damage_bonus;
+                }
+            }
+            power = new SpellPower.Result(power.school(),
+                    power.baseValue() * bonusPower,
+                    power.criticalChance() + bonusCritChance,
+                    power.criticalDamage() + bonusCritDamage);
         }
-        target.damage(SpellDamageSource.create(spellSchool,attacker),damageAmount);
+
+        var vulnerability = SpellPower.getVulnerability(target, school);
+        var result = power.random(vulnerability);
+        float damageAmount = (float) result.amount() * damageMultiplication;
+
+        var damageSource = SpellDamageSource.create(school, caster);
+        if (result.isCritical()) {
+            CriticalStrikeCompat.setCriticalStrike(damageSource, (float) power.criticalDamage());
+        }
+        target.damage(damageSource, damageAmount);
     }
 
     public static double getHighestSpellSchoolPower(LivingEntity entity) {
