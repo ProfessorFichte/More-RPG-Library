@@ -22,7 +22,8 @@ import java.util.*;
 
 public class CustomMethods {
 
-    public static void clearNegativeEffects(LivingEntity entity, boolean removeOne) {
+    public static boolean clearNegativeEffects(LivingEntity entity, boolean debuff) {
+        if (!debuff) return false;
         var effects = entity.getStatusEffects();
         var toRemove = new ArrayList<StatusEffect>();
         for (var instance : effects) {
@@ -31,15 +32,10 @@ public class CustomMethods {
                 toRemove.add(effect);
             }
         }
-        if (removeOne) {
-            if (!toRemove.isEmpty()) {
-                entity.removeStatusEffect(toRemove.get(0));
-            }
-        } else {
-            for (var effect : toRemove) {
-                entity.removeStatusEffect(effect);
-            }
+        for (var effect : toRemove) {
+            entity.removeStatusEffect(effect);
         }
+        return !toRemove.isEmpty();
     }
 
     public static void stackFreezeStacks(LivingEntity entity, int amount) {

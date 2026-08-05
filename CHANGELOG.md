@@ -1,3 +1,6 @@
+1.2.20 - 1.20.1
+- Attempt to fix "clearNegativeEffects" Method
+
 1.2.19 - 1.20.1
 - Backport Features from the 1.21.1 Mod-Version:
 - All functional attributes from 1.21.1 and they're now handled via LivingEntityMixin
