@@ -1,3 +1,8 @@
+# 2.6.3 - 1.21.1
+- Add a fix for FriendlyLightning Entities crashing, when they're spawned via commands
+- Add two new Item Groups "More Armory" & "More Arsenal"
+- All my RPG Series Plus Armory & Arsenal Content will be stored in these Item Groups
+
 # 2.6.2 - 1.21.1
 - Add generalized Stealth Status Effect for multiple projects using the Stealth Mechanic
 - Burst Crack is now a charged Weapon Skill -> increasing Damage & Range 

@@ -98,7 +98,8 @@ public class FriendlyLightningEntity extends Entity {
         }
 
 
-        float damageAmount = 4.0F + ((float) CustomMethods.getHighestDamageAttribute(owner)*0.6F);
+        float ownerDamageBonus = this.owner != null ? (float) CustomMethods.getHighestDamageAttribute(this.owner) : 0.0F;
+        float damageAmount = 4.0F + ownerDamageBonus * 0.6F;
         double radius = 3.0;
         List<Entity> entities = this.getWorld().getOtherEntities(this,
             new Box(this.getX() - radius, this.getY() - radius, this.getZ() - radius,
@@ -148,6 +149,11 @@ public class FriendlyLightningEntity extends Entity {
     public boolean shouldRender(double distance) {
         double renderDistance = 64.0 * getRenderDistanceMultiplier();
         return distance < renderDistance * renderDistance;
+    }
+
+    @Override
+    public boolean shouldSave() {
+        return false;
     }
 
     public static FriendlyLightningEntity spawn(ServerWorld world, Vec3d pos, LivingEntity owner, EntityType<FriendlyLightningEntity> entityType) {

@@ -6,12 +6,9 @@ import net.minecraft.loot.entry.LootPoolEntryType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
-import net.minecraft.entity.mob.MobEntity;
 import net.more_rpg_classes.compat.CriticalStrikeCompat;
 import net.more_rpg_classes.compat.armory_rpgs.SmithingIngredients;
-import net.more_rpg_classes.entity.ISpellCasterEntity;
 import net.more_rpg_classes.entity.MrpgEntityRelationMatcher;
-import net.spell_engine.internals.target.EntityRelations;
 import net.more_rpg_classes.config.LootConfig;
 import net.more_rpg_classes.config.TweaksConfig;
 import net.more_rpg_classes.config.WeaknessConfig;
@@ -22,6 +19,7 @@ import net.more_rpg_classes.custom.MoreSpellSchoolWeakness;
 import net.more_rpg_classes.custom.MoreSpellSchools;
 import net.more_rpg_classes.effect.MRPGCEffects;
 import net.more_rpg_classes.entity.MRPGCEntities;
+import net.more_rpg_classes.item.MRPGCItemGroups;
 import net.more_rpg_classes.item.MRPGCItems;
 import net.more_rpg_classes.sounds.MRPGLibSounds;
 import net.more_rpg_classes.util.loot.*;
@@ -94,6 +92,7 @@ public class MRPGCMod {
 	}
 	public static void registerItems() {
 		MRPGCItems.registerModItems();
+		MRPGCItemGroups.register();
 		if(FabricLoader.getInstance().isDevelopmentEnvironment() ||FabricLoader.getInstance().isModLoaded("armory_rpgs")){
 			SmithingIngredients.register();
 		}

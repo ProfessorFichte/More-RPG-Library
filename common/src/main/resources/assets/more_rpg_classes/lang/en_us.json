@@ -94,6 +94,8 @@
   "item.more_rpg_classes.upgrade_crystal.warden.applies_to": "Earth Wizard and Water Wizard armor",
   "item.more_rpg_classes.virtuoso_upgrade_crystal": "Virtuoso's Lost Crystal",
   "item.more_rpg_classes.warden_upgrade_crystal": "Warden's Lost Crystal",
+  "itemGroup.more_rpg_classes.armory": "More Armory",
+  "itemGroup.more_rpg_classes.arsenal": "More Arsenal",
   "message.more_rpg_classes.spellthief.effect_stolen": "Stole %s from %s",
   "message.more_rpg_classes.spellthief.spell_stolen": "Stole and cast %s from %s",
   "spell.more_rpg_classes.arcane_precision.description": "On dealing a critical hit with an active spell, apply a stack of Arcane Precision to the target for {effect_duration} seconds.",

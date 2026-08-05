@@ -4,7 +4,6 @@ import com.google.common.base.Suppliers;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.registry.Registries;
@@ -15,8 +14,10 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.Util;
+import net.more_rpg_classes.item.MRPGCItemGroups;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -128,9 +129,11 @@ public class SmithingIngredients {
         for (var entry : ENTRIES) {
             Registry.register(Registries.ITEM, entry.id(), entry.item().get());
         }
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.COMBAT).register((content) -> {
-            for (var entry : ENTRIES) {
-                content.add(entry.item().get());
+        ItemGroupEvents.modifyEntriesEvent(MRPGCItemGroups.ARMORY_KEY).register((content) -> {
+            var reversed = new ArrayList<>(ENTRIES);
+            Collections.reverse(reversed);
+            for (var entry : reversed) {
+                content.prepend(entry.item().get());
             }
         });
     }

@@ -60,6 +60,8 @@ public class MrpgDatagen implements DataGeneratorEntrypoint {
 
         @Override
         public void generateTranslations(RegistryWrapper.WrapperLookup wrapperLookup, TranslationBuilder translationBuilder) {
+            translationBuilder.add("itemGroup." + MOD_ID + ".arsenal", "More Arsenal");
+            translationBuilder.add("itemGroup." + MOD_ID + ".armory", "More Armory");
             SmithingIngredients.ENTRIES.forEach(entry -> {
                 translationBuilder.add(entry.id().toTranslationKey("item"), entry.translations().itemName());
                 translationBuilder.add(entry.appliesToTranslationKey(), entry.appliesToClassesTranslation());
