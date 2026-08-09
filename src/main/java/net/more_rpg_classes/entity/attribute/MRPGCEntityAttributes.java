@@ -59,6 +59,6 @@ public class MRPGCEntityAttributes {
     }
 
     private static EntityAttribute createAttribute(final String name, double base, double min, double max) {
-        return new ClampedEntityAttribute("attribute.name.generic." + MRPGCMod.MOD_ID + '.' + name, base, min, max).setTracked(true);
+        return new ClampedEntityAttribute("attribute.name." + MRPGCMod.MOD_ID + '.' + name, base, min, max).setTracked(true);
     }
 }

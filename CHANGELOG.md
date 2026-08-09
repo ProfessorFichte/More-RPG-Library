@@ -1,3 +1,6 @@
+1.2.21 - 1.20.1
+- fix wrong attribute translation key
+
 1.2.20 - 1.20.1
 - Attempt to fix "clearNegativeEffects" Method
 
