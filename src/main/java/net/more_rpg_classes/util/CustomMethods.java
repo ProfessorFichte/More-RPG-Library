@@ -8,6 +8,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
@@ -22,6 +23,7 @@ import java.util.*;
 
 public class CustomMethods {
 
+    @Deprecated
     public static boolean clearNegativeEffects(LivingEntity entity, boolean debuff) {
         if (!debuff) return false;
         var effects = entity.getStatusEffects();
@@ -36,6 +38,21 @@ public class CustomMethods {
             entity.removeStatusEffect(effect);
         }
         return !toRemove.isEmpty();
+    }
+
+    public static void removeEffects(LivingEntity entity, boolean removeAll, boolean removeBeneficial) {
+        var effects = entity.getStatusEffects();
+        var toRemove = new ArrayList<StatusEffect>();
+        for (var instance : effects) {
+            StatusEffect effect = instance.getEffectType();
+            if (removeBeneficial ? effect.isBeneficial() : (!effect.isBeneficial() && effect != StatusEffects.BAD_OMEN)) {
+                toRemove.add(effect);
+                if (!removeAll) break;
+            }
+        }
+        for (var effect : toRemove) {
+            entity.removeStatusEffect(effect);
+        }
     }
 
     public static void stackFreezeStacks(LivingEntity entity, int amount) {

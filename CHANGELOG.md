@@ -1,3 +1,7 @@
+1.2.22 - 1.20.1
+- Deprecate "clearNegativeEffects" Method
+- add new improved "removeEffects" method to finally fix the issues
+
 1.2.21 - 1.20.1
 - fix wrong attribute translation key
 
