@@ -1,3 +1,8 @@
+# 2.6.4 - 1.21.1
+- Added some new player animations
+- added a ControlEnemyStatusEffect Class. Affected HostileMobs attack other Hostile Mobs.
+- Affected Players change their EntityRelations (Hitting Allies with Damaging Spells for example)
+
 # 2.6.3 - 1.21.1
 - Add a fix for FriendlyLightning Entities crashing, when they're spawned via commands
 - Add two new Item Groups "More Armory" & "More Arsenal"

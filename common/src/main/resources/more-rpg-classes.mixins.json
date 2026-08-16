@@ -4,6 +4,7 @@
   "package": "net.more_rpg_classes.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "ControlOwnerMixin",
     "EntityAttributesMixin",
     "EntityRelationsMixin",
     "LivingEntityMixin",

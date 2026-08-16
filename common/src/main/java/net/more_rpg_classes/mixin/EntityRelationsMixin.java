@@ -3,6 +3,7 @@ package net.more_rpg_classes.mixin;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.HostileEntity;
+import net.more_rpg_classes.effect.ControlEnemyStatusEffect;
 import net.more_rpg_classes.entity.ISpellCasterEntity;
 import net.spell_engine.internals.target.EntityRelations;
 import net.spell_engine.internals.target.SpellTarget;
@@ -33,6 +34,16 @@ public class EntityRelationsMixin {
             } else {
                 cir.setReturnValue(false);
             }
+        }
+    }
+
+    @Inject(at = @At("RETURN"), method = "actionAllowed", cancellable = true)
+    private static void actionAllowed$mrpgControlledCaster(SpellTarget.FocusMode focusMode, SpellTarget.Intent intent,
+                                                           LivingEntity attacker, Entity target,
+                                                           CallbackInfoReturnable<Boolean> cir) {
+        if (attacker == target) return;
+        if (ControlEnemyStatusEffect.isControlled(attacker)) {
+            cir.setReturnValue(true);
         }
     }
 }
