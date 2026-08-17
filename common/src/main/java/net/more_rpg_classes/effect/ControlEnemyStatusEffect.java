@@ -103,7 +103,7 @@ public abstract class ControlEnemyStatusEffect extends StatusEffect {
         if (!needsTarget) return;
         int interval = retargetInterval();
         if (interval > 1 && mob.age % interval != 0) return;
-        LivingEntity nearest = findNearestTarget(mob);
+        LivingEntity nearest = findNearestTarget(mob, owner);
         if (nearest != null) {
             mob.setTarget(nearest);
         } else if (followsOwner() && owner != null) {
@@ -125,7 +125,8 @@ public abstract class ControlEnemyStatusEffect extends StatusEffect {
     }
 
     private boolean isOwnerCombatTarget(MobEntity mob, LivingEntity owner, LivingEntity candidate) {
-        return candidate != null && candidate.isAlive() && candidate != owner && candidate != mob;
+        if (candidate == null || !candidate.isAlive() || candidate == owner || candidate == mob) return false;
+        return !isControlledBySameOwner(owner, candidate);
     }
 
     private void followOwner(MobEntity mob, LivingEntity owner) {
@@ -135,13 +136,14 @@ public abstract class ControlEnemyStatusEffect extends StatusEffect {
         }
     }
 
-    private LivingEntity findNearestTarget(MobEntity mob) {
+    private LivingEntity findNearestTarget(MobEntity mob, LivingEntity owner) {
         var box = mob.getBoundingBox().expand(controlRange());
         LivingEntity nearest = null;
         double nearestDistance = Double.MAX_VALUE;
         for (Entity other : mob.getEntityWorld().getOtherEntities(mob, box, EntityPredicates.VALID_LIVING_ENTITY)) {
             if (!(other instanceof LivingEntity living)) continue;
             if (!isValidTarget(mob, living)) continue;
+            if (isControlledBySameOwner(owner, living)) continue;
             double distance = mob.squaredDistanceTo(living);
             if (distance < nearestDistance) {
                 nearestDistance = distance;
@@ -149,6 +151,13 @@ public abstract class ControlEnemyStatusEffect extends StatusEffect {
             }
         }
         return nearest;
+    }
+
+    // Prevents two entities controlled by the same owner (e.g. two charmed mobs, or a charmed mob and its caster's other minion) from targeting each other.
+    private boolean isControlledBySameOwner(LivingEntity owner, Entity candidate) {
+        if (owner == null || !(candidate instanceof ControlledOwnerAccess access)) return false;
+        UUID candidateOwnerId = access.mrpg$getControlOwner();
+        return candidateOwnerId != null && candidateOwnerId.equals(owner.getUuid());
     }
 
     private LivingEntity resolveOwner(LivingEntity entity) {
