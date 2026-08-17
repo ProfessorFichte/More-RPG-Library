@@ -1,3 +1,6 @@
+# 2.6.5 - 1.21.1
+- Fix multiple Controlled Enemies fighting each other (same owner)
+
 # 2.6.4 - 1.21.1
 - Added some new player animations
 - added a ControlEnemyStatusEffect Class. Affected HostileMobs attack other Hostile Mobs.
