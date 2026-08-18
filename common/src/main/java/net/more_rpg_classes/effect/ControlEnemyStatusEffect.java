@@ -9,6 +9,8 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.server.world.ServerWorld;
 import net.more_rpg_classes.entity.ControlledOwnerAccess;
+import net.spell_engine.internals.target.EntityRelation;
+import net.spell_engine.internals.target.EntityRelations;
 
 import java.util.UUID;
 
@@ -126,7 +128,8 @@ public abstract class ControlEnemyStatusEffect extends StatusEffect {
 
     private boolean isOwnerCombatTarget(MobEntity mob, LivingEntity owner, LivingEntity candidate) {
         if (candidate == null || !candidate.isAlive() || candidate == owner || candidate == mob) return false;
-        return !isControlledBySameOwner(owner, candidate);
+        if (isControlledBySameOwner(owner, candidate)) return false;
+        return !isFriendlyToOwner(owner, candidate);
     }
 
     private void followOwner(MobEntity mob, LivingEntity owner) {
@@ -144,6 +147,7 @@ public abstract class ControlEnemyStatusEffect extends StatusEffect {
             if (!(other instanceof LivingEntity living)) continue;
             if (!isValidTarget(mob, living)) continue;
             if (isControlledBySameOwner(owner, living)) continue;
+            if (isFriendlyToOwner(owner, living)) continue;
             double distance = mob.squaredDistanceTo(living);
             if (distance < nearestDistance) {
                 nearestDistance = distance;
@@ -158,6 +162,15 @@ public abstract class ControlEnemyStatusEffect extends StatusEffect {
         if (owner == null || !(candidate instanceof ControlledOwnerAccess access)) return false;
         UUID candidateOwnerId = access.mrpg$getControlOwner();
         return candidateOwnerId != null && candidateOwnerId.equals(owner.getUuid());
+    }
+
+    // Stops a charmed/controlled mob from picking the owner or the owner's allies (teammates, other tamed pets) as a target.
+    private boolean isFriendlyToOwner(LivingEntity owner, Entity candidate) {
+        if (owner == null) return false;
+        if (candidate == owner) return true;
+        if (!(candidate instanceof LivingEntity livingCandidate)) return false;
+        var relation = EntityRelations.getRelation(owner, livingCandidate);
+        return relation == EntityRelation.ALLY || relation == EntityRelation.FRIENDLY;
     }
 
     private LivingEntity resolveOwner(LivingEntity entity) {

@@ -1,5 +1,6 @@
 # 2.6.5 - 1.21.1
 - Fix multiple Controlled Enemies fighting each other (same owner)
+- Heavily Improve Entity Relations for "Controlled" Entities
 
 # 2.6.4 - 1.21.1
 - Added some new player animations
