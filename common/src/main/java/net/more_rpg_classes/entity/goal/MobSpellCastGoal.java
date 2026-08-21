@@ -15,9 +15,13 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.event.GameEvent;
 import net.spell_engine.api.spell.Spell;
 import net.spell_engine.api.spell.registry.SpellRegistry;
-import net.spell_engine.api.spell.fx.ParticleBatch;
 import net.spell_engine.fx.ParticleHelper;
-import net.spell_engine.internals.SpellHelper;
+import net.spell_engine.fx.ReleaseFx;
+import net.spell_engine.internals.SpellExecution;
+import net.spell_engine.internals.delivery.CloudPlacer;
+import net.spell_engine.internals.delivery.ProjectileLauncher;
+import net.spell_engine.internals.impact.SpellImpacts;
+import net.spell_engine.internals.target.SpellIntents;
 import net.spell_engine.internals.SpellModifiers;
 import net.spell_engine.utils.SoundHelper;
 
@@ -229,7 +233,7 @@ public class MobSpellCastGoal extends Goal {
         }
 
         isChargeCast = channelReleases == 0 && spell.active != null && spell.active.cast != null
-                && spell.active.cast.resolvedType() == Spell.Active.Cast.Type.CHARGE
+                && spell.active.cast.type == Spell.Active.Cast.Type.CHARGE
                 && spell.active.cast.charge != null;
         chargeReleased = false;
         chargeMinReleaseRatio = isChargeCast ? spell.active.cast.charge.min_release_ratio : 0.2F;
@@ -370,27 +374,25 @@ public class MobSpellCastGoal extends Goal {
                 case PROJECTILE -> {
                     LivingEntity target = entity.getTarget();
                     if (target == null) return;
-                    SpellHelper.ImpactContext ctx = new SpellHelper.ImpactContext()
-                            .power(power).position(entity.getEyePos()).target(SpellHelper.focusMode(spell))
+                    SpellExecution.ImpactContext ctx = new SpellExecution.ImpactContext()
+                            .power(power).position(entity.getEyePos()).target(SpellIntents.focusMode(spell))
                             .chargeModifier(finalChargeModifier).charge(finalChargeOutput);
-                    ParticleHelper.sendBatches(entity, spell.release.particles);
-                    SoundHelper.playSound(entity.getWorld(), entity, spell.release.sound);
-                    SpellHelper.shootProjectile(entity.getWorld(), entity, target, entry, ctx, channelIndex);
+                    ReleaseFx.send(entity.getWorld(), entity, entry, chargeRatio);
+                    ProjectileLauncher.shootProjectile(entity.getWorld(), entity, target, entry, ctx, channelIndex);
                 }
                 case METEOR -> {
                     boolean selfTarget = spell.target == null || spell.target.type == Spell.Target.Type.CASTER;
                     LivingEntity impactTarget = selfTarget ? entity : entity.getTarget();
                     if (!selfTarget && impactTarget == null) return;
                     var pos = impactTarget.getPos();
-                    SpellHelper.ImpactContext ctx = new SpellHelper.ImpactContext()
+                    SpellExecution.ImpactContext ctx = new SpellExecution.ImpactContext()
                             .power(power).position(pos).target(SpellTarget.FocusMode.AREA)
                             .chargeModifier(finalChargeModifier).charge(finalChargeOutput);
-                    ParticleHelper.sendBatches(entity, spell.release.particles);
-                    SoundHelper.playSound(entity.getWorld(), entity, spell.release.sound);
+                    ReleaseFx.send(entity.getWorld(), entity, entry, chargeRatio);
                     try {
-                        SpellHelper.fallProjectile(entity.getWorld(), entity, impactTarget, pos, entry, ctx);
+                        ProjectileLauncher.fallProjectile(entity.getWorld(), entity, impactTarget, pos, entry, ctx);
                     } catch (Exception e) {
-                        SpellHelper.performImpacts(entity.getWorld(), entity, impactTarget, entity, entry, spell.impacts, ctx, false, null);
+                        SpellImpacts.performImpacts(entity.getWorld(), entity, impactTarget, entity, entry, spell.impacts, ctx, false, null);
                     }
                 }
                 case CLOUD -> {
@@ -398,39 +400,30 @@ public class MobSpellCastGoal extends Goal {
                     LivingEntity impactTarget = selfTarget ? entity : entity.getTarget();
                     if (!selfTarget && impactTarget == null) return;
                     var pos = impactTarget.getPos();
-                    SpellHelper.ImpactContext ctx = new SpellHelper.ImpactContext()
+                    SpellExecution.ImpactContext ctx = new SpellExecution.ImpactContext()
                             .power(power).position(entity.getEyePos()).target(SpellTarget.FocusMode.AREA)
                             .chargeModifier(finalChargeModifier).charge(finalChargeOutput);
-                    ParticleHelper.sendBatches(entity, spell.release.particles);
-                    SoundHelper.playSound(entity.getWorld(), entity, spell.release.sound);
-                    SpellHelper.placeCloud(entity.getWorld(), entity, impactTarget, pos, entry, ctx);
+                    ReleaseFx.send(entity.getWorld(), entity, entry, chargeRatio);
+                    CloudPlacer.placeCloud(entity.getWorld(), entity, impactTarget, pos, entry, ctx);
                 }
                 case AREA -> {
-                    SpellHelper.ImpactContext ctx = new SpellHelper.ImpactContext().power(power).position(entity.getPos()).target(SpellTarget.FocusMode.AREA)
+                    SpellExecution.ImpactContext ctx = new SpellExecution.ImpactContext().power(power).position(entity.getPos()).target(SpellTarget.FocusMode.AREA)
                             .chargeModifier(finalChargeModifier).charge(finalChargeOutput);
-                    ParticleHelper.sendBatches(entity, spell.release.particles);
-                    SoundHelper.playSound(entity.getWorld(), entity, spell.release.sound);
-                    if (spell.release.particles_scaled_with_ranged != null) {
-                        ParticleBatch[] scaledParticles = new ParticleBatch[spell.release.particles_scaled_with_ranged.length];
-                        for (int i = 0; i < spell.release.particles_scaled_with_ranged.length; i++) {
-                            scaledParticles[i] = spell.release.particles_scaled_with_ranged[i].copy().scale(spell.range);
-                        }
-                        ParticleHelper.sendBatches(entity, scaledParticles);
-                    }
+                    ReleaseFx.send(entity.getWorld(), entity, entry, chargeRatio);
                     if (hasSpawnImpact(spell)) {
                         LivingEntity spawnTarget = entity.getTarget();
                         if (spawnTarget != null) {
-                            SpellHelper.ImpactContext selfCtx = new SpellHelper.ImpactContext()
+                            SpellExecution.ImpactContext selfCtx = new SpellExecution.ImpactContext()
                                     .power(power).position(spawnTarget.getPos()).target(SpellTarget.FocusMode.DIRECT)
                                     .chargeModifier(finalChargeModifier).charge(finalChargeOutput);
-                            SpellHelper.performImpacts(entity.getWorld(), entity, entity, entity, entry, spell.impacts, selfCtx, false, Spell.Impact.Action.Type.SPAWN);
+                            SpellImpacts.performImpacts(entity.getWorld(), entity, entity, entity, entry, spell.impacts, selfCtx, false, Spell.Impact.Action.Type.SPAWN);
                         }
                     }
                     if (spell.target.area != null && spell.target.area.include_caster) {
-                        SpellHelper.performImpacts(entity.getWorld(), entity, entity, entity, entry, spell.impacts, ctx, false, null);
+                        SpellImpacts.performImpacts(entity.getWorld(), entity, entity, entity, entry, spell.impacts, ctx, false, null);
                     }
                     for (Entity t : TargetHelper.targetsFromArea(entity, spell.range, spell.target.area, e -> e != entity)) {
-                        SpellHelper.performImpacts(entity.getWorld(), entity, t, entity, entry, spell.impacts, ctx, false, null);
+                        SpellImpacts.performImpacts(entity.getWorld(), entity, t, entity, entry, spell.impacts, ctx, false, null);
                     }
                 }
                 case BEAM -> {
@@ -439,18 +432,17 @@ public class MobSpellCastGoal extends Goal {
                     if (spell.active != null && spell.active.cast != null) {
                         ParticleHelper.sendBatches(entity, spell.active.cast.particles);
                     }
-                    ParticleHelper.sendBatches(entity, spell.release.particles);
-                    SoundHelper.playSound(entity.getWorld(), entity, spell.release.sound);
-                    SpellHelper.ImpactContext ctx = new SpellHelper.ImpactContext()
+                    ReleaseFx.send(entity.getWorld(), entity, entry, chargeRatio);
+                    SpellExecution.ImpactContext ctx = new SpellExecution.ImpactContext()
                             .power(power).position(entity.getEyePos()).target(SpellTarget.FocusMode.AREA)
                             .chargeModifier(finalChargeModifier).charge(finalChargeOutput);
                     if (hasSpawnImpact(spell)) {
-                        SpellHelper.ImpactContext selfCtx = new SpellHelper.ImpactContext()
+                        SpellExecution.ImpactContext selfCtx = new SpellExecution.ImpactContext()
                                 .power(power).position(target.getPos()).target(SpellTarget.FocusMode.DIRECT)
                                 .chargeModifier(finalChargeModifier).charge(finalChargeOutput);
-                        SpellHelper.performImpacts(entity.getWorld(), entity, entity, entity, entry, spell.impacts, selfCtx, false, Spell.Impact.Action.Type.SPAWN);
+                        SpellImpacts.performImpacts(entity.getWorld(), entity, entity, entity, entry, spell.impacts, selfCtx, false, Spell.Impact.Action.Type.SPAWN);
                     }
-                    SpellHelper.performImpacts(entity.getWorld(), entity, target, entity, entry, spell.impacts, ctx, false, null);
+                    SpellImpacts.performImpacts(entity.getWorld(), entity, target, entity, entry, spell.impacts, ctx, false, null);
                     double beamRange = spell.range > 0 ? spell.range : 32.0;
                     Vec3d beamFrom = entity.getEyePos();
                     Vec3d beamDir = target.getEyePos().subtract(beamFrom).normalize();
@@ -464,7 +456,7 @@ public class MobSpellCastGoal extends Goal {
                         if (projection < 0 || projection > beamRange) continue;
                         double lateralDistSq = toCandidate.subtract(beamDir.multiply(projection)).lengthSquared();
                         if (lateralDistSq > 2.0 * 2.0) continue;
-                        SpellHelper.performImpacts(entity.getWorld(), entity, candidate, entity, entry, spell.impacts, ctx, false, null);
+                        SpellImpacts.performImpacts(entity.getWorld(), entity, candidate, entity, entry, spell.impacts, ctx, false, null);
                     }
                 }
                 case DIRECT -> {
@@ -474,23 +466,21 @@ public class MobSpellCastGoal extends Goal {
                     if (spell.active != null && spell.active.cast != null) {
                         ParticleHelper.sendBatches(entity, spell.active.cast.particles);
                     }
-                    ParticleHelper.sendBatches(entity, spell.release.particles);
-                    SoundHelper.playSound(entity.getWorld(), entity, spell.release.sound);
-                    SpellHelper.ImpactContext ctx = new SpellHelper.ImpactContext()
-                            .power(power).position(entity.getEyePos()).target(SpellHelper.focusMode(spell))
+                    ReleaseFx.send(entity.getWorld(), entity, entry, chargeRatio);
+                    SpellExecution.ImpactContext ctx = new SpellExecution.ImpactContext()
+                            .power(power).position(entity.getEyePos()).target(SpellIntents.focusMode(spell))
                             .chargeModifier(finalChargeModifier).charge(finalChargeOutput);
                     if (hasSpawnImpact(spell)) {
-                        SpellHelper.ImpactContext selfCtx = new SpellHelper.ImpactContext()
+                        SpellExecution.ImpactContext selfCtx = new SpellExecution.ImpactContext()
                                 .power(power).position(effectiveTarget.getPos()).target(SpellTarget.FocusMode.DIRECT)
                                 .chargeModifier(finalChargeModifier).charge(finalChargeOutput);
-                        SpellHelper.performImpacts(entity.getWorld(), entity, entity, entity, entry, spell.impacts, selfCtx, false, Spell.Impact.Action.Type.SPAWN);
+                        SpellImpacts.performImpacts(entity.getWorld(), entity, entity, entity, entry, spell.impacts, selfCtx, false, Spell.Impact.Action.Type.SPAWN);
                     }
-                    SpellHelper.performImpacts(entity.getWorld(), entity, effectiveTarget, entity, entry, spell.impacts, ctx, false, null);
+                    SpellImpacts.performImpacts(entity.getWorld(), entity, effectiveTarget, entity, entry, spell.impacts, ctx, false, null);
                 }
                 case SELF -> {
-                    ParticleHelper.sendBatches(entity, spell.release.particles);
-                    SoundHelper.playSound(entity.getWorld(), entity, spell.release.sound);
-                    SpellHelper.ImpactContext ctx = new SpellHelper.ImpactContext()
+                    ReleaseFx.send(entity.getWorld(), entity, entry, chargeRatio);
+                    SpellExecution.ImpactContext ctx = new SpellExecution.ImpactContext()
                             .power(power).position(entity.getPos()).target(SpellTarget.FocusMode.AREA)
                             .chargeModifier(finalChargeModifier).charge(finalChargeOutput);
                     if (spell.deliver != null && spell.deliver.type == Spell.Delivery.Type.STASH_EFFECT
@@ -508,18 +498,18 @@ public class MobSpellCastGoal extends Goal {
                     if (hasSpawnImpact(spell)) {
                         LivingEntity combatTarget = entity.getTarget();
                         Vec3d spawnPos = combatTarget != null ? combatTarget.getPos() : entity.getPos();
-                        SpellHelper.ImpactContext spawnCtx = new SpellHelper.ImpactContext()
+                        SpellExecution.ImpactContext spawnCtx = new SpellExecution.ImpactContext()
                                 .power(power).position(spawnPos).target(SpellTarget.FocusMode.DIRECT)
                                 .chargeModifier(finalChargeModifier).charge(finalChargeOutput);
-                        SpellHelper.performImpacts(entity.getWorld(), entity, entity, entity, entry, spell.impacts, spawnCtx, false, Spell.Impact.Action.Type.SPAWN);
+                        SpellImpacts.performImpacts(entity.getWorld(), entity, entity, entity, entry, spell.impacts, spawnCtx, false, Spell.Impact.Action.Type.SPAWN);
                     }
                     if (!onlyHasSpawnImpacts(spell)) {
-                        SpellHelper.performImpacts(entity.getWorld(), entity, entity, entity, entry, spell.impacts, ctx, false, null);
+                        SpellImpacts.performImpacts(entity.getWorld(), entity, entity, entity, entry, spell.impacts, ctx, false, null);
                     }
                 }
                 case TELEPORT -> {
                     LivingEntity target = entity.getTarget();
-                    if (spell.release != null) ParticleHelper.sendBatches(entity, spell.release.particles);
+                    if (spell.release != null) ReleaseFx.send(entity.getWorld(), entity, entry, chargeRatio);
                     for (Spell.Impact impact : spell.impacts) {
                         if (impact.action == null || impact.action.type != Spell.Impact.Action.Type.TELEPORT) continue;
                         var data = impact.action.teleport;
