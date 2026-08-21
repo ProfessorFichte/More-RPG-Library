@@ -25,24 +25,34 @@
           "knockback": 0.0
         }
       },
-      "particles": [
-        {
-          "particle_id": "spell_engine:magic_arcane_impact_burst",
-          "origin": "CENTER",
-          "shape": "SPHERE",
-          "count": 30.0,
-          "min_speed": 0.2,
-          "max_speed": 0.7
-        },
-        {
-          "particle_id": "more_rpg_classes:dragon_claw",
-          "origin": "CENTER",
-          "shape": "SPHERE",
-          "count": 2.0,
-          "min_speed": 0.2,
-          "max_speed": 0.5
-        }
-      ]
+      "visuals": {
+        "particles": [
+          {
+            "id": "spell_engine:magic_arcane",
+            "appearance": {
+              "motion": "BURST"
+            },
+            "batch": {
+              "count": 30.0,
+              "shape": "SPHERE",
+              "anchor": "ENTITY",
+              "min_speed": 0.2,
+              "max_speed": 0.7
+            }
+          },
+          {
+            "id": "more_rpg_classes:dragon_claw",
+            "appearance": {},
+            "batch": {
+              "count": 2.0,
+              "shape": "SPHERE",
+              "anchor": "ENTITY",
+              "min_speed": 0.2,
+              "max_speed": 0.5
+            }
+          }
+        ]
+      }
     },
     {
       "attribute_from_target": true,
@@ -53,17 +63,26 @@
           "spell_power_coefficient": 0.025
         }
       },
-      "particles": [
-        {
-          "particle_id": "spell_engine:magic_arcane_ascend",
-          "origin": "FEET",
-          "shape": "WIDE_PIPE",
-          "count": 1.0,
-          "min_speed": 0.05,
-          "max_speed": 0.1,
-          "color_rgba": 4284940287
-        }
-      ]
+      "visuals": {
+        "particles": [
+          {
+            "id": "spell_engine:magic_arcane",
+            "appearance": {
+              "color": 4284940287,
+              "motion": "ASCEND"
+            },
+            "batch": {
+              "count": 1.0,
+              "shape": "PIPE",
+              "anchor": "ENTITY",
+              "vertical_origin": 0.1,
+              "min_speed": 0.05,
+              "max_speed": 0.1,
+              "width_factor": 2.0
+            }
+          }
+        ]
+      }
     }
   ],
   "cost": {

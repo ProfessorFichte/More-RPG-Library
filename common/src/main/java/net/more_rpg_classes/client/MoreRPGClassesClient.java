@@ -68,16 +68,17 @@ public class MoreRPGClassesClient{
     }
 
     private static void registerEffectParticles() {
+        // V1 chained .extent() onto the batch object itself; in 1.10 extent is a Batch
+        // field on the returned ParticleGroup.
+        var sirensTearParticles = BuffParticleSpawner.defaultBatch(
+                SpellEngineParticles.magic_spark.id().toString(),
+                4,
+                SpellBuilderHelper.BRIGHT_CYAN.toRGBA());
+        sirensTearParticles.batch.extent(0.5F);
         CustomParticleStatusEffect.register(
                 MRPGCEffects.SIRENS_TEAR.effect,
-                new BuffParticleSpawner(
-                        BuffParticleSpawner.defaultBatch(
-                                SpellEngineParticles.MagicParticles.get(
-                                        SpellEngineParticles.MagicParticles.Shape.SPARK,
-                                        SpellEngineParticles.MagicParticles.Motion.FLOAT).id().toString(),
-                                4,
-                                SpellBuilderHelper.BRIGHT_CYAN.toRGBA()).extent(0.5F)
-                ).invertFrequency().withFrequency(20).scaleWithAmplifier(false)
+                new BuffParticleSpawner(sirensTearParticles)
+                        .invertFrequency().withFrequency(20).scaleWithAmplifier(false)
         );
     }
 }

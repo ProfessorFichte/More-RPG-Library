@@ -20,11 +20,11 @@ public class SoakedEffect extends SpellVulnerabilityStatusEffect {
 
         if(pLivingEntity.isOnFire()){
             if(world.isClient){
-                world.addParticle(MoreParticles.WATER_MIST,1,1,1,2,2,2);
+                world.addParticle(MoreParticles.WATER_MIST.type(),1,1,1,2,2,2);
                 world.addParticle(ParticleTypes.LARGE_SMOKE,1,1,1,2,2,2);
             }else{
                 if (world instanceof ServerWorld serverWorld) {
-                    serverWorld.spawnParticles(MoreParticles.WATER_MIST,1,1,1,4,2,2,2,2);
+                    serverWorld.spawnParticles(MoreParticles.WATER_MIST.type(),1,1,1,4,2,2,2,2);
                     serverWorld.spawnParticles(ParticleTypes.LARGE_SMOKE,1,1,1,4,2,2,2,2);
                 }
             }
@@ -34,11 +34,11 @@ public class SoakedEffect extends SpellVulnerabilityStatusEffect {
         }
         if(pLivingEntity.isInLava()){
             if(world.isClient){
-                pLivingEntity.getEntityWorld().addParticle(MoreParticles.WATER_MIST,1,1,1,2,2,2);
+                pLivingEntity.getEntityWorld().addParticle(MoreParticles.WATER_MIST.type(),1,1,1,2,2,2);
                 pLivingEntity.getEntityWorld().addParticle(ParticleTypes.LARGE_SMOKE,1,1,1,2,2,2);
             }else{
                 if (world instanceof ServerWorld serverWorld) {
-                    serverWorld.spawnParticles(MoreParticles.WATER_MIST,1,1,1,4,2,2,2,2);
+                    serverWorld.spawnParticles(MoreParticles.WATER_MIST.type(),1,1,1,4,2,2,2,2);
                     serverWorld.spawnParticles(ParticleTypes.LARGE_SMOKE,1,1,1,4,2,2,2,2);
                 }
             }

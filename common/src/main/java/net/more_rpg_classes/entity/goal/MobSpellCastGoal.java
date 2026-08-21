@@ -535,10 +535,10 @@ public class MobSpellCastGoal extends Goal {
                         if (destination != null) {
                             Vec3d ground = TargetHelper.findSolidBlockBelow(entity, destination, entity.getWorld(), -1.5F);
                             if (ground != null) destination = ground;
-                            if (data.depart_particles != null) ParticleHelper.sendBatches(entity, data.depart_particles);
+                            if (data.depart != null) ParticleHelper.sendBatches(entity, data.depart.particles);
                             entity.getWorld().emitGameEvent(GameEvent.TELEPORT, entity.getPos(), GameEvent.Emitter.of(entity));
                             entity.teleport(destination.x, destination.y, destination.z, false);
-                            if (data.arrive_particles != null) ParticleHelper.sendBatches(entity, data.arrive_particles);
+                            if (data.arrive != null) ParticleHelper.sendBatches(entity, data.arrive.particles);
                         }
                     }
                 }

@@ -31,17 +31,22 @@
           "apply_mode": "ADD"
         }
       },
-      "particles": [
-        {
-          "particle_id": "more_rpg_classes:gust",
-          "origin": "CENTER",
-          "shape": "SPHERE",
-          "count": 4.0,
-          "min_speed": 0.5,
-          "max_speed": 0.8,
-          "extent": 1.0
-        }
-      ]
+      "visuals": {
+        "particles": [
+          {
+            "id": "more_rpg_classes:small_gust",
+            "appearance": {},
+            "batch": {
+              "count": 4.0,
+              "shape": "SPHERE",
+              "anchor": "ENTITY",
+              "min_speed": 0.5,
+              "max_speed": 0.8,
+              "extent": 1.0
+            }
+          }
+        ]
+      }
     }
   ],
   "cost": {

@@ -38,12 +38,16 @@
           "light_level": 6,
           "particles": [
             {
-              "particle_id": "more_rpg_classes:freezing_snowflake",
-              "origin": "FEET",
-              "shape": "PILLAR",
-              "count": 10.0,
-              "min_speed": 0.1,
-              "max_speed": 0.12
+              "id": "more_rpg_classes:freezing_snowflake",
+              "appearance": {},
+              "batch": {
+                "count": 10.0,
+                "shape": "PILLAR",
+                "anchor": "ENTITY",
+                "vertical_origin": 0.1,
+                "min_speed": 0.1,
+                "max_speed": 0.12
+              }
             }
           ],
           "particle_spawn_interval": 12
@@ -78,16 +82,21 @@
           "apply_mode": "ADD"
         }
       },
-      "particles": [
-        {
-          "particle_id": "more_rpg_classes:freezing_snowflake",
-          "origin": "CENTER",
-          "shape": "SPHERE",
-          "count": 25.0,
-          "min_speed": 0.2,
-          "max_speed": 0.25
-        }
-      ]
+      "visuals": {
+        "particles": [
+          {
+            "id": "more_rpg_classes:freezing_snowflake",
+            "appearance": {},
+            "batch": {
+              "count": 25.0,
+              "shape": "SPHERE",
+              "anchor": "ENTITY",
+              "min_speed": 0.2,
+              "max_speed": 0.25
+            }
+          }
+        ]
+      }
     }
   ],
   "cost": {
