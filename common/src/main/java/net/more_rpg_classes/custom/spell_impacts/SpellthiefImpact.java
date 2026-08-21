@@ -22,10 +22,15 @@ import net.more_rpg_classes.network.MobBeamPacket;
 import net.spell_engine.api.spell.ExternalSpellSchools;
 import net.spell_engine.api.spell.Spell;
 import net.spell_engine.api.spell.event.SpellHandlers;
-import net.spell_engine.api.spell.fx.ParticleBatch;
+import net.spell_engine.api.spell.fx.ParticleGroup;
 import net.spell_engine.api.spell.registry.SpellRegistry;
 import net.spell_engine.fx.ParticleHelper;
+import net.spell_engine.fx.ReleaseFx;
 import net.spell_engine.internals.SpellExecution;
+import net.spell_engine.internals.delivery.CloudPlacer;
+import net.spell_engine.internals.delivery.ProjectileLauncher;
+import net.spell_engine.internals.impact.SpellImpacts;
+import net.spell_engine.internals.target.SpellIntents;
 import net.spell_engine.internals.container.SpellContainerSource;
 import net.spell_engine.internals.target.SpellTarget;
 import net.spell_engine.utils.SoundHelper;
@@ -152,21 +157,16 @@ public class SpellthiefImpact implements SpellHandlers.CustomImpact {
         DeliveryType delivery = deriveDelivery(stolenSpell);
         boolean hasSpawn = hasSpawnImpact(stolenSpell);
         boolean harmfulCustomSpawn = delivery == DeliveryType.DIRECT && hasHarmfulCustomImpact(stolenSpell);
-        ParticleBatch[] castParticles = (stolenSpell.active != null && stolenSpell.active.cast != null
-                && stolenSpell.active.cast.particles != null && stolenSpell.active.cast.particles.length > 0)
+        // Continuous cast FX stayed a plain list in 1.10; only the one-shot moments bundled.
+        java.util.List<ParticleGroup> castParticles = (stolenSpell.active != null && stolenSpell.active.cast != null
+                && !stolenSpell.active.cast.particles.isEmpty())
                 ? stolenSpell.active.cast.particles : null;
 
         if (stolenSpell.release != null) {
-            ParticleHelper.sendBatches(caster, stolenSpell.release.particles);
-            SoundHelper.playSound(caster.getWorld(), caster, stolenSpell.release.sound);
-            if (stolenSpell.release.particles_scaled_with_ranged != null) {
-                ParticleBatch[] batches = stolenSpell.release.particles_scaled_with_ranged;
-                ParticleBatch[] scaled = new ParticleBatch[batches.length];
-                for (int i = 0; i < batches.length; i++) {
-                    scaled[i] = batches[i].copy().scale(stolenSpell.range);
-                }
-                ParticleHelper.sendBatches(caster, scaled);
-            }
+            // Covers release visuals + sound, the stolen spell's own range binding for
+            // scale_with = RANGE, and any modifier release FX. Progress 1F: the thief
+            // always fires the stolen spell fully charged.
+            ReleaseFx.send(caster.getWorld(), caster, spellEntry, 1F);
         }
 
         int channelCount = (stolenSpell.active != null && stolenSpell.active.cast != null)
@@ -191,12 +191,12 @@ public class SpellthiefImpact implements SpellHandlers.CustomImpact {
                 switch (delivery) {
                     case PROJECTILE -> {
                         SpellExecution.ImpactContext ctx = new SpellExecution.ImpactContext()
-                                .power(power).position(caster.getEyePos()).target(SpellHelper.focusMode(stolenSpell));
+                                .power(power).position(caster.getEyePos()).target(SpellIntents.focusMode(stolenSpell));
                         if (isHelpful) {
-                            SpellHelper.performImpacts(caster.getWorld(), caster, caster, caster, spellEntry,
+                            SpellImpacts.performImpacts(caster.getWorld(), caster, caster, caster, spellEntry,
                                     stolenSpell.impacts, ctx, false, null);
                         } else {
-                            SpellHelper.shootProjectile(caster.getWorld(), caster, target, spellEntry, ctx, 0);
+                            ProjectileLauncher.shootProjectile(caster.getWorld(), caster, target, spellEntry, ctx, 0);
                         }
                     }
                     case CLOUD -> {
@@ -204,7 +204,7 @@ public class SpellthiefImpact implements SpellHandlers.CustomImpact {
                         Vec3d pos = cloudTarget.getPos();
                         SpellExecution.ImpactContext ctx = new SpellExecution.ImpactContext()
                                 .power(power).position(caster.getEyePos()).target(SpellTarget.FocusMode.AREA);
-                        SpellHelper.placeCloud(caster.getWorld(), caster, cloudTarget, pos, spellEntry, ctx);
+                        CloudPlacer.placeCloud(caster.getWorld(), caster, cloudTarget, pos, spellEntry, ctx);
                     }
                     case METEOR -> {
                         LivingEntity meteorTarget = isHelpful ? caster : (stolenSpell.target != null && stolenSpell.target.aim != null && stolenSpell.target.aim.required ? target : caster);
@@ -212,9 +212,9 @@ public class SpellthiefImpact implements SpellHandlers.CustomImpact {
                         SpellExecution.ImpactContext ctx = new SpellExecution.ImpactContext()
                                 .power(power).position(pos).target(SpellTarget.FocusMode.AREA);
                         try {
-                            SpellHelper.fallProjectile(caster.getWorld(), caster, meteorTarget, pos, spellEntry, ctx);
+                            ProjectileLauncher.fallProjectile(caster.getWorld(), caster, meteorTarget, pos, spellEntry, ctx);
                         } catch (Exception e) {
-                            SpellHelper.performImpacts(caster.getWorld(), caster, meteorTarget, caster, spellEntry,
+                            SpellImpacts.performImpacts(caster.getWorld(), caster, meteorTarget, caster, spellEntry,
                                     stolenSpell.impacts, ctx, false, null);
                         }
                     }
@@ -224,16 +224,16 @@ public class SpellthiefImpact implements SpellHandlers.CustomImpact {
                         if (hasSpawn) {
                             SpellExecution.ImpactContext spawnCtx = new SpellExecution.ImpactContext()
                                     .power(power).position(caster.getPos()).target(SpellTarget.FocusMode.DIRECT);
-                            SpellHelper.performImpacts(caster.getWorld(), caster, caster, caster, spellEntry,
+                            SpellImpacts.performImpacts(caster.getWorld(), caster, caster, caster, spellEntry,
                                     stolenSpell.impacts, spawnCtx, false, Spell.Impact.Action.Type.SPAWN);
                         }
                         if (isHelpful) {
-                            SpellHelper.performImpacts(caster.getWorld(), caster, caster, caster, spellEntry,
+                            SpellImpacts.performImpacts(caster.getWorld(), caster, caster, caster, spellEntry,
                                     stolenSpell.impacts, ctx, false, null);
                         }
                         Spell.Target.Area area = stolenSpell.target != null ? stolenSpell.target.area : null;
                         for (Entity t : TargetHelper.targetsFromArea(caster, stolenSpell.range, area, e -> e != caster)) {
-                            SpellHelper.performImpacts(caster.getWorld(), caster, t, caster, spellEntry,
+                            SpellImpacts.performImpacts(caster.getWorld(), caster, t, caster, spellEntry,
                                     stolenSpell.impacts, ctx, false, null);
                         }
                     }
@@ -247,10 +247,10 @@ public class SpellthiefImpact implements SpellHandlers.CustomImpact {
                         if (hasSpawn) {
                             SpellExecution.ImpactContext spawnCtx = new SpellExecution.ImpactContext()
                                     .power(power).position(target.getPos()).target(SpellTarget.FocusMode.DIRECT);
-                            SpellHelper.performImpacts(caster.getWorld(), caster, caster, caster, spellEntry,
+                            SpellImpacts.performImpacts(caster.getWorld(), caster, caster, caster, spellEntry,
                                     stolenSpell.impacts, spawnCtx, false, Spell.Impact.Action.Type.SPAWN);
                         }
-                        SpellHelper.performImpacts(caster.getWorld(), caster, target, caster, spellEntry,
+                        SpellImpacts.performImpacts(caster.getWorld(), caster, target, caster, spellEntry,
                                 stolenSpell.impacts, ctx, false, null);
                         double beamRange = stolenSpell.range > 0 ? stolenSpell.range : 32.0;
                         Vec3d beamFrom = caster.getEyePos();
@@ -263,7 +263,7 @@ public class SpellthiefImpact implements SpellHandlers.CustomImpact {
                                 double projection = toCandidate.dotProduct(beamDir);
                                 if (projection < 0 || projection > beamRange) continue;
                                 if (toCandidate.subtract(beamDir.multiply(projection)).lengthSquared() > 4.0) continue;
-                                SpellHelper.performImpacts(caster.getWorld(), caster, candidate, caster, spellEntry,
+                                SpellImpacts.performImpacts(caster.getWorld(), caster, candidate, caster, spellEntry,
                                         stolenSpell.impacts, ctx, false, null);
                             }
                         }
@@ -272,15 +272,15 @@ public class SpellthiefImpact implements SpellHandlers.CustomImpact {
                         LivingEntity directTarget = isHelpful ? caster : target;
                         Vec3d contextPos = (isHelpful || !harmfulCustomSpawn) ? caster.getEyePos() : target.getPos();
                         SpellExecution.ImpactContext ctx = new SpellExecution.ImpactContext()
-                                .power(power).position(contextPos).target(SpellHelper.focusMode(stolenSpell));
+                                .power(power).position(contextPos).target(SpellIntents.focusMode(stolenSpell));
                         if (hasSpawn) {
                             Vec3d spawnPos = (isHelpful || !harmfulCustomSpawn) ? caster.getPos() : target.getPos();
                             SpellExecution.ImpactContext spawnCtx = new SpellExecution.ImpactContext()
                                     .power(power).position(spawnPos).target(SpellTarget.FocusMode.DIRECT);
-                            SpellHelper.performImpacts(caster.getWorld(), caster, caster, caster, spellEntry,
+                            SpellImpacts.performImpacts(caster.getWorld(), caster, caster, caster, spellEntry,
                                     stolenSpell.impacts, spawnCtx, false, Spell.Impact.Action.Type.SPAWN);
                         }
-                        SpellHelper.performImpacts(caster.getWorld(), caster, directTarget, caster, spellEntry,
+                        SpellImpacts.performImpacts(caster.getWorld(), caster, directTarget, caster, spellEntry,
                                 stolenSpell.impacts, ctx, false, null);
                     }
                 }
@@ -341,7 +341,7 @@ public class SpellthiefImpact implements SpellHandlers.CustomImpact {
     }
 
     private boolean isPrimarilyHelpful(Spell spell) {
-        var intents = SpellHelper.impactIntents(spell);
+        var intents = SpellIntents.impactIntents(spell);
         return intents.contains(SpellTarget.Intent.HELPFUL) && !intents.contains(SpellTarget.Intent.HARMFUL);
     }
 
