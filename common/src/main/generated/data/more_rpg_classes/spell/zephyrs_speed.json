@@ -34,7 +34,7 @@
       "visuals": {
         "particles": [
           {
-            "id": "more_rpg_classes:small_gust",
+            "id": "more_rpg_classes:gust",
             "appearance": {},
             "batch": {
               "count": 4.0,

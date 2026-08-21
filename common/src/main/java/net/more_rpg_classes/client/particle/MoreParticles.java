@@ -144,6 +144,12 @@ public class MoreParticles {
     public static final Entry SMALL_GUST = add("small_gust", 7, p -> p
             .render(Render.LIT).scale(0.15F, 0.33F).drag(0.96F).collides(true)
             .playbackSpeed(0.58F));                                   // V1 maxAge 12
+    /// V1 shipped the full 12-frame `gust` sprite sheet and its particle json but never
+    /// registered the type, so `more_rpg_classes:gust` spawned nothing. Registered here with
+    /// its sibling SMALL_GUST's character at the larger sprite's scale, ~20 tick life.
+    public static final Entry GUST = add("gust", 12, p -> p
+            .render(Render.LIT).scale(0.4F, 0.33F).drag(0.96F).collides(true)
+            .playbackSpeed(0.6F));
     /// V1 `SmallThunderParticle` (vanilla `ExplosionLargeParticle`): absolute scale `1.75`.
     public static final Entry SMALL_THUNDER = add("small_thunder", 7, p -> p
             .render(Render.LIT).scale(1.75F).playbackSpeed(0.88F));    // V1 maxAge 8

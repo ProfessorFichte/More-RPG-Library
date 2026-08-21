@@ -30,6 +30,7 @@
           {
             "id": "spell_engine:magic_arcane",
             "appearance": {
+              "color": 4284940287,
               "motion": "BURST"
             },
             "batch": {

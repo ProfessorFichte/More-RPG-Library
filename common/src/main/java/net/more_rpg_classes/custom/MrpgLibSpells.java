@@ -296,7 +296,7 @@ public class MrpgLibSpells {
         damage.visuals = Fx.Visuals.of(
                 // NOTE: V1 named the dead id "spell_engine:magic_arcane_impact_burst", so this
                 // effect never rendered. Repaired to the evident intent - see commit message.
-                ParticleGroupBuilder.magic(SpellEngineParticles.magic_arcane, ParticleGroup.Motion.BURST)
+                ParticleGroupBuilder.magic(SpellEngineParticles.magic_arcane, ParticleGroup.Motion.BURST, Color.ARCANE)
                         .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
                                 .count(30).speed(0.2F, 0.7F)),
                 ParticleGroupBuilder.of(MoreParticles.DRAGON_CLAW)
@@ -1347,10 +1347,11 @@ public class MrpgLibSpells {
         var buff = SpellBuilder.Impacts.effectAdd(effect.id.toString(), 10, 1, 9);
         buff.action.status_effect.refresh_duration = true;
         buff.action.status_effect.show_particles = false;
-        // NOTE: V1 named "more_rpg_classes:gust", which was never a registered particle type,
-        // so this effect never rendered. Repaired to SMALL_GUST - see commit message.
+        // NOTE: V1 named "more_rpg_classes:gust" but never registered the type, so this
+        // effect never rendered. The 12-frame sprite sheet ships with the mod; the entry is
+        // now registered in MoreParticles and this points at the artwork V1 intended.
         buff.visuals = Fx.Visuals.of(
-                ParticleGroupBuilder.of(MoreParticles.SMALL_GUST)
+                ParticleGroupBuilder.of(MoreParticles.GUST)
                         .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
                                 .count(4).speed(0.5F, 0.8F).extent(1.0F)));
 
