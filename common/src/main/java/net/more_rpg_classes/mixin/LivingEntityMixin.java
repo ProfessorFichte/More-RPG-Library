@@ -19,7 +19,8 @@ import net.more_rpg_classes.custom.MoreSpellSchools;
 import net.more_rpg_classes.effect.MRPGCEffects;
 import net.more_rpg_classes.entity.attribute.MRPGCEntityAttributes;
 import net.spell_engine.api.effect.SpellEngineEffects;
-import net.spell_engine.api.spell.fx.ParticleBatch;
+import net.spell_engine.api.spell.fx.ParticleGroup;
+import net.spell_engine.api.spell.fx.ParticleGroupBuilder;
 import net.spell_engine.client.util.Color;
 import net.spell_engine.fx.ParticleHelper;
 import net.spell_engine.fx.SpellEngineParticles;
@@ -58,30 +59,22 @@ public abstract class LivingEntityMixin {
     @Unique private static final Map<UUID, Long> STRONG_EFFECT_COOLDOWN = new HashMap<>();
     @Unique private static final Map<UUID, Long> WEAK_EFFECT_COOLDOWN = new HashMap<>();
 
-    @Unique private static final ParticleBatch LIFESTEAL_PARTICLES = new ParticleBatch(
-            SpellEngineParticles.MagicParticles.get(SpellEngineParticles.MagicParticles.Shape.STRIPE,
-                    SpellEngineParticles.MagicParticles.Motion.FLOAT).id().toString(),
-            ParticleBatch.Shape.WIDE_PIPE, ParticleBatch.Origin.FEET, null,
-            20, 0.18F, 0.5F, 0).color(Color.RED.toRGBA());
-    @Unique private static final ParticleBatch FUSE_PARTICLES = new ParticleBatch(
-            SpellEngineParticles.MagicParticles.get(SpellEngineParticles.MagicParticles.Shape.SPELL,
-                    SpellEngineParticles.MagicParticles.Motion.BURST).id().toString(),
-            ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.CENTER, null,
-            20, 0.3F, 0.8F, 0).color(Color.FROST.toRGBA());
-    @Unique private static final ParticleBatch BLEEDING_PARTICLES = new ParticleBatch(
-            SpellEngineParticles.dripping_blood.id().toString(),
-            ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.CENTER, null,
-            20, 0.3F, 0.8F, 0).color(Color.RED.toRGBA());
-    @Unique private static final ParticleBatch POISON_PARTICLES = new ParticleBatch(
-            SpellEngineParticles.MagicParticles.get(SpellEngineParticles.MagicParticles.Shape.SKULL,
-                    SpellEngineParticles.MagicParticles.Motion.FLOAT).id().toString(),
-            ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.CENTER, null,
-            20, 0.3F, 0.8F, 0).color(Color.GREEN.toRGBA());
-    @Unique private static final ParticleBatch FREEZE_PARTICLES = new ParticleBatch(
-            SpellEngineParticles.MagicParticles.get(SpellEngineParticles.MagicParticles.Shape.FROST,
-                    SpellEngineParticles.MagicParticles.Motion.BURST).id().toString(),
-            ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.CENTER, null,
-            20, 0.3F, 0.8F, 0).color(Color.FROST.toRGBA());
+    @Unique private static final ParticleGroup LIFESTEAL_PARTICLES = ParticleGroupBuilder
+            .magic(SpellEngineParticles.magic_stripe, ParticleGroup.Motion.FLOAT, Color.RED)
+            .batch(b -> b.shape(ParticleGroup.Shape.PIPE).widthFactor(2F)
+                    .verticalOrigin(0.1F).count(20).speed(0.18F, 0.5F).angle(0));
+    @Unique private static final ParticleGroup FUSE_PARTICLES = ParticleGroupBuilder
+            .magic(SpellEngineParticles.magic_spell, ParticleGroup.Motion.BURST, Color.FROST)
+            .batch(b -> b.shape(ParticleGroup.Shape.SPHERE).count(20).speed(0.3F, 0.8F).angle(0));
+    @Unique private static final ParticleGroup BLEEDING_PARTICLES = ParticleGroupBuilder
+            .of(SpellEngineParticles.dripping_blood).color(Color.RED)
+            .batch(b -> b.shape(ParticleGroup.Shape.SPHERE).count(20).speed(0.3F, 0.8F).angle(0));
+    @Unique private static final ParticleGroup POISON_PARTICLES = ParticleGroupBuilder
+            .magic(SpellEngineParticles.magic_skull, ParticleGroup.Motion.FLOAT, Color.GREEN)
+            .batch(b -> b.shape(ParticleGroup.Shape.SPHERE).count(20).speed(0.3F, 0.8F).angle(0));
+    @Unique private static final ParticleGroup FREEZE_PARTICLES = ParticleGroupBuilder
+            .magic(SpellEngineParticles.magic_frost, ParticleGroup.Motion.BURST, Color.FROST)
+            .batch(b -> b.shape(ParticleGroup.Shape.SPHERE).count(20).speed(0.3F, 0.8F).angle(0));
 
     @Unique
     private LivingEntity getLivingAttackerFromDamageSource(DamageSource damageSource) {
@@ -171,7 +164,7 @@ public abstract class LivingEntityMixin {
             if (value != 100 && attacker.getHealth() != (float) attacker.getAttributeValue(EntityAttributes.GENERIC_MAX_HEALTH)) {
                 float heal = amount * ((float)(value - 100) / 100f);
                 attacker.heal(heal);
-                ParticleHelper.sendBatches(attacker, new ParticleBatch[]{LIFESTEAL_PARTICLES});
+                ParticleHelper.sendBatches(attacker, java.util.List.of(LIFESTEAL_PARTICLES));
                 SPELL_VAMPIRE_COOLDOWN.put(attackerId, currentTick);
             }
         }
@@ -191,7 +184,7 @@ public abstract class LivingEntityMixin {
             if (value != 100 && attacker.getHealth() != (float) attacker.getAttributeValue(EntityAttributes.GENERIC_MAX_HEALTH)) {
                 float heal = actualDamageDealt * ((float)(value - 100) / 100f);
                 attacker.heal(heal);
-                ParticleHelper.sendBatches(attacker, new ParticleBatch[]{LIFESTEAL_PARTICLES});
+                ParticleHelper.sendBatches(attacker, java.util.List.of(LIFESTEAL_PARTICLES));
                 LIFESTEAL_COOLDOWN.put(attackerId, currentTick);
             }
         }
@@ -274,7 +267,9 @@ public abstract class LivingEntityMixin {
         float magicDamage = Math.max(0.1f, (float)((fuseInstance.getValue() - 100) / 100f) * (float) spellPowerInstance.getValue());
         target.timeUntilRegen = 0;
         target.damage(SpellDamageSource.create(spellSchool, attacker), magicDamage);
-        ParticleHelper.sendBatches(target, new ParticleBatch[]{FUSE_PARTICLES.color(Color.from(spellSchool.color).toRGBA())});
+        var fuseParticles = FUSE_PARTICLES.copy();
+        fuseParticles.appearance.color(Color.from(spellSchool.color).toRGBA());
+        ParticleHelper.sendBatches(target, java.util.List.of(fuseParticles));
     }
 
     @Inject(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V", shift = At.Shift.AFTER))
@@ -322,7 +317,7 @@ public abstract class LivingEntityMixin {
             if (freezeChance != null && freezeChance.getValue() > 100.0 && random.nextFloat() < (float)(freezeChance.getValue() - 100) / 100f) {
                 target.addStatusEffect(new StatusEffectInstance(MRPGCEffects.FROZEN_SOLID.entry, 60, 0, true, false, true));
                 STRONG_EFFECT_COOLDOWN.put(attackerId, currentTick);
-                ParticleHelper.sendBatches(target, new ParticleBatch[]{FREEZE_PARTICLES});
+                ParticleHelper.sendBatches(target, java.util.List.of(FREEZE_PARTICLES));
             }
         }
 
@@ -331,12 +326,12 @@ public abstract class LivingEntityMixin {
             if (poisonChance != null && poisonChance.getValue() > 100.0 && random.nextFloat() < (float)(poisonChance.getValue() - 100) / 100f) {
                 target.addStatusEffect(new StatusEffectInstance(StatusEffects.POISON, 120, amplifier, true, false, true));
                 WEAK_EFFECT_COOLDOWN.put(attackerId, currentTick);
-                ParticleHelper.sendBatches(target, new ParticleBatch[]{POISON_PARTICLES});
+                ParticleHelper.sendBatches(target, java.util.List.of(POISON_PARTICLES));
             }
             if (bleedingChance != null && bleedingChance.getValue() > 100.0 && random.nextFloat() < (float)(bleedingChance.getValue() - 100) / 100f) {
                 target.addStatusEffect(new StatusEffectInstance(SpellEngineEffects.BLEED.entry, 120, amplifier, true, false, true));
                 WEAK_EFFECT_COOLDOWN.put(attackerId, currentTick);
-                ParticleHelper.sendBatches(target, new ParticleBatch[]{BLEEDING_PARTICLES});
+                ParticleHelper.sendBatches(target, java.util.List.of(BLEEDING_PARTICLES));
             }
         }
     }
