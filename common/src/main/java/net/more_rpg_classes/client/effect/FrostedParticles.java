@@ -5,6 +5,7 @@ import net.spell_engine.api.effect.CustomParticleStatusEffect;
 import net.spell_engine.api.spell.fx.ParticleGroup;
 import net.spell_engine.api.spell.fx.ParticleGroupBuilder;
 import net.spell_engine.fx.ParticleHelper;
+import net.spell_engine.client.util.Color;
 import net.spell_engine.fx.SpellEngineParticles;
 
 public class FrostedParticles implements CustomParticleStatusEffect.Spawner {
@@ -14,7 +15,7 @@ public class FrostedParticles implements CustomParticleStatusEffect.Spawner {
     /// V1 named the dead id "spell_engine:magic_frost_impact_burst" - the 32 magic_<shape>_<motion>
     /// registrations collapsed into 8 shapes plus a motion on the payload.
     public FrostedParticles(int particleCount) {
-        this.particles = ParticleGroupBuilder.magic(SpellEngineParticles.magic_frost, ParticleGroup.Motion.BURST)
+        this.particles = ParticleGroupBuilder.magic(SpellEngineParticles.magic_frost, ParticleGroup.Motion.BURST, Color.FROST)
                 .batch(b -> b.shape(ParticleGroup.Shape.CONE).count(particleCount).speed(0.2F, 0.8F));
     }
 
