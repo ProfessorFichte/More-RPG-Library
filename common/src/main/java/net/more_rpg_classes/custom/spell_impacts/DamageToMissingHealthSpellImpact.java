@@ -6,7 +6,7 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.more_rpg_classes.MRPGCMod;
 import net.spell_engine.api.spell.Spell;
 import net.spell_engine.api.spell.event.SpellHandlers;
-import net.spell_engine.internals.SpellHelper;
+import net.spell_engine.internals.SpellExecution;
 import net.spell_power.api.SpellDamageSource;
 import net.spell_power.api.SpellPower;
 
@@ -18,7 +18,7 @@ public class DamageToMissingHealthSpellImpact implements SpellHandlers.CustomImp
             SpellPower.Result powerResult,
             LivingEntity caster,
             Entity target,
-            SpellHelper.ImpactContext context
+            SpellExecution.ImpactContext context
     ) {
         if (target instanceof  LivingEntity livingEntity) {
             float missinghealth = (livingEntity.getHealth() - livingEntity.getMaxHealth()) / livingEntity.getMaxHealth();

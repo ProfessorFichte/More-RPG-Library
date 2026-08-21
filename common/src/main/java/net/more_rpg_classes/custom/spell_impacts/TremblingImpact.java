@@ -7,7 +7,7 @@ import net.minecraft.util.math.Vec3d;
 import net.more_rpg_classes.MRPGCMod;
 import net.spell_engine.api.spell.Spell;
 import net.spell_engine.api.spell.event.SpellHandlers;
-import net.spell_engine.internals.SpellHelper;
+import net.spell_engine.internals.SpellExecution;
 import net.spell_power.api.SpellPower;
 
 public class TremblingImpact implements SpellHandlers.CustomImpact {
@@ -18,7 +18,7 @@ public class TremblingImpact implements SpellHandlers.CustomImpact {
             SpellPower.Result powerResult,
             LivingEntity caster,
             Entity target,
-            SpellHelper.ImpactContext context
+            SpellExecution.ImpactContext context
     ) {
         if(target instanceof LivingEntity livingEntity && target.isOnGround()){
             double range = MRPGCMod.tweaksConfig.value.custom_spell_impact_trembling_range;
