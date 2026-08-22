@@ -12,8 +12,6 @@ public class FrostedParticles implements CustomParticleStatusEffect.Spawner {
 
     private final ParticleGroup particles;
 
-    /// V1 named the dead id "spell_engine:magic_frost_impact_burst" - the 32 magic_<shape>_<motion>
-    /// registrations collapsed into 8 shapes plus a motion on the payload.
     public FrostedParticles(int particleCount) {
         this.particles = ParticleGroupBuilder.magic(SpellEngineParticles.magic_frost, ParticleGroup.Motion.BURST, Color.FROST)
                 .batch(b -> b.shape(ParticleGroup.Shape.CONE).count(particleCount).speed(0.2F, 0.8F));

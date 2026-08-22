@@ -32,11 +32,8 @@ public class MoreRPGClassesClient{
                 SpellTooltip.addDescriptionMutator(entry.id(), entry.mutator());
             }
         }
-        // Register heart types
         HeartTypes.getHeartTypes().forEach(HeartRegistry::register);
-        // Register entity renderers
         EntityRendererRegistry.register(MRPGCEntities.FRIENDLY_LIGHTNING, FriendlyLightningEntityRenderer::new);
-        // Register Status Effect Renderers
         CustomModelRegistry.modelIds.add(FrozenSolidRenderer.modelId);
         CustomModelRegistry.modelIds.add(DuelistsFocusRenderer.OWNER_MODEL);
         CustomModelRegistry.modelIds.add(DuelistsFocusRenderer.TARGET_MODEL);
@@ -57,30 +54,21 @@ public class MoreRPGClassesClient{
     public static void registerParticleAppearances() {
         ParticleFactoryRegistry registry = ParticleFactoryRegistry.getInstance();
 
-        // One generic factory for every entry this mod owns: SpellParticle resolves the
-        // entry's defaults against the per-spawn ParticleGroup.Appearance payload.
         for (var entry: MoreParticles.entries()) {
             if (entry == MoreParticles.MUSIC_NOTE || entry == MoreParticles.STAR) {
-                continue; // Bound to their own factories below.
+                continue;
             }
             registry.register(entry.type(), provider -> new SpellParticle.Factory(provider, entry));
         }
 
-        // Kept on their own factories - behaviour Appearance cannot express.
         registry.register(MoreParticles.RAINBOW_MUSIC_NOTE, RainbowMusicNoteParticle.Factory::new);
-        // Still an Entry (so its colour payload resolves like any other), but its motion is
-        // hand-written: a fixed gentle rise, a random walk, and a fade over the last 15 ticks.
         registry.register(MoreParticles.MUSIC_NOTE.type(),
                 provider -> new MusicNoteParticle.Factory(provider, MoreParticles.MUSIC_NOTE));
-        // Same story as the note: a self-set rise the batch cannot override, X/Z-only
-        // damping, and a fade over the last 20 ticks.
         registry.register(MoreParticles.STAR.type(),
                 provider -> new StarParticle.Factory(provider, MoreParticles.STAR));
     }
 
     private static void registerEffectParticles() {
-        // V1 chained .extent() onto the batch object itself; in 1.10 extent is a Batch
-        // field on the returned ParticleGroup.
         var sirensTearParticles = BuffParticleSpawner.defaultBatch(
                 SpellEngineParticles.magic_spark.id().toString(),
                 4,

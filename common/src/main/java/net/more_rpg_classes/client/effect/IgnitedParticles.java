@@ -11,8 +11,6 @@ public class IgnitedParticles implements CustomParticleStatusEffect.Spawner {
 
     private final ParticleGroup particles;
 
-    /// V1 used the raw id "minecraft:flame"; Spell Engine's flame entry draws the same
-    /// vanilla texture but honours the appearance payload.
     public IgnitedParticles(int particleCount) {
         this.particles = ParticleGroupBuilder.of(SpellEngineParticles.flame)
                 .batch(b -> b.shape(ParticleGroup.Shape.SPHERE).count(particleCount).speed(0.1F, 0.15F));

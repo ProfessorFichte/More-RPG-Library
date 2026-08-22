@@ -3,7 +3,6 @@ package net.more_rpg_classes.client.render;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.util.Identifier;
 import net.spell_engine.api.spell.Spell;
 import net.spell_engine.api.spell.registry.SpellRegistry;
 import net.more_rpg_classes.network.MobBeamPacket;

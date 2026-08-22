@@ -10,7 +10,6 @@ public class MoltenArmorParticles implements CustomParticleStatusEffect.Spawner 
 
     private final ParticleGroup particles;
 
-    /// Vanilla id: only batch geometry applies, the appearance payload is ignored.
     public MoltenArmorParticles(int particleCount) {
         this.particles = ParticleGroupBuilder.of("falling_lava")
                 .batch(b -> b.shape(ParticleGroup.Shape.CIRCLE).count(particleCount).speed(0.05F, 0.08F));

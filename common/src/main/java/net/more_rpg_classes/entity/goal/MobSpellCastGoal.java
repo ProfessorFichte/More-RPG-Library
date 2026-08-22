@@ -358,7 +358,6 @@ public class MobSpellCastGoal extends Goal {
             DeliveryBehavior behavior = deriveDelivery(spell);
             SpellPower.Result power = SpellPower.getSpellPower(spell.school, entity);
 
-            // Only non-null/non-1 for a CHARGE-type cast released before full duration.
             Spell.Modifier chargeModifier = null;
             float chargeOutput = 1F;
             if (isChargeCast && spell.active != null && spell.active.cast != null && spell.active.cast.charge != null) {
@@ -553,7 +552,7 @@ public class MobSpellCastGoal extends Goal {
         switch (targetType) {
             case BEAM -> { return DeliveryBehavior.BEAM; }
             case AREA -> { return DeliveryBehavior.AREA; }
-            default   -> { /* fall through */ }
+            default   -> { }
         }
         if (hasTeleportImpact(spell)) return DeliveryBehavior.TELEPORT;
         if (spell.deliver != null) {

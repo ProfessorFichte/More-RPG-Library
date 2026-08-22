@@ -59,7 +59,6 @@ public class MrpgLibSpells {
         entries.add(entry);
         return entry;
     }
-    /// WEAPON SKILLS
     public static Entry decapitate = add(decapitate());
     private static Entry decapitate() {
         var id = Identifier.of(MOD_ID, "decapitate");
@@ -196,8 +195,6 @@ public class MrpgLibSpells {
 
         return new Entry(id, spell, title, description);
     }
-    ///PASSIVES
-    //MELEE
     public static Entry carve_melee = add(carve_melee());
     private static Entry carve_melee() {
         var id = Identifier.of(MOD_ID, "carve");
@@ -294,8 +291,6 @@ public class MrpgLibSpells {
         var damage = SpellBuilder.Impacts.damage(0.6F, 0F);
         damage.attribute = EntityAttributes.GENERIC_ATTACK_DAMAGE.getIdAsString();
         damage.visuals = Fx.Visuals.of(
-                // NOTE: V1 named the dead id "spell_engine:magic_arcane_impact_burst", so this
-                // effect never rendered. Repaired to the evident intent - see commit message.
                 ParticleGroupBuilder.magic(SpellEngineParticles.magic_arcane, ParticleGroup.Motion.BURST, Color.ARCANE)
                         .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
                                 .count(30).speed(0.2F, 0.7F)),
@@ -515,7 +510,6 @@ public class MrpgLibSpells {
 
         return new Entry(id, spell, title, description, null, Category.MELEE);
     }
-    //RANGED
     public static Entry lightning_strike_ranged = add(lightning_strike_ranged());
     private static Entry lightning_strike_ranged() {
         var id = Identifier.of(MOD_ID, "lightning_strike_ranged");
@@ -799,7 +793,6 @@ public class MrpgLibSpells {
 
         return new Entry(id, spell, title, description);
     }
-    //SHIELD
     public static Entry elder_guardian_shield = add(elder_guardian_shield());
     private static Entry elder_guardian_shield() {
         var id = Identifier.of(MOD_ID, "elder_guardian_shield");
@@ -1029,7 +1022,6 @@ public class MrpgLibSpells {
 
         return new Entry(id, spell, title, description);
     }
-    //HEALING
     public static Entry sirens_tears = add(sirens_tears());
     private static Entry sirens_tears() {
         var id = Identifier.of(MOD_ID, "sirens_tears");
@@ -1120,7 +1112,6 @@ public class MrpgLibSpells {
 
         return new Entry(id, spell, title, description).mutator(mutator);
     }
-    //SPELL
     public static Entry arcane_precision = add(arcane_precision());
     private static Entry arcane_precision() {
         var id = Identifier.of(MOD_ID, "arcane_precision");
@@ -1144,8 +1135,6 @@ public class MrpgLibSpells {
                 ParticleGroupBuilder.of("dragon_breath")
                         .batch(b -> b.shape(ParticleGroup.Shape.CIRCLE)
                                 .count(40).speed(0.6F, 0.8F)),
-                // NOTE: V1 named the dead id "spell_engine:magic_arcane_impact_burst", so this
-                // effect never rendered. Repaired to the evident intent - see commit message.
                 ParticleGroupBuilder.magic(SpellEngineParticles.magic_arcane, ParticleGroup.Motion.BURST, Color.ARCANE)
                         .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
                                 .verticalOrigin(0.1F).count(10).speed(0.05F, 0.2F).extent(2.0F)));
@@ -1347,9 +1336,6 @@ public class MrpgLibSpells {
         var buff = SpellBuilder.Impacts.effectAdd(effect.id.toString(), 10, 1, 9);
         buff.action.status_effect.refresh_duration = true;
         buff.action.status_effect.show_particles = false;
-        // NOTE: V1 named "more_rpg_classes:gust" but never registered the type, so this
-        // effect never rendered. The 12-frame sprite sheet ships with the mod; the entry is
-        // now registered in MoreParticles and this points at the artwork V1 intended.
         buff.visuals = Fx.Visuals.of(
                 ParticleGroupBuilder.of(MoreParticles.GUST)
                         .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)

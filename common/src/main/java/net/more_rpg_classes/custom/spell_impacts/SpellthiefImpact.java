@@ -157,15 +157,11 @@ public class SpellthiefImpact implements SpellHandlers.CustomImpact {
         DeliveryType delivery = deriveDelivery(stolenSpell);
         boolean hasSpawn = hasSpawnImpact(stolenSpell);
         boolean harmfulCustomSpawn = delivery == DeliveryType.DIRECT && hasHarmfulCustomImpact(stolenSpell);
-        // Continuous cast FX stayed a plain list in 1.10; only the one-shot moments bundled.
         java.util.List<ParticleGroup> castParticles = (stolenSpell.active != null && stolenSpell.active.cast != null
                 && !stolenSpell.active.cast.particles.isEmpty())
                 ? stolenSpell.active.cast.particles : null;
 
         if (stolenSpell.release != null) {
-            // Covers release visuals + sound, the stolen spell's own range binding for
-            // scale_with = RANGE, and any modifier release FX. Progress 1F: the thief
-            // always fires the stolen spell fully charged.
             ReleaseFx.send(caster.getWorld(), caster, spellEntry, 1F);
         }
 

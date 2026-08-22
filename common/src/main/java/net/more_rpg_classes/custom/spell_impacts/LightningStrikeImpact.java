@@ -22,7 +22,6 @@ public class LightningStrikeImpact implements SpellHandlers.CustomImpact {
             SpellExecution.ImpactContext context
     ) {
         if(target instanceof LivingEntity livingEntity && livingEntity.getWorld() instanceof ServerWorld serverWorld){
-            // Spawn the friendly lightning entity that won't damage allies or set things on fire
             FriendlyLightningEntity.spawnAtBlock(
                 serverWorld,
                 livingEntity.getBlockPos(),
