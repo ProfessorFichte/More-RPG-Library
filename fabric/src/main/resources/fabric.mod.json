@@ -30,12 +30,12 @@
 		"more-rpg-classes.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.14.21",
+		"fabricloader": ">=${fabric_loader_compat_version}",
 		"fabric-api": "*",
-		"minecraft": "~1.21",
+		"minecraft": ">=${minecraft_compat_version}",
 		"java": ">=17",
-		"spell_engine": ">=1.5.0",
-		"spell_power": ">=1.2.0"
+		"spell_engine": ">=${spell_engine_version}",
+		"spell_power": ">=${spell_power_version}"
 	},
 	"custom": {
 		"modmenu": {

@@ -1,8 +1,6 @@
 plugins {
+    id "me.modmuss50.mod-publish-plugin" version "2.1.1"
     id 'com.gradleup.shadow'
-    id "net.darkhax.curseforgegradle" version "1.1.28"
-    id "com.github.breadmoirai.github-release" version "2.4.1"
-    id "com.modrinth.minotaur" version "2.+"
 }
 
 def platform = project.name;
@@ -130,77 +128,54 @@ remapJar {
 }
 
 // Publishing configuration
-def release_type = project.hasProperty('release_type') ? project.property('release_type') : 'release'
+def releaseTypeName = (project.findProperty('release_type') ?: 'beta').toString()
 
-if (System.getenv("CURSEFORGE_API_KEY")) {
-    tasks.register('curseforge', net.darkhax.curseforgegradle.TaskPublishCurseForge) {
-        apiToken = System.getenv("CURSEFORGE_API_KEY")
-
-        def mainFile = upload(System.getenv("CURSEFORGE_PROJECT_ID"), remapJar)
-        mainFile.changelog = changelog_last_section()
-        mainFile.changelogType = 'markdown'
-        mainFile.releaseType = release_type
-        mainFile.addGameVersion("${project.minecraft_version}")
-        mainFile.addModLoader("Fabric")
-        mainFile.addEnvironment("Client")
-        mainFile.addEnvironment("Server")
-
-        // Required dependencies
-        mainFile.addRequirement('spell-engine')
-        mainFile.addRequirement('spell-power')
-    }
-    tasks.curseforge.dependsOn remapJar
+// Local convenience alias -- CI invokes the per-destination publish tasks directly.
+tasks.register("publishMod") {
+    dependsOn(build)
+    finalizedBy(tasks.named("publishMods"))
 }
 
-if (System.getenv("MODRINTH_API_KEY")) {
+publishMods {
+    file = remapJar.archiveFile
+    changelog = providers.provider { changelog_last_section() }
+    type = releaseTypeName == "release" ? me.modmuss50.mpp.ReleaseType.STABLE
+            : releaseTypeName == "alpha" ? me.modmuss50.mpp.ReleaseType.ALPHA
+            : me.modmuss50.mpp.ReleaseType.BETA
+    version = "${project.version}-${platform}"
+    displayName = "${project.version}-${platform}"
+    modLoaders.add("fabric")
+
+    curseforge {
+        projectId = providers.environmentVariable("CURSEFORGE_PROJECT_ID")
+        accessToken = providers.environmentVariable("CURSEFORGE_API_KEY")
+        minecraftVersions.add(project.minecraft_version)
+        client = true
+        server = true
+        changelogType = "markdown"
+        requires("spell-engine", "spell-power")
+    }
+
     modrinth {
-        token = System.getenv("MODRINTH_API_KEY")
-        projectId = System.getenv("MODRINTH_PROJECT_ID")
-        versionName = "${version}-${platform}"
-        versionNumber = "${version}-${platform}"
-        versionType = release_type
-        uploadFile = remapJar
-        gameVersions = ["${project.minecraft_version}"]
-        loaders = ["fabric"]
-        changelog = changelog_last_section()
-        dependencies {
-            // Required dependencies
-            required.project 'spell-engine'
-            required.project 'spell-power'
-        }
+        environment = me.modmuss50.mpp.platforms.modrinth.ModrinthEnvironment.CLIENT_AND_SERVER
+        projectId = providers.environmentVariable("MODRINTH_PROJECT_ID")
+        accessToken = providers.environmentVariable("MODRINTH_API_KEY")
+        minecraftVersions.add(project.minecraft_version)
+        requires { slug = "spell-engine" }
+        requires { slug = "spell-power" }
     }
-    tasks.modrinth.dependsOn remapJar
+
+    github {
+        repository = providers.environmentVariable("GH_OWNER")
+                .zip(providers.environmentVariable("GH_REPO")) { owner, repo -> "$owner/$repo" }
+        accessToken = providers.environmentVariable("GH_API_KEY")
+        tagName = "${project.version}-${platform}"
+        commitish = providers.environmentVariable("GITHUB_SHA")
+    }
 }
 
-if (System.getenv("GH_API_KEY")) {
-    githubRelease {
-        token System.getenv("GH_API_KEY")
-        owner System.getenv("GH_OWNER")
-        repo System.getenv("GH_REPO")
-        tagName "${version}"
-        targetCommitish System.getenv("GH_BRANCH")
-        releaseName "Release"
-        generateReleaseNotes false
-        body changelog_last_section()
-        draft false
-        prerelease false
-        overwrite true
-        releaseAssets remapJar.archiveFile
-    }
-    tasks.githubRelease.dependsOn remapJar
-}
-
-tasks.register('publishMod') {
-    group = 'publishing'
-    description = 'Publishes the mod to CurseForge, Modrinth, and GitHub'
-    dependsOn(tasks.remapJar)
-    if (System.getenv("CURSEFORGE_API_KEY")) {
-        finalizedBy(tasks.curseforge)
-    }
-    if (System.getenv("MODRINTH_API_KEY")) {
-        finalizedBy(tasks.modrinth)
-    }
-    if (System.getenv("GH_API_KEY")) {
-        finalizedBy(tasks.githubRelease)
-    }
+// GitHub release last: a failed mod upload aborts the build before the release exists.
+// Ordering only -- unselected tasks are ignored. Must sit after the publishMods block.
+tasks.named("publishGithub") {
+    mustRunAfter(tasks.named("publishCurseforge"), tasks.named("publishModrinth"))
 }

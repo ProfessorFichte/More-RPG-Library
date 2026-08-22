@@ -43,18 +43,25 @@
           "duration": 8.0
         }
       },
-      "particles": [
-        {
-          "particle_id": "spell_engine:magic_skull_decelerate",
-          "origin": "CENTER",
-          "shape": "SPHERE",
-          "count": 10.0,
-          "min_speed": 0.5,
-          "max_speed": 0.8,
-          "extent": 0.25,
-          "color_rgba": 4284940287
-        }
-      ]
+      "visuals": {
+        "particles": [
+          {
+            "id": "spell_engine:magic_skull",
+            "appearance": {
+              "color": 4284940287,
+              "motion": "DECELERATE"
+            },
+            "batch": {
+              "count": 10.0,
+              "shape": "SPHERE",
+              "anchor": "ENTITY",
+              "min_speed": 0.5,
+              "max_speed": 0.8,
+              "extent": 0.25
+            }
+          }
+        ]
+      }
     }
   ],
   "cost": {

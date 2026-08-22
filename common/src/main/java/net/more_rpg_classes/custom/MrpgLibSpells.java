@@ -10,7 +10,10 @@ import net.spell_engine.api.effect.SpellEngineEffects;
 import net.spell_engine.api.entity.SpellEntityPredicates;
 import net.spell_engine.api.spell.ExternalSpellSchools;
 import net.spell_engine.api.spell.Spell;
-import net.spell_engine.api.spell.fx.ParticleBatch;
+import net.more_rpg_classes.client.particle.MoreParticles;
+import net.spell_engine.api.spell.fx.Fx;
+import net.spell_engine.api.spell.fx.ParticleGroup;
+import net.spell_engine.api.spell.fx.ParticleGroupBuilder;
 import net.spell_engine.api.spell.fx.PlayerAnimation;
 import net.spell_engine.api.spell.fx.Sound;
 import net.spell_engine.api.util.TriState;
@@ -121,29 +124,25 @@ public class MrpgLibSpells {
 
         spell.release.animation = PlayerAnimation.of("more_rpg_classes:burstcrack_release");
         spell.release.sound = Sound.withVolume(Identifier.of("entity.generic.explode"), 0.4F);
-        spell.release.particles = new ParticleBatch[]{
-                new ParticleBatch(SpellEngineParticles.smoke_medium.id().toString(),
-                        ParticleBatch.Shape.CIRCLE, ParticleBatch.Origin.CENTER,
-                        50, 0.2F, 0.3F)
-        };
-        spell.release.particles_scaled_with_ranged = new ParticleBatch[]{
-                new ParticleBatch(SpellEngineParticles.area_effect_658.id().toString(),
-                        ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.GROUND,
-                        1, 0, 0)
-                        .scale(0.5F)
-                        .color(ORANGE_COLOR.toRGBA())
-        };
+        spell.release.visuals = Fx.Visuals.of(
+                ParticleGroupBuilder.of(SpellEngineParticles.smoke_medium)
+                        .batch(b -> b.shape(ParticleGroup.Shape.CIRCLE)
+                                .count(50).speed(0.2F, 0.3F)),
+                ParticleGroupBuilder.of(SpellEngineParticles.area_effect_658)
+                        .color(ORANGE_COLOR)
+                        .scaleWith(Fx.ScaleWith.RANGE)
+                        .batch(b -> b.shape(ParticleGroup.Shape.NONE)
+                                .count(1).anchor(ParticleGroup.Anchor.GROUND)));
 
         spell.target.type = Spell.Target.Type.AREA;
         spell.target.area = new Spell.Target.Area();
         spell.target.area.angle_degrees = 360;
 
         var damage = SpellBuilder.Impacts.damage(0.5F, 0F);
-        damage.particles = new ParticleBatch[]{
-                new ParticleBatch(SpellEngineParticles.smoke_medium.id().toString(),
-                        ParticleBatch.Shape.PIPE, ParticleBatch.Origin.CENTER,
-                        20, 0.1F, 3.0F)
-        };
+        damage.visuals = Fx.Visuals.of(
+                ParticleGroupBuilder.of(SpellEngineParticles.smoke_medium)
+                        .batch(b -> b.shape(ParticleGroup.Shape.PIPE)
+                                .count(20).speed(0.1F, 3.0F)));
         damage.sound = new Sound(MRPGLibSounds.FIST_ATTACK.id().toString());
 
         var knockUp = SpellBuilder.Impacts.velocity(Spell.Impact.Action.Velocity.Frame.ORIGIN, new Vector3f(0, 0.1F, 0));
@@ -231,15 +230,10 @@ public class MrpgLibSpells {
         debuff.action.status_effect.amplifier = 1;
         debuff.action.status_effect.amplifier_cap = 5;
         debuff.action.status_effect.duration = 8;
-        debuff.particles = new ParticleBatch[]{
-                new ParticleBatch(
-                        SpellEngineParticles.MagicParticles.get(
-                                SpellEngineParticles.MagicParticles.Shape.SKULL,
-                                SpellEngineParticles.MagicParticles.Motion.DECELERATE).id().toString(),
-                        ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.CENTER,
-                        25, 0.2F, 0.25F)
-                        .color(Color.RAGE.toRGBA())
-        };
+        debuff.visuals = Fx.Visuals.of(
+                ParticleGroupBuilder.magic(SpellEngineParticles.magic_skull, ParticleGroup.Motion.DECELERATE, Color.RAGE)
+                        .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
+                                .count(25).speed(0.2F, 0.25F)));
         debuff.sound = new Sound(MRPGLibSounds.CARVE.id().toString());
         spell.impacts = List.of(debuff);
 
@@ -299,29 +293,24 @@ public class MrpgLibSpells {
 
         var damage = SpellBuilder.Impacts.damage(0.6F, 0F);
         damage.attribute = EntityAttributes.GENERIC_ATTACK_DAMAGE.getIdAsString();
-        damage.particles = new ParticleBatch[]{
-                new ParticleBatch(
-                        "spell_engine:magic_arcane_impact_burst",
-                        ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.CENTER,
-                        30, 0.2F, 0.7F),
-                new ParticleBatch(
-                        "more_rpg_classes:dragon_claw",
-                        ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.CENTER,
-                        2, 0.2F, 0.5F)
-        };
+        damage.visuals = Fx.Visuals.of(
+                // NOTE: V1 named the dead id "spell_engine:magic_arcane_impact_burst", so this
+                // effect never rendered. Repaired to the evident intent - see commit message.
+                ParticleGroupBuilder.magic(SpellEngineParticles.magic_arcane, ParticleGroup.Motion.BURST, Color.ARCANE)
+                        .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
+                                .count(30).speed(0.2F, 0.7F)),
+                ParticleGroupBuilder.of(MoreParticles.DRAGON_CLAW)
+                        .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
+                                .count(2).speed(0.2F, 0.5F)));
 
         var heal = SpellBuilder.Impacts.heal(0.025F);
         heal.attribute_from_target = true;
         heal.attribute = EntityAttributes.GENERIC_MAX_HEALTH.getIdAsString();
-        heal.particles = new ParticleBatch[]{
-                new ParticleBatch(
-                        SpellEngineParticles.MagicParticles.get(
-                                SpellEngineParticles.MagicParticles.Shape.ARCANE,
-                                SpellEngineParticles.MagicParticles.Motion.ASCEND
-                        ).id().toString(),
-                        ParticleBatch.Shape.WIDE_PIPE, ParticleBatch.Origin.FEET,
-                        1, 0.05F, 0.1F).color(Color.ARCANE.toRGBA())
-        };
+        heal.visuals = Fx.Visuals.of(
+                ParticleGroupBuilder.magic(SpellEngineParticles.magic_arcane, ParticleGroup.Motion.ASCEND, Color.ARCANE)
+                        .batch(b -> b.shape(ParticleGroup.Shape.PIPE).widthFactor(2F)
+                                .verticalOrigin(0.1F)
+                                .count(1).speed(0.05F, 0.1F)));
 
         spell.impacts = List.of(damage, heal);
         SpellBuilder.Cost.cooldown(spell, 5.0F);
@@ -346,16 +335,15 @@ public class MrpgLibSpells {
         trigger.chance = 0.4F;
         spell.passive.triggers = List.of(trigger);
 
-        spell.release.particles = new ParticleBatch[]{
-                new ParticleBatch(
-                        "more_rpg_classes:big_splash",
-                        ParticleBatch.Shape.CIRCLE, ParticleBatch.Origin.FEET,
-                        30, 0.5F, 0.75F),
-                new ParticleBatch(
-                        "more_rpg_classes:water_circle",
-                        ParticleBatch.Shape.CIRCLE, ParticleBatch.Origin.FEET,
-                        1, 0.2F, 1.0F)
-        };
+        spell.release.visuals = Fx.Visuals.of(
+                ParticleGroupBuilder.of(MoreParticles.BIG_SPLASH)
+                        .batch(b -> b.shape(ParticleGroup.Shape.CIRCLE)
+                                .verticalOrigin(0.1F)
+                                .count(30).speed(0.5F, 0.75F)),
+                ParticleGroupBuilder.of(MoreParticles.WATER_CIRCLE)
+                        .batch(b -> b.shape(ParticleGroup.Shape.CIRCLE)
+                                .verticalOrigin(0.1F)
+                                .count(1).speed(0F, 0F)));
 
         spell.target.type = Spell.Target.Type.AREA;
         spell.target.area = new Spell.Target.Area();
@@ -366,20 +354,18 @@ public class MrpgLibSpells {
         var damage = SpellBuilder.Impacts.damage( 0.4F,0);
         damage.attribute = EntityAttributes.GENERIC_ATTACK_DAMAGE.getIdAsString();
         damage.sound = Sound.withVolume(Identifier.of("more_rpg_classes:water_magic_impact1"), 0.4F);
-        damage.particles = new ParticleBatch[]{
-                new ParticleBatch(
-                        "more_rpg_classes:big_splash",
-                        ParticleBatch.Shape.PILLAR, ParticleBatch.Origin.FEET,
-                        20, 0.05F, 0.2F),
-                new ParticleBatch(
-                        "more_rpg_classes:splash",
-                        ParticleBatch.Shape.CIRCLE, ParticleBatch.Origin.FEET,
-                        15, 0.05F, 0.2F),
-                new ParticleBatch(
-                        "more_rpg_classes:splash",
-                        ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.CENTER,
-                        25, 1.0F, 1.2F)
-        };
+        damage.visuals = Fx.Visuals.of(
+                ParticleGroupBuilder.of(MoreParticles.BIG_SPLASH)
+                        .batch(b -> b.shape(ParticleGroup.Shape.PILLAR)
+                                .verticalOrigin(0.1F)
+                                .count(20).speed(0.05F, 0.2F)),
+                ParticleGroupBuilder.of(MoreParticles.SPLASH)
+                        .batch(b -> b.shape(ParticleGroup.Shape.CIRCLE)
+                                .verticalOrigin(0.1F)
+                                .count(15).speed(0.05F, 0.2F)),
+                ParticleGroupBuilder.of(MoreParticles.SPLASH)
+                        .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
+                                .count(25).speed(1.0F, 1.2F)));
 
         spell.impacts = List.of(damage);
         SpellBuilder.Cost.cooldown(spell, 5.0F);
@@ -409,26 +395,20 @@ public class MrpgLibSpells {
         spell.target.area.angle_degrees = 90.0F;
         spell.target.area.horizontal_range_multiplier = 1.0F;
 
-        spell.release.particles = new ParticleBatch[]{
-                new ParticleBatch(
-                        "smoke",
-                        ParticleBatch.Shape.CIRCLE, ParticleBatch.Origin.FEET,
-                        15, 0.05F, 0.5F)
-        };
+        spell.release.visuals = Fx.Visuals.of(
+                ParticleGroupBuilder.of("smoke")
+                        .batch(b -> b.shape(ParticleGroup.Shape.CIRCLE)
+                                .verticalOrigin(0.1F)
+                                .count(15).speed(0.05F, 0.5F)));
 
         var damage = SpellBuilder.Impacts.damage(0.5F,0);
         damage.attribute = EntityAttributes.GENERIC_ATTACK_DAMAGE.getIdAsString();
         damage.sound = new Sound(Identifier.of("spell_engine:generic_soul_impact"));
-        damage.particles = new ParticleBatch[]{
-                new ParticleBatch(
-                        SpellEngineParticles.MagicParticles.get(
-                                SpellEngineParticles.MagicParticles.Shape.SKULL,
-                                SpellEngineParticles.MagicParticles.Motion.DECELERATE
-                        ).id().toString(),
-                        ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.CENTER,
-                        25, 0.2F, 0.5F)
-                        .color(858993663)
-        };
+        damage.visuals = Fx.Visuals.of(
+                ParticleGroupBuilder.magic(SpellEngineParticles.magic_skull, ParticleGroup.Motion.DECELERATE)
+                        .color(858993663L)
+                        .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
+                                .count(25).speed(0.2F, 0.5F)));
 
         var witherEffect = SpellBuilder.Impacts.effectSet("wither",8.0F,1);
         witherEffect.action.status_effect.amplifier_cap = 10;
@@ -469,13 +449,11 @@ public class MrpgLibSpells {
         var projectile = new Spell.ProjectileData();
         projectile.client_data = new Spell.ProjectileData.Client();
         projectile.client_data.light_level = 12;
-        projectile.client_data.travel_particles = new ParticleBatch[]{
-                new ParticleBatch(
-                        "snowflake",
-                        ParticleBatch.Shape.CIRCLE, ParticleBatch.Origin.CENTER,
-                        3, 0.0F, 0.1F)
-                        .rotate(ParticleBatch.Rotation.LOOK)
-        };
+        projectile.client_data.travel_particles = List.of(
+                ParticleGroupBuilder.of("snowflake")
+                        .batch(b -> b.shape(ParticleGroup.Shape.CIRCLE)
+                                .count(3).speed(0F, 0.1F)
+                                .alignment(ParticleGroup.Alignment.LOOK)));
         projectile.client_data.composite_model = SpellBuilder.ProjectileModels.single("more_rpg_classes:spell_projectile/small_avalanche");
         spell.deliver.meteor.projectile = projectile;
 
@@ -487,15 +465,10 @@ public class MrpgLibSpells {
         );
         var damage = SpellBuilder.Impacts.damage(0.3F);
         damage.attribute = EntityAttributes.GENERIC_ATTACK_DAMAGE.getIdAsString();
-        damage.particles = new ParticleBatch[]{
-                new ParticleBatch(
-                        SpellEngineParticles.MagicParticles.get(
-                                SpellEngineParticles.MagicParticles.Shape.FROST,
-                                SpellEngineParticles.MagicParticles.Motion.BURST
-                        ).id().toString(),
-                        ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.CENTER,
-                        15, 0.2F, 0.4F).color(Color.FROST.toRGBA())
-        };
+        damage.visuals = Fx.Visuals.of(
+                ParticleGroupBuilder.magic(SpellEngineParticles.magic_frost, ParticleGroup.Motion.BURST, Color.FROST)
+                        .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
+                                .count(15).speed(0.2F, 0.4F)));
         damage.sound = new Sound(Identifier.of("spell_engine", "generic_frost_impact"));
 
         spell.impacts = List.of(freezingEffect, damage);
@@ -504,12 +477,10 @@ public class MrpgLibSpells {
         spell.area_impact.radius = 2.0F;
         spell.area_impact.area = new Spell.Target.Area();
         spell.area_impact.area.distance_dropoff = Spell.Target.Area.DropoffCurve.SQUARED;
-        spell.area_impact.particles = new ParticleBatch[]{
-                new ParticleBatch(
-                        "snowflake",
-                        ParticleBatch.Shape.CIRCLE, ParticleBatch.Origin.CENTER,
-                        10, 0.5F, 2.0F)
-        };
+        spell.area_impact.visuals = Fx.Visuals.of(
+                ParticleGroupBuilder.of("snowflake")
+                        .batch(b -> b.shape(ParticleGroup.Shape.CIRCLE)
+                                .count(10).speed(0.5F, 2.0F)));
 
         SpellBuilder.Cost.cooldown(spell, 8.0F);
 
@@ -606,20 +577,15 @@ public class MrpgLibSpells {
 
         cloud.client_data = new Spell.Delivery.Cloud.ClientData();
         cloud.client_data.light_level = 15;
-        cloud.client_data.particles = new ParticleBatch[]{
-                new ParticleBatch(
-                        "dragon_breath",
-                        ParticleBatch.Shape.PILLAR, ParticleBatch.Origin.FEET,
-                        20.0F, 0.0F, 0.0F
-                ),
-                new ParticleBatch(
-                        SpellEngineParticles.MagicParticles.get(
-                                SpellEngineParticles.MagicParticles.Shape.ARCANE,
-                                SpellEngineParticles.MagicParticles.Motion.ASCEND).id().toString(),
-                        ParticleBatch.Shape.PILLAR, ParticleBatch.Origin.FEET,
-                        10.0F, 0.1F, 0.5F
-                ).color(Color.ARCANE.toRGBA())
-        };
+        cloud.client_data.particles = List.of(
+                ParticleGroupBuilder.of("dragon_breath")
+                        .batch(b -> b.shape(ParticleGroup.Shape.PILLAR)
+                                .count(20F).speed(0F, 0F)
+                                .verticalOrigin(ParticleGroupBuilder.Batches.FEET)),
+                ParticleGroupBuilder.magic(SpellEngineParticles.magic_arcane, ParticleGroup.Motion.ASCEND, Color.ARCANE)
+                        .batch(b -> b.shape(ParticleGroup.Shape.PILLAR)
+                                .count(10F).speed(0.1F, 0.5F)
+                                .verticalOrigin(ParticleGroupBuilder.Batches.FEET)));
 
         cloud.spawn = new Spell.Delivery.Cloud.Spawn();
         cloud.spawn.sound = new Sound(Identifier.of("entity.ender_dragon.shoot"));
@@ -629,15 +595,11 @@ public class MrpgLibSpells {
         var damage = SpellBuilder.Impacts.damage(0.5F);
         damage.attribute = "ranged_weapon:damage";
         damage.action.damage.knockback = 0.5F;
-        damage.particles = new ParticleBatch[]{
-                new ParticleBatch(
-                        SpellEngineParticles.MagicParticles.get(
-                                SpellEngineParticles.MagicParticles.Shape.SPELL,
-                                SpellEngineParticles.MagicParticles.Motion.BURST).id().toString(),
-                        ParticleBatch.Shape.PILLAR, ParticleBatch.Origin.FEET,
-                        20.0F, 0.05F, 0.15F
-                ).color(Color.ARCANE.toRGBA())
-        };
+        damage.visuals = Fx.Visuals.of(
+                ParticleGroupBuilder.magic(SpellEngineParticles.magic_spell, ParticleGroup.Motion.BURST, Color.ARCANE)
+                        .batch(b -> b.shape(ParticleGroup.Shape.PILLAR)
+                                .count(20F).speed(0.05F, 0.15F)
+                                .verticalOrigin(ParticleGroupBuilder.Batches.FEET)));
 
         spell.impacts = List.of(damage);
 
@@ -673,29 +635,23 @@ public class MrpgLibSpells {
         bleedingEffect.action.status_effect.amplifier_power_multiplier = 0.2F;
         bleedingEffect.action.status_effect.amplifier_cap = 2;
         bleedingEffect.action.status_effect.show_particles = false;
-        bleedingEffect.particles = new ParticleBatch[]{
-                new ParticleBatch(
-                        SpellEngineParticles.dripping_blood.id().toString(),
-                        ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.CENTER,
-                        10.0F, 0.05F, 0.3F
-                )
-        };
+        bleedingEffect.visuals = Fx.Visuals.of(
+                ParticleGroupBuilder.of(SpellEngineParticles.dripping_blood)
+                        .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
+                                .count(10F).speed(0.05F, 0.3F)));
 
         var damage = SpellBuilder.Impacts.damage(0.5F);
         damage.attribute = "ranged_weapon:damage";
         damage.action.damage.knockback = 0.5F;
-        damage.particles = new ParticleBatch[]{
-                new ParticleBatch(
-                        "more_rpg_classes:big_splash",
-                        ParticleBatch.Shape.PILLAR, ParticleBatch.Origin.FEET,
-                        20.0F, 0.05F, 0.2F
-                ),
-                new ParticleBatch(
-                        "more_rpg_classes:splash",
-                        ParticleBatch.Shape.CIRCLE, ParticleBatch.Origin.FEET,
-                        15.0F, 0.05F, 0.2F
-                )
-        };
+        damage.visuals = Fx.Visuals.of(
+                ParticleGroupBuilder.of(MoreParticles.BIG_SPLASH)
+                        .batch(b -> b.shape(ParticleGroup.Shape.PILLAR)
+                                .count(20F).speed(0.05F, 0.2F)
+                                .verticalOrigin(ParticleGroupBuilder.Batches.FEET)),
+                ParticleGroupBuilder.of(MoreParticles.SPLASH)
+                        .batch(b -> b.shape(ParticleGroup.Shape.CIRCLE)
+                                .count(15F).speed(0.05F, 0.2F)
+                                .verticalOrigin(ParticleGroupBuilder.Batches.FEET)));
         damage.sound = Sound.withVolume(Identifier.of("more_rpg_classes:water_magic_impact1"), 0.4F);
 
         spell.impacts = List.of(bleedingEffect, damage);
@@ -767,29 +723,19 @@ public class MrpgLibSpells {
         glacialArrowModel.rotate_degrees_per_tick = 0.0F;
         spell.deliver.projectile.projectile.client_data.composite_model = SpellBuilder.ProjectileModels.composite(glacialArrowModel);
 
-        spell.release.particles = new ParticleBatch[]{
-                new ParticleBatch(
-                        SpellEngineParticles.MagicParticles.get(
-                                SpellEngineParticles.MagicParticles.Shape.FROST,
-                                SpellEngineParticles.MagicParticles.Motion.BURST).id().toString(),
-                        ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.CENTER,
-                        25.0F, 0.2F, 0.7F
-                ).color(Color.FROST.toRGBA())
-        };
+        spell.release.visuals = Fx.Visuals.of(
+                ParticleGroupBuilder.magic(SpellEngineParticles.magic_frost, ParticleGroup.Motion.BURST, Color.FROST)
+                        .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
+                                .count(25F).speed(0.2F, 0.7F)));
         spell.release.sound = new Sound(Identifier.of("spell_engine:generic_frost_impact"));
 
         var damage = SpellBuilder.Impacts.damage(0.35F);
         damage.attribute = "ranged_weapon:damage";
         damage.action.damage.knockback = 0.5F;
-        damage.particles = new ParticleBatch[]{
-                new ParticleBatch(
-                        SpellEngineParticles.MagicParticles.get(
-                                SpellEngineParticles.MagicParticles.Shape.FROST,
-                                SpellEngineParticles.MagicParticles.Motion.BURST).id().toString(),
-                        ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.CENTER,
-                        25.0F, 0.2F, 0.7F
-                ).color(Color.FROST.toRGBA())
-        };
+        damage.visuals = Fx.Visuals.of(
+                ParticleGroupBuilder.magic(SpellEngineParticles.magic_frost, ParticleGroup.Motion.BURST, Color.FROST)
+                        .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
+                                .count(25F).speed(0.2F, 0.7F)));
         damage.sound = new Sound(Identifier.of("spell_engine:generic_frost_impact"));
 
         var frostedEffect = SpellBuilder.Impacts.effectSet("more_rpg_classes:frosted", 5.0F, 0);
@@ -797,15 +743,10 @@ public class MrpgLibSpells {
                 SpellBuilderHelper.targetModifier("#minecraft:freeze_immune_entity_types", TriState.DENY)
         );
         frostedEffect.action.status_effect.show_particles = false;
-        frostedEffect.particles = new ParticleBatch[]{
-                new ParticleBatch(
-                        SpellEngineParticles.MagicParticles.get(
-                                SpellEngineParticles.MagicParticles.Shape.FROST,
-                                SpellEngineParticles.MagicParticles.Motion.BURST).id().toString(),
-                        ParticleBatch.Shape.CIRCLE, ParticleBatch.Origin.CENTER,
-                        5.0F, 0.1F, 0.35F
-                ).color(Color.FROST.toRGBA())
-        };
+        frostedEffect.visuals = Fx.Visuals.of(
+                ParticleGroupBuilder.magic(SpellEngineParticles.magic_frost, ParticleGroup.Motion.BURST, Color.FROST)
+                        .batch(b -> b.shape(ParticleGroup.Shape.CIRCLE)
+                                .count(5F).speed(0.1F, 0.35F)));
 
         spell.impacts = List.of(damage, frostedEffect);
 
@@ -837,20 +778,14 @@ public class MrpgLibSpells {
 
         var witherEffect = SpellBuilder.Impacts.effectSet("more_rpg_classes:withers_curse", 10.0F, 0);
         witherEffect.action.status_effect.show_particles = true;
-        witherEffect.particles = new ParticleBatch[]{
-                new ParticleBatch(
-                        SpellEngineParticles.MagicParticles.get(
-                                SpellEngineParticles.MagicParticles.Shape.SKULL,
-                                SpellEngineParticles.MagicParticles.Motion.DECELERATE).id().toString(),
-                        ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.CENTER,
-                        15.0F, 0.2F, 0.25F
-                ).color(858993663L),
-                new ParticleBatch(
-                        "sculk_soul",
-                        ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.CENTER,
-                        20.0F, 0.3F, 0.4F
-                )
-        };
+        witherEffect.visuals = Fx.Visuals.of(
+                ParticleGroupBuilder.magic(SpellEngineParticles.magic_skull, ParticleGroup.Motion.DECELERATE)
+                        .color(858993663L)
+                        .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
+                                .count(15F).speed(0.2F, 0.25F)),
+                ParticleGroupBuilder.of("sculk_soul")
+                        .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
+                                .count(20F).speed(0.3F, 0.4F)));
         witherEffect.sound = new Sound(Identifier.of("entity.wither.ambient"));
 
         var damage = SpellBuilder.Impacts.damage(0.2F);
@@ -890,24 +825,17 @@ public class MrpgLibSpells {
         bleedingEffect.action.status_effect.amplifier_power_multiplier = 0.3F;
         bleedingEffect.action.status_effect.amplifier_cap = 2;
         bleedingEffect.action.status_effect.show_particles = false;
-        bleedingEffect.particles = new ParticleBatch[]{
-                new ParticleBatch(
-                        "spell_engine:dripping_blood",
-                        ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.CENTER,
-                        10.0F, 0.05F, 0.3F
-                )
-        };
+        bleedingEffect.visuals = Fx.Visuals.of(
+                ParticleGroupBuilder.of(SpellEngineParticles.dripping_blood)
+                        .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
+                                .count(10F).speed(0.05F, 0.3F)));
 
         var damage = SpellBuilder.Impacts.damage(0.2F,0.25F);
-        damage.particles = new ParticleBatch[]{
-                new ParticleBatch(
-                        SpellEngineParticles.MagicParticles.get(
-                                SpellEngineParticles.MagicParticles.Shape.SPARK,
-                                SpellEngineParticles.MagicParticles.Motion.FLOAT).id().toString(),
-                        ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.CENTER,
-                        10.0F, 0.3F, 0.35F
-                ).color(3217014783L)
-        };
+        damage.visuals = Fx.Visuals.of(
+                ParticleGroupBuilder.magic(SpellEngineParticles.magic_spark, ParticleGroup.Motion.FLOAT)
+                        .color(3217014783L)
+                        .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
+                                .count(10F).speed(0.3F, 0.35F)));
 
         spell.impacts = List.of(bleedingEffect, damage);
 
@@ -941,44 +869,27 @@ public class MrpgLibSpells {
         spell.target.area.vertical_range_multiplier = 1.0F;
 
         spell.release.sound = new Sound(Identifier.of("spell_engine:generic_frost_release"));
-        spell.release.particles = new ParticleBatch[]{
-                new ParticleBatch(
-                        SpellEngineParticles.snowflake.id().toString(),
-                        ParticleBatch.Shape.CIRCLE, ParticleBatch.Origin.CENTER,
-                        60.0F, 0.1F, 0.3F
-                ),
-                new ParticleBatch(
-                        SpellEngineParticles.frost_shard.id().toString(),
-                        ParticleBatch.Shape.CIRCLE, ParticleBatch.Origin.CENTER,
-                        60.0F, 0.3F, 0.6F
-                )
-        };
-        var rangedParticle = new ParticleBatch(
-                SpellEngineParticles.area_effect_293.id().toString(),
-                ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.GROUND,
-                1.0F, 0.0F, 0.0F
-        ).color(2582052863L);
-        rangedParticle.scale = 0.4F;
-        spell.release.particles_scaled_with_ranged = new ParticleBatch[]{
-                rangedParticle
-        };
+        spell.release.visuals = Fx.Visuals.of(
+                ParticleGroupBuilder.of(SpellEngineParticles.snowflake)
+                        .batch(b -> b.shape(ParticleGroup.Shape.CIRCLE)
+                                .count(60F).speed(0.1F, 0.3F)),
+                ParticleGroupBuilder.of(SpellEngineParticles.frost_shard)
+                        .batch(b -> b.shape(ParticleGroup.Shape.CIRCLE)
+                                .count(60F).speed(0.3F, 0.6F)),
+                ParticleGroupBuilder.of(SpellEngineParticles.area_effect_293)
+                        .color(2582052863L)
+                        .scaleWith(Fx.ScaleWith.RANGE)
+                        .batch(ParticleGroupBuilder.Batches.ground(1F)));
 
         var frozenEffect = SpellBuilder.Impacts.effectSet("more_rpg_classes:frozen_solid",3,0);
         frozenEffect.action.status_effect.show_particles = false;
-        frozenEffect.particles = new ParticleBatch[]{
-                new ParticleBatch(
-                        SpellEngineParticles.snowflake.id().toString(),
-                        ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.CENTER,
-                        25.0F, 0.1F, 0.4F
-                ),
-                new ParticleBatch(
-                        SpellEngineParticles.MagicParticles.get(
-                                SpellEngineParticles.MagicParticles.Shape.FROST,
-                                SpellEngineParticles.MagicParticles.Motion.BURST).id().toString(),
-                        ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.CENTER,
-                        30.0F, 0.2F, 0.7F
-                )
-        };
+        frozenEffect.visuals = Fx.Visuals.of(
+                ParticleGroupBuilder.of(SpellEngineParticles.snowflake)
+                        .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
+                                .count(25F).speed(0.1F, 0.4F)),
+                ParticleGroupBuilder.magic(SpellEngineParticles.magic_frost, ParticleGroup.Motion.BURST)
+                        .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
+                                .count(30F).speed(0.2F, 0.7F)));
         frozenEffect.sound = new Sound(Identifier.of("spell_engine:generic_frost_impact"));
 
         spell.impacts = List.of(frozenEffect);
@@ -1011,13 +922,10 @@ public class MrpgLibSpells {
         spell.target.type = Spell.Target.Type.AIM;
         spell.target.aim = new Spell.Target.Aim();
 
-        spell.release.particles = new ParticleBatch[]{
-                new ParticleBatch(
-                        "smoke",
-                        ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.CENTER,
-                        40.0F, 0.6F, 0.8F
-                )
-        };
+        spell.release.visuals = Fx.Visuals.of(
+                ParticleGroupBuilder.of("smoke")
+                        .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
+                                .count(40F).speed(0.6F, 0.8F)));
 
         spell.deliver = new Spell.Delivery();
         spell.deliver.type = Spell.Delivery.Type.PROJECTILE;
@@ -1041,15 +949,11 @@ public class MrpgLibSpells {
         spell.deliver.projectile.projectile = new Spell.ProjectileData();
         spell.deliver.projectile.projectile.divergence = 5.0F;
         spell.deliver.projectile.projectile.client_data = new Spell.ProjectileData.Client();
-        var travelParticle = new ParticleBatch(
-                "smoke",
-                ParticleBatch.Shape.CIRCLE, ParticleBatch.Origin.CENTER,
-                2.0F, 0.6F, 0.9F
-        );
-        travelParticle.rotation = ParticleBatch.Rotation.LOOK;
-        spell.deliver.projectile.projectile.client_data.travel_particles = new ParticleBatch[]{
-                travelParticle
-        };
+        spell.deliver.projectile.projectile.client_data.travel_particles = List.of(
+                ParticleGroupBuilder.of("smoke")
+                        .batch(b -> b.shape(ParticleGroup.Shape.CIRCLE)
+                                .count(2F).speed(0.6F, 0.9F)
+                                .alignment(ParticleGroup.Alignment.LOOK)));
         var witherSkullModel = SpellBuilder.ProjectileModels.model("more_rpg_classes:spell_projectile/wither_skull", 1.5F);
         witherSkullModel.rotate_degrees_per_tick = 0.0F;
         spell.deliver.projectile.projectile.client_data.composite_model = SpellBuilder.ProjectileModels.composite(witherSkullModel);
@@ -1057,24 +961,17 @@ public class MrpgLibSpells {
         var witherEffect = SpellBuilder.Impacts.effectSet("wither",5,1);
         witherEffect.action.status_effect.amplifier_power_multiplier = 0.25F;
         witherEffect.action.status_effect.show_particles = false;
-        witherEffect.particles = new ParticleBatch[]{
-                new ParticleBatch(
-                        SpellEngineParticles.MagicParticles.get(
-                                SpellEngineParticles.MagicParticles.Shape.SKULL,
-                                SpellEngineParticles.MagicParticles.Motion.DECELERATE).id().toString(),
-                        ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.CENTER,
-                        25.0F, 0.2F, 0.25F
-                ).color(858993663L)
-        };
+        witherEffect.visuals = Fx.Visuals.of(
+                ParticleGroupBuilder.magic(SpellEngineParticles.magic_skull, ParticleGroup.Motion.DECELERATE)
+                        .color(858993663L)
+                        .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
+                                .count(25F).speed(0.2F, 0.25F)));
 
         var damage = SpellBuilder.Impacts.damage(0.1F,0.25F);
-        damage.particles = new ParticleBatch[]{
-                new ParticleBatch(
-                        "smoke",
-                        ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.CENTER,
-                        10.0F, 0.3F, 0.35F
-                )
-        };
+        damage.visuals = Fx.Visuals.of(
+                ParticleGroupBuilder.of("smoke")
+                        .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
+                                .count(10F).speed(0.3F, 0.35F)));
         damage.sound = new Sound(Identifier.of("entity.generic.explode"));
 
         spell.impacts = List.of(witherEffect, damage);
@@ -1109,33 +1006,20 @@ public class MrpgLibSpells {
         spell.target.area.vertical_range_multiplier = 1.0F;
 
         spell.release.sound = new Sound(Identifier.of("entity.generic.explode"));
-        spell.release.particles = new ParticleBatch[]{
-                new ParticleBatch(
-                        SpellEngineParticles.MagicParticles.get(
-                                SpellEngineParticles.MagicParticles.Shape.ARCANE,
-                                SpellEngineParticles.MagicParticles.Motion.BURST).id().toString(),
-                        ParticleBatch.Shape.CIRCLE, ParticleBatch.Origin.CENTER,
-                        130.0F, 0.2F, 1.5F
-                ).color(Color.ARCANE.toRGBA()),
-                new ParticleBatch(
-                        SpellEngineParticles.MagicParticles.get(
-                                SpellEngineParticles.MagicParticles.Shape.STRIPE,
-                                SpellEngineParticles.MagicParticles.Motion.BURST).id().toString(),
-                        ParticleBatch.Shape.CIRCLE, ParticleBatch.Origin.CENTER,
-                        130.0F, 0.8F, 1.9F
-                ).color(Color.ARCANE.toRGBA())
-        };
+        spell.release.visuals = Fx.Visuals.of(
+                ParticleGroupBuilder.magic(SpellEngineParticles.magic_arcane, ParticleGroup.Motion.BURST, Color.ARCANE)
+                        .batch(b -> b.shape(ParticleGroup.Shape.CIRCLE)
+                                .count(130F).speed(0.2F, 1.5F)),
+                ParticleGroupBuilder.magic(SpellEngineParticles.magic_stripe, ParticleGroup.Motion.BURST, Color.ARCANE)
+                        .batch(b -> b.shape(ParticleGroup.Shape.CIRCLE)
+                                .count(130F).speed(0.8F, 1.9F)));
 
         var damage = SpellBuilder.Impacts.damage(0.4F,1.0F);
-        damage.particles = new ParticleBatch[]{
-                new ParticleBatch(
-                        SpellEngineParticles.MagicParticles.get(
-                                SpellEngineParticles.MagicParticles.Shape.SPELL,
-                                SpellEngineParticles.MagicParticles.Motion.BURST).id().toString(),
-                        ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.CENTER,
-                        30.0F, 0.2F, 1.2F
-                ).color(4284940287L)
-        };
+        damage.visuals = Fx.Visuals.of(
+                ParticleGroupBuilder.magic(SpellEngineParticles.magic_spell, ParticleGroup.Motion.BURST)
+                        .color(4284940287L)
+                        .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
+                                .count(30F).speed(0.2F, 1.2F)));
 
         spell.impacts = List.of(damage);
 
@@ -1169,20 +1053,13 @@ public class MrpgLibSpells {
         spell.target.type = Spell.Target.Type.FROM_TRIGGER;
 
         var removeEffects = SpellBuilder.Impacts.effectCleanse();
-        removeEffects.particles = new ParticleBatch[]{
-                new ParticleBatch(
-                        "more_rpg_classes:water_circle",
-                        ParticleBatch.Shape.CIRCLE, ParticleBatch.Origin.FEET,
-                        1.0F, 0.2F, 1.0F
-                ),
-                new ParticleBatch(
-                        SpellEngineParticles.MagicParticles.get(
-                                SpellEngineParticles.MagicParticles.Shape.SPELL,
-                                SpellEngineParticles.MagicParticles.Motion.DECELERATE).id().toString(),
-                        ParticleBatch.Shape.WIDE_PIPE, ParticleBatch.Origin.FEET,
-                        15.0F, 0.3F, 0.3F
-                ).color(4294954239L)
-        };
+        removeEffects.visuals = Fx.Visuals.of(
+                ParticleGroupBuilder.of(MoreParticles.WATER_CIRCLE)
+                        .batch(b -> b.shape(ParticleGroup.Shape.CIRCLE)
+                                .verticalOrigin(0.1F).count(1).speed(0F, 0F)),
+                ParticleGroupBuilder.magic(SpellEngineParticles.magic_spell, ParticleGroup.Motion.DECELERATE, Color.HOLY)
+                        .batch(b -> b.shape(ParticleGroup.Shape.PIPE).widthFactor(2F)
+                                .verticalOrigin(0.1F).count(15).speed(0.3F, 0.3F)));
 
         var regenEffect = SpellBuilder.Impacts.effectSet(MRPGCEffects.SIRENS_TEAR.id.toString(),6,0);
         regenEffect.action.status_effect.show_particles = false;
@@ -1231,15 +1108,10 @@ public class MrpgLibSpells {
 
         var buffEffect = SpellBuilder.Impacts.effectSet(MRPGCEffects.DRAGON_SLAYERS_FURY.id.toString(),8,0);
         buffEffect.action.status_effect.show_particles = false;
-        buffEffect.particles = new ParticleBatch[]{
-                new ParticleBatch(
-                        SpellEngineParticles.MagicParticles.get(
-                                SpellEngineParticles.MagicParticles.Shape.SKULL,
-                                SpellEngineParticles.MagicParticles.Motion.DECELERATE
-                        ).id().toString(),
-                        ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.CENTER,
-                        10, 0.5F, 0.8F).color(Color.ARCANE.toRGBA()).extent(0.25F)
-        };
+        buffEffect.visuals = Fx.Visuals.of(
+                ParticleGroupBuilder.magic(SpellEngineParticles.magic_skull, ParticleGroup.Motion.DECELERATE, Color.ARCANE)
+                        .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
+                                .count(10).speed(0.5F, 0.8F).extent(0.25F)));
 
         spell.impacts = List.of(buffEffect);
 
@@ -1268,18 +1140,15 @@ public class MrpgLibSpells {
         var effect = SpellBuilder.Impacts.effectAdd(MRPGCEffects.ARCANE_PRECISION.id.toString(), 10, 1, 9);
         effect.action.status_effect.refresh_duration = true;
         effect.action.status_effect.show_particles = false;
-        effect.particles = new ParticleBatch[]{
-                new ParticleBatch(
-                        "dragon_breath",
-                        ParticleBatch.Shape.CIRCLE, ParticleBatch.Origin.CENTER,
-                        40, 0.6F, 0.8F
-                ),
-                new ParticleBatch(
-                        "spell_engine:magic_arcane_impact_burst",
-                        ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.FEET,
-                        10, 0.05F, 0.2F
-                ).extent(2.0F).color(4284940287L)
-        };
+        effect.visuals = Fx.Visuals.of(
+                ParticleGroupBuilder.of("dragon_breath")
+                        .batch(b -> b.shape(ParticleGroup.Shape.CIRCLE)
+                                .count(40).speed(0.6F, 0.8F)),
+                // NOTE: V1 named the dead id "spell_engine:magic_arcane_impact_burst", so this
+                // effect never rendered. Repaired to the evident intent - see commit message.
+                ParticleGroupBuilder.magic(SpellEngineParticles.magic_arcane, ParticleGroup.Motion.BURST, Color.ARCANE)
+                        .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
+                                .verticalOrigin(0.1F).count(10).speed(0.05F, 0.2F).extent(2.0F)));
 
         spell.impacts = List.of(effect);
         SpellBuilder.Cost.cooldown(spell, 1);
@@ -1314,13 +1183,11 @@ public class MrpgLibSpells {
         cooldownImpact.action.cooldown.actives.school = SpellSchools.FIRE.id.toString();
         cooldownImpact.action.cooldown.actives.duration_multiplier = 0.7F;
         cooldownImpact.action.apply_to_caster = true;
-        cooldownImpact.particles = new ParticleBatch[]{
-                new ParticleBatch(
-                        SpellEngineParticles.sign_hourglass.id().toString(),
-                        ParticleBatch.Shape.LINE_VERTICAL, ParticleBatch.Origin.CENTER,
-                        1, 0.75F, 0.75F
-                ).scale(1.2F).color(4282850047L).followEntity(true)
-        };
+        cooldownImpact.visuals = Fx.Visuals.of(
+                ParticleGroupBuilder.of(SpellEngineParticles.sign_hourglass)
+                        .scale(1.2F).color(4282850047L).attached()
+                        .batch(b -> b.shape(ParticleGroup.Shape.LINE_VERTICAL)
+                                .count(1).speed(0.75F, 0.75F)));
 
         var damage = SpellBuilder.Impacts.damage(0.3F);
 
@@ -1354,13 +1221,10 @@ public class MrpgLibSpells {
         cloud.time_to_live_seconds = 7.0F;
         cloud.impact_tick_interval = 5;
         cloud.client_data.light_level = 6;
-        cloud.client_data.particles = new ParticleBatch[]{
-                new ParticleBatch(
-                        "more_rpg_classes:freezing_snowflake",
-                        ParticleBatch.Shape.PILLAR, ParticleBatch.Origin.FEET,
-                        10, 0.1F, 0.12F
-                )
-        };
+        cloud.client_data.particles = List.of(
+                ParticleGroupBuilder.of(MoreParticles.FREEZING_SNOWFLAKE)
+                        .batch(b -> b.shape(ParticleGroup.Shape.PILLAR)
+                                .verticalOrigin(0.1F).count(10).speed(0.1F, 0.12F)));
         cloud.client_data.particle_spawn_interval = 12;
         cloud.spawn.sound = new Sound(SpellEngineSounds.GENERIC_FROST_CASTING.id().toString());
 
@@ -1376,13 +1240,10 @@ public class MrpgLibSpells {
         freezing.action.status_effect.refresh_duration = true;
         freezing.action.status_effect.show_particles = false;
         freezing.target_modifiers = List.of(denyModifier);
-        freezing.particles = new ParticleBatch[]{
-                new ParticleBatch(
-                        "more_rpg_classes:freezing_snowflake",
-                        ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.CENTER,
-                        25, 0.2F, 0.25F
-                )
-        };
+        freezing.visuals = Fx.Visuals.of(
+                ParticleGroupBuilder.of(MoreParticles.FREEZING_SNOWFLAKE)
+                        .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
+                                .count(25).speed(0.2F, 0.25F)));
 
         spell.impacts = List.of(freezing);
         SpellBuilder.Cost.cooldown(spell, 4);
@@ -1414,13 +1275,12 @@ public class MrpgLibSpells {
         spell.target.area.vertical_range_multiplier = 1.0F;
 
         spell.release.sound = new Sound(Identifier.ofVanilla("ambient.underwater.exit").toString());
-        spell.release.particles_scaled_with_ranged = new ParticleBatch[]{
-                new ParticleBatch(
-                        SpellEngineParticles.area_effect_293.id().toString(),
-                        ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.GROUND,
-                        1, 0.0F, 0.0F
-                ).scale(0.8F).color(2816865791L)
-        };
+        spell.release.visuals = Fx.Visuals.of(
+                ParticleGroupBuilder.of(SpellEngineParticles.area_effect_293)
+                        .scaleWith(Fx.ScaleWith.RANGE).color(2816865791L)
+                        .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
+                                .anchor(ParticleGroup.Anchor.GROUND)
+                                .count(1).speed(0.0F, 0.0F)));
 
         var vulnerableModifier = SpellBuilder.ImpactModifiers.create("#more_rpg_classes:vulnerable_to_water_spells");
         vulnerableModifier.modifier = new Spell.Impact.Modifier();
@@ -1432,33 +1292,23 @@ public class MrpgLibSpells {
 
         var damage = SpellBuilder.Impacts.damage(0.2F);
         damage.target_modifiers = List.of(vulnerableModifier, resistantModifier);
-        damage.particles = new ParticleBatch[]{
-                new ParticleBatch(
-                        "more_rpg_classes:splash",
-                        ParticleBatch.Shape.CIRCLE, ParticleBatch.Origin.FEET,
-                        15, 0.05F, 0.2F
-                )
-        };
+        damage.visuals = Fx.Visuals.of(
+                ParticleGroupBuilder.of(MoreParticles.SPLASH)
+                        .batch(b -> b.shape(ParticleGroup.Shape.CIRCLE)
+                                .verticalOrigin(0.1F).count(15).speed(0.05F, 0.2F)));
         damage.sound = Sound.withVolume(Identifier.of("more_rpg_classes:water_magic_impact1"), 0.4F);
 
         var heal = SpellBuilder.Impacts.heal(0.15F);
-        heal.particles = new ParticleBatch[]{
-                new ParticleBatch(
-                        "more_rpg_classes:water_heal",
-                        ParticleBatch.Shape.CIRCLE, ParticleBatch.Origin.FEET,
-                        5, 0.01F, 0.05F
-                ),
-                new ParticleBatch(
-                        "more_rpg_classes:water_heal",
-                        ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.CENTER,
-                        5, 0.05F, 0.1F
-                ),
-                new ParticleBatch(
-                        "more_rpg_classes:water_circle",
-                        ParticleBatch.Shape.CIRCLE, ParticleBatch.Origin.FEET,
-                        1, 0.2F, 1.0F
-                )
-        };
+        heal.visuals = Fx.Visuals.of(
+                ParticleGroupBuilder.of(MoreParticles.WATER_HEAL)
+                        .batch(b -> b.shape(ParticleGroup.Shape.CIRCLE)
+                                .verticalOrigin(0.1F).count(5).speed(0.01F, 0.05F)),
+                ParticleGroupBuilder.of(MoreParticles.WATER_HEAL)
+                        .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
+                                .count(5).speed(0.05F, 0.1F)),
+                ParticleGroupBuilder.of(MoreParticles.WATER_CIRCLE)
+                        .batch(b -> b.shape(ParticleGroup.Shape.CIRCLE)
+                                .verticalOrigin(0.1F).count(1).speed(0F, 0F)));
         heal.sound = Sound.withVolume(SpellEngineSounds.GENERIC_HEALING_IMPACT_2.id(), 1.2F);
 
         spell.impacts = List.of(damage, heal);
@@ -1497,13 +1347,13 @@ public class MrpgLibSpells {
         var buff = SpellBuilder.Impacts.effectAdd(effect.id.toString(), 10, 1, 9);
         buff.action.status_effect.refresh_duration = true;
         buff.action.status_effect.show_particles = false;
-        buff.particles = new ParticleBatch[]{
-                new ParticleBatch(
-                        "more_rpg_classes:gust",
-                        ParticleBatch.Shape.SPHERE, ParticleBatch.Origin.CENTER,
-                        4, 0.5F, 0.8F
-                ).extent(1.0F)
-        };
+        // NOTE: V1 named "more_rpg_classes:gust" but never registered the type, so this
+        // effect never rendered. The 12-frame sprite sheet ships with the mod; the entry is
+        // now registered in MoreParticles and this points at the artwork V1 intended.
+        buff.visuals = Fx.Visuals.of(
+                ParticleGroupBuilder.of(MoreParticles.GUST)
+                        .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
+                                .count(4).speed(0.5F, 0.8F).extent(1.0F)));
 
         spell.impacts = List.of(buff);
         SpellBuilder.Cost.cooldown(spell, 5);
@@ -1560,13 +1410,10 @@ public class MrpgLibSpells {
         spell.deliver.projectile.projectile = projectile;
 
         var damage = SpellBuilder.Impacts.damage(0.25F, 0.5F);
-        damage.particles = new ParticleBatch[]{
-                new ParticleBatch(
-                        "campfire_cosy_smoke",
-                        ParticleBatch.Shape.CIRCLE, ParticleBatch.Origin.CENTER,
-                        3, 0.005F, 0.008F
-                )
-        };
+        damage.visuals = Fx.Visuals.of(
+                ParticleGroupBuilder.of("campfire_cosy_smoke")
+                        .batch(b -> b.shape(ParticleGroup.Shape.CIRCLE)
+                                .count(3).speed(0.005F, 0.008F)));
         damage.sound = Sound.withVolume(Identifier.ofVanilla("block.pointed_dripstone.break"), 1.5F);
 
         spell.impacts = List.of(damage);

@@ -34,19 +34,25 @@
           }
         }
       },
-      "particles": [
-        {
-          "particle_id": "spell_engine:sign_hourglass",
-          "origin": "CENTER",
-          "shape": "LINE_VERTICAL",
-          "count": 1.0,
-          "min_speed": 0.75,
-          "max_speed": 0.75,
-          "color_rgba": 4282850047,
-          "scale": 1.2,
-          "follow_entity": true
-        }
-      ]
+      "visuals": {
+        "particles": [
+          {
+            "id": "spell_engine:sign_hourglass",
+            "appearance": {
+              "color": 4282850047,
+              "scale": 1.2,
+              "attachment": "POSITION"
+            },
+            "batch": {
+              "count": 1.0,
+              "shape": "LINE_VERTICAL",
+              "anchor": "ENTITY",
+              "min_speed": 0.75,
+              "max_speed": 0.75
+            }
+          }
+        ]
+      }
     },
     {
       "action": {

@@ -5,7 +5,7 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
-import net.spell_engine.api.spell.fx.ParticleBatch;
+import net.spell_engine.api.spell.fx.ParticleGroup;
 import net.spell_engine.fx.ParticleHelper;
 import net.spell_engine.utils.SoundHelper;
 
@@ -14,7 +14,7 @@ public abstract class StealthStatusEffect extends StatusEffect {
         super(category, color);
     }
 
-    public abstract ParticleBatch stealthPopParticles();
+    public abstract ParticleGroup stealthPopParticles();
 
     public Identifier stealthLeaveSoundId() {
         return null;
@@ -32,7 +32,7 @@ public abstract class StealthStatusEffect extends StatusEffect {
         }
         var particles = stealthPopParticles();
         if (particles != null) {
-            ParticleHelper.sendBatches(entity, new ParticleBatch[]{particles});
+            ParticleHelper.sendBatches(entity, java.util.List.of(particles));
         }
     }
 }

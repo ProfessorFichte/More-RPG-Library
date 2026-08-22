@@ -12,26 +12,38 @@
     ]
   },
   "release": {
-    "particles": [
-      {
-        "particle_id": "spell_engine:magic_arcane_burst",
-        "origin": "CENTER",
-        "shape": "CIRCLE",
-        "count": 130.0,
-        "min_speed": 0.2,
-        "max_speed": 1.5,
-        "color_rgba": 4284940287
-      },
-      {
-        "particle_id": "spell_engine:magic_stripe_burst",
-        "origin": "CENTER",
-        "shape": "CIRCLE",
-        "count": 130.0,
-        "min_speed": 0.8,
-        "max_speed": 1.9,
-        "color_rgba": 4284940287
-      }
-    ],
+    "visuals": {
+      "particles": [
+        {
+          "id": "spell_engine:magic_arcane",
+          "appearance": {
+            "color": 4284940287,
+            "motion": "BURST"
+          },
+          "batch": {
+            "count": 130.0,
+            "shape": "CIRCLE",
+            "anchor": "ENTITY",
+            "min_speed": 0.2,
+            "max_speed": 1.5
+          }
+        },
+        {
+          "id": "spell_engine:magic_stripe",
+          "appearance": {
+            "color": 4284940287,
+            "motion": "BURST"
+          },
+          "batch": {
+            "count": 130.0,
+            "shape": "CIRCLE",
+            "anchor": "ENTITY",
+            "min_speed": 0.8,
+            "max_speed": 1.9
+          }
+        }
+      ]
+    },
     "sound": {
       "id": "minecraft:entity.generic.explode"
     }
@@ -48,17 +60,24 @@
           "spell_power_coefficient": 0.4
         }
       },
-      "particles": [
-        {
-          "particle_id": "spell_engine:magic_spell_burst",
-          "origin": "CENTER",
-          "shape": "SPHERE",
-          "count": 30.0,
-          "min_speed": 0.2,
-          "max_speed": 1.2,
-          "color_rgba": 4284940287
-        }
-      ]
+      "visuals": {
+        "particles": [
+          {
+            "id": "spell_engine:magic_spell",
+            "appearance": {
+              "color": 4284940287,
+              "motion": "BURST"
+            },
+            "batch": {
+              "count": 30.0,
+              "shape": "SPHERE",
+              "anchor": "ENTITY",
+              "min_speed": 0.2,
+              "max_speed": 1.2
+            }
+          }
+        ]
+      }
     }
   ],
   "cost": {

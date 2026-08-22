@@ -8,7 +8,7 @@ import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.spell_engine.api.spell.Spell;
 import net.spell_engine.api.spell.event.SpellHandlers;
-import net.spell_engine.internals.SpellHelper;
+import net.spell_engine.internals.SpellExecution;
 import net.spell_power.api.SpellPower;
 
 public class KnockbackRangeScaledSpellImpact implements SpellHandlers.CustomImpact {
@@ -19,7 +19,7 @@ public class KnockbackRangeScaledSpellImpact implements SpellHandlers.CustomImpa
             SpellPower.Result powerResult,
             LivingEntity caster,
             Entity target,
-            SpellHelper.ImpactContext context
+            SpellExecution.ImpactContext context
     ) {
         if (!caster.getWorld().isClient && target instanceof  LivingEntity livingEntity) {
             LivingEntity attacker = caster;

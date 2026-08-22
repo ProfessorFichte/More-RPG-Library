@@ -19,7 +19,7 @@ import net.spell_engine.api.effect.CustomParticleStatusEffect;
 import net.spell_engine.api.render.BuffParticleSpawner;
 import net.spell_engine.client.render.CustomModelRegistry;
 import net.spell_engine.client.gui.SpellTooltip;
-import net.spell_engine.client.particle.SpellExplosionParticle;
+import net.spell_engine.client.particle.SpellParticle;
 import net.spell_engine.fx.SpellEngineParticles;
 
 public class MoreRPGClassesClient{
@@ -44,37 +44,6 @@ public class MoreRPGClassesClient{
         CustomModelStatusEffect.register(MRPGCEffects.DUELISTS_FOCUS_TARGET.effect, new DuelistsFocusRenderer(DuelistsFocusRenderer.TARGET_MODEL));
         registerEffectParticles();
 
-        ParticleFactoryRegistry.getInstance().register(MoreParticles.BLOOD_DROP, RainSplashParticle.Factory::new);
-        ParticleFactoryRegistry.getInstance().register(MoreParticles.MOLTEN_ARMOR, RainSplashParticle.Factory::new);
-        ParticleFactoryRegistry.getInstance().register(MoreParticles.BUBBLE, FlameParticle.Factory::new);
-        ParticleFactoryRegistry.getInstance().register(MoreParticles.BUBBLE_POP, FlameParticle.Factory::new);
-        ParticleFactoryRegistry.getInstance().register(MoreParticles.WATER_MIST, ExplosionSmokeParticle.Factory::new);
-        ParticleFactoryRegistry.getInstance().register(MoreParticles.SPLASH, FlameParticle.Factory::new);
-        ParticleFactoryRegistry.getInstance().register(MoreParticles.BIG_SPLASH, FlameParticle.Factory::new);
-        ParticleFactoryRegistry.getInstance().register(MoreParticles.WAVE, FishingParticle.Factory::new);
-        ParticleFactoryRegistry.getInstance().register(MoreParticles.DRIPPING_WATER, RainSplashParticle.Factory::new);
-        ParticleFactoryRegistry.getInstance().register(MoreParticles.HOT_SPLASH, FlameParticle.Factory::new);
-        ParticleFactoryRegistry.getInstance().register(MoreParticles.WATER_WHIP, VerticalSlashParticle.DefaultFactory::new);
-        ParticleFactoryRegistry.getInstance().register(MoreParticles.WATER_CIRCLE, CircleGroundParticle.DefaultFactory::new);
-        ParticleFactoryRegistry.getInstance().register(MoreParticles.WATER_HEAL, AbstractParticle.WaterHealingFactory::new);
-        ParticleFactoryRegistry.getInstance().register(MoreParticles.WATER_SPLASH, SpellExplosionParticle.Factory::new);
-        ParticleFactoryRegistry.getInstance().register(MoreParticles.STONE_EXPLOSION, CustomSpellExplosionParticle.Factory::new);
-        ParticleFactoryRegistry.getInstance().register(MoreParticles.STONE_PARTICLE, AbstractParticle.HolyFactory::new);
-        ParticleFactoryRegistry.getInstance().register(MoreParticles.WIND_VACUUM, CustomSpellExplosionParticle.Factory::new);
-        ParticleFactoryRegistry.getInstance().register(MoreParticles.SMALL_GUST,  FlameParticle.Factory::new);
-        ParticleFactoryRegistry.getInstance().register(MoreParticles.DRAGON_CLAW, ClawParticle.Factory::new);
-        ParticleFactoryRegistry.getInstance().register(MoreParticles.FREEZING_SNOWFLAKE, SnowflakeParticle.Factory::new);
-        ParticleFactoryRegistry.getInstance().register(MoreParticles.WATER_DROP, RainSplashParticle.Factory::new);
-        ParticleFactoryRegistry.getInstance().register(MoreParticles.SLASH_CLAW, ClawParticle.Factory::new);
-        ParticleFactoryRegistry.getInstance().register(MoreParticles.ICE_TRAP, IceTrapParticle.IceTrapParticleFactory::new);
-        ParticleFactoryRegistry.getInstance().register(MoreParticles.STONE_TRAP, StoneTrapParticle.StoneTrapParticleFactory::new);
-        ParticleFactoryRegistry.getInstance().register(MoreParticles.LEAF, LeafParticle.Factory::new);
-        ParticleFactoryRegistry.getInstance().register(MoreParticles.RAGE_PAR, RageParticle.Factory::new);
-        ParticleFactoryRegistry.getInstance().register(MoreParticles.SMALL_THUNDER, SmallThunderParticle.Factory::new);
-        ParticleFactoryRegistry.getInstance().register(MoreParticles.FATAL_POISON, AbstractParticle.AnimatedFlameFactory::new);
-        ParticleFactoryRegistry.getInstance().register(MoreParticles.RAINBOW_MUSIC_NOTE, RainbowMusicNoteParticle.Factory::new);
-        ParticleFactoryRegistry.getInstance().register(MoreParticles.MUSIC_NOTE, MusicNoteParticle.MusicNoteFactory::new);
-        ParticleFactoryRegistry.getInstance().register(MoreParticles.STAR, StarParticle.Factory::new);
         ParticleFactoryRegistry.getInstance().register(MoreParticles.POPUP, new PopupParticle.Factory());
 
         CustomParticleStatusEffect.register(MRPGCEffects.MOLTEN_ARMOR.effect, new MoltenArmorParticles(1));
@@ -88,49 +57,39 @@ public class MoreRPGClassesClient{
     public static void registerParticleAppearances() {
         ParticleFactoryRegistry registry = ParticleFactoryRegistry.getInstance();
 
-        registry.register(MoreParticles.BLOOD_DROP, RainSplashParticle.Factory::new);
-        registry.register(MoreParticles.MOLTEN_ARMOR, RainSplashParticle.Factory::new);
-        registry.register(MoreParticles.BUBBLE, FlameParticle.Factory::new);
-        registry.register(MoreParticles.BUBBLE_POP, FlameParticle.Factory::new);
-        registry.register(MoreParticles.WATER_MIST, ExplosionSmokeParticle.Factory::new);
-        registry.register(MoreParticles.SPLASH, FlameParticle.Factory::new);
-        registry.register(MoreParticles.BIG_SPLASH, FlameParticle.Factory::new);
-        registry.register(MoreParticles.WAVE, FishingParticle.Factory::new);
-        registry.register(MoreParticles.DRIPPING_WATER, RainSplashParticle.Factory::new);
-        registry.register(MoreParticles.HOT_SPLASH, FlameParticle.Factory::new);
-        registry.register(MoreParticles.WATER_WHIP, VerticalSlashParticle.DefaultFactory::new);
-        registry.register(MoreParticles.WATER_CIRCLE, CircleGroundParticle.DefaultFactory::new);
-        registry.register(MoreParticles.WATER_HEAL, AbstractParticle.WaterHealingFactory::new);
-        registry.register(MoreParticles.WATER_SPLASH, SpellExplosionParticle.Factory::new);
-        registry.register(MoreParticles.STONE_EXPLOSION, CustomSpellExplosionParticle.Factory::new);
-        registry.register(MoreParticles.STONE_PARTICLE, AbstractParticle.HolyFactory::new);
-        registry.register(MoreParticles.WIND_VACUUM, CustomSpellExplosionParticle.Factory::new);
-        registry.register(MoreParticles.SMALL_GUST,  FlameParticle.Factory::new);
-        registry.register(MoreParticles.DRAGON_CLAW, ClawParticle.Factory::new);
-        registry.register(MoreParticles.FREEZING_SNOWFLAKE, SnowflakeParticle.Factory::new);
-        registry.register(MoreParticles.WATER_DROP, RainSplashParticle.Factory::new);
-        registry.register(MoreParticles.SLASH_CLAW, ClawParticle.Factory::new);
-        registry.register(MoreParticles.ICE_TRAP, IceTrapParticle.IceTrapParticleFactory::new);
-        registry.register(MoreParticles.STONE_TRAP, StoneTrapParticle.StoneTrapParticleFactory::new);
-        registry.register(MoreParticles.LEAF, LeafParticle.Factory::new);
-        registry.register(MoreParticles.RAGE_PAR, DamageParticle.Factory::new);
-        registry.register(MoreParticles.SMALL_THUNDER, SmallThunderParticle.Factory::new);
-        registry.register(MoreParticles.FATAL_POISON, AbstractParticle.AnimatedFlameFactory::new);
+        // One generic factory for every entry this mod owns: SpellParticle resolves the
+        // entry's defaults against the per-spawn ParticleGroup.Appearance payload.
+        for (var entry: MoreParticles.entries()) {
+            if (entry == MoreParticles.MUSIC_NOTE || entry == MoreParticles.STAR) {
+                continue; // Bound to their own factories below.
+            }
+            registry.register(entry.type(), provider -> new SpellParticle.Factory(provider, entry));
+        }
+
+        // Kept on their own factories - behaviour Appearance cannot express.
         registry.register(MoreParticles.RAINBOW_MUSIC_NOTE, RainbowMusicNoteParticle.Factory::new);
-        registry.register(MoreParticles.MUSIC_NOTE, MusicNoteParticle.MusicNoteFactory::new);
-        registry.register(MoreParticles.STAR, StarParticle.Factory::new);
+        // Still an Entry (so its colour payload resolves like any other), but its motion is
+        // hand-written: a fixed gentle rise, a random walk, and a fade over the last 15 ticks.
+        registry.register(MoreParticles.MUSIC_NOTE.type(),
+                provider -> new MusicNoteParticle.Factory(provider, MoreParticles.MUSIC_NOTE));
+        // Same story as the note: a self-set rise the batch cannot override, X/Z-only
+        // damping, and a fade over the last 20 ticks.
+        registry.register(MoreParticles.STAR.type(),
+                provider -> new StarParticle.Factory(provider, MoreParticles.STAR));
     }
+
     private static void registerEffectParticles() {
+        // V1 chained .extent() onto the batch object itself; in 1.10 extent is a Batch
+        // field on the returned ParticleGroup.
+        var sirensTearParticles = BuffParticleSpawner.defaultBatch(
+                SpellEngineParticles.magic_spark.id().toString(),
+                4,
+                SpellBuilderHelper.BRIGHT_CYAN.toRGBA());
+        sirensTearParticles.batch.extent(0.5F);
         CustomParticleStatusEffect.register(
                 MRPGCEffects.SIRENS_TEAR.effect,
-                new BuffParticleSpawner(
-                        BuffParticleSpawner.defaultBatch(
-                                SpellEngineParticles.MagicParticles.get(
-                                        SpellEngineParticles.MagicParticles.Shape.SPARK,
-                                        SpellEngineParticles.MagicParticles.Motion.FLOAT).id().toString(),
-                                4,
-                                SpellBuilderHelper.BRIGHT_CYAN.toRGBA()).extent(0.5F)
-                ).invertFrequency().withFrequency(20).scaleWithAmplifier(false)
+                new BuffParticleSpawner(sirensTearParticles)
+                        .invertFrequency().withFrequency(20).scaleWithAmplifier(false)
         );
     }
 }

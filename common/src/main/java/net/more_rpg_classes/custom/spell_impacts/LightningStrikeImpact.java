@@ -8,7 +8,7 @@ import net.more_rpg_classes.entity.FriendlyLightningEntity;
 import net.more_rpg_classes.entity.MRPGCEntities;
 import net.spell_engine.api.spell.Spell;
 import net.spell_engine.api.spell.event.SpellHandlers;
-import net.spell_engine.internals.SpellHelper;
+import net.spell_engine.internals.SpellExecution;
 import net.spell_power.api.SpellPower;
 
 public class LightningStrikeImpact implements SpellHandlers.CustomImpact {
@@ -19,7 +19,7 @@ public class LightningStrikeImpact implements SpellHandlers.CustomImpact {
             SpellPower.Result powerResult,
             LivingEntity caster,
             Entity target,
-            SpellHelper.ImpactContext context
+            SpellExecution.ImpactContext context
     ) {
         if(target instanceof LivingEntity livingEntity && livingEntity.getWorld() instanceof ServerWorld serverWorld){
             // Spawn the friendly lightning entity that won't damage allies or set things on fire

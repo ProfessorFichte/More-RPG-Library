@@ -88,16 +88,21 @@
           "knockback": 0.5
         }
       },
-      "particles": [
-        {
-          "particle_id": "campfire_cosy_smoke",
-          "origin": "CENTER",
-          "shape": "CIRCLE",
-          "count": 3.0,
-          "min_speed": 0.005,
-          "max_speed": 0.008
-        }
-      ],
+      "visuals": {
+        "particles": [
+          {
+            "id": "campfire_cosy_smoke",
+            "appearance": {},
+            "batch": {
+              "count": 3.0,
+              "shape": "CIRCLE",
+              "anchor": "ENTITY",
+              "min_speed": 0.005,
+              "max_speed": 0.008
+            }
+          }
+        ]
+      },
       "sound": {
         "id": "minecraft:block.pointed_dripstone.break",
         "volume": 1.5

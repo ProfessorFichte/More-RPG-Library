@@ -26,27 +26,33 @@
     "animation": {
       "id": "more_rpg_classes:burstcrack_release"
     },
-    "particles": [
-      {
-        "particle_id": "spell_engine:smoke_medium",
-        "origin": "CENTER",
-        "shape": "CIRCLE",
-        "count": 50.0,
-        "min_speed": 0.2,
-        "max_speed": 0.3
-      }
-    ],
-    "particles_scaled_with_ranged": [
-      {
-        "particle_id": "spell_engine:area_effect_658",
-        "origin": "GROUND",
-        "shape": "SPHERE",
-        "count": 1.0,
-        "max_speed": 0.0,
-        "color_rgba": 1093695897855,
-        "scale": 0.5
-      }
-    ],
+    "visuals": {
+      "particles": [
+        {
+          "id": "spell_engine:smoke_medium",
+          "appearance": {},
+          "batch": {
+            "count": 50.0,
+            "shape": "CIRCLE",
+            "anchor": "ENTITY",
+            "min_speed": 0.2,
+            "max_speed": 0.3
+          }
+        },
+        {
+          "id": "spell_engine:area_effect_658",
+          "appearance": {
+            "color": 1093695897855,
+            "scale_with": "RANGE"
+          },
+          "batch": {
+            "count": 1.0,
+            "shape": "NONE",
+            "anchor": "GROUND"
+          }
+        }
+      ]
+    },
     "sound": {
       "id": "minecraft:entity.generic.explode",
       "volume": 0.4
@@ -67,16 +73,21 @@
           "knockback": 0.0
         }
       },
-      "particles": [
-        {
-          "particle_id": "spell_engine:smoke_medium",
-          "origin": "CENTER",
-          "shape": "PIPE",
-          "count": 20.0,
-          "min_speed": 0.1,
-          "max_speed": 3.0
-        }
-      ],
+      "visuals": {
+        "particles": [
+          {
+            "id": "spell_engine:smoke_medium",
+            "appearance": {},
+            "batch": {
+              "count": 20.0,
+              "shape": "PIPE",
+              "anchor": "ENTITY",
+              "min_speed": 0.1,
+              "max_speed": 3.0
+            }
+          }
+        ]
+      },
       "sound": {
         "id": "more_rpg_classes:fist_attack"
       }

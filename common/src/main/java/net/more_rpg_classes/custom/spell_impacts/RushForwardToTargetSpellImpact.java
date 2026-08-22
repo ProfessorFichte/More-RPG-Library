@@ -6,7 +6,7 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.math.Vec3d;
 import net.spell_engine.api.spell.Spell;
 import net.spell_engine.api.spell.event.SpellHandlers;
-import net.spell_engine.internals.SpellHelper;
+import net.spell_engine.internals.SpellExecution;
 import net.spell_power.api.SpellPower;
 
 @Deprecated
@@ -18,7 +18,7 @@ public class RushForwardToTargetSpellImpact implements SpellHandlers.CustomImpac
             SpellPower.Result powerResult,
             LivingEntity caster,
             Entity target,
-            SpellHelper.ImpactContext context
+            SpellExecution.ImpactContext context
     ) {
         if (!caster.getWorld().isClient) {
             Vec3d lookVec = target.getRotationVec(1.0F).normalize();

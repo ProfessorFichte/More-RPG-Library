@@ -9,7 +9,7 @@ import net.minecraft.util.math.Vec3d;
 import net.more_rpg_classes.MRPGCMod;
 import net.spell_engine.api.spell.Spell;
 import net.spell_engine.api.spell.event.SpellHandlers;
-import net.spell_engine.internals.SpellHelper;
+import net.spell_engine.internals.SpellExecution;
 import net.spell_power.api.SpellPower;
 
 public class KnockUpSpellImpact implements SpellHandlers.CustomImpact {
@@ -23,7 +23,7 @@ public class KnockUpSpellImpact implements SpellHandlers.CustomImpact {
             SpellPower.Result powerResult,
             LivingEntity caster,
             Entity target,
-            SpellHelper.ImpactContext context
+            SpellExecution.ImpactContext context
     ) {
         if (!(target instanceof LivingEntity)) return null;
         int spellTier = spell.value().tier;

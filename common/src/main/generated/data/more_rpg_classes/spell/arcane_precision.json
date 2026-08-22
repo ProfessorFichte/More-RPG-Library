@@ -30,26 +30,37 @@
           "apply_mode": "ADD"
         }
       },
-      "particles": [
-        {
-          "particle_id": "dragon_breath",
-          "origin": "CENTER",
-          "shape": "CIRCLE",
-          "count": 40.0,
-          "min_speed": 0.6,
-          "max_speed": 0.8
-        },
-        {
-          "particle_id": "spell_engine:magic_arcane_impact_burst",
-          "origin": "FEET",
-          "shape": "SPHERE",
-          "count": 10.0,
-          "min_speed": 0.05,
-          "max_speed": 0.2,
-          "extent": 2.0,
-          "color_rgba": 4284940287
-        }
-      ]
+      "visuals": {
+        "particles": [
+          {
+            "id": "dragon_breath",
+            "appearance": {},
+            "batch": {
+              "count": 40.0,
+              "shape": "CIRCLE",
+              "anchor": "ENTITY",
+              "min_speed": 0.6,
+              "max_speed": 0.8
+            }
+          },
+          {
+            "id": "spell_engine:magic_arcane",
+            "appearance": {
+              "color": 4284940287,
+              "motion": "BURST"
+            },
+            "batch": {
+              "count": 10.0,
+              "shape": "SPHERE",
+              "anchor": "ENTITY",
+              "vertical_origin": 0.1,
+              "min_speed": 0.05,
+              "max_speed": 0.2,
+              "extent": 2.0
+            }
+          }
+        ]
+      }
     }
   ],
   "cost": {

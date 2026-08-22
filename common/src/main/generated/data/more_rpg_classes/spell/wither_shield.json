@@ -12,16 +12,21 @@
     ]
   },
   "release": {
-    "particles": [
-      {
-        "particle_id": "smoke",
-        "origin": "CENTER",
-        "shape": "SPHERE",
-        "count": 40.0,
-        "min_speed": 0.6,
-        "max_speed": 0.8
-      }
-    ]
+    "visuals": {
+      "particles": [
+        {
+          "id": "smoke",
+          "appearance": {},
+          "batch": {
+            "count": 40.0,
+            "shape": "SPHERE",
+            "anchor": "ENTITY",
+            "min_speed": 0.6,
+            "max_speed": 0.8
+          }
+        }
+      ]
+    }
   },
   "target": {
     "type": "AIM",
@@ -49,13 +54,16 @@
         "client_data": {
           "travel_particles": [
             {
-              "particle_id": "smoke",
-              "origin": "CENTER",
-              "shape": "CIRCLE",
-              "rotation": "LOOK",
-              "count": 2.0,
-              "min_speed": 0.6,
-              "max_speed": 0.9
+              "id": "smoke",
+              "appearance": {},
+              "batch": {
+                "count": 2.0,
+                "shape": "CIRCLE",
+                "anchor": "ENTITY",
+                "alignment": "LOOK",
+                "min_speed": 0.6,
+                "max_speed": 0.9
+              }
             }
           ],
           "composite_model": {
@@ -84,17 +92,24 @@
           "amplifier_power_multiplier": 0.25
         }
       },
-      "particles": [
-        {
-          "particle_id": "spell_engine:magic_skull_decelerate",
-          "origin": "CENTER",
-          "shape": "SPHERE",
-          "count": 25.0,
-          "min_speed": 0.2,
-          "max_speed": 0.25,
-          "color_rgba": 858993663
-        }
-      ]
+      "visuals": {
+        "particles": [
+          {
+            "id": "spell_engine:magic_skull",
+            "appearance": {
+              "color": 858993663,
+              "motion": "DECELERATE"
+            },
+            "batch": {
+              "count": 25.0,
+              "shape": "SPHERE",
+              "anchor": "ENTITY",
+              "min_speed": 0.2,
+              "max_speed": 0.25
+            }
+          }
+        ]
+      }
     },
     {
       "action": {
@@ -104,16 +119,21 @@
           "knockback": 0.25
         }
       },
-      "particles": [
-        {
-          "particle_id": "smoke",
-          "origin": "CENTER",
-          "shape": "SPHERE",
-          "count": 10.0,
-          "min_speed": 0.3,
-          "max_speed": 0.35
-        }
-      ],
+      "visuals": {
+        "particles": [
+          {
+            "id": "smoke",
+            "appearance": {},
+            "batch": {
+              "count": 10.0,
+              "shape": "SPHERE",
+              "anchor": "ENTITY",
+              "min_speed": 0.3,
+              "max_speed": 0.35
+            }
+          }
+        ]
+      },
       "sound": {
         "id": "minecraft:entity.generic.explode"
       }

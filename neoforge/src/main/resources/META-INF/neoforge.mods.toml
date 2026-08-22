@@ -23,14 +23,14 @@ side = "BOTH"
 [[dependencies.more_rpg_classes]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.21.1,)"
+versionRange = "[${minecraft_compat_version},)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.more_rpg_classes]]
 modId = "spell_engine"
 type = "required"
-versionRange = "*"
+versionRange = "[${spell_engine_version},)"
 ordering = "NONE"
 side = "BOTH"
 

@@ -7,7 +7,7 @@ import net.minecraft.util.math.Vec3d;
 import net.more_rpg_classes.MRPGCMod;
 import net.spell_engine.api.spell.Spell;
 import net.spell_engine.api.spell.event.SpellHandlers;
-import net.spell_engine.internals.SpellHelper;
+import net.spell_engine.internals.SpellExecution;
 import net.spell_power.api.SpellPower;
 
 @Deprecated
@@ -19,7 +19,7 @@ public class PullInToCasterDirectSpellImpact implements SpellHandlers.CustomImpa
             SpellPower.Result powerResult,
             LivingEntity caster,
             Entity target,
-            SpellHelper.ImpactContext context
+            SpellExecution.ImpactContext context
     ) {
         if (!(target instanceof LivingEntity)) return null;
         Vec3d lookVec = caster.getRotationVec(1.0F).normalize();

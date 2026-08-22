@@ -23,25 +23,35 @@
           "show_particles": true
         }
       },
-      "particles": [
-        {
-          "particle_id": "spell_engine:magic_skull_decelerate",
-          "origin": "CENTER",
-          "shape": "SPHERE",
-          "count": 15.0,
-          "min_speed": 0.2,
-          "max_speed": 0.25,
-          "color_rgba": 858993663
-        },
-        {
-          "particle_id": "sculk_soul",
-          "origin": "CENTER",
-          "shape": "SPHERE",
-          "count": 20.0,
-          "min_speed": 0.3,
-          "max_speed": 0.4
-        }
-      ],
+      "visuals": {
+        "particles": [
+          {
+            "id": "spell_engine:magic_skull",
+            "appearance": {
+              "color": 858993663,
+              "motion": "DECELERATE"
+            },
+            "batch": {
+              "count": 15.0,
+              "shape": "SPHERE",
+              "anchor": "ENTITY",
+              "min_speed": 0.2,
+              "max_speed": 0.25
+            }
+          },
+          {
+            "id": "sculk_soul",
+            "appearance": {},
+            "batch": {
+              "count": 20.0,
+              "shape": "SPHERE",
+              "anchor": "ENTITY",
+              "min_speed": 0.3,
+              "max_speed": 0.4
+            }
+          }
+        ]
+      },
       "sound": {
         "id": "minecraft:entity.wither.ambient"
       }

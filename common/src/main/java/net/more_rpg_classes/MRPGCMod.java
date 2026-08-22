@@ -12,7 +12,7 @@ import net.more_rpg_classes.entity.MrpgEntityRelationMatcher;
 import net.more_rpg_classes.config.LootConfig;
 import net.more_rpg_classes.config.TweaksConfig;
 import net.more_rpg_classes.config.WeaknessConfig;
-import net.spell_engine.api.config.ConfigFile;
+import net.spell_engine.rpg_series.config.ConfigFile;
 import net.more_rpg_classes.custom.CustomSpellEntityPredicate;
 import net.more_rpg_classes.custom.CustomSpellImpacts;
 import net.more_rpg_classes.custom.MoreSpellSchoolWeakness;

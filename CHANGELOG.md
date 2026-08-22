@@ -1,3 +1,6 @@
+# 2.7.0 - 1.21.1
+- Adopt Spell Engine 1.10
+- Restored the Music Note, Star and Rage particle behaviour lost in the port
 # 2.6.5 - 1.21.1
 - Fix multiple Controlled Enemies fighting each other (same owner)
 - Heavily Improve Entity Relations for "Controlled" Entities
