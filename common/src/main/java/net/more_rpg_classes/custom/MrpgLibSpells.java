@@ -343,7 +343,7 @@ public class MrpgLibSpells {
                 ParticleGroupBuilder.of(MoreParticles.WATER_CIRCLE)
                         .batch(b -> b.shape(ParticleGroup.Shape.CIRCLE)
                                 .verticalOrigin(0.1F)
-                                .count(1).speed(0.2F, 1.0F)));
+                                .count(1).speed(0F, 0F)));
 
         spell.target.type = Spell.Target.Type.AREA;
         spell.target.area = new Spell.Target.Area();
@@ -1056,7 +1056,7 @@ public class MrpgLibSpells {
         removeEffects.visuals = Fx.Visuals.of(
                 ParticleGroupBuilder.of(MoreParticles.WATER_CIRCLE)
                         .batch(b -> b.shape(ParticleGroup.Shape.CIRCLE)
-                                .verticalOrigin(0.1F).count(1).speed(0.2F, 1.0F)),
+                                .verticalOrigin(0.1F).count(1).speed(0F, 0F)),
                 ParticleGroupBuilder.magic(SpellEngineParticles.magic_spell, ParticleGroup.Motion.DECELERATE, Color.HOLY)
                         .batch(b -> b.shape(ParticleGroup.Shape.PIPE).widthFactor(2F)
                                 .verticalOrigin(0.1F).count(15).speed(0.3F, 0.3F)));
@@ -1308,7 +1308,7 @@ public class MrpgLibSpells {
                                 .count(5).speed(0.05F, 0.1F)),
                 ParticleGroupBuilder.of(MoreParticles.WATER_CIRCLE)
                         .batch(b -> b.shape(ParticleGroup.Shape.CIRCLE)
-                                .verticalOrigin(0.1F).count(1).speed(0.2F, 1.0F)));
+                                .verticalOrigin(0.1F).count(1).speed(0F, 0F)));
         heal.sound = Sound.withVolume(SpellEngineSounds.GENERIC_HEALING_IMPACT_2.id(), 1.2F);
 
         spell.impacts = List.of(damage, heal);

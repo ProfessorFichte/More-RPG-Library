@@ -131,8 +131,16 @@ public class MoreParticles {
             .facing(Facing.UPRIGHT).scale(0.7F).playbackSpeed(1.4F));  // V1 maxAge 5
     /// V1 `CircleGroundParticle` hand-rolled `buildGeometry` for a ground quad —
     /// now `Facing.GROUND`. V1 did `scale *= 5` on the `0.1..0.2` base.
+    /// V1 `CircleGroundParticle`: a ground ring nailed to its spawn point - velocity zeroed in the
+    /// ctor AND `tick()` never called `move()`, so the authored batch speed was dead code. World-lit
+    /// (no `getBrightness` override). `scale *= 5..8` on vanilla's `0.1..0.2` base gives 0.5..1.6,
+    /// mean 0.87. `maxAge = 8 + rand(modifier)` with `modifier` 1..30 is **8..37, mean 15.25** - the
+    /// old `8..10` comment misread that as `nextInt(10)`. `drag(0F)` still permits one tick of drift
+    /// (vanilla applies `move()` before `velocityMultiplier`), so the call sites also author speed 0.
     public static final Entry WATER_CIRCLE = add("water_circle", 7, p -> p
-            .facing(Facing.GROUND).scale(0.75F, 0.33F).playbackSpeed(0.78F));  // V1 maxAge 8..10
+            .facing(Facing.GROUND).glow(false).drag(0F)
+            .scale(0.87F, 0.39F)
+            .playbackSpeed(0.46F).lifetimeVariance(0.76F));
 
     // MARK: - Earth
 
@@ -204,9 +212,20 @@ public class MoreParticles {
             .render(Render.LIT).scale(0.15F, 0.33F).drag(0.96F).collides(true)
             .playbackSpeed(0.35F));                                   // V1 maxAge 20
     /// V1 `RageParticle`: `scale(1.5F)` multiplied the `0.1..0.2` base -> `~0.225`.
-    public static final Entry RAGE_PAR = add("rage_particle", 3, p -> p
-            .render(Render.LIT).scale(0.225F, 0.33F).gravity(0.001F)
-            .playbackSpeed(0.094F));                                  // V1 maxAge 25..40
+    /// V1 registered this id TWICE: `RageParticle.Factory` in `init()`, then vanilla
+    /// `DamageParticle.Factory` in `registerParticleAppearances()`. The Fabric entrypoint calls
+    /// those in that order and the second `register` overwrites the first, so **`RageParticle`
+    /// never drew a pixel** - the shipped look was always `DamageParticle` (`minecraft:crit`
+    /// behaviour) on this mod's sprite. Ported to what shipped, not to the dead class.
+    /// `Motion.BURST` is a direct transcription of `DamageParticle`: same 0.7 drag, 0.5 gravity,
+    /// and `velocity * 0.4 + jitter` - so the call sites' authored speeds stay correct as written.
+    /// One random frame held for life (V1 called `setSprite(spriteProvider)`, not `setSpriteForAge`).
+    public static final Entry RAGE_PAR = add("rage_particle", 1, 14, p -> p
+            .motion(Motion.BURST)
+            .render(Render.OPAQUE).glow(false)
+            .scale(0.1125F, 0.33F)                                     // 0.75 * vanilla's 0.1..0.2
+            .color(Color.from(0xE6E6E6).toRGBA()).colorVariance(0.33F) // j in 0.6..0.9
+            .lifetimeVariance(0.43F));                                 // 14 * BURST 0.5 = 7, +-43% -> 4..10
 
     // MARK: - Signs
 
