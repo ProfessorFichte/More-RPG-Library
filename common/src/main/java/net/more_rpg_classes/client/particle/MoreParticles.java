@@ -44,7 +44,19 @@ import java.util.function.Consumer;
 /// V1 mixed two conventions and they do *not* mean the same thing: `this.scale = X`
 /// was absolute, while `this.scale(X)` *multiplied* vanilla's random `0.1..0.2` base
 /// (mean `0.15`). V2 `scale` is absolute, so the latter ports as `0.15 * X` with the
-/// base's own +/-33% as variance.
+/// base's own +/-33% as variance. A factory that calls neither leaves the particle at
+/// that `0.1..0.2` base, so it ports as `scale(0.15F, 0.33F)` — that is what every
+/// `FlameParticle.Factory` entry below carries.
+///
+/// ### Standing still
+/// Several V1 factories here threw their spawn velocity away: `ExplosionLargeParticle`
+/// passes `0,0,0` to `super` and its `tick()` never calls `move()`, so a batch's authored
+/// speed was dead code and the effect sat on its spawn point for its whole life.
+/// `Appearance` has no "ignore spawn velocity" switch, so those entries carry `drag(0F)`:
+/// the particle moves for a single tick and then stops dead. The same class is also
+/// full-bright (`getBrightness` is a constant), which is `glow`'s default — so those
+/// entries must not set `glow(false)`. Mirrors Forcemaster's `Particles`, which ports
+/// the identical V1 classes.
 public class MoreParticles {
 
     private static final List<Entry> entries = new ArrayList<>();
@@ -91,8 +103,10 @@ public class MoreParticles {
     public static final Entry SPLASH = add("splash", 4, p -> p
             .render(Render.LIT).scale(0.15F, 0.33F).drag(0.96F).collides(true)
             .playbackSpeed(0.33F));                                   // V1 maxAge 12
+    /// Same vanilla `FlameParticle.Factory` as [#SPLASH] and [#HOT_SPLASH], which never
+    /// calls `scale()` — so despite the name it drew at the identical `0.1..0.2` base.
     public static final Entry BIG_SPLASH = add("big_splash", 4, p -> p
-            .render(Render.LIT).scale(0.4F, 0.33F).drag(0.96F).collides(true)
+            .render(Render.LIT).scale(0.15F, 0.33F).drag(0.96F).collides(true)
             .playbackSpeed(0.33F));                                   // V1 maxAge 12
     public static final Entry HOT_SPLASH = add("hot_splash", 4, p -> p
             .render(Render.LIT).scale(0.15F, 0.33F).drag(0.96F).collides(true)
@@ -103,8 +117,10 @@ public class MoreParticles {
     /// V1 vanilla `FishingParticle`; its bobber-specific motion has no V2 analogue.
     public static final Entry WAVE = add("wave", 8, p -> p
             .glow(false).scale(0.3F, 0.33F).drag(0.9F).playbackSpeed(0.5F));  // V1 maxAge 16
+    /// V1 Spell Engine `SpellExplosionParticle` (`ExplosionLargeParticle`): stood still,
+    /// full-bright via its `getBrightness` of `255`. See *Standing still* above.
     public static final Entry WATER_SPLASH = add("water_splash", 9, p -> p
-            .glow(false).scale(0.8F).playbackSpeed(0.75F));           // V1 maxAge 12
+            .scale(0.8F).drag(0F).playbackSpeed(0.75F));              // V1 maxAge 12
     /// V1 `AbstractParticle.WaterHealingFactory`: `SpellFlameParticle` + `0x7affff` + randomDarken.
     public static final Entry WATER_HEAL = add("water_heal", 1, 20, p -> p
             .render(Render.LIT).color(Color.from(0x7affff).toRGBA()).colorVariance(0.65F)
@@ -120,9 +136,12 @@ public class MoreParticles {
 
     // MARK: - Earth
 
-    /// V1 `CustomSpellExplosionParticle` (vanilla `ExplosionLargeParticle`): absolute scale `0.8`.
+    /// V1 `CustomSpellExplosionParticle` (vanilla `ExplosionLargeParticle` re-sheeted to
+    /// `PARTICLE_SHEET_TRANSLUCENT`, the default here): absolute scale `0.8`, `rgb` forced
+    /// to `1` so vanilla's random darkening is gone, and full-bright via the inherited
+    /// `getBrightness`. Stood still — see *Standing still* above.
     public static final Entry STONE_EXPLOSION = add("stone_explosion", 5, p -> p
-            .glow(false).scale(0.8F).playbackSpeed(0.42F));            // V1 maxAge 12
+            .scale(0.8F).drag(0F).playbackSpeed(0.42F));               // V1 maxAge 12
     /// V1 `AbstractParticle.HolyFactory`: `SpellFlameParticle` + `Color.HOLY` + randomDarken.
     public static final Entry STONE_PARTICLE = add("stone_particle", 3, p -> p
             .render(Render.LIT).color(Color.HOLY.toRGBA()).colorVariance(0.65F)
@@ -139,8 +158,10 @@ public class MoreParticles {
 
     // MARK: - Air
 
+    /// Same V1 `CustomSpellExplosionParticle` as [#STONE_EXPLOSION] — stood still,
+    /// full-bright, absolute scale `0.8`. See *Standing still* above.
     public static final Entry WIND_VACUUM = add("wind_vacuum", 8, p -> p
-            .glow(false).scale(0.8F).playbackSpeed(0.67F));            // V1 maxAge 12
+            .scale(0.8F).drag(0F).playbackSpeed(0.67F));               // V1 maxAge 12
     public static final Entry SMALL_GUST = add("small_gust", 7, p -> p
             .render(Render.LIT).scale(0.15F, 0.33F).drag(0.96F).collides(true)
             .playbackSpeed(0.58F));                                   // V1 maxAge 12
@@ -150,9 +171,11 @@ public class MoreParticles {
     public static final Entry GUST = add("gust", 12, p -> p
             .render(Render.LIT).scale(0.4F, 0.33F).drag(0.96F).collides(true)
             .playbackSpeed(0.6F));
-    /// V1 `SmallThunderParticle` (vanilla `ExplosionLargeParticle`): absolute scale `1.75`.
+    /// V1 `SmallThunderParticle` (vanilla `ExplosionLargeParticle`): absolute scale `1.75`,
+    /// and its own `getBrightness` of `255` — exactly what `glow`'s default resolves to.
+    /// Stood still, hence `drag(0F)` — see *Standing still* above.
     public static final Entry SMALL_THUNDER = add("small_thunder", 7, p -> p
-            .render(Render.LIT).scale(1.75F).playbackSpeed(0.88F));    // V1 maxAge 8
+            .render(Render.LIT).scale(1.75F).drag(0F).playbackSpeed(0.88F));  // V1 maxAge 8
 
     // MARK: - Frost
 
@@ -166,11 +189,13 @@ public class MoreParticles {
 
     // MARK: - Physical
 
-    /// V1 `ClawParticle` (vanilla `ExplosionLargeParticle`): absolute scale `1.3`.
+    /// V1 `ClawParticle` (vanilla `ExplosionLargeParticle`): absolute scale `1.3`,
+    /// full-bright via the inherited `getBrightness`. Stood still — see *Standing still*.
     public static final Entry DRAGON_CLAW = add("dragon_claw", 7, p -> p
-            .render(Render.LIT).scale(1.3F).playbackSpeed(0.44F));     // V1 maxAge 16
+            .render(Render.LIT).scale(1.3F).drag(0F).playbackSpeed(0.44F));   // V1 maxAge 16
+    /// Same V1 `ClawParticle.Factory` as [#DRAGON_CLAW].
     public static final Entry SLASH_CLAW = add("slash_claw", 7, p -> p
-            .render(Render.LIT).scale(1.3F).playbackSpeed(0.44F));     // V1 maxAge 16
+            .render(Render.LIT).scale(1.3F).drag(0F).playbackSpeed(0.44F));   // V1 maxAge 16
     /// V1 `AbstractParticle.HolyFactory` used `minecraft:lava` sprites.
     public static final Entry MOLTEN_ARMOR = add("molten_armor", 1, 20, p -> p
             .render(Render.LIT).scale(0.15F, 0.33F).gravity(0.8F).collides(true));
@@ -185,18 +210,26 @@ public class MoreParticles {
 
     // MARK: - Signs
 
-    /// V1 `MusicNoteParticle` (`TemplateParticleType`): `scale(1.25F)` -> `~0.1875`,
-    /// gravity `0.002`, faded out over its last 15 ticks.
-    public static final Entry MUSIC_NOTE = add("music_note", 8, p -> p
-            .scale(0.1875F, 0.33F).gravity(0.002F).playbackSpeed(0.16F));  // V1 maxAge 40..60
-    /// V1 `StarParticle` (`TemplateParticleType`): `scale(1.0F)` -> `~0.15`, no gravity,
-    /// faded out over its last 20 ticks.
-    public static final Entry STAR = add("star", 1, 65, p -> p
-            .scale(0.15F, 0.33F).gravity(0F));                        // V1 maxAge 50..80
+    /// Stays an [Entry] so `ParticleGroupBuilder.of(MUSIC_NOTE)` and its per-song `.color(...)`
+    /// keep working, but it is bound to [MusicNoteParticle.Factory] rather than the generic
+    /// one — see *Kept on their own factories* below and `MoreRPGClassesClient`.
+    ///
+    /// Deliberately carries **no** appearance defaults: the class owns lifetime (40..60),
+    /// size (`scale(1.25F)` on vanilla's `0.1..0.2` base), motion and the tail fade. What it
+    /// does read from a spawn payload — tint, opacity, a scale multiplier — must stay at its
+    /// neutral value here for that read to be an identity, exactly as in V1 where the
+    /// `TemplateParticleEffect.Appearance` defaults were an untinted `scale = 1`.
+    public static final Entry MUSIC_NOTE = add("music_note", 8, p -> {});
+    /// [MusicNoteParticle]'s twin, and bound to [StarParticle.Factory] for the same reason.
+    /// Carries no appearance defaults so that the tint / opacity / scale a call site does
+    /// author stay identity-composed on top of the class's own values — see [#MUSIC_NOTE].
+    public static final Entry STAR = add("star", 1, 65, p -> {});
 
     // MARK: - Kept on their own factories
     // Behaviour Appearance cannot express: RAINBOW_MUSIC_NOTE cycles hue per tick,
-    // and the popups are a custom ParticleEffect carrying their own payload.
+    // MUSIC_NOTE and STAR launch on a fixed rise the batch cannot override (both stay
+    // Entries so their colour payload survives - see [#MUSIC_NOTE]), and the popups are a
+    // custom ParticleEffect carrying their own payload.
 
     public static final SimpleParticleType RAINBOW_MUSIC_NOTE = FabricParticleTypes.simple();
     public static ParticleType<PopupParticleEffect> POPUP;
