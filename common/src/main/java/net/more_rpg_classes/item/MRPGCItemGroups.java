@@ -15,6 +15,7 @@ import net.more_rpg_classes.compat.armory_rpgs.SmithingIngredients;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 import static net.more_rpg_classes.MRPGCMod.MOD_ID;
 
@@ -50,26 +51,28 @@ public class MRPGCItemGroups {
             "forcemaster_rpg:billporon_head"
     );
 
-    private static Item resolveIcon(List<String> ids, Item fallback) {
+    private static Item resolveIcon(List<String> ids, Supplier<Item> fallback) {
         return ids.stream()
                 .sorted()
                 .map(id -> Registries.ITEM.getOrEmpty(Identifier.of(id)).orElse(null))
                 .filter(Objects::nonNull)
                 .findFirst()
-                .orElse(fallback);
+                .orElseGet(fallback);
     }
 
     public static void register() {
         if (devEnvo || (arsenalLoaded && anyContentModLoaded)) {
             var group = FabricItemGroup.builder()
-                    .icon(() -> new ItemStack(resolveIcon(ARSENAL_ICON_IDS, Items.NETHERITE_SWORD)))
+                    .icon(() -> new ItemStack(resolveIcon(ARSENAL_ICON_IDS, () -> Items.NETHERITE_SWORD)))
                     .displayName(Text.translatable("itemGroup." + MOD_ID + ".arsenal"))
                     .build();
             Registry.register(Registries.ITEM_GROUP, ARSENAL_KEY, group);
         }
         if (devEnvo || (armoryLoaded && anyContentModLoaded)) {
             var group = FabricItemGroup.builder()
-                    .icon(() -> new ItemStack(resolveIcon(ARMORY_ICON_IDS, SmithingIngredients.ASCETIC.item().get())))
+                    .icon(() -> new ItemStack(resolveIcon(ARMORY_ICON_IDS, () -> SmithingIngredients.ASCETIC != null
+                            ? SmithingIngredients.ASCETIC.item().get()
+                            : Items.NETHERITE_CHESTPLATE)))
                     .displayName(Text.translatable("itemGroup." + MOD_ID + ".armory"))
                     .build();
             Registry.register(Registries.ITEM_GROUP, ARMORY_KEY, group);
