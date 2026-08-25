@@ -1,5 +1,8 @@
-# 2.7.1 - 1.21.1
+# 2.7.2 - 1.21.1
 - Drop Forgified Fabric API (FFAPI) as a required dependency
+
+# 2.7.1 - 1.21.1
+- Fixed an Issue that happened on Neoforge with the "More Armory" Item-Group
 
 # 2.7.0 - 1.21.1
 - Adopt Spell Engine 1.10 - Thanks Daedelus!
