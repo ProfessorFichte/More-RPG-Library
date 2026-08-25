@@ -1,8 +1,8 @@
 package net.more_rpg_classes.entity.goal;
 
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.more_rpg_classes.MRPGCMod;
 import net.more_rpg_classes.entity.ISpellCasterEntity;
+import net.more_rpg_classes.network.MRPGCNetworking;
 import net.more_rpg_classes.network.MobBeamPacket;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -691,13 +691,13 @@ public class MobSpellCastGoal extends Goal {
     private static void sendBeamPacket(MobEntity caster, LivingEntity target, Identifier spellId) {
         if (!(caster.getWorld() instanceof ServerWorld sw)) return;
         var packet = new MobBeamPacket(caster.getId(), target.getId(), spellId);
-        sw.getPlayers().forEach(player -> ServerPlayNetworking.send(player, packet));
+        sw.getPlayers().forEach(player -> MRPGCNetworking.sendToPlayer(player, packet));
     }
 
     private static void sendBeamClearPacket(MobEntity caster) {
         if (!(caster.getWorld() instanceof ServerWorld sw)) return;
         var packet = new MobBeamPacket(caster.getId(), -1, null);
-        sw.getPlayers().forEach(player -> ServerPlayNetworking.send(player, packet));
+        sw.getPlayers().forEach(player -> MRPGCNetworking.sendToPlayer(player, packet));
     }
 
     public boolean isActive() {

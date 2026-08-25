@@ -2,9 +2,8 @@ package net.more_rpg_classes.client.render;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
@@ -22,40 +21,36 @@ import net.spell_engine.client.util.Color;
 @Environment(EnvType.CLIENT)
 public class MobBeamWorldRenderer {
 
-    public static void setup() {
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(context -> {
-            var client = MinecraftClient.getInstance();
-            var world = client.world;
-            if (world == null) return;
+    public static void render(MatrixStack matrices, Camera camera, float delta) {
+        var client = MinecraftClient.getInstance();
+        var world = client.world;
+        if (world == null) return;
 
-            VertexConsumerProvider.Immediate consumers = client.getBufferBuilders().getEntityVertexConsumers();
-            MatrixStack matrices = context.matrixStack();
-            var camera = context.camera();
-            float delta = context.tickCounter().getTickDelta(true);
-            long time = world.getTime();
+        VertexConsumerProvider.Immediate consumers = client.getBufferBuilders().getEntityVertexConsumers();
+        long time = world.getTime();
 
-            Vec3d camPos = camera.getPos();
-            matrices.push();
-            matrices.translate(-camPos.x, -camPos.y, -camPos.z);
+        Vec3d camPos = camera.getPos();
+        matrices.push();
+        matrices.translate(-camPos.x, -camPos.y, -camPos.z);
 
-            boolean rendered = false;
-            for (var entity : world.getEntities()) {
-                if (!(entity instanceof LivingEntity caster)) continue;
-                var activeBeam = MobBeamTracker.get(entity.getId());
-                if (activeBeam == null) continue;
-                var target = world.getEntityById(activeBeam.targetId());
-                if (!(target instanceof LivingEntity livingTarget) || !livingTarget.isAlive()) continue;
+        boolean rendered = false;
+        for (var entity : world.getEntities()) {
+            if (!(entity instanceof LivingEntity caster)) continue;
+            var activeBeam = MobBeamTracker.get(entity.getId());
+            if (activeBeam == null) continue;
+            var target = world.getEntityById(activeBeam.targetId());
+            if (!(target instanceof LivingEntity livingTarget) || !livingTarget.isAlive()) continue;
 
-                renderMobBeam(matrices, consumers, caster, livingTarget, activeBeam.beam(), activeBeam.range(), time, delta);
-                rendered = true;
-            }
+            renderMobBeam(matrices, consumers, caster, livingTarget, activeBeam.beam(), activeBeam.range(), time, delta);
+            rendered = true;
+        }
 
-            if (rendered) consumers.draw();
-            matrices.pop();
-        });
+        if (rendered) consumers.draw();
+        matrices.pop();
+    }
 
-        // Clear stale beams on disconnect
-        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> MobBeamTracker.clear());
+    public static void onDisconnect() {
+        MobBeamTracker.clear();
     }
 
     private static void renderMobBeam(MatrixStack matrices, VertexConsumerProvider consumers,

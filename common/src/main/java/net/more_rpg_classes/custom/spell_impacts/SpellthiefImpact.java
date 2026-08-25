@@ -13,11 +13,11 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.more_rpg_classes.client.particle.MoreParticles;
 import net.more_rpg_classes.client.particle.PopupParticleEffect;
 import net.more_rpg_classes.custom.MoreSpellSchools;
 import net.more_rpg_classes.entity.ISpellCasterEntity;
+import net.more_rpg_classes.network.MRPGCNetworking;
 import net.more_rpg_classes.network.MobBeamPacket;
 import net.spell_engine.api.spell.ExternalSpellSchools;
 import net.spell_engine.api.spell.Spell;
@@ -304,13 +304,13 @@ public class SpellthiefImpact implements SpellHandlers.CustomImpact {
     private static void sendBeamPacket(LivingEntity caster, LivingEntity target, Identifier spellId) {
         if (!(caster.getWorld() instanceof ServerWorld sw)) return;
         var packet = new MobBeamPacket(caster.getId(), target.getId(), spellId);
-        sw.getPlayers().forEach(player -> ServerPlayNetworking.send(player, packet));
+        sw.getPlayers().forEach(player -> MRPGCNetworking.sendToPlayer(player, packet));
     }
 
     private static void sendBeamClearPacket(LivingEntity caster) {
         if (!(caster.getWorld() instanceof ServerWorld sw)) return;
         var packet = new MobBeamPacket(caster.getId(), -1, null);
-        sw.getPlayers().forEach(player -> ServerPlayNetworking.send(player, packet));
+        sw.getPlayers().forEach(player -> MRPGCNetworking.sendToPlayer(player, packet));
     }
 
     private SpellPower.Result getHighestPower(LivingEntity caster) {

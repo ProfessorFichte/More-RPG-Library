@@ -1,7 +1,6 @@
 package net.more_rpg_classes.compat.armory_rpgs;
 
 import com.google.common.base.Suppliers;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -14,7 +13,6 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.Util;
-import net.more_rpg_classes.item.MRPGCItemGroups;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -129,12 +127,11 @@ public class SmithingIngredients {
         for (var entry : ENTRIES) {
             Registry.register(Registries.ITEM, entry.id(), entry.item().get());
         }
-        ItemGroupEvents.modifyEntriesEvent(MRPGCItemGroups.ARMORY_KEY).register((content) -> {
-            var reversed = new ArrayList<>(ENTRIES);
-            Collections.reverse(reversed);
-            for (var entry : reversed) {
-                content.prepend(entry.item().get());
-            }
-        });
+    }
+
+    public static List<Item> armoryGroupItems() {
+        var reversed = new ArrayList<>(ENTRIES);
+        Collections.reverse(reversed);
+        return reversed.stream().map(entry -> (Item) entry.item().get()).toList();
     }
 }

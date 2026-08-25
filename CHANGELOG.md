@@ -1,3 +1,6 @@
+# 2.7.1 - 1.21.1
+- Drop Forgified Fabric API (FFAPI) as a required dependency
+
 # 2.7.0 - 1.21.1
 - Adopt Spell Engine 1.10 - Thanks Daedelus!
 

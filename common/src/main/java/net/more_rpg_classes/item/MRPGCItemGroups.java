@@ -1,6 +1,5 @@
 package net.more_rpg_classes.item;
 
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -61,14 +60,14 @@ public class MRPGCItemGroups {
 
     public static void register() {
         if (devEnvo || (arsenalLoaded && anyContentModLoaded)) {
-            var group = FabricItemGroup.builder()
+            var group = new ItemGroup.Builder(null, -1)
                     .icon(() -> new ItemStack(resolveIcon(ARSENAL_ICON_IDS, Items.NETHERITE_SWORD)))
                     .displayName(Text.translatable("itemGroup." + MOD_ID + ".arsenal"))
                     .build();
             Registry.register(Registries.ITEM_GROUP, ARSENAL_KEY, group);
         }
         if (devEnvo || (armoryLoaded && anyContentModLoaded)) {
-            var group = FabricItemGroup.builder()
+            var group = new ItemGroup.Builder(null, -1)
                     .icon(() -> new ItemStack(resolveIcon(ARMORY_ICON_IDS, SmithingIngredients.ASCETIC.item().get())))
                     .displayName(Text.translatable("itemGroup." + MOD_ID + ".armory"))
                     .build();

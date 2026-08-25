@@ -16,7 +16,7 @@ public class MRPGCEntities {
             .dimensions(0.0F, 0.0F)
             .maxTrackingRange(16)
             .trackingTickInterval(Integer.MAX_VALUE)
-            .build()
+            .build("friendly_lightning")
     );
 
     public static void register() {

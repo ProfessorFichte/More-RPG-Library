@@ -1,7 +1,6 @@
 package net.more_rpg_classes.util.loot;
 
 import net.minecraft.loot.LootPool;
-import net.minecraft.loot.LootTable;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.loot.function.SetCountLootFunction;
 import net.minecraft.loot.provider.number.BinomialLootNumberProvider;
@@ -14,7 +13,7 @@ import net.minecraft.util.Identifier;
 import net.more_rpg_classes.MRPGCMod;
 
 public class LootInjector {
-    public static void configure(RegistryWrapper.WrapperLookup registries, Identifier id, LootTable.Builder tableBuilder) {
+    public static void configure(RegistryWrapper.WrapperLookup registries, Identifier id, LootPoolAdder adder) {
         var config = MRPGCMod.lootConfig.value;
         var tableId = id.toString();
         var pool = config.entries.get(tableId);
@@ -45,9 +44,9 @@ public class LootInjector {
             var lootEntry = ItemEntry.builder(item)
                     .weight(weight);
             lootPoolBuilder.with(lootEntry);
-            lootPoolBuilder.apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(minAmount, maxAmount)).build());
+            lootPoolBuilder.apply(SetCountLootFunction.builder(UniformLootNumberProvider.create(minAmount, maxAmount)));
         }
-        tableBuilder.pool(lootPoolBuilder);
+        adder.addPool(lootPoolBuilder);
     }
 
     private static LootNumberProvider numberProvider(float min, float max) {

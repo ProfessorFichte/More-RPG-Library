@@ -1,8 +1,10 @@
 package net.more_rpg_classes;
 
-import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.loot.LootTable;
 import net.minecraft.loot.entry.LootPoolEntryType;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
@@ -62,23 +64,22 @@ public class MRPGCMod {
 
 
 	public static void init() {
-			net.more_rpg_classes.network.MobBeamPacket.register();
 			effectsConfig.refresh();
 			tweaksConfig.refresh();
 			weaknessConfig.refresh();
 			lootConfig.refresh();
 			CustomSpellImpacts.registerCustomImpacts();
 			MrpgEntityRelationMatcher.register();
-			LootTableEvents.MODIFY.register((key, tableBuilder, source, registries) -> {
-			var tableId = key.getValue().toString();
-			if (!lootConfig.value.entries.containsKey(tableId)) {
-				return;
-			}
-			LootInjector.configure(registries, key.getValue(), tableBuilder);
-			});
 			MoreSpellSchools.initialize();
 			CustomSpellEntityPredicate.registerCustomPredicates();
 			CriticalStrikeCompat.init();
+	}
+	public static void modifyLootTable(RegistryWrapper.WrapperLookup registries, RegistryKey<LootTable> key, LootPoolAdder adder) {
+		var tableId = key.getValue().toString();
+		if (!lootConfig.value.entries.containsKey(tableId)) {
+			return;
+		}
+		LootInjector.configure(registries, key.getValue(), adder);
 	}
 	public static void registerLootFunction() {
 		Registry.register(Registries.LOOT_FUNCTION_TYPE, SpecificSpellScrollPoolLootFunction.ID, SpecificSpellScrollPoolLootFunction.TYPE);

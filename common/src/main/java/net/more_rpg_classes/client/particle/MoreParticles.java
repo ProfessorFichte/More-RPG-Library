@@ -1,7 +1,6 @@
 package net.more_rpg_classes.client.particle;
 
 import com.mojang.serialization.MapCodec;
-import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.particle.ParticleType;
@@ -146,7 +145,7 @@ public class MoreParticles {
     public static final Entry STAR = add("star", 1, 65, p -> {});
 
 
-    public static final SimpleParticleType RAINBOW_MUSIC_NOTE = FabricParticleTypes.simple();
+    public static final SimpleParticleType RAINBOW_MUSIC_NOTE = new SimpleParticleType(false) {};
     public static ParticleType<PopupParticleEffect> POPUP;
     public static ParticleType<PopupParticleEffect> SPELL_STOLEN_POPUP;
 

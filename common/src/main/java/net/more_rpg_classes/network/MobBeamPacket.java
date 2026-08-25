@@ -1,6 +1,5 @@
 package net.more_rpg_classes.network;
 
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
@@ -19,10 +18,6 @@ public record MobBeamPacket(int casterId, int targetId, @Nullable Identifier spe
             MobBeamPacket::write,
             MobBeamPacket::read
     );
-
-    public static void register() {
-        PayloadTypeRegistry.playS2C().register(ID, CODEC);
-    }
 
     private void write(PacketByteBuf buf) {
         buf.writeInt(casterId);
