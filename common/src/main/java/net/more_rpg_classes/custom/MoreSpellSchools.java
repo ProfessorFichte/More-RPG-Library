@@ -2,12 +2,12 @@ package net.more_rpg_classes.custom;
 
 import net.critical_strike.api.CriticalStrikeAttributes;
 import net.fabric_extras.ranged_weapon.api.EntityAttributes_RangedWeapon;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.util.Identifier;
+import net.spell_engine.Platform;
 import net.more_rpg_classes.entity.attribute.MRPGCEntityAttributes;
 import net.spell_power.SpellPowerMod;
 import net.spell_power.api.SpellSchool;
@@ -23,7 +23,7 @@ public class MoreSpellSchools {
     public static SpellSchool RAGE_MELEE;
 
     private static RegistryEntry<EntityAttribute> rangedDamageAttribute() {
-        if (FabricLoader.getInstance().isModLoaded("ranged_weapon_api")) {
+        if (Platform.util().isModLoaded("ranged_weapon_api")) {
             return EntityAttributes_RangedWeapon.DAMAGE.entry;
         } else {
             return EntityAttributes.GENERIC_ATTACK_DAMAGE;
@@ -56,7 +56,7 @@ public class MoreSpellSchools {
             return query.entity().getAttributeValue(rangedDamageAttribute()) + second_power;
         });
 
-        if (FabricLoader.getInstance().isModLoaded("ranged_weapon_api")) {
+        if (Platform.util().isModLoaded("ranged_weapon_api")) {
             FIRE_RANGED.addSource(SpellSchool.Trait.HASTE, SpellSchool.Apply.ADD, query -> {
                 var haste = query.entity().getAttributeValue(EntityAttributes_RangedWeapon.HASTE.entry);
                 var rate = EntityAttributes_RangedWeapon.HASTE.asMultiplier(haste);
@@ -77,7 +77,7 @@ public class MoreSpellSchools {
         });
         SpellSchools.configureSpellHaste(RAGE_MELEE);
 
-        if (FabricLoader.getInstance().isModLoaded("critical_strike")) {
+        if (Platform.util().isModLoaded("critical_strike")) {
             FROST_RANGED.addSource(SpellSchool.Trait.CRIT_CHANCE, SpellSchool.Apply.ADD, query ->  {
                 var value = query.entity().getAttributeValue(CriticalStrikeAttributes.CHANCE.attributeEntry);
                 return (double) CriticalStrikeAttributes.CHANCE.asChance(value);

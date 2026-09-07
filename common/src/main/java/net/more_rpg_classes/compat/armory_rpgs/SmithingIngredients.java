@@ -1,7 +1,7 @@
 package net.more_rpg_classes.compat.armory_rpgs;
 
 import com.google.common.base.Suppliers;
-import net.fabricmc.loader.api.FabricLoader;
+import net.spell_engine.Platform;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipType;
@@ -91,12 +91,12 @@ public class SmithingIngredients {
     public static Entry GENERAL;
     public static Entry VIRTUOSO;
 
-    public static final boolean devEnvo = FabricLoader.getInstance().isDevelopmentEnvironment();
-    public static final boolean archersExpansionLoaded = FabricLoader.getInstance().isModLoaded("archers_expansion");
-    public static final boolean elementalWizardsLoaded = FabricLoader.getInstance().isModLoaded("elemental_wizards_rpg");
-    public static final boolean berserkerLoaded = FabricLoader.getInstance().isModLoaded("berserker_rpg");
-    public static final boolean forcemasterLoaded = FabricLoader.getInstance().isModLoaded("forcemaster_rpg");
-    public static final boolean bardsLoaded = FabricLoader.getInstance().isModLoaded("bards_rpg");
+    public static final boolean devEnvo = Platform.util().isDevelopmentEnvironment();
+    public static final boolean archersExpansionLoaded = Platform.util().isModLoaded("archers_expansion");
+    public static final boolean elementalWizardsLoaded = Platform.util().isModLoaded("elemental_wizards_rpg");
+    public static final boolean berserkerLoaded = Platform.util().isModLoaded("berserker_rpg");
+    public static final boolean forcemasterLoaded = Platform.util().isModLoaded("forcemaster_rpg");
+    public static final boolean bardsLoaded = Platform.util().isModLoaded("bards_rpg");
     public static void register() {
         if (devEnvo || forcemasterLoaded ||elementalWizardsLoaded) {
             ASCETIC = add(Entry.of("ascetic", List.of(FightClass.AIR_WIZARD, FightClass.FORCEMASTER),

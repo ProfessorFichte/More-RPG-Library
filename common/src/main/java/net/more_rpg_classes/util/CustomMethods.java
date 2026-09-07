@@ -1,7 +1,7 @@
 package net.more_rpg_classes.util;
 
 import net.fabric_extras.ranged_weapon.api.EntityAttributes_RangedWeapon;
-import net.fabricmc.loader.api.FabricLoader;
+import net.spell_engine.Platform;
 import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -181,7 +181,7 @@ public class CustomMethods {
         double entitySpellPower = getHighestSpellSchoolPower(entity);
         double meleeDamage = entity.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
         double rangedDamage = 0;
-        if(FabricLoader.getInstance().isModLoaded("ranged_weapon_api")){
+        if(Platform.util().isModLoaded("ranged_weapon_api")){
             rangedDamage = entity.getAttributeValue(EntityAttributes_RangedWeapon.DAMAGE.entry);
         }
         return Math.max(meleeDamage, Math.max(rangedDamage, entitySpellPower));
@@ -213,7 +213,7 @@ public class CustomMethods {
         return false;
     }
     public static double getRangedDamageAttribute(LivingEntity entity) {
-        if (FabricLoader.getInstance().isModLoaded("ranged_weapon_api")) {
+        if (Platform.util().isModLoaded("ranged_weapon_api")) {
             var instance = entity.getAttributeInstance(EntityAttributes_RangedWeapon.DAMAGE.entry);
             return instance != null ? instance.getValue() : 0.0;
         } else {

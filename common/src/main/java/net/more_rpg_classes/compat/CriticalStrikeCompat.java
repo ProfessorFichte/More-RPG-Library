@@ -1,7 +1,7 @@
 package net.more_rpg_classes.compat;
 
 import net.critical_strike.internal.CriticalStriker;
-import net.fabricmc.loader.api.FabricLoader;
+import net.spell_engine.Platform;
 import net.spell_power.api.SpellSchool;
 import net.spell_power.api.SpellSchools;
 
@@ -10,7 +10,7 @@ import static net.more_rpg_classes.custom.MoreSpellSchools.*;
 public class CriticalStrikeCompat {
 
     public static void init() {
-        if (FabricLoader.getInstance().isModLoaded("critical_strike")) {
+        if (Platform.util().isModLoaded("critical_strike")) {
 
             FROST_RANGED.addSource(SpellSchool.Trait.CRIT_CHANCE, SpellSchool.Apply.ADD, query ->  {
                 if (query.entity() instanceof CriticalStriker criticalStriker) {

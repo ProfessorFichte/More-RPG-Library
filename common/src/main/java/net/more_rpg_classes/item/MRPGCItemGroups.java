@@ -1,7 +1,6 @@
 package net.more_rpg_classes.item;
 
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
-import net.fabricmc.loader.api.FabricLoader;
+import net.spell_engine.Platform;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -25,15 +24,15 @@ public class MRPGCItemGroups {
     public static final Identifier ARMORY_ID = Identifier.of(MOD_ID, "armory");
     public static final RegistryKey<ItemGroup> ARMORY_KEY = RegistryKey.of(Registries.ITEM_GROUP.getKey(), ARMORY_ID);
 
-    public static final boolean devEnvo = FabricLoader.getInstance().isDevelopmentEnvironment();
-    public static final boolean arsenalLoaded = FabricLoader.getInstance().isModLoaded("arsenal");
-    public static final boolean armoryLoaded = FabricLoader.getInstance().isModLoaded("armory_rpgs");
+    public static final boolean devEnvo = Platform.util().isDevelopmentEnvironment();
+    public static final boolean arsenalLoaded = Platform.util().isModLoaded("arsenal");
+    public static final boolean armoryLoaded = Platform.util().isModLoaded("armory_rpgs");
 
-    public static final boolean archersExpansionLoaded = FabricLoader.getInstance().isModLoaded("archers_expansion");
-    public static final boolean elementalWizardsLoaded = FabricLoader.getInstance().isModLoaded("elemental_wizards_rpg");
-    public static final boolean berserkerLoaded = FabricLoader.getInstance().isModLoaded("berserker_rpg");
-    public static final boolean forcemasterLoaded = FabricLoader.getInstance().isModLoaded("forcemaster_rpg");
-    public static final boolean bardsLoaded = FabricLoader.getInstance().isModLoaded("bards_rpg");
+    public static final boolean archersExpansionLoaded = Platform.util().isModLoaded("archers_expansion");
+    public static final boolean elementalWizardsLoaded = Platform.util().isModLoaded("elemental_wizards_rpg");
+    public static final boolean berserkerLoaded = Platform.util().isModLoaded("berserker_rpg");
+    public static final boolean forcemasterLoaded = Platform.util().isModLoaded("forcemaster_rpg");
+    public static final boolean bardsLoaded = Platform.util().isModLoaded("bards_rpg");
     public static final boolean anyContentModLoaded = archersExpansionLoaded || elementalWizardsLoaded
             || berserkerLoaded || forcemasterLoaded || bardsLoaded;
 
@@ -62,14 +61,14 @@ public class MRPGCItemGroups {
 
     public static void register() {
         if (devEnvo || (arsenalLoaded && anyContentModLoaded)) {
-            var group = FabricItemGroup.builder()
+            var group = new ItemGroup.Builder(ItemGroup.Row.TOP, -1)
                     .icon(() -> new ItemStack(resolveIcon(ARSENAL_ICON_IDS, () -> Items.NETHERITE_SWORD)))
                     .displayName(Text.translatable("itemGroup." + MOD_ID + ".arsenal"))
                     .build();
             Registry.register(Registries.ITEM_GROUP, ARSENAL_KEY, group);
         }
         if (devEnvo || (armoryLoaded && anyContentModLoaded)) {
-            var group = FabricItemGroup.builder()
+            var group = new ItemGroup.Builder(ItemGroup.Row.TOP, -1)
                     .icon(() -> new ItemStack(resolveIcon(ARMORY_ICON_IDS, () -> SmithingIngredients.ASCETIC != null
                             ? SmithingIngredients.ASCETIC.item().get()
                             : Items.NETHERITE_CHESTPLATE)))

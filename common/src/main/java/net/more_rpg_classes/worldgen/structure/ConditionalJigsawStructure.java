@@ -3,7 +3,7 @@ package net.more_rpg_classes.worldgen.structure;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.fabricmc.loader.api.FabricLoader;
+import net.spell_engine.Platform;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.structure.pool.StructurePool;
 import net.minecraft.structure.pool.StructurePoolBasedGenerator;
@@ -80,7 +80,7 @@ public class ConditionalJigsawStructure extends Structure {
 
     @Override
     public Optional<StructurePosition> getStructurePosition(Context context) {
-        if (!FabricLoader.getInstance().isModLoaded(modId)) {
+        if (!Platform.util().isModLoaded(modId)) {
             return Optional.empty();
         }
 
