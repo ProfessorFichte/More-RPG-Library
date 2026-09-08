@@ -102,7 +102,7 @@ public class SpellEngineAdvancementHelper {
     }
 
     public static void writeAdvancement(Path outputPath, String modId, String name, JsonObject json) throws IOException {
-        Path targetPath = outputPath.resolve("data").resolve(modId).resolve("advancement").resolve(name + ".json");
+        Path targetPath = outputPath.resolve("data").resolve(modId).resolve("advancements").resolve(name + ".json");
         Files.createDirectories(targetPath.getParent());
         Files.writeString(targetPath, GSON.toJson(json));
     }

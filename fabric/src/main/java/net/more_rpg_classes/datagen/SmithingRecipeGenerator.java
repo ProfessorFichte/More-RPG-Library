@@ -286,7 +286,8 @@ public abstract class SmithingRecipeGenerator implements DataProvider {
 
         return CompletableFuture.allOf(recipes.stream().map(recipeData -> {
             JsonObject recipe = buildRecipeJson(recipeData);
-            Path path = output.getResolver(net.minecraft.data.DataOutput.OutputType.DATA_PACK, "recipe")
+            Path path = // 1.20.1 datapack directory is plural
+                    output.getResolver(net.minecraft.data.DataOutput.OutputType.DATA_PACK, "recipes")
                     .resolveJson(new Identifier(modId, recipeData.name));
 
             return DataProvider.writeToPath(writer, recipe, path);
@@ -314,24 +315,25 @@ public abstract class SmithingRecipeGenerator implements DataProvider {
             JsonArray neoforgeConditions = new JsonArray();
             if (data.requiredMods.length == 1) {
                 JsonObject neoforgeCondition = new JsonObject();
-                neoforgeCondition.addProperty("type", "neoforge:mod_loaded");
+                neoforgeCondition.addProperty("type", "forge:mod_loaded");
                 neoforgeCondition.addProperty("modid", data.requiredMods[0]);
                 neoforgeConditions.add(neoforgeCondition);
             } else {
                 // Multiple mods: use "and" condition
                 JsonObject andCondition = new JsonObject();
-                andCondition.addProperty("type", "neoforge:and");
+                andCondition.addProperty("type", "forge:and");
                 JsonArray innerConditions = new JsonArray();
                 for (String mod : data.requiredMods) {
                     JsonObject modCondition = new JsonObject();
-                    modCondition.addProperty("type", "neoforge:mod_loaded");
+                    modCondition.addProperty("type", "forge:mod_loaded");
                     modCondition.addProperty("modid", mod);
                     innerConditions.add(modCondition);
                 }
                 andCondition.add("conditions", innerConditions);
                 neoforgeConditions.add(andCondition);
             }
-            recipe.add("neoforge:conditions", neoforgeConditions);
+            // Forge 47 reads a top-level "conditions" array; "neoforge:conditions" is 1.21/NeoForge-only
+            recipe.add("conditions", neoforgeConditions);
         }
 
         // Recipe Type
@@ -354,7 +356,8 @@ public abstract class SmithingRecipeGenerator implements DataProvider {
 
         // Result
         JsonObject resultObj = new JsonObject();
-        resultObj.addProperty("id", Registries.ITEM.getId(data.result).toString());
+        // 1.20.1 names the result item with "item", not "id"
+        resultObj.addProperty("item", Registries.ITEM.getId(data.result).toString());
         resultObj.addProperty("count", 1);
         recipe.add("result", resultObj);
 
