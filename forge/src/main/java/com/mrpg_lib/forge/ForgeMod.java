@@ -13,6 +13,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegisterEvent;
 import net.more_rpg_classes.MRPGCMod;
+import net.more_rpg_classes.network.MRPGCNetworking;
 import net.more_rpg_classes.client.particle.MoreParticles;
 import net.more_rpg_classes.custom.MoreSpellSchools;
 import net.more_rpg_classes.entity.attribute.MRPGCEntityAttributes;
@@ -27,6 +28,7 @@ public final class ForgeMod {
 
         // Networking first: common init may already want to send.
         MrpgForgeNetwork.register();
+        MRPGCNetworking.setSender(MrpgForgeNetwork::sendToPlayer);
 
         MRPGCMod.init();
         MRPGCMod.registerEvents();

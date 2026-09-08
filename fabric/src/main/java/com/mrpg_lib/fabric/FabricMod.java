@@ -4,7 +4,9 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.Items;
+import com.mrpg_lib.fabric.network.MRPGCNetworkingImpl;
 import net.more_rpg_classes.MRPGCMod;
+import net.more_rpg_classes.network.MRPGCNetworking;
 import net.more_rpg_classes.client.particle.MoreParticles;
 import net.more_rpg_classes.compat.armory_rpgs.SmithingIngredients;
 import net.more_rpg_classes.item.MRPGCItemGroups;
@@ -13,6 +15,8 @@ import net.more_rpg_classes.item.MRPGCItems;
 public final class FabricMod implements ModInitializer {
     @Override
     public void onInitialize() {
+        MRPGCNetworking.setSender(MRPGCNetworkingImpl::sendToPlayer);
+
         MRPGCMod.init();
 
         MRPGCMod.registerLootFunction();

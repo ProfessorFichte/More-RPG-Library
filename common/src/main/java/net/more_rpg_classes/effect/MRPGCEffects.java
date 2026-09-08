@@ -69,7 +69,9 @@ public class MRPGCEffects {
             new CustomStatusEffect(StatusEffectCategory.BENEFICIAL, 0x01d9cf),
             new EffectConfig(List.of(
                     new AttributeModifier(
-                            CustomMethods.attributeId(SpellSchools.SOUL.attributeEntry.value()),
+                            // Spell Power registers a school's attribute under the school id; reading `attributeEntry`
+                            // here would NPE on Forge, where <clinit> can run before the ATTRIBUTE window.
+                            SpellSchools.SOUL.id.toString(),
                             0.10F,
                             EntityAttributeModifier.Operation.ADDITION
                     )
