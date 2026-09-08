@@ -10,7 +10,7 @@ public class SirensTearEffect extends StatusEffect {
     }
 
     @Override
-    public boolean applyUpdateEffect(LivingEntity entity, int amplifier) {
+    public void applyUpdateEffect(LivingEntity entity, int amplifier) {
         float currentHealthPercent = entity.getHealth() / entity.getMaxHealth();
         float healPercent;
         if (currentHealthPercent < 0.05F) {
@@ -19,7 +19,7 @@ public class SirensTearEffect extends StatusEffect {
             healPercent = 0.05F * (1.0F - currentHealthPercent);
         }
         entity.heal(entity.getMaxHealth() * healPercent);
-        return true;
+        return;
     }
 
     @Override

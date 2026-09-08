@@ -2,6 +2,7 @@ package net.more_rpg_classes.util;
 
 import net.fabric_extras.ranged_weapon.api.EntityAttributes_RangedWeapon;
 import net.spell_engine.Platform;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -28,13 +29,20 @@ import net.spell_power.api.SpellSchools;
 import java.util.*;
 
 public class CustomMethods {
+    /// 1.20.1 `EntityAttribute` carries no id accessor - resolve it through the registry.
+    public static String attributeId(net.minecraft.entity.attribute.EntityAttribute attribute) {
+        var id = net.minecraft.registry.Registries.ATTRIBUTE.getId(attribute);
+        return id != null ? id.toString() : "";
+    }
+
     public static void clearNegativeEffects(LivingEntity entity, boolean removeOne) {
         var effects = entity.getStatusEffects();
-        var toRemove = new java.util.ArrayList<RegistryEntry<StatusEffect>>();
+        var toRemove = new java.util.ArrayList<StatusEffect>();
         for (var instance : effects) {
-            var effectEntry = instance.getEffectType();
-            if (!effectEntry.value().isBeneficial() && !effectEntry.equals(StatusEffects.TRIAL_OMEN)) {
-                toRemove.add(effectEntry);
+            var effect = instance.getEffectType();
+            // 1.20.1 has no TRIAL_OMEN (added in 1.21) - nothing to exclude besides beneficial effects.
+            if (!effect.isBeneficial()) {
+                toRemove.add(effect);
             }
         }
         if (removeOne) {
@@ -63,7 +71,7 @@ public class CustomMethods {
     }
     public static void spawnCloudEntity(
             ParticleEffect particleType, Entity owner, float radiusCloud, int durationSecondsCloud, float radiusGrowthCloud
-            , RegistryEntry<StatusEffect> statusEffect, int durationSecondsStatusEffect, int amplifierStatusEffect) {
+            , StatusEffect statusEffect, int durationSecondsStatusEffect, int amplifierStatusEffect) {
         if (!owner.getWorld().isClient) {
             List<LivingEntity> list = owner.getWorld().getNonSpectatingEntities(LivingEntity.class, owner.getBoundingBox().expand(4.0, 2.0, 4.0));
             AreaEffectCloudEntity areaEffectCloudEntity = new AreaEffectCloudEntity(owner.getWorld(), owner.getX(), owner.getY(), owner.getZ());
@@ -99,7 +107,7 @@ public class CustomMethods {
         }
     }
 
-    public static void applyStatusEffect(LivingEntity target, int effectAmplifier,int effectDurationSeconds,RegistryEntry<StatusEffect> statusEffect,
+    public static void applyStatusEffect(LivingEntity target, int effectAmplifier,int effectDurationSeconds,StatusEffect statusEffect,
                                          int maxStackAmplifier, boolean canStackAmplifier, boolean showIcon, boolean increaseDuration,
                                          int increaseEffectDurationSeconds){
 
@@ -129,7 +137,7 @@ public class CustomMethods {
 
         var registry = SpellRegistry.from(caster.getWorld());
         var spellId = registry.getId(spell);
-        var spellEntry = spellId != null ? registry.getEntry(spellId).orElse(null) : null;
+        var spellEntry = spellId != null ? registry.getEntry(RegistryKey.of(SpellRegistry.KEY, spellId)).orElse(null) : null;
 
         if (spellEntry != null) {
             var bonusPower = 1F;
@@ -163,17 +171,17 @@ public class CustomMethods {
         double maxPower = 0.0;
         // Check all SpellSchools
         // SPELL POWER MOD
-        maxPower = Math.max(maxPower, entity.getAttributeValue(SpellSchools.ARCANE.attributeEntry));
-        maxPower = Math.max(maxPower, entity.getAttributeValue(SpellSchools.FIRE.attributeEntry));
-        maxPower = Math.max(maxPower, entity.getAttributeValue(SpellSchools.FROST.attributeEntry));
-        maxPower = Math.max(maxPower, entity.getAttributeValue(SpellSchools.HEALING.attributeEntry));
-        maxPower = Math.max(maxPower, entity.getAttributeValue(SpellSchools.LIGHTNING.attributeEntry));
-        maxPower = Math.max(maxPower, entity.getAttributeValue(SpellSchools.SOUL.attributeEntry));
+        maxPower = Math.max(maxPower, entity.getAttributeValue(SpellSchools.ARCANE.attributeEntry.value()));
+        maxPower = Math.max(maxPower, entity.getAttributeValue(SpellSchools.FIRE.attributeEntry.value()));
+        maxPower = Math.max(maxPower, entity.getAttributeValue(SpellSchools.FROST.attributeEntry.value()));
+        maxPower = Math.max(maxPower, entity.getAttributeValue(SpellSchools.HEALING.attributeEntry.value()));
+        maxPower = Math.max(maxPower, entity.getAttributeValue(SpellSchools.LIGHTNING.attributeEntry.value()));
+        maxPower = Math.max(maxPower, entity.getAttributeValue(SpellSchools.SOUL.attributeEntry.value()));
         // MORE RPG LIBRARY
-        maxPower = Math.max(maxPower, entity.getAttributeValue(MoreSpellSchools.EARTH.attributeEntry));
-        maxPower = Math.max(maxPower, entity.getAttributeValue(MoreSpellSchools.WATER.attributeEntry));
-        maxPower = Math.max(maxPower, entity.getAttributeValue(MoreSpellSchools.AIR.attributeEntry));
-        maxPower = Math.max(maxPower, entity.getAttributeValue(MoreSpellSchools.NATURE.attributeEntry));
+        maxPower = Math.max(maxPower, entity.getAttributeValue(MoreSpellSchools.EARTH.attributeEntry.value()));
+        maxPower = Math.max(maxPower, entity.getAttributeValue(MoreSpellSchools.WATER.attributeEntry.value()));
+        maxPower = Math.max(maxPower, entity.getAttributeValue(MoreSpellSchools.AIR.attributeEntry.value()));
+        maxPower = Math.max(maxPower, entity.getAttributeValue(MoreSpellSchools.NATURE.attributeEntry.value()));
 
         return maxPower;
     }
@@ -182,7 +190,7 @@ public class CustomMethods {
         double meleeDamage = entity.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
         double rangedDamage = 0;
         if(Platform.util().isModLoaded("ranged_weapon_api")){
-            rangedDamage = entity.getAttributeValue(EntityAttributes_RangedWeapon.DAMAGE.entry);
+            rangedDamage = entity.getAttributeValue(EntityAttributes_RangedWeapon.DAMAGE.attribute);
         }
         return Math.max(meleeDamage, Math.max(rangedDamage, entitySpellPower));
     }
@@ -214,7 +222,7 @@ public class CustomMethods {
     }
     public static double getRangedDamageAttribute(LivingEntity entity) {
         if (Platform.util().isModLoaded("ranged_weapon_api")) {
-            var instance = entity.getAttributeInstance(EntityAttributes_RangedWeapon.DAMAGE.entry);
+            var instance = entity.getAttributeInstance(EntityAttributes_RangedWeapon.DAMAGE.attribute);
             return instance != null ? instance.getValue() : 0.0;
         } else {
             var instance = entity.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE);

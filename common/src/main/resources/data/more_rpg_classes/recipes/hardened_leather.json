@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " W ",
+    "TRT",
+    " W "
+  ],
+  "key": {
+    "W": {
+      "item": "minecraft:honeycomb"
+    },
+    "R": {
+      "item": "minecraft:leather"
+    },
+    "T": {
+      "item": "minecraft:coal"
+    }
+  },
+  "result": {
+    "item": "more_rpg_classes:hardened_leather",
+    "count": 1
+  }
+}

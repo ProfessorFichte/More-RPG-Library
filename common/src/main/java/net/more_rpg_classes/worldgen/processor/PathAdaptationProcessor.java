@@ -51,19 +51,19 @@ public class PathAdaptationProcessor extends StructureProcessor {
 
         public boolean matches(BlockState state) {
             if (terrain.startsWith("#")) {
-                TagKey<Block> tag = TagKey.of(RegistryKeys.BLOCK, Identifier.of(terrain.substring(1)));
+                TagKey<Block> tag = TagKey.of(RegistryKeys.BLOCK, new Identifier(terrain.substring(1)));
                 return state.isIn(tag);
             }
-            Block block = Registries.BLOCK.get(Identifier.of(terrain));
+            Block block = Registries.BLOCK.get(new Identifier(terrain));
             return state.isOf(block);
         }
 
         public BlockState getOutput() {
-            return Registries.BLOCK.get(Identifier.of(output)).getDefaultState();
+            return Registries.BLOCK.get(new Identifier(output)).getDefaultState();
         }
     }
 
-    public static final MapCodec<PathAdaptationProcessor> CODEC = RecordCodecBuilder.mapCodec(instance ->
+    public static final Codec<PathAdaptationProcessor> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
                     Codec.STRING.fieldOf("filler_block").forGetter(p -> p.fillerBlockId),
                     TerrainMapping.CODEC.listOf().fieldOf("terrain_mappings").forGetter(p -> p.terrainMappings),
@@ -97,8 +97,8 @@ public class PathAdaptationProcessor extends StructureProcessor {
         this.waterThreshold = waterThreshold;
         this.removeFloatingBlocks = removeFloatingBlocks;
 
-        this.fillerBlock = Registries.BLOCK.get(Identifier.of(fillerBlockId));
-        this.waterOutput = Registries.BLOCK.get(Identifier.of(waterOutputId));
+        this.fillerBlock = Registries.BLOCK.get(new Identifier(fillerBlockId));
+        this.waterOutput = Registries.BLOCK.get(new Identifier(waterOutputId));
     }
 
     @Override

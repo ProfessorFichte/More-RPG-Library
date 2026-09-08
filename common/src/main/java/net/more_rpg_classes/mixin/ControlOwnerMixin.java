@@ -32,7 +32,7 @@ public class ControlOwnerMixin implements ControlledOwnerAccess {
     private void mrpg$captureControlOwner(StatusEffectInstance effect, Entity source, CallbackInfoReturnable<Boolean> cir) {
         LivingEntity self = (LivingEntity) (Object) this;
         if (self.getWorld().isClient()) return;
-        if (!(effect.getEffectType().value() instanceof ControlEnemyStatusEffect)) return;
+        if (!(effect.getEffectType() instanceof ControlEnemyStatusEffect)) return;
         if (source instanceof LivingEntity owner) {
             this.mrpg$controlOwner = owner.getUuid();
         }

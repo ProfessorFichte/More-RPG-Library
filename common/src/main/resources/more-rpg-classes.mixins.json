@@ -5,12 +5,10 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "ControlOwnerMixin",
-    "EntityAttributesMixin",
     "EntityRelationsMixin",
     "LivingEntityMixin",
     "LivingEntityStealth",
     "PersistentProjectileEntityMixin",
-    "SpellSchoolsMixin",
     "TrackTargetGoalStealth"
   ],
   "client": [

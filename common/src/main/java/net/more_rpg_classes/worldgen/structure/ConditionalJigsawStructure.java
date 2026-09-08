@@ -1,23 +1,19 @@
 package net.more_rpg_classes.worldgen.structure;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.spell_engine.Platform;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.structure.pool.StructurePool;
 import net.minecraft.structure.pool.StructurePoolBasedGenerator;
-import net.minecraft.structure.pool.alias.StructurePoolAliasLookup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.gen.HeightContext;
 import net.minecraft.world.gen.heightprovider.HeightProvider;
-import net.minecraft.world.gen.structure.DimensionPadding;
 import net.minecraft.world.gen.structure.Structure;
 import net.minecraft.world.gen.structure.StructureType;
-import net.minecraft.structure.StructureLiquidSettings;
 import net.more_rpg_classes.worldgen.ModStructureTypes;
 
 import java.util.Optional;
@@ -25,7 +21,9 @@ import java.util.Optional;
 public class ConditionalJigsawStructure extends Structure {
     public static final int MAX_SIZE = 128;
 
-    public static final MapCodec<ConditionalJigsawStructure> CODEC = RecordCodecBuilder.<ConditionalJigsawStructure>mapCodec(instance ->
+    // 1.20.1: StructureType#codec() returns a plain Codec, and the jigsaw structure carries no
+    // dimension padding / liquid settings (both are 1.21 additions) - those fields are simply absent here.
+    public static final Codec<ConditionalJigsawStructure> CODEC = RecordCodecBuilder.<ConditionalJigsawStructure>mapCodec(instance ->
             instance.group(
                     configCodecBuilder(instance),
                     Codec.STRING.fieldOf("mod_id").forGetter(s -> s.modId),
@@ -35,11 +33,9 @@ public class ConditionalJigsawStructure extends Structure {
                     HeightProvider.CODEC.fieldOf("start_height").forGetter(s -> s.startHeight),
                     Codec.BOOL.optionalFieldOf("use_expansion_hack", false).forGetter(s -> s.useExpansionHack),
                     Heightmap.Type.CODEC.optionalFieldOf("project_start_to_heightmap").forGetter(s -> s.projectStartToHeightmap),
-                    Codec.intRange(1, MAX_SIZE).fieldOf("max_distance_from_center").forGetter(s -> s.maxDistanceFromCenter),
-                    DimensionPadding.CODEC.optionalFieldOf("dimension_padding", DimensionPadding.NONE).forGetter(s -> s.dimensionPadding),
-                    StructureLiquidSettings.codec.optionalFieldOf("liquid_settings", StructureLiquidSettings.IGNORE_WATERLOGGING).forGetter(s -> s.liquidSettings)
+                    Codec.intRange(1, MAX_SIZE).fieldOf("max_distance_from_center").forGetter(s -> s.maxDistanceFromCenter)
             ).apply(instance, ConditionalJigsawStructure::new)
-    );
+    ).codec();
 
     private final String modId;
     private final RegistryEntry<StructurePool> startPool;
@@ -49,8 +45,6 @@ public class ConditionalJigsawStructure extends Structure {
     private final boolean useExpansionHack;
     private final Optional<Heightmap.Type> projectStartToHeightmap;
     private final int maxDistanceFromCenter;
-    private final DimensionPadding dimensionPadding;
-    private final StructureLiquidSettings liquidSettings;
 
     public ConditionalJigsawStructure(
             Config config,
@@ -61,9 +55,7 @@ public class ConditionalJigsawStructure extends Structure {
             HeightProvider startHeight,
             boolean useExpansionHack,
             Optional<Heightmap.Type> projectStartToHeightmap,
-            int maxDistanceFromCenter,
-            DimensionPadding dimensionPadding,
-            StructureLiquidSettings liquidSettings
+            int maxDistanceFromCenter
     ) {
         super(config);
         this.modId = modId;
@@ -74,8 +66,6 @@ public class ConditionalJigsawStructure extends Structure {
         this.useExpansionHack = useExpansionHack;
         this.projectStartToHeightmap = projectStartToHeightmap;
         this.maxDistanceFromCenter = maxDistanceFromCenter;
-        this.dimensionPadding = dimensionPadding;
-        this.liquidSettings = liquidSettings;
     }
 
     @Override
@@ -97,10 +87,7 @@ public class ConditionalJigsawStructure extends Structure {
                 blockPos,
                 this.useExpansionHack,
                 this.projectStartToHeightmap,
-                this.maxDistanceFromCenter,
-                StructurePoolAliasLookup.EMPTY,
-                this.dimensionPadding,
-                this.liquidSettings
+                this.maxDistanceFromCenter
         );
     }
 

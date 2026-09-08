@@ -8,12 +8,11 @@ import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.loot.provider.number.LootNumberProvider;
 import net.minecraft.loot.provider.number.UniformLootNumberProvider;
 import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.Identifier;
 import net.more_rpg_classes.MRPGCMod;
 
 public class LootInjector {
-    public static void configure(RegistryWrapper.WrapperLookup registries, Identifier id, LootPoolAdder adder) {
+    public static void configure(Identifier id, LootPoolAdder adder) {
         var config = MRPGCMod.lootConfig.value;
         var tableId = id.toString();
         var pool = config.entries.get(tableId);
@@ -37,7 +36,7 @@ public class LootInjector {
             if (entryId == null || entryId.isEmpty()) {
                 continue;
             }
-            var item = Registries.ITEM.get(Identifier.of(entryId));
+            var item = Registries.ITEM.get(new Identifier(entryId));
             if (item == null) {
                 continue;
             }

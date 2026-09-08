@@ -11,9 +11,9 @@ public class MRPGCEntities {
 
     public static final EntityType<FriendlyLightningEntity> FRIENDLY_LIGHTNING = Registry.register(
         Registries.ENTITY_TYPE,
-        Identifier.of(MOD_ID, "friendly_lightning"),
+        new Identifier(MOD_ID, "friendly_lightning"),
         EntityType.Builder.<FriendlyLightningEntity>create(FriendlyLightningEntity::new, SpawnGroup.MISC)
-            .dimensions(0.0F, 0.0F)
+            .setDimensions(0.0F, 0.0F)
             .maxTrackingRange(16)
             .trackingTickInterval(Integer.MAX_VALUE)
             .build("friendly_lightning")

@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "more_rpg_classes:polar_bear_fur"
+    }
+  ],
+  "result": {
+    "item": "minecraft:white_wool",
+    "count": 1
+  }
+}

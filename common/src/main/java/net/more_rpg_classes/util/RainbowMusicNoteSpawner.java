@@ -1,13 +1,13 @@
 package net.more_rpg_classes.util;
 
-import net.minecraft.particle.SimpleParticleType;
+import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.entity.LivingEntity;
 import net.more_rpg_classes.client.particle.MoreParticles;
 
 public class RainbowMusicNoteSpawner {
 
-    public static void spawnCircle(ServerWorld world, LivingEntity entity, double radius, SimpleParticleType particleType, int particlesCountPerTick, float particleSpeedMultiplier) {
+    public static void spawnCircle(ServerWorld world, LivingEntity entity, double radius, DefaultParticleType particleType, int particlesCountPerTick, float particleSpeedMultiplier) {
         if (entity.age % 3 != 0) {
             return;
         }

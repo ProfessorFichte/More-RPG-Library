@@ -5,7 +5,6 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.registry.entry.RegistryEntry;
 import net.more_rpg_classes.effect.StealthStatusEffect;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -21,7 +20,7 @@ public class LivingEntityStealth {
     private StealthStatusEffect mrpgc$activeStealthEffect() {
         var thisEntity = (LivingEntity) (Object) this;
         for (var instance : thisEntity.getStatusEffects()) {
-            var effect = instance.getEffectType().value();
+            var effect = instance.getEffectType();
             if (effect instanceof StealthStatusEffect stealth) {
                 return stealth;
             }
@@ -29,8 +28,8 @@ public class LivingEntityStealth {
         return null;
     }
 
-    @WrapOperation(method = "updatePotionVisibility", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;hasStatusEffect(Lnet/minecraft/registry/entry/RegistryEntry;)Z"))
-    private boolean updatePotionVisibility_WRAP_Stealth(LivingEntity instance, RegistryEntry<StatusEffect> effect, Operation<Boolean> original) {
+    @WrapOperation(method = "updatePotionVisibility", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;hasStatusEffect(Lnet/minecraft/entity/effect/StatusEffect;)Z"))
+    private boolean updatePotionVisibility_WRAP_Stealth(LivingEntity instance, StatusEffect effect, Operation<Boolean> original) {
         return original.call(instance, effect) || mrpgc$activeStealthEffect() != null;
     }
 

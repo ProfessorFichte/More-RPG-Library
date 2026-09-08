@@ -1,8 +1,8 @@
 package net.more_rpg_classes.util.loot;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializationContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.context.LootContext;
@@ -10,12 +10,12 @@ import net.minecraft.loot.context.LootContextParameter;
 import net.minecraft.loot.function.ConditionalLootFunction;
 import net.minecraft.loot.function.LootFunctionType;
 import net.minecraft.loot.provider.number.LootNumberProvider;
-import net.minecraft.loot.provider.number.LootNumberProviderTypes;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.JsonHelper;
 import net.spell_engine.api.spell.Spell;
-import net.spell_engine.api.spell.SpellDataComponents;
+import net.spell_engine.api.item.SpellItemData;
 import net.spell_engine.api.spell.container.SpellContainer;
 import net.spell_engine.api.spell.container.SpellContainerHelper;
 import net.spell_engine.api.spell.registry.SpellRegistry;
@@ -32,25 +32,9 @@ import static net.more_rpg_classes.MRPGCMod.MOD_ID;
 
 public class SpecificSpellScrollPoolLootFunction extends ConditionalLootFunction {
     public static final String NAME = "specific_spell_scroll_pool";
-    public static final Identifier ID = Identifier.of(MOD_ID, NAME);
+    public static final Identifier ID = new Identifier(MOD_ID, NAME);
 
-    public static final MapCodec<SpecificSpellScrollPoolLootFunction> CODEC = RecordCodecBuilder.mapCodec(
-            instance -> addConditionsField(instance)
-                    .<List<String>, LootNumberProvider, LootNumberProvider, LootNumberProvider, List<String>>and(
-                            instance.group(
-                                    Codec.STRING.listOf().fieldOf("spell_pools").orElse(List.of()).forGetter(f -> f.pools),
-                                    LootNumberProviderTypes.CODEC.fieldOf("spell_tier_min").forGetter(f -> f.tierMin),
-                                    LootNumberProviderTypes.CODEC.fieldOf("spell_tier_max").forGetter(f -> f.tierMax),
-                                    LootNumberProviderTypes.CODEC.fieldOf("count").forGetter(f -> f.count),
-                                    Codec.STRING.listOf().fieldOf("blacklist_spells").orElse(List.of()).forGetter(f -> f.blacklist)
-                            )
-                    )
-                    .apply(instance, SpecificSpellScrollPoolLootFunction::new)
-    );
-
-    public static final LootFunctionType<SpecificSpellScrollPoolLootFunction> TYPE =
-            new LootFunctionType<>(CODEC);
-
+    public static final LootFunctionType TYPE = new LootFunctionType(new Serializer());
 
     @Nullable private final List<String> pools;
     @Nullable private final List<String> blacklist;
@@ -59,7 +43,7 @@ public class SpecificSpellScrollPoolLootFunction extends ConditionalLootFunction
     @Nullable private final LootNumberProvider count;
 
     private SpecificSpellScrollPoolLootFunction(
-            List<LootCondition> conditions,
+            LootCondition[] conditions,
             List<String> pools,
             LootNumberProvider tierMin,
             LootNumberProvider tierMax,
@@ -74,7 +58,7 @@ public class SpecificSpellScrollPoolLootFunction extends ConditionalLootFunction
     }
 
     @Override
-    public LootFunctionType<SpecificSpellScrollPoolLootFunction> getType() {
+    public LootFunctionType getType() {
         return TYPE;
     }
 
@@ -91,9 +75,9 @@ public class SpecificSpellScrollPoolLootFunction extends ConditionalLootFunction
         List<Identifier> exact = new ArrayList<>();
         for (String entry : pools) {
             if (entry.startsWith("#")) {
-                tags.add(TagKey.of(SpellRegistry.KEY, Identifier.of(entry.substring(1))));
+                tags.add(TagKey.of(SpellRegistry.KEY, new Identifier(entry.substring(1))));
             } else {
-                exact.add(Identifier.of(entry));
+                exact.add(new Identifier(entry));
             }
         }
         return new PoolFilters(tags, exact);
@@ -108,11 +92,11 @@ public class SpecificSpellScrollPoolLootFunction extends ConditionalLootFunction
 
         @Nullable var existingContainer = SpellContainerHelper.containerFromItemStack(stack);
         final List<Identifier> alreadyPresentSpells = existingContainer != null
-                ? existingContainer.spell_ids().stream().map(Identifier::of).toList()
+                ? existingContainer.spell_ids().stream().map(Identifier::new).toList()
                 : List.of();
         var poolFilters = getPools();
         final Set<Identifier> blacklistIds = blacklist != null
-                ? blacklist.stream().map(Identifier::of).collect(Collectors.toSet())
+                ? blacklist.stream().map(Identifier::new).collect(Collectors.toSet())
                 : Set.of();
 
         var spells = SpellRegistry.stream(context.getWorld())
@@ -159,7 +143,7 @@ public class SpecificSpellScrollPoolLootFunction extends ConditionalLootFunction
             var sortedSpellIds = SpellContainerHelper.sortedSpells(context.getWorld(), newContainer.spell_ids());
             newContainer = newContainer.copyWith(sortedSpellIds);
 
-            stack.set(SpellDataComponents.SPELL_CONTAINER, newContainer);
+            SpellItemData.setSpellContainer(stack, newContainer);
 
             if (stack.getItem() == SpellEngineItems.SCROLL.get()) {
                 var first = selectedSpells.get(0);
@@ -183,5 +167,39 @@ public class SpecificSpellScrollPoolLootFunction extends ConditionalLootFunction
             List<String> blacklist) {
         return builder(conditions ->
                 new SpecificSpellScrollPoolLootFunction(conditions, pools, tierMin, tierMax, count, blacklist));
+    }
+
+    public static class Serializer extends ConditionalLootFunction.Serializer<SpecificSpellScrollPoolLootFunction> {
+        @Override
+        public void toJson(JsonObject json, SpecificSpellScrollPoolLootFunction function, JsonSerializationContext context) {
+            super.toJson(json, function, context);
+            json.add("spell_pools", context.serialize(function.pools));
+            json.add("spell_tier_min", context.serialize(function.tierMin));
+            json.add("spell_tier_max", context.serialize(function.tierMax));
+            json.add("count", context.serialize(function.count));
+            json.add("blacklist_spells", context.serialize(function.blacklist));
+        }
+
+        @Override
+        public SpecificSpellScrollPoolLootFunction fromJson(JsonObject json, JsonDeserializationContext context, LootCondition[] conditions) {
+            return new SpecificSpellScrollPoolLootFunction(
+                    conditions,
+                    stringList(json, "spell_pools"),
+                    JsonHelper.deserialize(json, "spell_tier_min", context, LootNumberProvider.class),
+                    JsonHelper.deserialize(json, "spell_tier_max", context, LootNumberProvider.class),
+                    JsonHelper.deserialize(json, "count", context, LootNumberProvider.class),
+                    stringList(json, "blacklist_spells")
+            );
+        }
+
+        private static List<String> stringList(JsonObject json, String key) {
+            List<String> values = new ArrayList<>();
+            if (json.has(key)) {
+                for (var element : JsonHelper.getArray(json, key)) {
+                    values.add(element.getAsString());
+                }
+            }
+            return values;
+        }
     }
 }

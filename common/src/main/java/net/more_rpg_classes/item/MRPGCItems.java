@@ -22,7 +22,7 @@ public class MRPGCItems {
     public static final List<Item> COMBAT_GROUP_ITEMS = List.of(AQUA_STONE, TERRA_STONE, STORM_STONE, NATURE_STONE);
 
     private static Item registerItem(String name, Item item) {
-        return Registry.register(Registries.ITEM, Identifier.of(MOD_ID, name), item);
+        return Registry.register(Registries.ITEM, new Identifier(MOD_ID, name), item);
     }
 
     public static void registerModItems(){

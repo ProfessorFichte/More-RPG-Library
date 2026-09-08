@@ -31,7 +31,7 @@ public class WaterPillarProcessor extends StructureProcessor {
 
     private static final int BLOCK_UPDATE_FLAGS = Block.NOTIFY_ALL | Block.FORCE_STATE;
 
-    public static final MapCodec<WaterPillarProcessor> CODEC = RecordCodecBuilder.mapCodec(instance ->
+    public static final Codec<WaterPillarProcessor> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
                     Codec.STRING.fieldOf("corner_block").forGetter(p -> p.cornerBlockId),
                     Codec.STRING.fieldOf("pillar_block").forGetter(p -> p.pillarBlockId),
@@ -79,10 +79,10 @@ public class WaterPillarProcessor extends StructureProcessor {
         this.sampleRadius = sampleRadius;
         this.blendWithTerrain = blendWithTerrain;
 
-        this.cornerBlock = Registries.BLOCK.get(Identifier.of(cornerBlockId));
-        this.pillarBlock = Registries.BLOCK.get(Identifier.of(pillarBlockId));
-        this.fenceBlock = Registries.BLOCK.get(Identifier.of(fenceBlockId));
-        this.fallbackBlock = Registries.BLOCK.get(Identifier.of(fallbackBlockId));
+        this.cornerBlock = Registries.BLOCK.get(new Identifier(cornerBlockId));
+        this.pillarBlock = Registries.BLOCK.get(new Identifier(pillarBlockId));
+        this.fenceBlock = Registries.BLOCK.get(new Identifier(fenceBlockId));
+        this.fallbackBlock = Registries.BLOCK.get(new Identifier(fallbackBlockId));
     }
 
     @Override

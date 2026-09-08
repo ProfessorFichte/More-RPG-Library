@@ -18,7 +18,7 @@ public class PoisonDamageSource extends DamageSource {
 
     private final String KEY = "death.attack.mrpgc.fatal_poison";
 
-    private static final TagKey<Item> MUSHROOMS = TagKey.of(RegistryKeys.ITEM, Identifier.of("c", "mushrooms"));
+    private static final TagKey<Item> MUSHROOMS = TagKey.of(RegistryKeys.ITEM, new Identifier("c", "mushrooms"));
 
     @Override
     public Text getDeathMessage(LivingEntity killed) {

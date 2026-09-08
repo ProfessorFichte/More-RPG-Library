@@ -16,33 +16,6 @@ repositories {
             includeGroup 'maven.modrinth'
         }
     }
-    maven {
-        name = "Ladysnake Libs"
-        url = 'https://maven.ladysnake.org/releases'
-    }
-    exclusiveContent {
-        forRepository {
-            maven {
-                url = "https://maven.ftb.dev/releases"
-            }
-        }
-        filter {
-            includeGroup"dev.latvian.mods"
-            includeGroup"dev.ftb.mods"
-        }
-    }
-    // JEI Maven currently required by FTB
-    maven {
-        name "ModMaven (JEI)"
-        url "https://modmaven.dev/"
-        content {
-            includeGroup "mezz.jei"
-        }
-    }
-
-    // For Accessories:
-    maven { url 'https://maven.wispforest.io/releases' }
-    maven { url 'https://maven.su5ed.dev/releases' }
     maven { url 'https://maven.fabricmc.net' }
 
     mavenLocal()
@@ -53,19 +26,15 @@ dependencies {
     // which get remapped to the correct annotations on each platform.
     // Do NOT use other classes from Fabric Loader.
     modImplementation "net.fabricmc:fabric-loader:$project.fabric_loader_version"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:$project.fabric_api_version"
-    modImplementation("dev.kosmx.player-anim:player-animation-lib-${platform}:${project.player_anim_version}")
+    // There is no Forgified Fabric API on the 1.20.1 line: common/ must stay Fabric-API-free.
+    // Fabric-API-shaped call sites live behind the platform seams instead.
     modImplementation("me.shedaniel.cloth:cloth-config-${platform}:${project.cloth_config_version}")
-    modImplementation("maven.modrinth:tiny-config:${project.tiny_config_version}-${platform}")
-    modImplementation("maven.modrinth:spell-power:${project.spell_power_version}-${platform}")
-    modImplementation("maven.modrinth:spell-engine:${project.spell_engine_version}-${platform}")
+    modImplementation("net.tiny_config:tiny_config-${platform}:${project.tiny_config_version}") { transitive = false }
+    modImplementation("net.spell_power:spell_power-${platform}:${project.spell_power_version}") { transitive = false }
+    modImplementation("net.spell_engine:spell_engine-${platform}:${project.spell_engine_version}") { transitive = false }
     /// Compat
-    modImplementation("maven.modrinth:ranged-weapon-api:${project.ranged_weapon_api_version}-${platform}")
-    modCompileOnly("maven.modrinth:critical-strike:${project.critical_strike_version}-${platform}")
-
-    // NeoForge specific
-    modCompileOnly "io.wispforest:owo-lib:${project.owo_version}" // Accessories needs this
-    modImplementation("io.wispforest:accessories-common:${project.accessories_version}")
+    modImplementation("net.foundation:ranged_weapon_api-${platform}:${project.ranged_weapon_api_version}") { transitive = false }
+    modCompileOnly("net.critical_strike:critical_strike-${platform}:${project.critical_strike_version}") { transitive = false }
 }
 
 loom {

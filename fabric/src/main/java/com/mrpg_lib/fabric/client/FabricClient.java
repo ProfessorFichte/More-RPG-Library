@@ -41,11 +41,14 @@ public final class FabricClient implements ClientModInitializer {
             }
         });
 
-        ClientPlayNetworking.registerGlobalReceiver(MobBeamPacket.ID, (payload, context) ->
-                context.client().execute(() -> MobBeamTracker.handle(payload, context.client().world)));
+        // Fabric API 0.92: raw channel + PacketByteBuf, decoded through the packet's own read().
+        ClientPlayNetworking.registerGlobalReceiver(MobBeamPacket.ID, (client, handler, buf, responseSender) -> {
+            var payload = MobBeamPacket.read(buf);
+            client.execute(() -> MobBeamTracker.handle(payload, client.world));
+        });
 
         WorldRenderEvents.AFTER_TRANSLUCENT.register(context ->
-                MobBeamWorldRenderer.render(context.matrixStack(), context.camera(), context.tickCounter().getTickDelta(true)));
+                MobBeamWorldRenderer.render(context.matrixStack(), context.camera(), context.tickDelta()));
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> MobBeamWorldRenderer.onDisconnect());
     }
 }

@@ -1,0 +1,9 @@
+{
+  "values": [
+    "minecraft:phantom_membrane",
+    {
+      "id": "minecraft:wind_charge",
+      "required": false
+    }
+  ]
+}

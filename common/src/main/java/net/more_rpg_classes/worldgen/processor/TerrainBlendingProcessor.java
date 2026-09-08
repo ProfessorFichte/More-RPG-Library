@@ -30,7 +30,7 @@ import java.util.Map;
 public class TerrainBlendingProcessor extends StructureProcessor {
     //It samples neighboring blocks and picks an appropriate block that fits the environment.
 
-    public static final MapCodec<TerrainBlendingProcessor> CODEC = RecordCodecBuilder.mapCodec(instance ->
+    public static final Codec<TerrainBlendingProcessor> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
                     Codec.STRING.fieldOf("blend_block").forGetter(p -> p.blendBlockId),
                     Codec.INT.optionalFieldOf("sample_radius", 2).forGetter(p -> p.sampleRadius),
@@ -66,8 +66,8 @@ public class TerrainBlendingProcessor extends StructureProcessor {
         this.matchHorizontal = matchHorizontal;
         this.variationChance = variationChance;
 
-        this.blendBlock = Registries.BLOCK.get(Identifier.of(blendBlockId));
-        this.fallbackBlock = Registries.BLOCK.get(Identifier.of(fallbackBlockId));
+        this.blendBlock = Registries.BLOCK.get(new Identifier(blendBlockId));
+        this.fallbackBlock = Registries.BLOCK.get(new Identifier(fallbackBlockId));
     }
 
     @Override

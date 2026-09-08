@@ -90,7 +90,7 @@ public class MobBeamWorldRenderer {
         float rotX = (float) Math.acos(beamVector.y);
         float absoluteTime = (float) Math.floorMod(time, 40) + delta;
 
-        var texture = Identifier.of(beam.texture_id);
+        var texture = new Identifier(beam.texture_id);
         var outerColor = Color.IntFormat.fromLongRGBA(beam.color_rgba);
         var innerColor = Color.IntFormat.fromLongRGBA(beam.inner_color_rgba);
 

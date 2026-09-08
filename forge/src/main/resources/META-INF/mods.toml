@@ -1,0 +1,35 @@
+modLoader = "javafml"
+loaderVersion = "[47,)"
+#issueTrackerURL = ""
+license = "MIT"
+
+[[mods]]
+modId = "more_rpg_classes"
+version = "${version}"
+displayName = "More RPG Library"
+authors = "Fichte"
+description = '''
+Library with status effects, entity attributes & Spell engine API additions.
+'''
+#logoFile = ""
+
+[[dependencies.more_rpg_classes]]
+modId = "forge"
+mandatory = true
+versionRange = "[47,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.more_rpg_classes]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20.1,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.more_rpg_classes]]
+modId = "spell_engine"
+mandatory = true
+versionRange = "[1.10.5,)"
+ordering = "AFTER"
+side = "BOTH"

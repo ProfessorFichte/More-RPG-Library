@@ -33,13 +33,13 @@ public class KnockbackRangeScaledSpellImpact implements SpellHandlers.CustomImpa
             float enchantment_power = 0.0F;
             float power_enchantment_value = 0.0F;
             float knockback_enchantment_value = 0.0F;
-            var power_enchantment = attacker.getWorld().getRegistryManager().get(RegistryKeys.ENCHANTMENT).getEntry(Enchantments.PUNCH);
-            var knockback_enchantment = attacker.getWorld().getRegistryManager().get(RegistryKeys.ENCHANTMENT).getEntry(Enchantments.KNOCKBACK);
-            if (power_enchantment.isPresent()) {
-                power_enchantment_value = EnchantmentHelper.getLevel(power_enchantment.get(), attacker.getMainHandStack());
+            var power_enchantment = Enchantments.PUNCH;
+            var knockback_enchantment = Enchantments.KNOCKBACK;
+            {
+                power_enchantment_value = EnchantmentHelper.getLevel(power_enchantment, attacker.getMainHandStack());
             }
-            if (knockback_enchantment.isPresent()) {
-                knockback_enchantment_value = EnchantmentHelper.getLevel(knockback_enchantment.get(), attacker.getMainHandStack());
+            {
+                knockback_enchantment_value = EnchantmentHelper.getLevel(knockback_enchantment, attacker.getMainHandStack());
             }
             enchantment_power = power_enchantment_value + knockback_enchantment_value;
 

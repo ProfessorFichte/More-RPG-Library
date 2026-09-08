@@ -19,9 +19,9 @@ import java.util.function.Supplier;
 import static net.more_rpg_classes.MRPGCMod.MOD_ID;
 
 public class MRPGCItemGroups {
-    public static final Identifier ARSENAL_ID = Identifier.of(MOD_ID, "arsenal");
+    public static final Identifier ARSENAL_ID = new Identifier(MOD_ID, "arsenal");
     public static final RegistryKey<ItemGroup> ARSENAL_KEY = RegistryKey.of(Registries.ITEM_GROUP.getKey(), ARSENAL_ID);
-    public static final Identifier ARMORY_ID = Identifier.of(MOD_ID, "armory");
+    public static final Identifier ARMORY_ID = new Identifier(MOD_ID, "armory");
     public static final RegistryKey<ItemGroup> ARMORY_KEY = RegistryKey.of(Registries.ITEM_GROUP.getKey(), ARMORY_ID);
 
     public static final boolean devEnvo = Platform.util().isDevelopmentEnvironment();
@@ -53,7 +53,7 @@ public class MRPGCItemGroups {
     private static Item resolveIcon(List<String> ids, Supplier<Item> fallback) {
         return ids.stream()
                 .sorted()
-                .map(id -> Registries.ITEM.getOrEmpty(Identifier.of(id)).orElse(null))
+                .map(id -> Registries.ITEM.getOrEmpty(new Identifier(id)).orElse(null))
                 .filter(Objects::nonNull)
                 .findFirst()
                 .orElseGet(fallback);

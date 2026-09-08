@@ -23,7 +23,7 @@ public class TrackTargetGoalStealth {
         var target = mob.getTarget();
         if (target == null) return;
         for (var instance : target.getStatusEffects()) {
-            var effect = instance.getEffectType().value();
+            var effect = instance.getEffectType();
             if (effect instanceof StealthStatusEffect stealth) {
                 cir.setReturnValue(stealth.stealthFollowRange());
                 cir.cancel();

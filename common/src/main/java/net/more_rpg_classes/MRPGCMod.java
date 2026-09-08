@@ -1,5 +1,10 @@
 package net.more_rpg_classes;
 
+import net.more_rpg_classes.enchantment.MRPGCEnchantments;
+import net.more_rpg_classes.item.MRPGCItemGroups;
+import net.more_rpg_classes.compat.armory_rpgs.SmithingIngredients;
+import net.more_rpg_classes.util.loot.MRPGCLootTableEntityModifiers;
+import net.spell_engine.PlatformEvents;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.entry.LootPoolEntryType;
 import net.minecraft.registry.RegistryKey;
@@ -8,7 +13,6 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import net.more_rpg_classes.compat.CriticalStrikeCompat;
-import net.more_rpg_classes.compat.armory_rpgs.SmithingIngredients;
 import net.more_rpg_classes.entity.MrpgEntityRelationMatcher;
 import net.more_rpg_classes.config.LootConfig;
 import net.more_rpg_classes.config.TweaksConfig;
@@ -20,7 +24,6 @@ import net.more_rpg_classes.custom.MoreSpellSchoolWeakness;
 import net.more_rpg_classes.custom.MoreSpellSchools;
 import net.more_rpg_classes.effect.MRPGCEffects;
 import net.more_rpg_classes.entity.MRPGCEntities;
-import net.more_rpg_classes.item.MRPGCItemGroups;
 import net.more_rpg_classes.item.MRPGCItems;
 import net.more_rpg_classes.sounds.MRPGLibSounds;
 import net.more_rpg_classes.util.loot.*;
@@ -74,20 +77,36 @@ public class MRPGCMod {
 			CustomSpellEntityPredicate.registerCustomPredicates();
 			CriticalStrikeCompat.init();
 	}
-	public static void modifyLootTable(RegistryWrapper.WrapperLookup registries, RegistryKey<LootTable> key, LootPoolAdder adder) {
-		var tableId = key.getValue().toString();
+	public static void modifyLootTable(Identifier id, LootPoolAdder adder) {
+		var tableId = id.toString();
 		if (!lootConfig.value.entries.containsKey(tableId)) {
 			return;
 		}
-		LootInjector.configure(registries, key.getValue(), adder);
+		LootInjector.configure(id, adder);
 	}
+
+	/// Loot-table hooks, routed through Spell Engine's loader-agnostic event (1.20.1 has no Forgified
+	/// Fabric API). Creative-tab population stays per-platform: positional inserts are expressed with
+	/// loader-specific APIs that the vanilla `ItemGroup.Entries` does not carry.
+	public static void registerEvents() {
+		PlatformEvents.onLootTableModify(context -> {
+			LootPoolAdder adder = pool -> context.addPool(pool.build());
+			modifyLootTable(context.tableId(), adder);
+			MRPGCLootTableEntityModifiers.modifyLootEntityTables(context.tableId(), adder);
+		});
+	}
+
 	public static void registerLootFunction() {
 		Registry.register(Registries.LOOT_FUNCTION_TYPE, SpecificSpellScrollPoolLootFunction.ID, SpecificSpellScrollPoolLootFunction.TYPE);
 		Registry.register(Registries.LOOT_FUNCTION_TYPE, ConditionalItemLootFunction.ID, ConditionalItemLootFunction.TYPE);
 		Registry.register(Registries.LOOT_FUNCTION_TYPE, BindSpellFromPoolsLootFunction.ID, BindSpellFromPoolsLootFunction.TYPE);
 		Registry.register(Registries.LOOT_FUNCTION_TYPE, ItemTagPickerLootFunction.ID, ItemTagPickerLootFunction.TYPE);
-		Registry.register(Registries.LOOT_POOL_ENTRY_TYPE, ConditionalItemEntry.ID, new LootPoolEntryType(ConditionalItemEntry.CODEC));
+		Registry.register(Registries.LOOT_POOL_ENTRY_TYPE, ConditionalItemEntry.ID, new LootPoolEntryType(new ConditionalItemEntry.Serializer()));
 	}
+	public static void registerEnchantments() {
+		MRPGCEnchantments.register();
+	}
+
 	public static void registerSounds() {
 		MRPGLibSounds.register();
 	}
@@ -113,7 +132,7 @@ public class MRPGCMod {
 	}
 
 	public static Identifier id(String path) {
-		return Identifier.of(MOD_ID, path);
+		return new Identifier(MOD_ID, path);
 	}
 
 }

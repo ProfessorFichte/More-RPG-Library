@@ -41,11 +41,11 @@ public abstract class PersistentProjectileEntityMixin {
 
     @Unique
     private void applyFuseDamage(LivingEntity attacker, LivingEntity target,
-                                 RegistryEntry<EntityAttribute> fuseAttribute,
+                                 EntityAttribute fuseAttribute,
                                  SpellSchool spellSchool) {
         EntityAttributeInstance fuseInstance = attacker.getAttributeInstance(fuseAttribute);
         if (fuseInstance != null && fuseInstance.getValue() != 100.0) {
-            EntityAttributeInstance spellPowerInstance = attacker.getAttributeInstance(spellSchool.attributeEntry);
+            EntityAttributeInstance spellPowerInstance = attacker.getAttributeInstance(spellSchool.attributeEntry.value());
             if (spellPowerInstance == null) return;
             float magicDamage = Math.max(0.1f, (float)((fuseInstance.getValue() - 100) / 100f) * (float) spellPowerInstance.getValue());
             target.timeUntilRegen = 0;
@@ -109,7 +109,7 @@ public abstract class PersistentProjectileEntityMixin {
                 float chance = (float)(burningChance.getValue() - 100) / 100f;
                 if (random.nextFloat() < chance) {
                     target.addStatusEffect(new StatusEffectInstance(
-                            MRPGCEffects.IGNITED.entry, 40, amplifier, true, false, true));
+                            MRPGCEffects.IGNITED.effect, 40, amplifier, true, false, true));
                     lastStrongEffectTickMap.put(attackerUUID, currentTick);
                 }
             }
@@ -118,7 +118,7 @@ public abstract class PersistentProjectileEntityMixin {
                 float chance = (float)(staggerChance.getValue() - 100) / 100f;
                 if (random.nextFloat() < chance) {
                     target.addStatusEffect(new StatusEffectInstance(
-                            MRPGCEffects.STAGGER.entry, 80, amplifier, true, false, true));
+                            MRPGCEffects.STAGGER.effect, 80, amplifier, true, false, true));
                     lastStrongEffectTickMap.put(attackerUUID, currentTick);
                 }
             }
@@ -127,7 +127,7 @@ public abstract class PersistentProjectileEntityMixin {
                 float chance = (float)(stunChance.getValue() - 100) / 100f;
                 if (random.nextFloat() < chance) {
                     target.addStatusEffect(new StatusEffectInstance(
-                            SpellEngineEffects.STUN.entry, 40, 0, true, false, true));
+                            SpellEngineEffects.STUN.effect, 40, 0, true, false, true));
                     lastStrongEffectTickMap.put(attackerUUID, currentTick);
                 }
             }
@@ -136,7 +136,7 @@ public abstract class PersistentProjectileEntityMixin {
                 float chance = (float)(freezeChance.getValue() - 100) / 100f;
                 if (random.nextFloat() < chance) {
                     target.addStatusEffect(new StatusEffectInstance(
-                            MRPGCEffects.FROZEN_SOLID.entry, 60, 0, true, false, true));
+                            MRPGCEffects.FROZEN_SOLID.effect, 60, 0, true, false, true));
                     lastStrongEffectTickMap.put(attackerUUID, currentTick);
                 }
             }
@@ -157,7 +157,7 @@ public abstract class PersistentProjectileEntityMixin {
                 float chance = (float)(bleedingChance.getValue() - 100) / 100f;
                 if (random.nextFloat() < chance) {
                     target.addStatusEffect(new StatusEffectInstance(
-                            SpellEngineEffects.BLEED.entry, 120, amplifier, true, false, true));
+                            SpellEngineEffects.BLEED.effect, 120, amplifier, true, false, true));
                     lastWeakEffectTickMap.put(attackerUUID, currentTick);
                 }
             }

@@ -21,25 +21,25 @@ public class HudMessagesMixin {
         if (client.player != null) {
             PlayerEntity player = client.player;
 
-            if (player.hasStatusEffect(MRPGCEffects.FROZEN_SOLID.entry)) {
+            if (player.hasStatusEffect(MRPGCEffects.FROZEN_SOLID.effect)) {
                 ((HudMessages)(Object)this).error(Text.translatable("hud.more_rpg_classes.frozen").formatted(Formatting.RED));
                 ci.cancel();
                 return;
             }
 
-            if (player.hasStatusEffect(MRPGCEffects.IGNITED.entry)) {
+            if (player.hasStatusEffect(MRPGCEffects.IGNITED.effect)) {
                 ((HudMessages)(Object)this).error(Text.translatable("hud.more_rpg_classes.ignited").formatted(Formatting.RED));
                 ci.cancel();
                 return;
             }
 
-            if (player.hasStatusEffect(MRPGCEffects.FEAR.entry)) {
+            if (player.hasStatusEffect(MRPGCEffects.FEAR.effect)) {
                 ((HudMessages)(Object)this).error(Text.translatable("hud.more_rpg_classes.feared").formatted(Formatting.RED));
                 ci.cancel();
                 return;
             }
 
-            if (player.hasStatusEffect(MRPGCEffects.STAGGER.entry)) {
+            if (player.hasStatusEffect(MRPGCEffects.STAGGER.effect)) {
                 ((HudMessages)(Object)this).error(Text.translatable("hud.more_rpg_classes.stagger").formatted(Formatting.RED));
                 ci.cancel();
                 return;

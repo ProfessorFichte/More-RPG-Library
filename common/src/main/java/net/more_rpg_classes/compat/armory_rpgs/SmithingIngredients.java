@@ -4,7 +4,9 @@ import com.google.common.base.Suppliers;
 import net.spell_engine.Platform;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.tooltip.TooltipType;
+import net.minecraft.client.item.TooltipContext;
+import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.screen.ScreenTexts;
@@ -24,9 +26,9 @@ import static net.more_rpg_classes.MRPGCMod.MOD_ID;
 public class SmithingIngredients {
     public static class UpgradeCrystal extends Item {
         public static final Text APPLIES_TO_TEXT = Text.translatable(
-                        Util.createTranslationKey("item", Identifier.ofVanilla("smithing_template.applies_to")))
+                        Util.createTranslationKey("item", new Identifier("smithing_template.applies_to")))
                 .formatted(Formatting.GRAY);
-        public static final String HINT_TRANSLATION_KEY = Util.createTranslationKey("item", Identifier.of("armory_rpgs", "smithing_template.hint"));
+        public static final String HINT_TRANSLATION_KEY = Util.createTranslationKey("item", new Identifier("armory_rpgs", "smithing_template.hint"));
         public static final Text HINT_TEXT = Text.translatable(HINT_TRANSLATION_KEY)
                 .formatted(Formatting.GRAY);
 
@@ -36,8 +38,9 @@ public class SmithingIngredients {
             this.appliesToTranslationKey = appliesToTranslationKey;
         }
 
-        public void appendTooltip(ItemStack stack, Item.TooltipContext context, List<Text> tooltip, TooltipType type) {
-            super.appendTooltip(stack, context, tooltip, type);
+        @Override
+        public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
+            super.appendTooltip(stack, world, tooltip, context);
             tooltip.add(HINT_TEXT);
             tooltip.add(ScreenTexts.EMPTY);
             tooltip.add(APPLIES_TO_TEXT);
@@ -57,10 +60,10 @@ public class SmithingIngredients {
             return new Entry(name, classes, translations, factory);
         }
         public Identifier id() {
-            return Identifier.of(MOD_ID, name + "_upgrade_crystal");
+            return new Identifier(MOD_ID, name + "_upgrade_crystal");
         }
         public static String appliesToTranslationKey(String name) {
-            return Util.createTranslationKey("item", Identifier.of(MOD_ID, "upgrade_crystal." + name + ".applies_to"));
+            return Util.createTranslationKey("item", new Identifier(MOD_ID, "upgrade_crystal." + name + ".applies_to"));
         }
         public String appliesToTranslationKey() {
             return appliesToTranslationKey(name);

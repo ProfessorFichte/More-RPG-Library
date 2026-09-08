@@ -76,7 +76,7 @@ public class MoreSpellSchoolWeakness {
         fireWeakness.conditions = List.of(fireCondition);
         fireWeakness.modifier = new Spell.Impact.Modifier();
         fireWeakness.modifier.critical_chance_bonus = 0.3f;
-        config.school_weaknesses.put(Identifier.of(SpellPowerMod.ID, "fire_ranged").toString(), List.of(
+        config.school_weaknesses.put(new Identifier(SpellPowerMod.ID, "fire_ranged").toString(), List.of(
                 new ScopedWeakness(Spell.Impact.Action.Type.DAMAGE, fireWeakness)
         ));
 
@@ -93,7 +93,7 @@ public class MoreSpellSchoolWeakness {
         frostResistance.conditions = List.of(frostResistanceCondition);
         frostResistance.modifier = new Spell.Impact.Modifier();
         frostResistance.modifier.power_multiplier = -0.3f;
-        config.school_weaknesses.put(Identifier.of(SpellPowerMod.ID, "frost_ranged").toString(), List.of(
+        config.school_weaknesses.put(new Identifier(SpellPowerMod.ID, "frost_ranged").toString(), List.of(
                 new ScopedWeakness(null, frostWeakness),
                 new ScopedWeakness(null, frostResistance)
         ));

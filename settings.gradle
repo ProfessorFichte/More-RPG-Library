@@ -11,4 +11,4 @@ rootProject.name = 'more_rpg_library'
 
 include 'common'
 include 'fabric'
-include 'neoforge'
+include 'forge'

@@ -67,7 +67,7 @@ public class SpellthiefImpact implements SpellHandlers.CustomImpact {
         }
 
         List<StatusEffectInstance> beneficialEffects = livingTarget.getStatusEffects().stream()
-                .filter(e -> e.getEffectType().value().getCategory() == StatusEffectCategory.BENEFICIAL)
+                .filter(e -> e.getEffectType().getCategory() == StatusEffectCategory.BENEFICIAL)
                 .toList();
         for (StatusEffectInstance effect : beneficialEffects) {
             caster.addStatusEffect(new StatusEffectInstance(effect));
@@ -76,7 +76,7 @@ public class SpellthiefImpact implements SpellHandlers.CustomImpact {
 
         if (!beneficialEffects.isEmpty() && caster.getWorld() instanceof ServerWorld serverWorld) {
             for (StatusEffectInstance effect : beneficialEffects) {
-                Identifier effectId = effect.getEffectType().getKey().map(k -> k.getValue()).orElse(null);
+                Identifier effectId = net.minecraft.registry.Registries.STATUS_EFFECT.getId(effect.getEffectType());
                 if (effectId != null) {
                     serverWorld.spawnParticles(
                         new PopupParticleEffect(MoreParticles.SPELL_STOLEN_POPUP, effectId, false, caster.getId()),
@@ -87,7 +87,7 @@ public class SpellthiefImpact implements SpellHandlers.CustomImpact {
                 for (StatusEffectInstance effect : beneficialEffects) {
                     serverPlayer.sendMessage(
                         Text.translatable("message.more_rpg_classes.spellthief.effect_stolen",
-                            Text.translatable(effect.getEffectType().value().getTranslationKey()),
+                            Text.translatable(effect.getEffectType().getTranslationKey()),
                             livingTarget.getDisplayName()),
                         true
                     );

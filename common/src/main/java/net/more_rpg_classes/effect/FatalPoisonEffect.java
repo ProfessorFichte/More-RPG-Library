@@ -14,12 +14,12 @@ public class FatalPoisonEffect extends TickingStatusEffect {
     }
 
     @Override
-    public  boolean applyUpdateEffect(LivingEntity entity, int amplifier) {
+    public void applyUpdateEffect(LivingEntity entity, int amplifier) {
         EntityType<?> type = ((Entity) entity).getType();
         if(!type.isIn(MRPGCEntityTags.POISON_IMMUNE)){
             entity.damage(new PoisonDamageSource(entity.getDamageSources().magic().getTypeRegistryEntry()), 1F + amplifier);
         }
-        return true;
+        return;
     }
 
 

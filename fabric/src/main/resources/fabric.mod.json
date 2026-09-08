@@ -27,15 +27,16 @@
 		]
 	},
 	"mixins": [
-		"more-rpg-classes.mixins.json"
+		"more-rpg-classes.mixins.json",
+		"more-rpg-classes-fabric.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=${fabric_loader_compat_version}",
+		"fabricloader": ">=0.14.21",
 		"fabric-api": "*",
-		"minecraft": ">=${minecraft_compat_version}",
+		"minecraft": "~1.20.1",
 		"java": ">=17",
-		"spell_engine": ">=${spell_engine_version}",
-		"spell_power": ">=${spell_power_version}"
+		"spell_engine": ">=1.10.5",
+		"spell_power": ">=1.6.0"
 	},
 	"custom": {
 		"modmenu": {

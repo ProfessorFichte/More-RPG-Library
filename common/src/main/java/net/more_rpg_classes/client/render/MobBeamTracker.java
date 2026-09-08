@@ -2,6 +2,7 @@ package net.more_rpg_classes.client.render;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.World;
 import net.spell_engine.api.spell.Spell;
 import net.spell_engine.api.spell.registry.SpellRegistry;
@@ -27,7 +28,7 @@ public class MobBeamTracker {
             return;
         }
         if (world == null) return;
-        var entry = SpellRegistry.from(world).getEntry(payload.spellId()).orElse(null);
+        var entry = SpellRegistry.from(world).getEntry(RegistryKey.of(SpellRegistry.KEY, payload.spellId())).orElse(null);
         if (entry == null) return;
         Spell spell = entry.value();
         if (spell.target == null || spell.target.beam == null) return;

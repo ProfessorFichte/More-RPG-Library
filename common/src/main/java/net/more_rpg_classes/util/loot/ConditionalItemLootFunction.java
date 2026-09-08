@@ -1,8 +1,8 @@
 package net.more_rpg_classes.util.loot;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializationContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.condition.LootCondition;
@@ -12,34 +12,23 @@ import net.minecraft.loot.function.ConditionalLootFunction;
 import net.minecraft.loot.function.LootFunctionType;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.JsonHelper;
 
-import java.util.List;
 import java.util.Set;
 
 import static net.more_rpg_classes.MRPGCMod.MOD_ID;
 
+// 1.20.1: loot functions serialize through JsonSerializer, not a Codec.
 public class ConditionalItemLootFunction extends ConditionalLootFunction {
     public static final String NAME = "conditional_item";
-    public static final Identifier ID = Identifier.of(MOD_ID, NAME);
+    public static final Identifier ID = new Identifier(MOD_ID, NAME);
 
-    public static final MapCodec<ConditionalItemLootFunction> CODEC =
-            RecordCodecBuilder.mapCodec(instance -> addConditionsField(instance)
-                    .and(
-                            Codec.STRING.fieldOf("conditional_item")
-                                    .forGetter(f -> f.conditionalItemId.toString())
-                    )
-                    .apply(instance, (conditions, id) ->
-                            new ConditionalItemLootFunction(conditions, Identifier.of(id))
-                    )
-            );
-
-    public static final LootFunctionType<ConditionalItemLootFunction> TYPE =
-            new LootFunctionType<>(CODEC);
+    public static final LootFunctionType TYPE = new LootFunctionType(new Serializer());
 
     private final Identifier conditionalItemId;
 
     public ConditionalItemLootFunction(
-            List<LootCondition> conditions,
+            LootCondition[] conditions,
             Identifier conditionalItemId
     ) {
         super(conditions);
@@ -47,7 +36,7 @@ public class ConditionalItemLootFunction extends ConditionalLootFunction {
     }
 
     @Override
-    public LootFunctionType<ConditionalItemLootFunction> getType() {
+    public LootFunctionType getType() {
         return TYPE;
     }
 
@@ -67,5 +56,18 @@ public class ConditionalItemLootFunction extends ConditionalLootFunction {
 
     public static Builder<?> builder(Identifier conditionalItem) {
         return builder(conditions -> new ConditionalItemLootFunction(conditions, conditionalItem));
+    }
+
+    public static class Serializer extends ConditionalLootFunction.Serializer<ConditionalItemLootFunction> {
+        @Override
+        public void toJson(JsonObject json, ConditionalItemLootFunction function, JsonSerializationContext context) {
+            super.toJson(json, function, context);
+            json.addProperty("conditional_item", function.conditionalItemId.toString());
+        }
+
+        @Override
+        public ConditionalItemLootFunction fromJson(JsonObject json, JsonDeserializationContext context, LootCondition[] conditions) {
+            return new ConditionalItemLootFunction(conditions, new Identifier(JsonHelper.getString(json, "conditional_item")));
+        }
     }
 }

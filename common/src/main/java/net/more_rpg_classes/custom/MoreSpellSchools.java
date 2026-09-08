@@ -3,6 +3,7 @@ package net.more_rpg_classes.custom;
 import net.critical_strike.api.CriticalStrikeAttributes;
 import net.fabric_extras.ranged_weapon.api.EntityAttributes_RangedWeapon;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.registry.Registries;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.entity.attribute.EntityAttribute;
@@ -26,44 +27,55 @@ public class MoreSpellSchools {
         if (Platform.util().isModLoaded("ranged_weapon_api")) {
             return EntityAttributes_RangedWeapon.DAMAGE.entry;
         } else {
-            return EntityAttributes.GENERIC_ATTACK_DAMAGE;
+            // 1.20.1: vanilla attributes are raw objects; wrap for SpellSchool's RegistryEntry ctor.
+            return Registries.ATTRIBUTE.getEntry(EntityAttributes.GENERIC_ATTACK_DAMAGE);
         }
+    }
+
+    /// Adds the four magic schools to Spell Power's registry. Must run before Spell Power registers
+    /// its attributes: on Fabric that is the `SpellSchools` `<clinit>`-TAIL mixin, on Forge (where a
+    /// `<clinit>` registration mixin would hit a locked registry) it is the mod constructor.
+    public static void registerSchools() {
+        SpellSchools.register(WATER);
+        SpellSchools.register(AIR);
+        SpellSchools.register(EARTH);
+        SpellSchools.register(NATURE);
     }
 
     public static void initialize() {
         FROST_RANGED = new SpellSchool(SpellSchool.Archetype.ARCHERY,
-                Identifier.of(SpellPowerMod.ID, "frost_ranged"),
+                new Identifier(SpellPowerMod.ID, "frost_ranged"),
                 0xccffff,
                 DamageTypes.ARROW,
                 rangedDamageAttribute());
         FIRE_RANGED = new SpellSchool(SpellSchool.Archetype.ARCHERY,
-                Identifier.of(SpellPowerMod.ID, "fire_ranged"),
+                new Identifier(SpellPowerMod.ID, "fire_ranged"),
                 0xff3300,
                 DamageTypes.ARROW,
                 rangedDamageAttribute());
         RAGE_MELEE = new SpellSchool(SpellSchool.Archetype.MELEE,
-                Identifier.of(SpellPowerMod.ID, "rage_melee"),
+                new Identifier(SpellPowerMod.ID, "rage_melee"),
                 0xb3b3b3,
                 DamageTypes.PLAYER_ATTACK,
-                EntityAttributes.GENERIC_ATTACK_DAMAGE);
+                Registries.ATTRIBUTE.getEntry(EntityAttributes.GENERIC_ATTACK_DAMAGE));
 
         FROST_RANGED.addSource(SpellSchool.Trait.POWER, SpellSchool.Apply.ADD, query -> {
-            var second_power = query.entity().getAttributeValue(SpellSchools.FROST.attributeEntry);
+            var second_power = query.entity().getAttributeValue(SpellSchools.FROST.attributeEntry.value());
             return query.entity().getAttributeValue(rangedDamageAttribute()) + second_power;
         });
         FIRE_RANGED.addSource(SpellSchool.Trait.POWER, SpellSchool.Apply.ADD, query -> {
-            var second_power = query.entity().getAttributeValue(SpellSchools.FIRE.attributeEntry);
+            var second_power = query.entity().getAttributeValue(SpellSchools.FIRE.attributeEntry.value());
             return query.entity().getAttributeValue(rangedDamageAttribute()) + second_power;
         });
 
         if (Platform.util().isModLoaded("ranged_weapon_api")) {
             FIRE_RANGED.addSource(SpellSchool.Trait.HASTE, SpellSchool.Apply.ADD, query -> {
-                var haste = query.entity().getAttributeValue(EntityAttributes_RangedWeapon.HASTE.entry);
+                var haste = query.entity().getAttributeValue(EntityAttributes_RangedWeapon.HASTE.attribute);
                 var rate = EntityAttributes_RangedWeapon.HASTE.asMultiplier(haste);
                 return rate - 1;
             });
             FROST_RANGED.addSource(SpellSchool.Trait.HASTE, SpellSchool.Apply.ADD, query -> {
-                var haste = query.entity().getAttributeValue(EntityAttributes_RangedWeapon.HASTE.entry);
+                var haste = query.entity().getAttributeValue(EntityAttributes_RangedWeapon.HASTE.attribute);
                 var rate = EntityAttributes_RangedWeapon.HASTE.asMultiplier(haste);
                 return rate - 1;
             });
@@ -79,27 +91,27 @@ public class MoreSpellSchools {
 
         if (Platform.util().isModLoaded("critical_strike")) {
             FROST_RANGED.addSource(SpellSchool.Trait.CRIT_CHANCE, SpellSchool.Apply.ADD, query ->  {
-                var value = query.entity().getAttributeValue(CriticalStrikeAttributes.CHANCE.attributeEntry);
+                var value = query.entity().getAttributeValue(CriticalStrikeAttributes.CHANCE.attribute);
                 return (double) CriticalStrikeAttributes.CHANCE.asChance(value);
             });
             FROST_RANGED.addSource(SpellSchool.Trait.CRIT_DAMAGE, SpellSchool.Apply.ADD, query -> {
-                var value = query.entity().getAttributeValue(CriticalStrikeAttributes.DAMAGE.attributeEntry);
+                var value = query.entity().getAttributeValue(CriticalStrikeAttributes.DAMAGE.attribute);
                 return CriticalStrikeAttributes.DAMAGE.asMultiplier(value) - 1;
             });
             FIRE_RANGED.addSource(SpellSchool.Trait.CRIT_CHANCE, SpellSchool.Apply.ADD, query ->  {
-                var value = query.entity().getAttributeValue(CriticalStrikeAttributes.CHANCE.attributeEntry);
+                var value = query.entity().getAttributeValue(CriticalStrikeAttributes.CHANCE.attribute);
                 return (double) CriticalStrikeAttributes.CHANCE.asChance(value);
             });
             FIRE_RANGED.addSource(SpellSchool.Trait.CRIT_DAMAGE, SpellSchool.Apply.ADD, query -> {
-                var value = query.entity().getAttributeValue(CriticalStrikeAttributes.DAMAGE.attributeEntry);
+                var value = query.entity().getAttributeValue(CriticalStrikeAttributes.DAMAGE.attribute);
                 return CriticalStrikeAttributes.DAMAGE.asMultiplier(value) - 1;
             });
             RAGE_MELEE.addSource(SpellSchool.Trait.CRIT_CHANCE, SpellSchool.Apply.ADD, query ->  {
-                var value = query.entity().getAttributeValue(CriticalStrikeAttributes.CHANCE.attributeEntry);
+                var value = query.entity().getAttributeValue(CriticalStrikeAttributes.CHANCE.attribute);
                 return (double) CriticalStrikeAttributes.CHANCE.asChance(value);
             });
             RAGE_MELEE.addSource(SpellSchool.Trait.CRIT_DAMAGE, SpellSchool.Apply.ADD, query -> {
-                var value = query.entity().getAttributeValue(CriticalStrikeAttributes.DAMAGE.attributeEntry);
+                var value = query.entity().getAttributeValue(CriticalStrikeAttributes.DAMAGE.attribute);
                 return CriticalStrikeAttributes.DAMAGE.asMultiplier(value) - 1;
             });
             SpellSchools.configureSpellCritDamage(FROST_RANGED);
