@@ -329,7 +329,9 @@ public abstract class SmithingRecipeGenerator implements DataProvider {
                     modCondition.addProperty("modid", mod);
                     innerConditions.add(modCondition);
                 }
-                andCondition.add("conditions", innerConditions);
+                // Forge 47's AndCondition$Serializer reads its children from "values"
+                // (NeoForge uses "conditions"); the wrong key dies with "Missing values".
+                andCondition.add("values", innerConditions);
                 neoforgeConditions.add(andCondition);
             }
             // Forge 47 reads a top-level "conditions" array; "neoforge:conditions" is 1.21/NeoForge-only
