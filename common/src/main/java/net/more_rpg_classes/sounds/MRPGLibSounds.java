@@ -2,12 +2,17 @@ package net.more_rpg_classes.sounds;
 
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import static net.more_rpg_classes.MRPGCMod.MOD_ID;
 
@@ -92,6 +97,32 @@ public class MRPGLibSounds {
     public static final Entry PUNCTURE_IMPACT = add(new Entry("puncture_impact"));
     public static final Entry STEALTH_VANISH = add(new Entry("stealth_vanish"));
 
+    /// Creation only — the sound events keyed by the id they register under. Forge iterates this from its
+    /// `SOUND_EVENT` `RegisterEvent` window, then calls {@link #linkEntries()}: the event's helper returns
+    /// void where `Registry.registerReference` returns the {@link RegistryEntry} that {@link Entry#entry()}
+    /// exposes. Skips ids already present, so it is idempotent.
+    public static Map<Identifier, SoundEvent> soundsToRegister() {
+        var toRegister = new LinkedHashMap<Identifier, SoundEvent>();
+        for (var entry : entries) {
+            if (entry.entry != null || Registries.SOUND_EVENT.containsId(entry.id())) { continue; }
+            toRegister.put(entry.id(), entry.soundEvent());
+        }
+        return Collections.unmodifiableMap(toRegister);
+    }
+
+    /// Reads every `Entry#entry` back out of the registry. Call right after registering through a
+    /// loader-specific helper; {@link #register()} already fills them in. Throws naming the id if a sound
+    /// never reached the registry.
+    public static void linkEntries() {
+        for (var entry : entries) {
+            if (entry.entry != null) { continue; }
+            entry.entry = Registries.SOUND_EVENT.getEntry(RegistryKey.of(RegistryKeys.SOUND_EVENT, entry.id()))
+                    .orElseThrow(() -> new IllegalStateException(
+                            "Sound event " + entry.id() + " is not in the registry — register it first"));
+        }
+    }
+
+    /// The vanilla registration path, used on Fabric.
     public static void register() {
         for (var entry : entries) {
             entry.entry = Registry.registerReference(Registries.SOUND_EVENT, entry.id(), entry.soundEvent());

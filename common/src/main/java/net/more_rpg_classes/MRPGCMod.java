@@ -7,6 +7,7 @@ import net.more_rpg_classes.util.loot.MRPGCLootTableEntityModifiers;
 import net.spell_engine.PlatformEvents;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.entry.LootPoolEntryType;
+import net.minecraft.loot.function.LootFunctionType;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.Registries;
@@ -33,6 +34,10 @@ import net.spell_engine.Platform;
 import net.tiny_config.ConfigManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 
 public class MRPGCMod {
@@ -96,12 +101,31 @@ public class MRPGCMod {
 		});
 	}
 
+	/// Creation only — the loot function types keyed by the id they register under. `loot_function_type`
+	/// and `loot_pool_entry_type` are two different registries with two different `RegisterEvent` windows.
+	public static Map<Identifier, LootFunctionType> lootFunctionsToRegister() {
+		var toRegister = new LinkedHashMap<Identifier, LootFunctionType>();
+		toRegister.put(SpecificSpellScrollPoolLootFunction.ID, SpecificSpellScrollPoolLootFunction.TYPE);
+		toRegister.put(ConditionalItemLootFunction.ID, ConditionalItemLootFunction.TYPE);
+		toRegister.put(BindSpellFromPoolsLootFunction.ID, BindSpellFromPoolsLootFunction.TYPE);
+		toRegister.put(ItemTagPickerLootFunction.ID, ItemTagPickerLootFunction.TYPE);
+		toRegister.keySet().removeIf(Registries.LOOT_FUNCTION_TYPE::containsId);
+		return Collections.unmodifiableMap(toRegister);
+	}
+
+	/// Creation only — see {@link #lootFunctionsToRegister()}.
+	public static Map<Identifier, LootPoolEntryType> lootPoolEntryTypesToRegister() {
+		var toRegister = new LinkedHashMap<Identifier, LootPoolEntryType>();
+		if (!Registries.LOOT_POOL_ENTRY_TYPE.containsId(ConditionalItemEntry.ID)) {
+			toRegister.put(ConditionalItemEntry.ID, new LootPoolEntryType(new ConditionalItemEntry.Serializer()));
+		}
+		return Collections.unmodifiableMap(toRegister);
+	}
+
+	/// The vanilla registration path, used on Fabric.
 	public static void registerLootFunction() {
-		Registry.register(Registries.LOOT_FUNCTION_TYPE, SpecificSpellScrollPoolLootFunction.ID, SpecificSpellScrollPoolLootFunction.TYPE);
-		Registry.register(Registries.LOOT_FUNCTION_TYPE, ConditionalItemLootFunction.ID, ConditionalItemLootFunction.TYPE);
-		Registry.register(Registries.LOOT_FUNCTION_TYPE, BindSpellFromPoolsLootFunction.ID, BindSpellFromPoolsLootFunction.TYPE);
-		Registry.register(Registries.LOOT_FUNCTION_TYPE, ItemTagPickerLootFunction.ID, ItemTagPickerLootFunction.TYPE);
-		Registry.register(Registries.LOOT_POOL_ENTRY_TYPE, ConditionalItemEntry.ID, new LootPoolEntryType(new ConditionalItemEntry.Serializer()));
+		lootFunctionsToRegister().forEach((id, type) -> Registry.register(Registries.LOOT_FUNCTION_TYPE, id, type));
+		lootPoolEntryTypesToRegister().forEach((id, type) -> Registry.register(Registries.LOOT_POOL_ENTRY_TYPE, id, type));
 	}
 	public static void registerEnchantments() {
 		MRPGCEnchantments.register();
@@ -110,10 +134,16 @@ public class MRPGCMod {
 	public static void registerSounds() {
 		MRPGLibSounds.register();
 	}
+
+	/// The upgrade crystals only exist alongside Armory RPGs (or in dev).
+	public static boolean smithingIngredientsEnabled() {
+		return Platform.util().isDevelopmentEnvironment() || Platform.util().isModLoaded("armory_rpgs");
+	}
+
 	public static void registerItems() {
 		MRPGCItems.registerModItems();
 		MRPGCItemGroups.register();
-		if(Platform.util().isDevelopmentEnvironment() ||Platform.util().isModLoaded("armory_rpgs")){
+		if (smithingIngredientsEnabled()) {
 			SmithingIngredients.register();
 		}
 	}

@@ -15,7 +15,10 @@ import net.spell_engine.fx.SpellEngineParticles.Entry;
 import net.spell_engine.fx.SpellEngineParticles.Texture;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class MoreParticles {
@@ -147,32 +150,43 @@ public class MoreParticles {
     public static ParticleType<PopupParticleEffect> POPUP;
     public static ParticleType<PopupParticleEffect> SPELL_STOLEN_POPUP;
 
-    public static void register() {
-        POPUP = Registry.register(
-            Registries.PARTICLE_TYPE,
-            new Identifier(MRPGCMod.MOD_ID, "popup"),
-            new ParticleType<PopupParticleEffect>(false, PopupParticleEffect.FACTORY) {
-                @Override
-                public Codec<PopupParticleEffect> getCodec() {
-                    return PopupParticleEffect.createCodec(this);
-                }
-            }
-        );
-        SPELL_STOLEN_POPUP = Registry.register(
-                Registries.PARTICLE_TYPE,
-                MRPGCMod.id("spell_stolen_popup"),
-                new ParticleType<PopupParticleEffect>(false, PopupParticleEffect.FACTORY) {
-                    @Override
-                    public Codec<PopupParticleEffect> getCodec() {
-                        return PopupParticleEffect.createCodec(this);
-                    }
-                }
-        );
-        Registry.register(Registries.PARTICLE_TYPE,
-                new Identifier(MRPGCMod.MOD_ID, "rainbow_music_note"), RAINBOW_MUSIC_NOTE);
-
-        for (var entry: entries) {
-            Registry.register(Registries.PARTICLE_TYPE, entry.id(), entry.type());
+    /// Creation only — every particle type keyed by the id it registers under. Forge iterates this from
+    /// its `PARTICLE_TYPE` `RegisterEvent` window. The two `PopupParticleEffect` types are stored in their
+    /// static fields here, because the Forge helper returns void where `Registry.register` returned the
+    /// value. Skips ids already present, so it is idempotent.
+    public static Map<Identifier, ParticleType<?>> particlesToRegister() {
+        var toRegister = new LinkedHashMap<Identifier, ParticleType<?>>();
+        if (POPUP == null) {
+            POPUP = popupType();
         }
+        if (SPELL_STOLEN_POPUP == null) {
+            SPELL_STOLEN_POPUP = popupType();
+        }
+        put(toRegister, new Identifier(MRPGCMod.MOD_ID, "popup"), POPUP);
+        put(toRegister, MRPGCMod.id("spell_stolen_popup"), SPELL_STOLEN_POPUP);
+        put(toRegister, new Identifier(MRPGCMod.MOD_ID, "rainbow_music_note"), RAINBOW_MUSIC_NOTE);
+        for (var entry: entries) {
+            put(toRegister, entry.id(), entry.type());
+        }
+        return Collections.unmodifiableMap(toRegister);
+    }
+
+    private static void put(Map<Identifier, ParticleType<?>> toRegister, Identifier id, ParticleType<?> type) {
+        if (Registries.PARTICLE_TYPE.containsId(id)) { return; }
+        toRegister.put(id, type);
+    }
+
+    private static ParticleType<PopupParticleEffect> popupType() {
+        return new ParticleType<PopupParticleEffect>(false, PopupParticleEffect.FACTORY) {
+            @Override
+            public Codec<PopupParticleEffect> getCodec() {
+                return PopupParticleEffect.createCodec(this);
+            }
+        };
+    }
+
+    /// The vanilla registration path, used on Fabric.
+    public static void register() {
+        particlesToRegister().forEach((id, type) -> Registry.register(Registries.PARTICLE_TYPE, id, type));
     }
 }

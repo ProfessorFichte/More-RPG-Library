@@ -13,6 +13,7 @@ import net.spell_power.api.enchantment.SpellPowerEnchantments;
 import net.spell_power.config.EnchantmentsConfig;
 import net.spell_power.internals.SchoolFilteredEnchantment;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -61,15 +62,16 @@ public class MRPGCEnchantments {
             STONEBLOOM_ID, STONEBLOOM
     ));
 
-    private static boolean registered = false;
+    /// Creation only — the enchantments keyed by the id they register under. Forge iterates this from its
+    /// `ENCHANTMENT` `RegisterEvent` window. Skips ids already present, so it is idempotent.
+    public static Map<Identifier, Enchantment> enchantmentsToRegister() {
+        var toRegister = new LinkedHashMap<>(all);
+        toRegister.keySet().removeIf(Registries.ENCHANTMENT::containsId);
+        return Collections.unmodifiableMap(toRegister);
+    }
 
+    /// The vanilla registration path, used on Fabric.
     public static void register() {
-        if (registered) {
-            return;
-        }
-        registered = true;
-        for (var entry : all.entrySet()) {
-            Registry.register(Registries.ENCHANTMENT, entry.getKey(), entry.getValue());
-        }
+        enchantmentsToRegister().forEach((id, enchantment) -> Registry.register(Registries.ENCHANTMENT, id, enchantment));
     }
 }

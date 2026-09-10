@@ -3,6 +3,7 @@ package net.more_rpg_classes.effect;
 import net.more_rpg_classes.util.CustomMethods;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.util.Identifier;
 import net.more_rpg_classes.custom.MoreSpellSchools;
@@ -18,6 +19,7 @@ import net.spell_power.api.statuseffects.SpellVulnerabilityStatusEffect;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static net.more_rpg_classes.MRPGCMod.MOD_ID;
 
@@ -295,7 +297,13 @@ public class MRPGCEffects {
 
 
 
-    public static void register(ConfigFile.Effects config) {
+    private static boolean behavioursInstalled = false;
+
+    /// Everything {@link #register} does *before* touching the registry. Idempotent; all of it reads the
+    /// raw {@link Effects.Entry#effect}, never the `entry` reference, so it is safe before linking.
+    private static void installBehaviours() {
+        if (behavioursInstalled) { return; }
+        behavioursInstalled = true;
         for (var entry : entries) {
             Synchronized.configure(entry.effect, true);
         }
@@ -306,8 +314,19 @@ public class MRPGCEffects {
         ActionImpairing.configure(IGNITED.effect, MRPGCActionImpairing.IGNITED);
         ActionImpairing.configure(FEAR.effect, EntityActionsAllowed.INCAPACITATE);
         ActionImpairing.configure(STAGGER.effect, EntityActionsAllowed.INCAPACITATE);
+    }
 
+    /// Creation only — behaviours installed, config applied, attribute modifiers attached; the effects are
+    /// returned keyed by the id they register under and nothing is written. Forge iterates this from its
+    /// `STATUS_EFFECT` `RegisterEvent` window and follows it with `Effects.linkEntries(entries)`.
+    public static Map<Identifier, StatusEffect> effectsToRegister(ConfigFile.Effects config) {
+        installBehaviours();
+        return Effects.effectsToRegister(entries, config.effects);
+    }
 
+    /// The vanilla registration path, used on Fabric.
+    public static void register(ConfigFile.Effects config) {
+        installBehaviours();
         Effects.register(entries, config.effects);
     }
 }

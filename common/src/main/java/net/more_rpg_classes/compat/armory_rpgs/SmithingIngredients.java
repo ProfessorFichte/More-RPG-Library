@@ -18,7 +18,9 @@ import net.minecraft.util.Util;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 import static net.more_rpg_classes.MRPGCMod.MOD_ID;
@@ -100,7 +102,32 @@ public class SmithingIngredients {
     public static final boolean berserkerLoaded = Platform.util().isModLoaded("berserker_rpg");
     public static final boolean forcemasterLoaded = Platform.util().isModLoaded("forcemaster_rpg");
     public static final boolean bardsLoaded = Platform.util().isModLoaded("bards_rpg");
+    private static boolean entriesBuilt = false;
+
+    /// Creation only — the upgrade crystals keyed by the id they register under. Forge iterates this from
+    /// its `ITEM` `RegisterEvent` window.
+    ///
+    /// The conditional appends below have to happen *here*, not in the caller: the entry list is empty
+    /// until they run, so a Forge window that only copied the registration loop would silently register
+    /// nothing. Idempotent — the appends happen once, and ids already in the registry are skipped.
+    public static Map<Identifier, Item> itemsToRegister() {
+        buildEntries();
+        var toRegister = new LinkedHashMap<Identifier, Item>();
+        for (var entry : ENTRIES) {
+            if (Registries.ITEM.containsId(entry.id())) { continue; }
+            toRegister.put(entry.id(), entry.item().get());
+        }
+        return Collections.unmodifiableMap(toRegister);
+    }
+
+    /// The vanilla registration path, used on Fabric.
     public static void register() {
+        itemsToRegister().forEach((id, item) -> Registry.register(Registries.ITEM, id, item));
+    }
+
+    private static void buildEntries() {
+        if (entriesBuilt) { return; }
+        entriesBuilt = true;
         if (devEnvo || forcemasterLoaded ||elementalWizardsLoaded) {
             ASCETIC = add(Entry.of("ascetic", List.of(FightClass.AIR_WIZARD, FightClass.FORCEMASTER),
                     new Translations("Ascetic's Lost Crystal")));
@@ -127,9 +154,6 @@ public class SmithingIngredients {
 
 
 
-        for (var entry : ENTRIES) {
-            Registry.register(Registries.ITEM, entry.id(), entry.item().get());
-        }
     }
 
     public static List<Item> armoryGroupItems() {

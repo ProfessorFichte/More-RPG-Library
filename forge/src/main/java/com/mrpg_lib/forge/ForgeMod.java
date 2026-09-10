@@ -18,8 +18,15 @@ import net.more_rpg_classes.client.particle.MoreParticles;
 import net.more_rpg_classes.custom.MoreSpellSchools;
 import net.more_rpg_classes.entity.attribute.MRPGCEntityAttributes;
 import net.more_rpg_classes.compat.armory_rpgs.SmithingIngredients;
+import net.more_rpg_classes.effect.MRPGCEffects;
+import net.more_rpg_classes.enchantment.MRPGCEnchantments;
+import net.more_rpg_classes.entity.MRPGCEntities;
 import net.more_rpg_classes.item.MRPGCItemGroups;
 import net.more_rpg_classes.item.MRPGCItems;
+import net.more_rpg_classes.sounds.MRPGLibSounds;
+import net.more_rpg_classes.worldgen.ModStructureProcessorTypes;
+import net.more_rpg_classes.worldgen.ModStructureTypes;
+import net.spell_engine.api.effect.Effects;
 
 @Mod(MRPGCMod.MOD_ID)
 public final class ForgeMod {
@@ -42,18 +49,64 @@ public final class ForgeMod {
         modBus.addListener(ForgeMod::buildTabContents);
     }
 
-    /// Forge 47 hands out one registration window per registry; each `register` call must stay inside
-    /// the window for the registry it touches (the registries are locked outside it).
+    /// Forge 47 hands out one registration window per registry, and the vanilla registry behind each
+    /// Forge-wrapped one stays **locked** outside that window on Forge 47.0–47.3 (the lock is only cleared
+    /// for the plain `Registry.register` path from 47.4.0 on). `mods.toml` declares `[47,)`, so every write
+    /// has to go through the helper this event hands out, iterating the same content `common` exposes for
+    /// the Fabric path. The duplication is deliberate — the workaround stays inside `forge/`.
+    ///
+    /// Every block is declared unconditionally: `event.register` is a no-op unless its key matches the
+    /// event's registry, and a mismatched key is silent, so each registry gets its own block by name.
     public static void register(RegisterEvent event) {
-        event.register(RegistryKeys.ATTRIBUTE, reg -> MRPGCEntityAttributes.registerAttributes());
-        event.register(RegistryKeys.LOOT_FUNCTION_TYPE, reg -> MRPGCMod.registerLootFunction());
-        event.register(RegistryKeys.SOUND_EVENT, reg -> MRPGCMod.registerSounds());
-        event.register(RegistryKeys.ITEM, reg -> MRPGCMod.registerItems());
-        event.register(RegistryKeys.STATUS_EFFECT, reg -> MRPGCMod.registerEffects());
-        event.register(RegistryKeys.ENCHANTMENT, reg -> MRPGCMod.registerEnchantments());
-        event.register(RegistryKeys.PARTICLE_TYPE, reg -> MoreParticles.register());
-        event.register(RegistryKeys.ENTITY_TYPE, reg -> MRPGCMod.registerEntities());
-        event.register(RegistryKeys.STRUCTURE_TYPE, reg -> MRPGCMod.registerStructures());
+        event.register(RegistryKeys.ATTRIBUTE, helper ->
+                MRPGCEntityAttributes.attributesToRegister().forEach(helper::register));
+
+        event.register(RegistryKeys.SOUND_EVENT, helper -> {
+            MRPGLibSounds.soundsToRegister().forEach(helper::register);
+            // The helper returns void where `Registry.registerReference` returned the entry `Entry#entry()`
+            // exposes — read them back so both loaders end up in the same state.
+            MRPGLibSounds.linkEntries();
+        });
+
+        event.register(RegistryKeys.PARTICLE_TYPE, helper ->
+                MoreParticles.particlesToRegister().forEach(helper::register));
+
+        event.register(RegistryKeys.ITEM, helper -> {
+            MRPGCItems.itemsToRegister().forEach(helper::register);
+            if (MRPGCMod.smithingIngredientsEnabled()) {
+                // `itemsToRegister` also does the conditional entry building the loop alone would miss.
+                SmithingIngredients.itemsToRegister().forEach(helper::register);
+            }
+        });
+
+        event.register(RegistryKeys.STATUS_EFFECT, helper -> {
+            MRPGCEffects.effectsToRegister(MRPGCMod.effectsConfig.value).forEach(helper::register);
+            Effects.linkEntries(MRPGCEffects.entries);
+            // `registerEffects()` saves the config after registering; that is part of the contract.
+            MRPGCMod.effectsConfig.save();
+        });
+
+        event.register(RegistryKeys.ENCHANTMENT, helper ->
+                MRPGCEnchantments.enchantmentsToRegister().forEach(helper::register));
+
+        event.register(RegistryKeys.ENTITY_TYPE, helper ->
+                MRPGCEntities.entitiesToRegister().forEach(helper::register));
+
+        event.register(RegistryKeys.LOOT_FUNCTION_TYPE, helper ->
+                MRPGCMod.lootFunctionsToRegister().forEach(helper::register));
+
+        event.register(RegistryKeys.LOOT_POOL_ENTRY_TYPE, helper ->
+                MRPGCMod.lootPoolEntryTypesToRegister().forEach(helper::register));
+
+        event.register(RegistryKeys.STRUCTURE_TYPE, helper ->
+                ModStructureTypes.typesToRegister().forEach(helper::register));
+
+        event.register(RegistryKeys.STRUCTURE_PROCESSOR, helper ->
+                ModStructureProcessorTypes.typesToRegister().forEach(helper::register));
+
+        // NOT in the ITEM block: `creative_mode_tab` is event 65, `item` is event 7.
+        event.register(RegistryKeys.ITEM_GROUP, helper ->
+                MRPGCItemGroups.groupsToRegister().forEach(helper::register));
     }
 
     /// Forge 47 has no insertAfter/insertFirst helpers on the event; the backing map does the ordering.
