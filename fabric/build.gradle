@@ -85,10 +85,11 @@ dependencies {
 
     modImplementation("me.shedaniel.cloth:cloth-config-${platform}:${project.cloth_config_version}")
 
-    modImplementation("net.tiny_config:tiny_config-${platform}:${project.tiny_config_version}") { transitive = false }
-    modImplementation("net.spell_power:spell_power-${platform}:${project.spell_power_version}") { transitive = false }
-    modImplementation("net.spell_engine:spell_engine-${platform}:${project.spell_engine_version}") { transitive = false }
-    modImplementation("net.foundation:ranged_weapon_api-${platform}:${project.ranged_weapon_api_version}") { transitive = false }
+    // Ecosystem libraries: all resolved from the Modrinth maven.
+    modImplementation("maven.modrinth:tiny-config:${project.tiny_config_version}-${platform}") { transitive = false }
+    modImplementation("maven.modrinth:spell-power:${project.spell_power_version}-${platform}") { transitive = false }
+    modImplementation("maven.modrinth:spell-engine:${project.spell_engine_version}-${platform}") { transitive = false }
+    modImplementation("maven.modrinth:ranged-weapon-api:${project.ranged_weapon_api_version}-${platform}") { transitive = false }
 
     // Trinkets (pulled in by SpellEngine) JiJs Cardinal Components; Loom does not load nested jars
     // of classpath mods, so the dev runtime needs them explicitly.
@@ -98,7 +99,7 @@ dependencies {
     // Spell Engine hard-depends on the player animation library at runtime.
     modLocalRuntime("dev.kosmx.player-anim:player-animation-lib-fabric:${rootProject.player_anim_version}")
     // Soft dependency, dev runtime only: without it the `runes:crafting` recipes cannot be parsed.
-    modLocalRuntime("net.rpg_series:runes-fabric:${rootProject.runes_version}") { transitive = false }
+    modLocalRuntime("maven.modrinth:runes:${rootProject.runes_version}-fabric") { transitive = false }
 }
 
 processResources {
