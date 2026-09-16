@@ -74,8 +74,6 @@ repositories {
     maven { url 'https://maven.fabricmc.net' }
     // Curios (Forge accessory slots)
     maven { url 'https://maven.theillusivec4.top/' }
-
-    mavenLocal()
 }
 
 dependencies {

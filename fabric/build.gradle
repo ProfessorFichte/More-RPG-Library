@@ -73,8 +73,6 @@ repositories {
         name = "Ladysnake Libs"
         url = 'https://maven.ladysnake.org/releases'
     }
-
-    mavenLocal()
 }
 
 dependencies {
