@@ -1,7 +1,9 @@
 package net.more_rpg_classes.effect;
 
+import net.more_rpg_classes.util.CustomMethods;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.util.Identifier;
 import net.more_rpg_classes.custom.MoreSpellSchools;
@@ -17,6 +19,7 @@ import net.spell_power.api.statuseffects.SpellVulnerabilityStatusEffect;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static net.more_rpg_classes.MRPGCMod.MOD_ID;
 
@@ -28,26 +31,26 @@ public class MRPGCEffects {
     }
 
     public static final Effects.Entry MOLTEN_ARMOR = add(new Effects.Entry(
-            Identifier.of(MOD_ID, "molten_armor"),
+            new Identifier(MOD_ID, "molten_armor"),
             "Molten Armor",
             "Reduces armor, armor toughness and damages the target if it wears armor.",
             new MoltenArmorEffect(StatusEffectCategory.HARMFUL, 0xdd4e00),
             new EffectConfig(List.of(
                     new AttributeModifier(
-                            EntityAttributes.GENERIC_ARMOR.getIdAsString(),
+                            CustomMethods.attributeId(EntityAttributes.GENERIC_ARMOR),
                             -0.1F,
-                            EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+                            EntityAttributeModifier.Operation.MULTIPLY_TOTAL
                     ),
                     new AttributeModifier(
-                            EntityAttributes.GENERIC_ARMOR_TOUGHNESS.getIdAsString(),
+                            CustomMethods.attributeId(EntityAttributes.GENERIC_ARMOR_TOUGHNESS),
                             -1.0F,
-                            EntityAttributeModifier.Operation.ADD_VALUE
+                            EntityAttributeModifier.Operation.ADDITION
                     )
             ))
     ));
 
     public static final Effects.Entry FROZEN_SOLID = add(new Effects.Entry(
-            Identifier.of(MOD_ID, "frozen_solid"),
+            new Identifier(MOD_ID, "frozen_solid"),
             "Frozen Solid",
             "Cant move, attack or jump, takes additional damage if hit during active effect.",
             new FrozenSolidEffect(StatusEffectCategory.HARMFUL, 0x3beeff)
@@ -56,27 +59,29 @@ public class MRPGCEffects {
                     new AttributeModifier(
                             SpellEngineAttributes.DAMAGE_TAKEN.id.toString(),
                             0.15F,
-                            EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+                            EntityAttributeModifier.Operation.MULTIPLY_TOTAL
                     )
             ))
     ));
 
     public static final Effects.Entry COLLECTED_SOUL = add(new Effects.Entry(
-            Identifier.of(MOD_ID, "collected_soul"),
+            new Identifier(MOD_ID, "collected_soul"),
             "Collected Soul",
             "Increases soul spell power per stack.",
             new CustomStatusEffect(StatusEffectCategory.BENEFICIAL, 0x01d9cf),
             new EffectConfig(List.of(
                     new AttributeModifier(
-                            SpellSchools.SOUL.attributeEntry.getIdAsString(),
+                            // Spell Power registers a school's attribute under the school id; reading `attributeEntry`
+                            // here would NPE on Forge, where <clinit> can run before the ATTRIBUTE window.
+                            SpellSchools.SOUL.id.toString(),
                             0.10F,
-                            EntityAttributeModifier.Operation.ADD_VALUE
+                            EntityAttributeModifier.Operation.ADDITION
                     )
             ))
     ));
 
     public static final Effects.Entry GRIEVOUS_WOUNDS = add(new Effects.Entry(
-            Identifier.of(MOD_ID, "grievous_wounds"),
+            new Identifier(MOD_ID, "grievous_wounds"),
             "Grievous Wounds",
             "Reduced Healing and increased incoming damage.",
             new CustomStatusEffect(StatusEffectCategory.HARMFUL, 0x01d9cf),
@@ -84,26 +89,26 @@ public class MRPGCEffects {
                     new AttributeModifier(
                             SpellEngineAttributes.DAMAGE_TAKEN.id.toString(),
                             0.05F,
-                            EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+                            EntityAttributeModifier.Operation.MULTIPLY_TOTAL
                     ),
                     new AttributeModifier(
                             SpellEngineAttributes.HEALING_TAKEN.id.toString(),
                             -0.1F,
-                            EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+                            EntityAttributeModifier.Operation.MULTIPLY_TOTAL
                     )
             ))
     ));
 
     public static final Effects.Entry FROSTED = add(new Effects.Entry(
-            Identifier.of(MOD_ID, "frosted"),
+            new Identifier(MOD_ID, "frosted"),
             "Frosted",
             "Decreased Movement speed.",
             new FrostedEffect(StatusEffectCategory.HARMFUL, 0x3beeff),
             new EffectConfig(List.of(
                     new AttributeModifier(
-                            EntityAttributes.GENERIC_MOVEMENT_SPEED.getIdAsString(),
+                            CustomMethods.attributeId(EntityAttributes.GENERIC_MOVEMENT_SPEED),
                             -0.05F,
-                            EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+                            EntityAttributeModifier.Operation.MULTIPLY_TOTAL
                     )
             ))
     ));
@@ -111,7 +116,7 @@ public class MRPGCEffects {
     /** @deprecated superseded by {@link SpellEngineEffects#BLEED}; kept registered only so existing worlds/saves referencing this effect id don't break. */
     @Deprecated
     public static final Effects.Entry BLEEDING = add(new Effects.Entry(
-            Identifier.of(MOD_ID, "bleeding"),
+            new Identifier(MOD_ID, "bleeding"),
             "Bleeding",
             "Damages the target overtime.",
             new BleedingEffect(StatusEffectCategory.HARMFUL, 0xdd4e00),
@@ -119,45 +124,45 @@ public class MRPGCEffects {
     ));
 
     public static final Effects.Entry FEAR = add(new Effects.Entry(
-            Identifier.of(MOD_ID, "fear"),
+            new Identifier(MOD_ID, "fear"),
             "Fear",
             "Reduces attack damage.",
             new CustomStatusEffect(StatusEffectCategory.HARMFUL, 0x01d9cf),
             new EffectConfig(List.of(
                     new AttributeModifier(
-                            EntityAttributes.GENERIC_ATTACK_DAMAGE.getIdAsString(),
+                            CustomMethods.attributeId(EntityAttributes.GENERIC_ATTACK_DAMAGE),
                             -0.25F,
-                            EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+                            EntityAttributeModifier.Operation.MULTIPLY_TOTAL
                     )
             ))
     ));
 
     public static final Effects.Entry STAGGER = add(new Effects.Entry(
-            Identifier.of(MOD_ID, "stagger"),
+            new Identifier(MOD_ID, "stagger"),
             "Stagger",
             "Reduces Armor, Attack Damage & Movement Speed and incapacitates the target.",
             new CustomStatusEffect(StatusEffectCategory.HARMFUL, 0xb3b3b3),
             new EffectConfig(List.of(
                     new AttributeModifier(
-                            EntityAttributes.GENERIC_ATTACK_DAMAGE.getIdAsString(),
+                            CustomMethods.attributeId(EntityAttributes.GENERIC_ATTACK_DAMAGE),
                             -0.80F,
-                            EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+                            EntityAttributeModifier.Operation.MULTIPLY_TOTAL
                     ),
                     new AttributeModifier(
-                            EntityAttributes.GENERIC_ARMOR.getIdAsString(),
+                            CustomMethods.attributeId(EntityAttributes.GENERIC_ARMOR),
                             -0.80F,
-                            EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+                            EntityAttributeModifier.Operation.MULTIPLY_TOTAL
                     ),
                     new AttributeModifier(
-                            EntityAttributes.GENERIC_MOVEMENT_SPEED.getIdAsString(),
+                            CustomMethods.attributeId(EntityAttributes.GENERIC_MOVEMENT_SPEED),
                             -0.80F,
-                            EntityAttributeModifier.Operation.ADD_MULTIPLIED_TOTAL
+                            EntityAttributeModifier.Operation.MULTIPLY_TOTAL
                     )
             ))
     ));
 
     public static final Effects.Entry SOAKED = add(new Effects.Entry(
-            Identifier.of(MOD_ID, "soaked"),
+            new Identifier(MOD_ID, "soaked"),
             "Soaked",
             "Soaking the target with water extinguishing fire, more vulnerable to frost, lightning and water spells.",
             new SoakedEffect(StatusEffectCategory.HARMFUL, 0x01d9cf)
@@ -167,25 +172,25 @@ public class MRPGCEffects {
     ));
 
     public static final Effects.Entry CARVE = add(new Effects.Entry(
-            Identifier.of(MOD_ID, "carve"),
+            new Identifier(MOD_ID, "carve"),
             "Carve",
             "Reduces armor and increases damage taken.",
             new CustomStatusEffect(StatusEffectCategory.HARMFUL, 0xdd4e00),
             new EffectConfig(List.of(
                     new AttributeModifier(
-                            EntityAttributes.GENERIC_ARMOR.getIdAsString(),
+                            CustomMethods.attributeId(EntityAttributes.GENERIC_ARMOR),
                             -0.1F,
-                            EntityAttributeModifier.Operation.ADD_MULTIPLIED_BASE
+                            EntityAttributeModifier.Operation.MULTIPLY_BASE
                     ),
                     new AttributeModifier(
                             SpellEngineAttributes.DAMAGE_TAKEN.id.toString(),
                             0.05F,
-                            EntityAttributeModifier.Operation.ADD_MULTIPLIED_BASE
+                            EntityAttributeModifier.Operation.MULTIPLY_BASE
                     )
             ))
     ));
       public static final Effects.Entry FATAL_POISON = add(new Effects.Entry(
-            Identifier.of(MOD_ID, "fatal_poison"),
+            new Identifier(MOD_ID, "fatal_poison"),
             "Fatal Poison",
             "Inflicts damage over time, and can kill both undead and non-undead mobs.",
             new FatalPoisonEffect(StatusEffectCategory.HARMFUL, 0x5d2f8c).interval(3),
@@ -194,7 +199,7 @@ public class MRPGCEffects {
     ));
 
     public static final Effects.Entry IGNITED = add(new Effects.Entry(
-            Identifier.of(MOD_ID, "ignited"),
+            new Identifier(MOD_ID, "ignited"),
             "Ignited",
             "Burns the target, dealing damage over time and reduces healing. The target cannot move or attack.",
             new IgnitedEffect(StatusEffectCategory.HARMFUL, 0xFF6600),
@@ -202,11 +207,11 @@ public class MRPGCEffects {
                     new AttributeModifier(
                             SpellEngineAttributes.HEALING_TAKEN.id.toString(),
                             -0.1F,
-                            EntityAttributeModifier.Operation.ADD_MULTIPLIED_BASE
+                            EntityAttributeModifier.Operation.MULTIPLY_BASE
                     )))
     ));
     public static final Effects.Entry WITHERS_CURSE = add(new Effects.Entry(
-            Identifier.of(MOD_ID, "withers_curse"),
+            new Identifier(MOD_ID, "withers_curse"),
             "Wither's Curse",
             "Increases Incoming Damage, the amplifier increases with each harmful status effect.",
             new WithersCurseEffect(StatusEffectCategory.HARMFUL, 0x2a1b01),
@@ -214,12 +219,12 @@ public class MRPGCEffects {
                     new AttributeModifier(
                             SpellEngineAttributes.DAMAGE_TAKEN.id.toString(),
                             0.05F,
-                            EntityAttributeModifier.Operation.ADD_MULTIPLIED_BASE
+                            EntityAttributeModifier.Operation.MULTIPLY_BASE
                     )
             ))
     ));
 
-    public static Effects.Entry ARCANE_PRECISION = add(new Effects.Entry(Identifier.of(MOD_ID, "arcane_precision"),
+    public static Effects.Entry ARCANE_PRECISION = add(new Effects.Entry(new Identifier(MOD_ID, "arcane_precision"),
             "Arcane Precision",
             "Makes targets more vulnerable to Arcane Spell Damage & Crits",
             new SpellVulnerabilityStatusEffect(StatusEffectCategory.HARMFUL, SpellSchools.ARCANE.color)
@@ -227,7 +232,7 @@ public class MRPGCEffects {
                             0.025F, 0.05F, 0.1F)),
             new EffectConfig(List.of())
     ));
-    public static Effects.Entry ZEPHYRS_SPEED = add(new Effects.Entry(Identifier.of(MOD_ID, "zephyrs_speed"),
+    public static Effects.Entry ZEPHYRS_SPEED = add(new Effects.Entry(new Identifier(MOD_ID, "zephyrs_speed"),
             "Zephyrs Speed",
             "Increasing the Crit Chance & Movement Speed of the caster.",
             new CustomStatusEffect(StatusEffectCategory.BENEFICIAL, MoreSpellSchools.AIR.color),
@@ -236,19 +241,19 @@ public class MRPGCEffects {
                             new AttributeModifier(
                                     SpellPowerMechanics.CRITICAL_CHANCE.id.toString(),
                                     0.03F,
-                                    EntityAttributeModifier.Operation.ADD_MULTIPLIED_BASE
+                                    EntityAttributeModifier.Operation.MULTIPLY_BASE
                             ),
                             new AttributeModifier(
-                                    EntityAttributes.GENERIC_MOVEMENT_SPEED.getIdAsString(),
+                                    CustomMethods.attributeId(EntityAttributes.GENERIC_MOVEMENT_SPEED),
                                     0.05F,
-                                    EntityAttributeModifier.Operation.ADD_MULTIPLIED_BASE
+                                    EntityAttributeModifier.Operation.MULTIPLY_BASE
                             )
                     )
             )
     ));
 
     public static final Effects.Entry SIRENS_TEAR = add(new Effects.Entry(
-            Identifier.of(MOD_ID, "sirens_tear"),
+            new Identifier(MOD_ID, "sirens_tear"),
             "Siren's Tear",
             "Heals a percentage of max health every second, scaling with missing health.",
             new SirensTearEffect(StatusEffectCategory.BENEFICIAL, 0x7abfff),
@@ -256,21 +261,21 @@ public class MRPGCEffects {
     ));
 
     public static final Effects.Entry DUELISTS_FOCUS_OWNER = add(new Effects.Entry(
-            Identifier.of(MOD_ID, "duelists_focus_owner"),
+            new Identifier(MOD_ID, "duelists_focus_owner"),
             "Duelist's Focus",
             "Reduces incoming damage by 25% from attackers who are not marked.",
             new CustomStatusEffect(StatusEffectCategory.BENEFICIAL, 0xCC6600),
             new EffectConfig(List.of())
     ));
     public static final Effects.Entry DUELISTS_FOCUS_TARGET = add(new Effects.Entry(
-            Identifier.of(MOD_ID, "duelists_focus_target"),
+            new Identifier(MOD_ID, "duelists_focus_target"),
             "Marked by the Duelist",
             "Other entities deal reduced damage to the attacker who marked you and you receive increased damage.",
             new CustomStatusEffect(StatusEffectCategory.HARMFUL, 0xCC6600),
             new EffectConfig(List.of())
     ));
     public static float critDamageIncrease = 0.3F;
-    public static Effects.Entry DRAGON_SLAYERS_FURY = add(new Effects.Entry(Identifier.of(MOD_ID, "dragonslayers_fury"),
+    public static Effects.Entry DRAGON_SLAYERS_FURY = add(new Effects.Entry(new Identifier(MOD_ID, "dragonslayers_fury"),
             "Dragonslayer's Fury",
             "Increases Critical Damage.",
             new CustomStatusEffect(StatusEffectCategory.BENEFICIAL, 0x9999ff),
@@ -279,12 +284,12 @@ public class MRPGCEffects {
                             new AttributeModifier(
                                     SpellPowerMechanics.CRITICAL_DAMAGE.id,
                                     critDamageIncrease,
-                                    EntityAttributeModifier.Operation.ADD_MULTIPLIED_BASE
+                                    EntityAttributeModifier.Operation.MULTIPLY_BASE
                             ),
                             new AttributeModifier(
                                     "critical_strike:damage",
                                     critDamageIncrease,
-                                    EntityAttributeModifier.Operation.ADD_MULTIPLIED_BASE
+                                    EntityAttributeModifier.Operation.MULTIPLY_BASE
                             )
                     )
             )
@@ -292,7 +297,13 @@ public class MRPGCEffects {
 
 
 
-    public static void register(ConfigFile.Effects config) {
+    private static boolean behavioursInstalled = false;
+
+    /// Everything {@link #register} does *before* touching the registry. Idempotent; all of it reads the
+    /// raw {@link Effects.Entry#effect}, never the `entry` reference, so it is safe before linking.
+    private static void installBehaviours() {
+        if (behavioursInstalled) { return; }
+        behavioursInstalled = true;
         for (var entry : entries) {
             Synchronized.configure(entry.effect, true);
         }
@@ -303,8 +314,19 @@ public class MRPGCEffects {
         ActionImpairing.configure(IGNITED.effect, MRPGCActionImpairing.IGNITED);
         ActionImpairing.configure(FEAR.effect, EntityActionsAllowed.INCAPACITATE);
         ActionImpairing.configure(STAGGER.effect, EntityActionsAllowed.INCAPACITATE);
+    }
 
+    /// Creation only — behaviours installed, config applied, attribute modifiers attached; the effects are
+    /// returned keyed by the id they register under and nothing is written. Forge iterates this from its
+    /// `STATUS_EFFECT` `RegisterEvent` window and follows it with `Effects.linkEntries(entries)`.
+    public static Map<Identifier, StatusEffect> effectsToRegister(ConfigFile.Effects config) {
+        installBehaviours();
+        return Effects.effectsToRegister(entries, config.effects);
+    }
 
+    /// The vanilla registration path, used on Fabric.
+    public static void register(ConfigFile.Effects config) {
+        installBehaviours();
         Effects.register(entries, config.effects);
     }
 }

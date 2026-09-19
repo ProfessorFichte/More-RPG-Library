@@ -1,10 +1,8 @@
 package net.more_rpg_classes.client.particle;
 
-import com.mojang.serialization.MapCodec;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
+import com.mojang.serialization.Codec;
+import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleType;
-import net.minecraft.particle.SimpleParticleType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
@@ -17,7 +15,10 @@ import net.spell_engine.fx.SpellEngineParticles.Entry;
 import net.spell_engine.fx.SpellEngineParticles.Texture;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class MoreParticles {
@@ -29,8 +30,8 @@ public class MoreParticles {
     }
 
     private static Entry add(String name, int frames, Consumer<net.spell_engine.api.spell.fx.ParticleGroup.Appearance> defaults) {
-        var entry = new Entry(Identifier.of(MRPGCMod.MOD_ID, name),
-                new Texture(Identifier.of(MRPGCMod.MOD_ID, name), frames))
+        var entry = new Entry(new Identifier(MRPGCMod.MOD_ID, name),
+                new Texture(new Identifier(MRPGCMod.MOD_ID, name), frames))
                 .defaults(defaults);
         entries.add(entry);
         return entry;
@@ -145,44 +146,47 @@ public class MoreParticles {
     public static final Entry STAR = add("star", 1, 65, p -> {});
 
 
-    public static final SimpleParticleType RAINBOW_MUSIC_NOTE = new SimpleParticleType(false) {};
+    public static final DefaultParticleType RAINBOW_MUSIC_NOTE = new DefaultParticleType(false) {};
     public static ParticleType<PopupParticleEffect> POPUP;
     public static ParticleType<PopupParticleEffect> SPELL_STOLEN_POPUP;
 
-    public static void register() {
-        POPUP = Registry.register(
-            Registries.PARTICLE_TYPE,
-            Identifier.of(MRPGCMod.MOD_ID, "popup"),
-            new ParticleType<PopupParticleEffect>(false) {
-                @Override
-                public MapCodec<PopupParticleEffect> getCodec() {
-                    return PopupParticleEffect.createCodec(this);
-                }
-                @Override
-                public PacketCodec<? super RegistryByteBuf, PopupParticleEffect> getPacketCodec() {
-                    return PopupParticleEffect.createPacketCodec(this);
-                }
-            }
-        );
-        SPELL_STOLEN_POPUP = Registry.register(
-                Registries.PARTICLE_TYPE,
-                MRPGCMod.id("spell_stolen_popup"),
-                new ParticleType<PopupParticleEffect>(false) {
-                    @Override
-                    public MapCodec<PopupParticleEffect> getCodec() {
-                        return PopupParticleEffect.createCodec(this);
-                    }
-                    @Override
-                    public PacketCodec<? super RegistryByteBuf, PopupParticleEffect> getPacketCodec() {
-                        return PopupParticleEffect.createPacketCodec(this);
-                    }
-                }
-        );
-        Registry.register(Registries.PARTICLE_TYPE,
-                Identifier.of(MRPGCMod.MOD_ID, "rainbow_music_note"), RAINBOW_MUSIC_NOTE);
-
-        for (var entry: entries) {
-            Registry.register(Registries.PARTICLE_TYPE, entry.id(), entry.type());
+    /// Creation only — every particle type keyed by the id it registers under. Forge iterates this from
+    /// its `PARTICLE_TYPE` `RegisterEvent` window. The two `PopupParticleEffect` types are stored in their
+    /// static fields here, because the Forge helper returns void where `Registry.register` returned the
+    /// value. Skips ids already present, so it is idempotent.
+    public static Map<Identifier, ParticleType<?>> particlesToRegister() {
+        var toRegister = new LinkedHashMap<Identifier, ParticleType<?>>();
+        if (POPUP == null) {
+            POPUP = popupType();
         }
+        if (SPELL_STOLEN_POPUP == null) {
+            SPELL_STOLEN_POPUP = popupType();
+        }
+        put(toRegister, new Identifier(MRPGCMod.MOD_ID, "popup"), POPUP);
+        put(toRegister, MRPGCMod.id("spell_stolen_popup"), SPELL_STOLEN_POPUP);
+        put(toRegister, new Identifier(MRPGCMod.MOD_ID, "rainbow_music_note"), RAINBOW_MUSIC_NOTE);
+        for (var entry: entries) {
+            put(toRegister, entry.id(), entry.type());
+        }
+        return Collections.unmodifiableMap(toRegister);
+    }
+
+    private static void put(Map<Identifier, ParticleType<?>> toRegister, Identifier id, ParticleType<?> type) {
+        if (Registries.PARTICLE_TYPE.containsId(id)) { return; }
+        toRegister.put(id, type);
+    }
+
+    private static ParticleType<PopupParticleEffect> popupType() {
+        return new ParticleType<PopupParticleEffect>(false, PopupParticleEffect.FACTORY) {
+            @Override
+            public Codec<PopupParticleEffect> getCodec() {
+                return PopupParticleEffect.createCodec(this);
+            }
+        };
+    }
+
+    /// The vanilla registration path, used on Fabric.
+    public static void register() {
+        particlesToRegister().forEach((id, type) -> Registry.register(Registries.PARTICLE_TYPE, id, type));
     }
 }

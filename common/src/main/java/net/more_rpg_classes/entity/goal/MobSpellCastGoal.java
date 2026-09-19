@@ -4,6 +4,7 @@ import net.more_rpg_classes.MRPGCMod;
 import net.more_rpg_classes.entity.ISpellCasterEntity;
 import net.more_rpg_classes.network.MRPGCNetworking;
 import net.more_rpg_classes.network.MobBeamPacket;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.Goal;
@@ -87,7 +88,7 @@ public class MobSpellCastGoal extends Goal {
         if (spellOrTag.startsWith("#")) {
             return SpellRegistry.entries(world, spellOrTag.substring(1));
         }
-        var entry = SpellRegistry.from(world).getEntry(Identifier.of(spellOrTag)).orElse(null);
+        var entry = SpellRegistry.from(world).getEntry(RegistryKey.of(SpellRegistry.KEY, new Identifier(spellOrTag))).orElse(null);
         return entry != null ? List.of(entry) : List.of();
     }
 
@@ -170,7 +171,7 @@ public class MobSpellCastGoal extends Goal {
         float selfHpFrac = entity.getHealth() / entity.getMaxHealth();
         if (selfHpFrac < INTELLIGENT_SELF_HEAL_THRESHOLD) {
             List<Identifier> selfHeal = candidates.stream().filter(id -> {
-                var e = registry.getEntry(id).orElse(null);
+                var e = registry.getEntry(RegistryKey.of(SpellRegistry.KEY, id)).orElse(null);
                 if (e == null) return false;
                 Spell.Target.Type t = e.value().target != null ? e.value().target.type : Spell.Target.Type.CASTER;
                 return t == Spell.Target.Type.CASTER && hasHealingImpact(e.value());
@@ -185,7 +186,7 @@ public class MobSpellCastGoal extends Goal {
             float targetHpFrac = target.getHealth() / target.getMaxHealth();
             if (targetHpFrac < INTELLIGENT_KILL_THRESHOLD) {
                 List<Identifier> damaging = candidates.stream().filter(id -> {
-                    var e = registry.getEntry(id).orElse(null);
+                    var e = registry.getEntry(RegistryKey.of(SpellRegistry.KEY, id)).orElse(null);
                     if (e == null) return false;
                     return !onlyHasHealingImpacts(e.value());
                 }).collect(java.util.stream.Collectors.toList());
@@ -209,7 +210,7 @@ public class MobSpellCastGoal extends Goal {
     @Override
     public void start() {
         if (activeSpellId == null) return;
-        RegistryEntry<Spell> entry = SpellRegistry.from(caster.asMobEntity().getWorld()).getEntry(activeSpellId).orElse(null);
+        RegistryEntry<Spell> entry = SpellRegistry.from(caster.asMobEntity().getWorld()).getEntry(RegistryKey.of(SpellRegistry.KEY, activeSpellId)).orElse(null);
         if (entry == null) return;
 
         Spell spell = entry.value();
@@ -270,7 +271,7 @@ public class MobSpellCastGoal extends Goal {
         castingTime--;
 
         if (channelReleases > 0) {
-            RegistryEntry<Spell> entry = SpellRegistry.from(entity.getWorld()).getEntry(activeSpellId).orElse(null);
+            RegistryEntry<Spell> entry = SpellRegistry.from(entity.getWorld()).getEntry(RegistryKey.of(SpellRegistry.KEY, activeSpellId)).orElse(null);
             if (entry != null) {
                 Spell spell = entry.value();
                 if (spell.active != null && spell.active.cast != null) {
@@ -315,7 +316,7 @@ public class MobSpellCastGoal extends Goal {
         caster.stopSpellCast();
         sendBeamClearPacket(caster.asMobEntity());
         if (activeSpellId != null) {
-            RegistryEntry<Spell> entry = SpellRegistry.from(caster.asMobEntity().getWorld()).getEntry(activeSpellId).orElse(null);
+            RegistryEntry<Spell> entry = SpellRegistry.from(caster.asMobEntity().getWorld()).getEntry(RegistryKey.of(SpellRegistry.KEY, activeSpellId)).orElse(null);
             if (entry != null) {
                 float cd = entry.value().cost.cooldown.duration;
                 if (cd > 0) cooldowns.put(activeSpellId, Math.round(cd * 20F));
@@ -347,7 +348,7 @@ public class MobSpellCastGoal extends Goal {
         MobEntity entity = caster.asMobEntity();
         if (entity.getWorld().isClient() || activeSpellId == null) return;
 
-        RegistryEntry<Spell> entry = SpellRegistry.from(entity.getWorld()).getEntry(activeSpellId).orElse(null);
+        RegistryEntry<Spell> entry = SpellRegistry.from(entity.getWorld()).getEntry(RegistryKey.of(SpellRegistry.KEY, activeSpellId)).orElse(null);
         if (entry == null) {
             MRPGCMod.LOGGER.warn("Spell not found: {}", activeSpellId);
             return;
@@ -485,8 +486,7 @@ public class MobSpellCastGoal extends Goal {
                     if (spell.deliver != null && spell.deliver.type == Spell.Delivery.Type.STASH_EFFECT
                             && spell.deliver.stash_effect != null) {
                         var stash = spell.deliver.stash_effect;
-                        net.minecraft.registry.Registries.STATUS_EFFECT
-                                .getEntry(net.minecraft.util.Identifier.of(stash.id))
+                        net.minecraft.registry.Registries.STATUS_EFFECT.getOrEmpty(new net.minecraft.util.Identifier(stash.id))
                                 .ifPresent(effectEntry -> {
                                     int durationTicks = Math.max(1, (int) (stash.duration * 20));
                                     entity.addStatusEffect(new net.minecraft.entity.effect.StatusEffectInstance(

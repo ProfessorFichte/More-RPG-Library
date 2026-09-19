@@ -4,7 +4,9 @@ import com.google.common.base.Suppliers;
 import net.spell_engine.Platform;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.tooltip.TooltipType;
+import net.minecraft.client.item.TooltipContext;
+import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.screen.ScreenTexts;
@@ -16,7 +18,9 @@ import net.minecraft.util.Util;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 import static net.more_rpg_classes.MRPGCMod.MOD_ID;
@@ -24,9 +28,9 @@ import static net.more_rpg_classes.MRPGCMod.MOD_ID;
 public class SmithingIngredients {
     public static class UpgradeCrystal extends Item {
         public static final Text APPLIES_TO_TEXT = Text.translatable(
-                        Util.createTranslationKey("item", Identifier.ofVanilla("smithing_template.applies_to")))
+                        Util.createTranslationKey("item", new Identifier("smithing_template.applies_to")))
                 .formatted(Formatting.GRAY);
-        public static final String HINT_TRANSLATION_KEY = Util.createTranslationKey("item", Identifier.of("armory_rpgs", "smithing_template.hint"));
+        public static final String HINT_TRANSLATION_KEY = Util.createTranslationKey("item", new Identifier("armory_rpgs", "smithing_template.hint"));
         public static final Text HINT_TEXT = Text.translatable(HINT_TRANSLATION_KEY)
                 .formatted(Formatting.GRAY);
 
@@ -36,8 +40,9 @@ public class SmithingIngredients {
             this.appliesToTranslationKey = appliesToTranslationKey;
         }
 
-        public void appendTooltip(ItemStack stack, Item.TooltipContext context, List<Text> tooltip, TooltipType type) {
-            super.appendTooltip(stack, context, tooltip, type);
+        @Override
+        public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
+            super.appendTooltip(stack, world, tooltip, context);
             tooltip.add(HINT_TEXT);
             tooltip.add(ScreenTexts.EMPTY);
             tooltip.add(APPLIES_TO_TEXT);
@@ -57,10 +62,10 @@ public class SmithingIngredients {
             return new Entry(name, classes, translations, factory);
         }
         public Identifier id() {
-            return Identifier.of(MOD_ID, name + "_upgrade_crystal");
+            return new Identifier(MOD_ID, name + "_upgrade_crystal");
         }
         public static String appliesToTranslationKey(String name) {
-            return Util.createTranslationKey("item", Identifier.of(MOD_ID, "upgrade_crystal." + name + ".applies_to"));
+            return Util.createTranslationKey("item", new Identifier(MOD_ID, "upgrade_crystal." + name + ".applies_to"));
         }
         public String appliesToTranslationKey() {
             return appliesToTranslationKey(name);
@@ -97,7 +102,32 @@ public class SmithingIngredients {
     public static final boolean berserkerLoaded = Platform.util().isModLoaded("berserker_rpg");
     public static final boolean forcemasterLoaded = Platform.util().isModLoaded("forcemaster_rpg");
     public static final boolean bardsLoaded = Platform.util().isModLoaded("bards_rpg");
+    private static boolean entriesBuilt = false;
+
+    /// Creation only — the upgrade crystals keyed by the id they register under. Forge iterates this from
+    /// its `ITEM` `RegisterEvent` window.
+    ///
+    /// The conditional appends below have to happen *here*, not in the caller: the entry list is empty
+    /// until they run, so a Forge window that only copied the registration loop would silently register
+    /// nothing. Idempotent — the appends happen once, and ids already in the registry are skipped.
+    public static Map<Identifier, Item> itemsToRegister() {
+        buildEntries();
+        var toRegister = new LinkedHashMap<Identifier, Item>();
+        for (var entry : ENTRIES) {
+            if (Registries.ITEM.containsId(entry.id())) { continue; }
+            toRegister.put(entry.id(), entry.item().get());
+        }
+        return Collections.unmodifiableMap(toRegister);
+    }
+
+    /// The vanilla registration path, used on Fabric.
     public static void register() {
+        itemsToRegister().forEach((id, item) -> Registry.register(Registries.ITEM, id, item));
+    }
+
+    private static void buildEntries() {
+        if (entriesBuilt) { return; }
+        entriesBuilt = true;
         if (devEnvo || forcemasterLoaded ||elementalWizardsLoaded) {
             ASCETIC = add(Entry.of("ascetic", List.of(FightClass.AIR_WIZARD, FightClass.FORCEMASTER),
                     new Translations("Ascetic's Lost Crystal")));
@@ -124,9 +154,6 @@ public class SmithingIngredients {
 
 
 
-        for (var entry : ENTRIES) {
-            Registry.register(Registries.ITEM, entry.id(), entry.item().get());
-        }
     }
 
     public static List<Item> armoryGroupItems() {

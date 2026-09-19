@@ -108,7 +108,7 @@ public class HeartSetting {
         if (container) {
             if (this.container == null || !this.container) return null;
             // add the container suffix, and if enabled and needed, add the blinking suffix
-            return Identifier.of(MRPGCMod.MOD_ID, heartPath+"_container" + (blinking ? "_blinking" : "")); // containers always blink
+            return new Identifier(MRPGCMod.MOD_ID, heartPath+"_container" + (blinking ? "_blinking" : "")); // containers always blink
         }
 
         // add hardcore if enabled
@@ -121,6 +121,6 @@ public class HeartSetting {
         }
 
         // display the heart
-        return Identifier.of(MRPGCMod.MOD_ID, heartPath);
+        return new Identifier(MRPGCMod.MOD_ID, heartPath);
     }
 }

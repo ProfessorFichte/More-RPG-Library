@@ -14,7 +14,7 @@ public class MoltenArmorEffect extends StatusEffect {
         super(statusEffectCategory, color);
     }
 
-    public boolean applyUpdateEffect(LivingEntity pLivingEntity, int pAmplifier) {
+    public void applyUpdateEffect(LivingEntity pLivingEntity, int pAmplifier) {
         if (!pLivingEntity.getWorld().isClient()) {
             if(pLivingEntity.hasStackEquipped(EquipmentSlot.CHEST)& pLivingEntity.hasStackEquipped(EquipmentSlot.HEAD)&
                     pLivingEntity.hasStackEquipped(EquipmentSlot.FEET)& pLivingEntity.hasStackEquipped(EquipmentSlot.LEGS)){
@@ -35,13 +35,13 @@ public class MoltenArmorEffect extends StatusEffect {
         }
         if(!pLivingEntity.getWorld().isClient()){
             if(pLivingEntity.isInsideWaterOrBubbleColumn()){
-                pLivingEntity.removeStatusEffect(MRPGCEffects.MOLTEN_ARMOR.entry);
+                pLivingEntity.removeStatusEffect(MRPGCEffects.MOLTEN_ARMOR.effect);
             } else if(!pLivingEntity.hasStackEquipped(EquipmentSlot.CHEST)& !pLivingEntity.hasStackEquipped(EquipmentSlot.HEAD)&
                     !pLivingEntity.hasStackEquipped(EquipmentSlot.FEET)& !pLivingEntity.hasStackEquipped(EquipmentSlot.LEGS)){
-                pLivingEntity.removeStatusEffect(MRPGCEffects.MOLTEN_ARMOR.entry);
+                pLivingEntity.removeStatusEffect(MRPGCEffects.MOLTEN_ARMOR.effect);
             }
         }
-        return true;
+        return;
     }
 
 

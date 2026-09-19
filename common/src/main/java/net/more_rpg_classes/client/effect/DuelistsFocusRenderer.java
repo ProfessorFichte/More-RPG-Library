@@ -20,8 +20,8 @@ public class DuelistsFocusRenderer implements CustomModelStatusEffect.Renderer {
     private static final float ROTATION_SPEED = 2.25f;
     private static final float SCALE = 0.5f;
 
-    public static final Identifier OWNER_MODEL = Identifier.of(MRPGCMod.MOD_ID, "effect/duelists_focus_owner");
-    public static final Identifier TARGET_MODEL = Identifier.of(MRPGCMod.MOD_ID, "effect/duelists_focus_target");
+    public static final Identifier OWNER_MODEL = new Identifier(MRPGCMod.MOD_ID, "effect/duelists_focus_owner");
+    public static final Identifier TARGET_MODEL = new Identifier(MRPGCMod.MOD_ID, "effect/duelists_focus_target");
 
     private final Identifier modelId;
 

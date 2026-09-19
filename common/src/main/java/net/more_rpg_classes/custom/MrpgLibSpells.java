@@ -1,5 +1,6 @@
 package net.more_rpg_classes.custom;
 
+import net.more_rpg_classes.util.CustomMethods;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.util.Identifier;
@@ -61,7 +62,7 @@ public class MrpgLibSpells {
     }
     public static Entry decapitate = add(decapitate());
     private static Entry decapitate() {
-        var id = Identifier.of(MOD_ID, "decapitate");
+        var id = new Identifier(MOD_ID, "decapitate");
         var title = "Decapitate";
         var description = "Delivers a heavy blow with forward momentum that disables shield and item usage of target.";
         var spell = SpellBuilder.createSpellActive();
@@ -105,7 +106,7 @@ public class MrpgLibSpells {
     }
     public static final Entry burstcrack = add(burstcrack());
     private static Entry burstcrack() {
-        var id = Identifier.of(MOD_ID, "burstcrack");
+        var id = new Identifier(MOD_ID, "burstcrack");
         var title = "Burstcrack";
         var description = "Charge a shockwave around you, then release it - the longer the charge, the further it reaches and the harder it hits. Knocks up enemies and deals physical {damage_1} & {damage_2} arcane-damage.";
         var spell = SpellBuilder.createWeaponSpell();
@@ -122,7 +123,7 @@ public class MrpgLibSpells {
         spell.active.cast.animation = PlayerAnimation.of("more_rpg_classes:burstcrack_cast");
 
         spell.release.animation = PlayerAnimation.of("more_rpg_classes:burstcrack_release");
-        spell.release.sound = Sound.withVolume(Identifier.of("entity.generic.explode"), 0.4F);
+        spell.release.sound = Sound.withVolume(new Identifier("entity.generic.explode"), 0.4F);
         spell.release.visuals = Fx.Visuals.of(
                 ParticleGroupBuilder.of(SpellEngineParticles.smoke_medium)
                         .batch(b -> b.shape(ParticleGroup.Shape.CIRCLE)
@@ -158,7 +159,7 @@ public class MrpgLibSpells {
     }
     public static Entry puncture = add(puncture());
     private static Entry puncture() {
-        var id = Identifier.of(MOD_ID, "puncture");
+        var id = new Identifier(MOD_ID, "puncture");
         var title = "Puncture";
         var description = "Charges in a designated direction, striking all enemies.";
         var spell = SpellBuilder.createMeleeSpell();
@@ -197,7 +198,7 @@ public class MrpgLibSpells {
     }
     public static Entry carve_melee = add(carve_melee());
     private static Entry carve_melee() {
-        var id = Identifier.of(MOD_ID, "carve");
+        var id = new Identifier(MOD_ID, "carve");
         var title = "Carve";
         var description = "On melee hit: {trigger_chance} chance to stack armor reduction by {bonus2} and increasing incoming damage by {bonus} for {effect_amplifier_cap} times.";
         var spell = SpellBuilder.createSpellPassive();
@@ -241,7 +242,7 @@ public class MrpgLibSpells {
     }
     public static Entry lightning_strike_melee = add(lightning_strike_melee());
     private static Entry lightning_strike_melee() {
-        var id = Identifier.of(MOD_ID, "lightning_strike_melee");
+        var id = new Identifier(MOD_ID, "lightning_strike_melee");
         var title = "Lightning Strike";
         var description = "On melee hit: {trigger_chance} chance to spawn a lightning strike.";
         var spell = SpellBuilder.createSpellPassive();
@@ -271,7 +272,7 @@ public class MrpgLibSpells {
 
     public static Entry dragonclaw_melee = add(dragonclaw_melee());
     private static Entry dragonclaw_melee() {
-        var id = Identifier.of(MOD_ID, "dragonclaw_melee");
+        var id = new Identifier(MOD_ID, "dragonclaw_melee");
         var title = "Dragonclaw";
         var description = "On melee hit: {trigger_chance} chance to deal extra {damage} to the target damage and heals the user for {heal} health.";
 
@@ -289,7 +290,7 @@ public class MrpgLibSpells {
         spell.target.type = Spell.Target.Type.FROM_TRIGGER;
 
         var damage = SpellBuilder.Impacts.damage(0.6F, 0F);
-        damage.attribute = EntityAttributes.GENERIC_ATTACK_DAMAGE.getIdAsString();
+        damage.attribute = CustomMethods.attributeId(EntityAttributes.GENERIC_ATTACK_DAMAGE);
         damage.visuals = Fx.Visuals.of(
                 ParticleGroupBuilder.magic(SpellEngineParticles.magic_arcane, ParticleGroup.Motion.BURST, Color.ARCANE)
                         .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
@@ -300,7 +301,7 @@ public class MrpgLibSpells {
 
         var heal = SpellBuilder.Impacts.heal(0.025F);
         heal.attribute_from_target = true;
-        heal.attribute = EntityAttributes.GENERIC_MAX_HEALTH.getIdAsString();
+        heal.attribute = CustomMethods.attributeId(EntityAttributes.GENERIC_MAX_HEALTH);
         heal.visuals = Fx.Visuals.of(
                 ParticleGroupBuilder.magic(SpellEngineParticles.magic_arcane, ParticleGroup.Motion.ASCEND, Color.ARCANE)
                         .batch(b -> b.shape(ParticleGroup.Shape.PIPE).widthFactor(2F)
@@ -315,7 +316,7 @@ public class MrpgLibSpells {
 
     public static Entry waterbomb_melee = add(waterbomb_melee());
     private static Entry waterbomb_melee() {
-        var id = Identifier.of(MOD_ID, "waterbomb_melee");
+        var id = new Identifier(MOD_ID, "waterbomb_melee");
         var title = "Waterbomb";
         var description = "On melee hit: {trigger_chance} chance to deal {damage} damage around the target.";
 
@@ -347,8 +348,8 @@ public class MrpgLibSpells {
         spell.target.area.horizontal_range_multiplier = 1.0F;
 
         var damage = SpellBuilder.Impacts.damage( 0.4F,0);
-        damage.attribute = EntityAttributes.GENERIC_ATTACK_DAMAGE.getIdAsString();
-        damage.sound = Sound.withVolume(Identifier.of("more_rpg_classes:water_magic_impact1"), 0.4F);
+        damage.attribute = CustomMethods.attributeId(EntityAttributes.GENERIC_ATTACK_DAMAGE);
+        damage.sound = Sound.withVolume(new Identifier("more_rpg_classes:water_magic_impact1"), 0.4F);
         damage.visuals = Fx.Visuals.of(
                 ParticleGroupBuilder.of(MoreParticles.BIG_SPLASH)
                         .batch(b -> b.shape(ParticleGroup.Shape.PILLAR)
@@ -370,7 +371,7 @@ public class MrpgLibSpells {
 
     public static Entry wither_pulse_melee = add(wither_pulse_melee());
     private static Entry wither_pulse_melee() {
-        var id = Identifier.of(MOD_ID, "wither_pulse_melee");
+        var id = new Identifier(MOD_ID, "wither_pulse_melee");
         var title = "Wither Pulse";
         var description = "On melee hit: {trigger_chance} inflicts targets in a 90 degree radius with Wither and dealing {damage} damage.";
 
@@ -397,8 +398,8 @@ public class MrpgLibSpells {
                                 .count(15).speed(0.05F, 0.5F)));
 
         var damage = SpellBuilder.Impacts.damage(0.5F,0);
-        damage.attribute = EntityAttributes.GENERIC_ATTACK_DAMAGE.getIdAsString();
-        damage.sound = new Sound(Identifier.of("spell_engine:generic_soul_impact"));
+        damage.attribute = CustomMethods.attributeId(EntityAttributes.GENERIC_ATTACK_DAMAGE);
+        damage.sound = new Sound(new Identifier("spell_engine:generic_soul_impact"));
         damage.visuals = Fx.Visuals.of(
                 ParticleGroupBuilder.magic(SpellEngineParticles.magic_skull, ParticleGroup.Motion.DECELERATE)
                         .color(858993663L)
@@ -417,7 +418,7 @@ public class MrpgLibSpells {
     }
     public static Entry avalanche_melee = add(avalanche_melee());
     private static Entry avalanche_melee() {
-        var id = Identifier.of(MOD_ID, "avalanche_melee");
+        var id = new Identifier(MOD_ID, "avalanche_melee");
         var title = "Avalanche";
         var description = "On melee hit: {trigger_chance} chance to spawn a small avalanche, dealing {damage} damage and inflicting freezing for {effect_duration}.";
 
@@ -459,12 +460,12 @@ public class MrpgLibSpells {
                 SpellBuilderHelper.targetModifier("#minecraft:freeze_immune_entity_types", TriState.DENY)
         );
         var damage = SpellBuilder.Impacts.damage(0.3F);
-        damage.attribute = EntityAttributes.GENERIC_ATTACK_DAMAGE.getIdAsString();
+        damage.attribute = CustomMethods.attributeId(EntityAttributes.GENERIC_ATTACK_DAMAGE);
         damage.visuals = Fx.Visuals.of(
                 ParticleGroupBuilder.magic(SpellEngineParticles.magic_frost, ParticleGroup.Motion.BURST, Color.FROST)
                         .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
                                 .count(15).speed(0.2F, 0.4F)));
-        damage.sound = new Sound(Identifier.of("spell_engine", "generic_frost_impact"));
+        damage.sound = new Sound(new Identifier("spell_engine", "generic_frost_impact"));
 
         spell.impacts = List.of(freezingEffect, damage);
 
@@ -483,7 +484,7 @@ public class MrpgLibSpells {
     }
     public static Entry duelists_focus = add(duelists_focus());
     private static Entry duelists_focus() {
-        var id = Identifier.of(MOD_ID, "duelists_focus");
+        var id = new Identifier(MOD_ID, "duelists_focus");
         var title = "Duelist's Focus";
         var description = "On melee hit: {trigger_chance} to mark the target, all other entities deal 25%% reduced damage on you and only you deal 25%% increased damage on your marked target.";
         var spell = SpellBuilder.createSpellPassive();
@@ -512,7 +513,7 @@ public class MrpgLibSpells {
     }
     public static Entry lightning_strike_ranged = add(lightning_strike_ranged());
     private static Entry lightning_strike_ranged() {
-        var id = Identifier.of(MOD_ID, "lightning_strike_ranged");
+        var id = new Identifier(MOD_ID, "lightning_strike_ranged");
         var title = "Lightning Shot";
         var description = "On arrow hit: {trigger_chance} chance to spawn a lightning strike.";
         var spell = SpellBuilder.createSpellPassive();
@@ -539,7 +540,7 @@ public class MrpgLibSpells {
     }
     public static Entry dragon_breath_ranged = add(dragon_breath_ranged());
     private static Entry dragon_breath_ranged() {
-        var id = Identifier.of(MOD_ID, "dragon_breath");
+        var id = new Identifier(MOD_ID, "dragon_breath");
         var title = "Ender Dragon's Breath";
         var description = "On arrow hit: {trigger_chance} chance to create a dragon breath cloud, dealing {damage} damage per second.";
 
@@ -565,7 +566,7 @@ public class MrpgLibSpells {
         cloud.volume.radius = 5.0F;
         cloud.volume.area = new Spell.Target.Area();
         cloud.volume.area.vertical_range_multiplier = 0.5F;
-        cloud.volume.sound = new Sound(Identifier.of("entity.ender_dragon.ambient"));
+        cloud.volume.sound = new Sound(new Identifier("entity.ender_dragon.ambient"));
         cloud.time_to_live_seconds = 4.0F;
         cloud.impact_tick_interval = 8;
 
@@ -582,7 +583,7 @@ public class MrpgLibSpells {
                                 .verticalOrigin(ParticleGroupBuilder.Batches.FEET)));
 
         cloud.spawn = new Spell.Delivery.Cloud.Spawn();
-        cloud.spawn.sound = new Sound(Identifier.of("entity.ender_dragon.shoot"));
+        cloud.spawn.sound = new Sound(new Identifier("entity.ender_dragon.shoot"));
 
         spell.deliver.clouds = List.of(cloud);
 
@@ -606,7 +607,7 @@ public class MrpgLibSpells {
 
     public static Entry reef_arrows = add(reef_arrows());
     private static Entry reef_arrows() {
-        var id = Identifier.of(MOD_ID, "reef_arrows");
+        var id = new Identifier(MOD_ID, "reef_arrows");
         var title = "Coral Reef Arrows";
         var description = "On arrow hit: {trigger_chance} chance to inflict bleeding for {effect_duration} seconds and dealing additional {damage} damage.";
 
@@ -646,7 +647,7 @@ public class MrpgLibSpells {
                         .batch(b -> b.shape(ParticleGroup.Shape.CIRCLE)
                                 .count(15F).speed(0.05F, 0.2F)
                                 .verticalOrigin(ParticleGroupBuilder.Batches.FEET)));
-        damage.sound = Sound.withVolume(Identifier.of("more_rpg_classes:water_magic_impact1"), 0.4F);
+        damage.sound = Sound.withVolume(new Identifier("more_rpg_classes:water_magic_impact1"), 0.4F);
 
         spell.impacts = List.of(bleedingEffect, damage);
 
@@ -659,7 +660,7 @@ public class MrpgLibSpells {
 
     public static Entry glacial_splitter = add(glacial_splitter());
     private static Entry glacial_splitter() {
-        var id = Identifier.of(MOD_ID, "glacial_splitter");
+        var id = new Identifier(MOD_ID, "glacial_splitter");
         var title = "Glacial Splitter";
         var description = "Defeating Enemies spawns glacial projectiles that deal {damage} damage and freeze enemies for {effect_duration} seconds.";
 
@@ -706,7 +707,7 @@ public class MrpgLibSpells {
         spell.deliver.projectile.launch_properties.extra_launch_count = 4;
         spell.deliver.projectile.launch_properties.extra_launch_delay = 0;
         spell.deliver.projectile.launch_properties.sound = Sound.withVolume(
-                Identifier.of("spell_engine:generic_frost_impact"), 0.6F
+                new Identifier("spell_engine:generic_frost_impact"), 0.6F
         );
 
         spell.deliver.projectile.projectile = new Spell.ProjectileData();
@@ -721,7 +722,7 @@ public class MrpgLibSpells {
                 ParticleGroupBuilder.magic(SpellEngineParticles.magic_frost, ParticleGroup.Motion.BURST, Color.FROST)
                         .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
                                 .count(25F).speed(0.2F, 0.7F)));
-        spell.release.sound = new Sound(Identifier.of("spell_engine:generic_frost_impact"));
+        spell.release.sound = new Sound(new Identifier("spell_engine:generic_frost_impact"));
 
         var damage = SpellBuilder.Impacts.damage(0.35F);
         damage.attribute = "ranged_weapon:damage";
@@ -730,7 +731,7 @@ public class MrpgLibSpells {
                 ParticleGroupBuilder.magic(SpellEngineParticles.magic_frost, ParticleGroup.Motion.BURST, Color.FROST)
                         .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
                                 .count(25F).speed(0.2F, 0.7F)));
-        damage.sound = new Sound(Identifier.of("spell_engine:generic_frost_impact"));
+        damage.sound = new Sound(new Identifier("spell_engine:generic_frost_impact"));
 
         var frostedEffect = SpellBuilder.Impacts.effectSet("more_rpg_classes:frosted", 5.0F, 0);
         frostedEffect.target_modifiers = List.of(
@@ -752,7 +753,7 @@ public class MrpgLibSpells {
     }
     public static Entry cursed_wither_bolt = add(cursed_wither_bolt());
     private static Entry cursed_wither_bolt() {
-        var id = Identifier.of(MOD_ID, "cursed_wither_bolt");
+        var id = new Identifier(MOD_ID, "cursed_wither_bolt");
         var title = "Cursed Wither Bolts";
         var description = "On arrow hit: {trigger_chance} chance to inflict wither's curse for {effect_duration} seconds and dealing additional {damage} damage.";
 
@@ -780,7 +781,7 @@ public class MrpgLibSpells {
                 ParticleGroupBuilder.of("sculk_soul")
                         .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
                                 .count(20F).speed(0.3F, 0.4F)));
-        witherEffect.sound = new Sound(Identifier.of("entity.wither.ambient"));
+        witherEffect.sound = new Sound(new Identifier("entity.wither.ambient"));
 
         var damage = SpellBuilder.Impacts.damage(0.2F);
         damage.attribute = "ranged_weapon:damage";
@@ -795,7 +796,7 @@ public class MrpgLibSpells {
     }
     public static Entry elder_guardian_shield = add(elder_guardian_shield());
     private static Entry elder_guardian_shield() {
-        var id = Identifier.of(MOD_ID, "elder_guardian_shield");
+        var id = new Identifier(MOD_ID, "elder_guardian_shield");
         var title = "Elder Guardian Shield";
         var description = "On shield block: {trigger_chance} chance to inflict bleeding for {effect_duration} seconds and deal {damage} damage.";
 
@@ -841,7 +842,7 @@ public class MrpgLibSpells {
 
     public static Entry glacial_shield = add(glacial_shield());
     private static Entry glacial_shield() {
-        var id = Identifier.of(MOD_ID, "glacial_shield");
+        var id = new Identifier(MOD_ID, "glacial_shield");
         var title = "Glacial Shield";
         var description = "On shield block: {trigger_chance} chance to freeze nearby enemies for {effect_duration} seconds.";
 
@@ -861,7 +862,7 @@ public class MrpgLibSpells {
         spell.target.area = new Spell.Target.Area();
         spell.target.area.vertical_range_multiplier = 1.0F;
 
-        spell.release.sound = new Sound(Identifier.of("spell_engine:generic_frost_release"));
+        spell.release.sound = new Sound(new Identifier("spell_engine:generic_frost_release"));
         spell.release.visuals = Fx.Visuals.of(
                 ParticleGroupBuilder.of(SpellEngineParticles.snowflake)
                         .batch(b -> b.shape(ParticleGroup.Shape.CIRCLE)
@@ -883,7 +884,7 @@ public class MrpgLibSpells {
                 ParticleGroupBuilder.magic(SpellEngineParticles.magic_frost, ParticleGroup.Motion.BURST)
                         .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
                                 .count(30F).speed(0.2F, 0.7F)));
-        frozenEffect.sound = new Sound(Identifier.of("spell_engine:generic_frost_impact"));
+        frozenEffect.sound = new Sound(new Identifier("spell_engine:generic_frost_impact"));
 
         spell.impacts = List.of(frozenEffect);
 
@@ -896,7 +897,7 @@ public class MrpgLibSpells {
 
     public static Entry wither_shield = add(wither_shield());
     private static Entry wither_shield() {
-        var id = Identifier.of(MOD_ID, "wither_shield");
+        var id = new Identifier(MOD_ID, "wither_shield");
         var title = "Wither Shield";
         var description = "On shield block: {trigger_chance} chance to shoot 3 wither skulls dealing {damage} damage and inflicting wither.";
 
@@ -965,7 +966,7 @@ public class MrpgLibSpells {
                 ParticleGroupBuilder.of("smoke")
                         .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
                                 .count(10F).speed(0.3F, 0.35F)));
-        damage.sound = new Sound(Identifier.of("entity.generic.explode"));
+        damage.sound = new Sound(new Identifier("entity.generic.explode"));
 
         spell.impacts = List.of(witherEffect, damage);
 
@@ -978,7 +979,7 @@ public class MrpgLibSpells {
 
     public static Entry ender_dragon_shield = add(ender_dragon_shield());
     private static Entry ender_dragon_shield() {
-        var id = Identifier.of(MOD_ID, "ender_dragon_shield");
+        var id = new Identifier(MOD_ID, "ender_dragon_shield");
         var title = "Ender Dragon Shield";
         var description = "On shield block: {trigger_chance} chance to create an explosive burst dealing {damage} damage to nearby enemies.";
 
@@ -998,7 +999,7 @@ public class MrpgLibSpells {
         spell.target.area = new Spell.Target.Area();
         spell.target.area.vertical_range_multiplier = 1.0F;
 
-        spell.release.sound = new Sound(Identifier.of("entity.generic.explode"));
+        spell.release.sound = new Sound(new Identifier("entity.generic.explode"));
         spell.release.visuals = Fx.Visuals.of(
                 ParticleGroupBuilder.magic(SpellEngineParticles.magic_arcane, ParticleGroup.Motion.BURST, Color.ARCANE)
                         .batch(b -> b.shape(ParticleGroup.Shape.CIRCLE)
@@ -1024,7 +1025,7 @@ public class MrpgLibSpells {
     }
     public static Entry sirens_tears = add(sirens_tears());
     private static Entry sirens_tears() {
-        var id = Identifier.of(MOD_ID, "sirens_tears");
+        var id = new Identifier(MOD_ID, "sirens_tears");
         var title = "Siren's Tears";
         var description = "On healing: {trigger_chance} chance to remove a harmful effect and apply regeneration that scales with missing health for {effect_duration} seconds.";
 
@@ -1066,7 +1067,7 @@ public class MrpgLibSpells {
     public static Entry dragonslayers_fury = add(dragonslayers_fury());
     private static Entry dragonslayers_fury() {
         var threshold = 0.2F;
-        var id = Identifier.of(MOD_ID, "dragonslayers_fury");
+        var id = new Identifier(MOD_ID, "dragonslayers_fury");
         var title = "Dragonslayer's Fury";
         var effect = MRPGCEffects.DRAGON_SLAYERS_FURY;
         var description = "Healing or buffing allies under {threshold} health, grants them increased critical damage by {bonus} for {effect_duration} seconds.";
@@ -1114,7 +1115,7 @@ public class MrpgLibSpells {
     }
     public static Entry arcane_precision = add(arcane_precision());
     private static Entry arcane_precision() {
-        var id = Identifier.of(MOD_ID, "arcane_precision");
+        var id = new Identifier(MOD_ID, "arcane_precision");
         var title = "Arcane Precision";
         var description = "On dealing a critical hit with an active spell, apply a stack of Arcane Precision to the target for {effect_duration} seconds.";
 
@@ -1148,7 +1149,7 @@ public class MrpgLibSpells {
 
     public static Entry pyromaniac = add(pyromaniac());
     private static Entry pyromaniac() {
-        var id = Identifier.of(MOD_ID, "pyromaniac");
+        var id = new Identifier(MOD_ID, "pyromaniac");
         var title = "Pyromaniac";
         var description = "When dealing spell damage to a burning target, reduce fire spell cooldowns and deal bonus damage.";
 
@@ -1188,7 +1189,7 @@ public class MrpgLibSpells {
     }
     public static Entry rimefrost = add(rimefrost());
     private static Entry rimefrost() {
-        var id = Identifier.of(MOD_ID, "rimefrost");
+        var id = new Identifier(MOD_ID, "rimefrost");
         var title = "Rimefrost";
         var description = "When dealing damage with an active frost spell, spawn a freezing cloud at the target.";
 
@@ -1242,7 +1243,7 @@ public class MrpgLibSpells {
     }
     public static Entry water_flow = add(water_flow());
     private static Entry water_flow() {
-        var id = Identifier.of(MOD_ID, "water_flow");
+        var id = new Identifier(MOD_ID, "water_flow");
         var title = "Water Flow";
         var description = "When casting a spell, deal water damage and heal nearby allies in a small area.";
 
@@ -1263,7 +1264,7 @@ public class MrpgLibSpells {
         spell.target.area.include_caster = true;
         spell.target.area.vertical_range_multiplier = 1.0F;
 
-        spell.release.sound = new Sound(Identifier.ofVanilla("ambient.underwater.exit").toString());
+        spell.release.sound = new Sound(new Identifier("ambient.underwater.exit").toString());
         spell.release.visuals = Fx.Visuals.of(
                 ParticleGroupBuilder.of(SpellEngineParticles.area_effect_293)
                         .scaleWith(Fx.ScaleWith.RANGE).color(2816865791L)
@@ -1285,7 +1286,7 @@ public class MrpgLibSpells {
                 ParticleGroupBuilder.of(MoreParticles.SPLASH)
                         .batch(b -> b.shape(ParticleGroup.Shape.CIRCLE)
                                 .verticalOrigin(0.1F).count(15).speed(0.05F, 0.2F)));
-        damage.sound = Sound.withVolume(Identifier.of("more_rpg_classes:water_magic_impact1"), 0.4F);
+        damage.sound = Sound.withVolume(new Identifier("more_rpg_classes:water_magic_impact1"), 0.4F);
 
         var heal = SpellBuilder.Impacts.heal(0.15F);
         heal.visuals = Fx.Visuals.of(
@@ -1308,7 +1309,7 @@ public class MrpgLibSpells {
     }
     public static Entry zephyrs_speed = add(zephyrs_speed());
     private static Entry zephyrs_speed() {
-        var id = Identifier.of(MOD_ID, "zephyrs_speed");
+        var id = new Identifier(MOD_ID, "zephyrs_speed");
         var title = "Zephyr's Speed";
         var description = "On dealing damage with an active spell, gain a stack of Zephyr's Speed for {effect_duration} seconds. " +
                 "Increasing spell crit chance by {bonus} and movement speed by {bonus2}.";
@@ -1349,7 +1350,7 @@ public class MrpgLibSpells {
     }
     public static Entry obsidian_shards = add(obsidian_shards());
     private static Entry obsidian_shards() {
-        var id = Identifier.of(MOD_ID, "obsidian_shards");
+        var id = new Identifier(MOD_ID, "obsidian_shards");
         var title = "Obsidian Shards";
         var description = "On dealing damage with an active spell, shoot obsidian shards outward in all directions from the target.";
 
@@ -1380,7 +1381,7 @@ public class MrpgLibSpells {
         spell.deliver.projectile.launch_properties.extra_launch_count = 7;
         spell.deliver.projectile.launch_properties.extra_launch_delay = 0;
         spell.deliver.projectile.launch_properties.sound =
-                Sound.withVolume(Identifier.of("more_rpg_classes:earth_magic_cast1"), 0.6F);
+                Sound.withVolume(new Identifier("more_rpg_classes:earth_magic_cast1"), 0.6F);
 
         var projectile = new Spell.ProjectileData();
         projectile.homing_angle = 0.0F;
@@ -1400,7 +1401,7 @@ public class MrpgLibSpells {
                 ParticleGroupBuilder.of("campfire_cosy_smoke")
                         .batch(b -> b.shape(ParticleGroup.Shape.CIRCLE)
                                 .count(3).speed(0.005F, 0.008F)));
-        damage.sound = Sound.withVolume(Identifier.ofVanilla("block.pointed_dripstone.break"), 1.5F);
+        damage.sound = Sound.withVolume(new Identifier("block.pointed_dripstone.break"), 1.5F);
 
         spell.impacts = List.of(damage);
         SpellBuilder.Cost.cooldown(spell, 5);

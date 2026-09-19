@@ -8,15 +8,15 @@ import static net.more_rpg_classes.MRPGCMod.MOD_ID;
 public class CustomSpellEntityPredicate {
     public static void registerCustomPredicates() {
         SpellEntityPredicates.register(
-                Identifier.of(MOD_ID, "is_on_ground"),
+                new Identifier(MOD_ID, "is_on_ground"),
                 entity -> !entity.entity().isOnGround()
         );
         SpellEntityPredicates.register(
-                Identifier.of(MOD_ID, "is_wet"),
+                new Identifier(MOD_ID, "is_wet"),
                 entity -> !entity.entity().isWet()
         );
         SpellEntityPredicates.register(
-                Identifier.of(MOD_ID, "is_inside_water"),
+                new Identifier(MOD_ID, "is_inside_water"),
                 entity -> !entity.entity().isInsideWaterOrBubbleColumn()
         );
     }

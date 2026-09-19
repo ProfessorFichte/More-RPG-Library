@@ -15,11 +15,11 @@ public class IgnitedEffect extends CustomStatusEffect {
     }
 
     @Override
-    public boolean applyUpdateEffect(LivingEntity entity, int amplifier) {
+    public void applyUpdateEffect(LivingEntity entity, int amplifier) {
         float baseDamage = 1.0F;
         float scaledDamage = baseDamage + (amplifier * 0.1F);
         entity.timeUntilRegen = 0;
         entity.damage(entity.getDamageSources().onFire(), scaledDamage);
-        return true;
+        return;
     }
 }

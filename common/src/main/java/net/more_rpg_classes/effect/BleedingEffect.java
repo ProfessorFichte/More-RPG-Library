@@ -16,10 +16,10 @@ public class BleedingEffect extends StatusEffect {
     }
 
     @Override
-    public  boolean applyUpdateEffect(LivingEntity entity, int amplifier) {
+    public void applyUpdateEffect(LivingEntity entity, int amplifier) {
         EntityType<?> type = ((Entity) entity).getType();
         if(type.isIn(MRPGCEntityTags.BLEEDING_IMMUNE)){
-            entity.removeStatusEffect(MRPGCEffects.BLEEDING.entry);
+            entity.removeStatusEffect(MRPGCEffects.BLEEDING.effect);
         }
         float bleedingTickDamage = 1.0F + amplifier;
         float currentHealthPercentage = entity.getHealth() / entity.getMaxHealth();
@@ -35,10 +35,10 @@ public class BleedingEffect extends StatusEffect {
         entity.timeUntilRegen = 0;
         var bleedingType = entity.getWorld().getRegistryManager()
                 .getOptional(net.minecraft.registry.RegistryKeys.DAMAGE_TYPE)
-                .<net.minecraft.registry.entry.RegistryEntry<net.minecraft.entity.damage.DamageType>>flatMap(reg -> reg.getEntry(net.minecraft.util.Identifier.of("more_rpg_classes", "bleeding")))
+                .<net.minecraft.registry.entry.RegistryEntry<net.minecraft.entity.damage.DamageType>>flatMap(reg -> reg.getEntry(net.minecraft.registry.RegistryKey.of(net.minecraft.registry.RegistryKeys.DAMAGE_TYPE, new net.minecraft.util.Identifier("more_rpg_classes", "bleeding"))))
                 .orElseGet(() -> entity.getDamageSources().starve().getTypeRegistryEntry());
         entity.damage(new BleedingDamageSource(bleedingType), bleedingTickDamage);
-        return true;
+        return;
     }
 
 

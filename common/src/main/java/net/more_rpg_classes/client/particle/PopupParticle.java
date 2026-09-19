@@ -37,15 +37,15 @@ public class PopupParticle extends BillboardParticle {
         this.velocityZ = 0;
 
         if (effect.isSpell) {
-            this.textureId = Identifier.of(effect.iconId.getNamespace(), "textures/spell/" + effect.iconId.getPath() + ".png");
+            this.textureId = new Identifier(effect.iconId.getNamespace(), "textures/spell/" + effect.iconId.getPath() + ".png");
         } else {
-            this.textureId = Identifier.ofVanilla("textures/atlas/mob_effects.png");
-            var maybeEntry = world.getRegistryManager()
+            this.textureId = new Identifier("textures/atlas/mob_effects.png");
+            // 1.20.1: status effects are plain objects, and the sprite manager is keyed by them.
+            var statusEffect = world.getRegistryManager()
                 .get(RegistryKeys.STATUS_EFFECT)
-                .getEntry(effect.iconId);
-            if (maybeEntry.isPresent()) {
-                RegistryEntry.Reference<StatusEffect> entry = maybeEntry.get();
-                var sprite = MinecraftClient.getInstance().getStatusEffectSpriteManager().getSprite(entry);
+                .get(effect.iconId);
+            if (statusEffect != null) {
+                var sprite = MinecraftClient.getInstance().getStatusEffectSpriteManager().getSprite(statusEffect);
                 if (sprite != null) {
                     this.minU = sprite.getMinU();
                     this.maxU = sprite.getMaxU();
@@ -88,22 +88,20 @@ public class PopupParticle extends BillboardParticle {
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShaderTexture(0, textureId);
 
-        BufferBuilder builder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR_LIGHT);
+        // 1.20.1 draws through the shared Tessellator buffer; every vertex is closed with next().
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder builder = tessellator.getBuffer();
+        RenderSystem.setShader(GameRenderer::getParticleProgram);
+        builder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR_LIGHT);
         for (float[] c : corners) {
             Vector3f pos = new Vector3f(c[0], c[1], 0f).rotate(rot).mul(size).add(px, py, pz);
             builder.vertex(pos.x, pos.y, pos.z)
                 .texture(c[2], c[3])
                 .color(this.red, this.green, this.blue, this.alpha)
-                .light(light);
+                .light(light)
+                .next();
         }
-        BuiltBuffer built = builder.endNullable();
-        if (built != null) {
-            try {
-                BufferRenderer.drawWithGlobalProgram(built);
-            } finally {
-                built.close();
-            }
-        }
+        tessellator.draw();
         RenderSystem.disableBlend();
     }
 

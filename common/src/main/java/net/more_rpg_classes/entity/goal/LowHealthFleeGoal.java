@@ -33,7 +33,7 @@ public class LowHealthFleeGoal<T extends PathAwareEntity & IConditionalFleeEntit
 
     private boolean shouldSuppressFlee() {
         for (Identifier effectId : mob.getFleeImmuneEffects()) {
-            var effectEntry = Registries.STATUS_EFFECT.getEntry(effectId).orElse(null);
+            var effectEntry = Registries.STATUS_EFFECT.getOrEmpty(effectId).orElse(null);
             if (effectEntry != null && mob.hasStatusEffect(effectEntry)) return true;
         }
 
@@ -43,7 +43,7 @@ public class LowHealthFleeGoal<T extends PathAwareEntity & IConditionalFleeEntit
             if (threshold > 0 && target.getHealth() / target.getMaxHealth() < threshold) return true;
 
             for (Identifier effectId : mob.getFleeIgnoreIfTargetHasEffects()) {
-                var effectEntry = Registries.STATUS_EFFECT.getEntry(effectId).orElse(null);
+                var effectEntry = Registries.STATUS_EFFECT.getOrEmpty(effectId).orElse(null);
                 if (effectEntry != null && target.hasStatusEffect(effectEntry)) return true;
             }
         }

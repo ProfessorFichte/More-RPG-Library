@@ -1,5 +1,6 @@
 package net.more_rpg_classes.effect;
 
+import net.minecraft.entity.attribute.AttributeContainer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
@@ -70,15 +71,15 @@ public abstract class ControlEnemyStatusEffect extends StatusEffect {
     }
 
     @Override
-    public void onApplied(LivingEntity entity, int amplifier) {
-        super.onApplied(entity, amplifier);
+    public void onApplied(LivingEntity entity, AttributeContainer attributes, int amplifier) {
+        super.onApplied(entity, attributes, amplifier);
         if (!entity.getWorld().isClient() && isImmune(entity)) {
             onImmune(entity);
         }
     }
 
     @Override
-    public boolean applyUpdateEffect(LivingEntity entity, int amplifier) {
+    public void applyUpdateEffect(LivingEntity entity, int amplifier) {
         if (!entity.getWorld().isClient()) {
             LivingEntity owner = resolveOwner(entity);
             if (entity instanceof MobEntity mob) {
@@ -89,7 +90,7 @@ public abstract class ControlEnemyStatusEffect extends StatusEffect {
                 onControlledNonMob(entity);
             }
         }
-        return true;
+        return;
     }
 
     private void updateControlledMob(MobEntity mob, LivingEntity owner) {
@@ -191,7 +192,7 @@ public abstract class ControlEnemyStatusEffect extends StatusEffect {
 
     public static boolean isControlled(LivingEntity entity) {
         for (var instance : entity.getStatusEffects()) {
-            if (instance.getEffectType().value() instanceof ControlEnemyStatusEffect control
+            if (instance.getEffectType() instanceof ControlEnemyStatusEffect control
                     && control.flipsCasterRelations()) {
                 return true;
             }

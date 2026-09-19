@@ -11,9 +11,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class SpellSchoolsMixin {
     @Inject(method = "<clinit>", at = @At("TAIL"))
     private static void static_tail_MoreMagic(CallbackInfo ci) {
-        SpellSchools.register(MoreSpellSchools.WATER); // Trigger registration
-        SpellSchools.register(MoreSpellSchools.AIR); // Trigger registration
-        SpellSchools.register(MoreSpellSchools.EARTH); // Trigger registration
-        SpellSchools.register(MoreSpellSchools.NATURE); // Trigger registration
+        MoreSpellSchools.registerSchools(); // Trigger registration
     }
 }

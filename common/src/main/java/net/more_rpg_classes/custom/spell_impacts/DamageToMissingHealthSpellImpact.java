@@ -28,7 +28,7 @@ public class DamageToMissingHealthSpellImpact implements SpellHandlers.CustomImp
             } else if(missinghealth >= 0.25F){
                 damageMultiplier = MRPGCMod.tweaksConfig.value.custom_spell_impact_damage_to_missing_health_under_25;
             }
-            float schoolAttributeValue = (float) caster.getAttributeValue(spell.value().school.attributeEntry);
+            float schoolAttributeValue = (float) caster.getAttributeValue(spell.value().school.attributeEntry.value());
             livingEntity.timeUntilRegen = 0;
             livingEntity.damage(SpellDamageSource.create(spell.value().school, caster), schoolAttributeValue * damageMultiplier);
         }

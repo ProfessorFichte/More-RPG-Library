@@ -12,16 +12,19 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.more_rpg_classes.compat.armory_rpgs.SmithingIngredients;
 
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
 
 import static net.more_rpg_classes.MRPGCMod.MOD_ID;
 
 public class MRPGCItemGroups {
-    public static final Identifier ARSENAL_ID = Identifier.of(MOD_ID, "arsenal");
+    public static final Identifier ARSENAL_ID = new Identifier(MOD_ID, "arsenal");
     public static final RegistryKey<ItemGroup> ARSENAL_KEY = RegistryKey.of(Registries.ITEM_GROUP.getKey(), ARSENAL_ID);
-    public static final Identifier ARMORY_ID = Identifier.of(MOD_ID, "armory");
+    public static final Identifier ARMORY_ID = new Identifier(MOD_ID, "armory");
     public static final RegistryKey<ItemGroup> ARMORY_KEY = RegistryKey.of(Registries.ITEM_GROUP.getKey(), ARMORY_ID);
 
     public static final boolean devEnvo = Platform.util().isDevelopmentEnvironment();
@@ -53,28 +56,41 @@ public class MRPGCItemGroups {
     private static Item resolveIcon(List<String> ids, Supplier<Item> fallback) {
         return ids.stream()
                 .sorted()
-                .map(id -> Registries.ITEM.getOrEmpty(Identifier.of(id)).orElse(null))
+                .map(id -> Registries.ITEM.getOrEmpty(new Identifier(id)).orElse(null))
                 .filter(Objects::nonNull)
                 .findFirst()
                 .orElseGet(fallback);
     }
 
-    public static void register() {
+    /// Creation only — the item groups keyed by the id they register under. Forge iterates this from its
+    /// own `ITEM_GROUP` `RegisterEvent` window: `creative_mode_tab` is event 65 while `item` is event 7,
+    /// so a group registered alongside the items rides in a window that is not its own.
+    /// Both icons are `Supplier`-backed and resolved lazily, so they tolerate the later window.
+    public static Map<Identifier, ItemGroup> groupsToRegister() {
+        var toRegister = new LinkedHashMap<Identifier, ItemGroup>();
         if (devEnvo || (arsenalLoaded && anyContentModLoaded)) {
-            var group = new ItemGroup.Builder(ItemGroup.Row.TOP, -1)
-                    .icon(() -> new ItemStack(resolveIcon(ARSENAL_ICON_IDS, () -> Items.NETHERITE_SWORD)))
-                    .displayName(Text.translatable("itemGroup." + MOD_ID + ".arsenal"))
-                    .build();
-            Registry.register(Registries.ITEM_GROUP, ARSENAL_KEY, group);
+            if (!Registries.ITEM_GROUP.containsId(ARSENAL_ID)) {
+                toRegister.put(ARSENAL_ID, new ItemGroup.Builder(ItemGroup.Row.TOP, -1)
+                        .icon(() -> new ItemStack(resolveIcon(ARSENAL_ICON_IDS, () -> Items.NETHERITE_SWORD)))
+                        .displayName(Text.translatable("itemGroup." + MOD_ID + ".arsenal"))
+                        .build());
+            }
         }
         if (devEnvo || (armoryLoaded && anyContentModLoaded)) {
-            var group = new ItemGroup.Builder(ItemGroup.Row.TOP, -1)
-                    .icon(() -> new ItemStack(resolveIcon(ARMORY_ICON_IDS, () -> SmithingIngredients.ASCETIC != null
-                            ? SmithingIngredients.ASCETIC.item().get()
-                            : Items.NETHERITE_CHESTPLATE)))
-                    .displayName(Text.translatable("itemGroup." + MOD_ID + ".armory"))
-                    .build();
-            Registry.register(Registries.ITEM_GROUP, ARMORY_KEY, group);
+            if (!Registries.ITEM_GROUP.containsId(ARMORY_ID)) {
+                toRegister.put(ARMORY_ID, new ItemGroup.Builder(ItemGroup.Row.TOP, -1)
+                        .icon(() -> new ItemStack(resolveIcon(ARMORY_ICON_IDS, () -> SmithingIngredients.ASCETIC != null
+                                ? SmithingIngredients.ASCETIC.item().get()
+                                : Items.NETHERITE_CHESTPLATE)))
+                        .displayName(Text.translatable("itemGroup." + MOD_ID + ".armory"))
+                        .build());
+            }
         }
+        return Collections.unmodifiableMap(toRegister);
+    }
+
+    /// The vanilla registration path, used on Fabric.
+    public static void register() {
+        groupsToRegister().forEach((id, group) -> Registry.register(Registries.ITEM_GROUP, id, group));
     }
 }

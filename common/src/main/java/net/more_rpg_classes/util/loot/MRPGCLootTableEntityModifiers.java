@@ -1,5 +1,6 @@
 package net.more_rpg_classes.util.loot;
 
+import net.minecraft.util.Identifier;
 import net.minecraft.entity.EntityType;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
@@ -13,7 +14,7 @@ import net.more_rpg_classes.item.MRPGCItems;
 
 public class MRPGCLootTableEntityModifiers {
 
-    public static void modifyLootEntityTables(RegistryKey<LootTable> key, LootPoolAdder adder) {
+    public static void modifyLootEntityTables(Identifier key, LootPoolAdder adder) {
         if (EntityType.POLAR_BEAR.getLootTableId().equals(key)) {
             LootPool.Builder poolBuilder = LootPool.builder()
                     .rolls(ConstantLootNumberProvider.create(1))

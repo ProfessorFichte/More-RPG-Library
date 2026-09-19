@@ -1,5 +1,7 @@
 package net.more_rpg_classes.mixin;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
@@ -33,8 +35,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArgs;
-import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -47,7 +47,7 @@ import java.util.UUID;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
-    @Shadow public abstract boolean hasStatusEffect(RegistryEntry<StatusEffect> effect);
+    @Shadow public abstract boolean hasStatusEffect(StatusEffect effect);
 
     @Unique private float actualDamageDealt = 0;
     @Unique private float healthBeforeDamage = 0;
@@ -117,7 +117,7 @@ public abstract class LivingEntityMixin {
     @Inject(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V"))
     private void damageReflect$damage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         if (!DamageTypes.THORNS.equals(source.getType()) && !source.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
-            if (source.isDirect()) {
+            if (source.getSource() == source.getAttacker()) {
                 LivingEntity attackedEntity = (LivingEntity)(Object)this;
                 Entity attacker = source.getAttacker();
                 EntityAttributeInstance dmgReflect = attackedEntity.getAttributeInstance(MRPGCEntityAttributes.DAMAGE_REFLECT_MODIFIER);
@@ -190,52 +190,65 @@ public abstract class LivingEntityMixin {
         }
     }
 
-    @ModifyArgs(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V"))
-    private void rage$addRageDamage(Args args) {
-        DamageSource source = args.get(0);
-        if (source.isIn(SpellPowerTags.DamageTypes.ALL)) return;
+    /// Rage, and the two Duelist's Focus adjustments, all rewrite the damage passed to `applyDamage`.
+    /// They were three `@ModifyArgs` handlers on 1.21.1; on Forge 47 Mixin cannot generate the synthetic
+    /// `Args` class in the dev launch (`NoClassDefFoundError: org/spongepowered/asm/synthetic/args/Args$1`
+    /// during `Bootstrap.initialize`), so they are one MixinExtras `@WrapOperation` here, applied in the
+    /// same order they were declared in.
+    @WrapOperation(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V"))
+    private void mrpgc$modifyAppliedDamage(LivingEntity instance, DamageSource source, float amount, Operation<Void> original) {
+        amount = rage$addRageDamage(source, amount);
+        amount = duelistsFocus$reduceDamage(source, amount);
+        amount = duelistsFocus$increaseDamageToTarget(source, amount);
+        original.call(instance, source, amount);
+    }
+
+    @Unique
+    private float rage$addRageDamage(DamageSource source, float amount) {
+        if (source.isIn(SpellPowerTags.DamageTypes.ALL)) return amount;
         LivingEntity attacker = getLivingAttackerFromDamageSource(source);
-        if (attacker == null || attacker.getWorld().isClient()) return;
+        if (attacker == null || attacker.getWorld().isClient()) return amount;
         long currentTick = attacker.getWorld().getTime();
         UUID attackerId = attacker.getUuid();
         Long lastTick = RAGE_COOLDOWN.get(attackerId);
-        if (lastTick != null && currentTick - lastTick < 10) return;
+        if (lastTick != null && currentTick - lastTick < 10) return amount;
         EntityAttributeInstance rage = attacker.getAttributeInstance(MRPGCEntityAttributes.RAGE_MODIFIER);
-        if (rage == null || rage.getValue() == 100.0) return;
+        if (rage == null || rage.getValue() == 100.0) return amount;
         float health = attacker.getHealth();
         float maxHealth = (float) attacker.getAttributeValue(EntityAttributes.GENERIC_MAX_HEALTH);
         if (health < maxHealth) {
             float missing = (maxHealth - health) / maxHealth;
             EntityAttributeInstance attackDamage = attacker.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE);
-            if (attackDamage == null) return;
+            if (attackDamage == null) return amount;
             float rageDamage = Math.max(0.1f, (float) attackDamage.getValue() * ((float)(rage.getValue() - 100) / 100f) * missing);
-            args.set(1, (float) args.get(1) + rageDamage);
             RAGE_COOLDOWN.put(attackerId, currentTick);
+            return amount + rageDamage;
         }
+        return amount;
     }
 
-    @ModifyArgs(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V"))
-    private void duelistsFocus$reduceDamage(Args args) {
+    @Unique
+    private float duelistsFocus$reduceDamage(DamageSource source, float amount) {
         LivingEntity thisEntity = (LivingEntity)(Object)this;
-        if (!hasStatusEffect(MRPGCEffects.DUELISTS_FOCUS_OWNER.entry)) return;
-        if (thisEntity.getWorld().isClient()) return;
-        DamageSource source = args.get(0);
+        if (!hasStatusEffect(MRPGCEffects.DUELISTS_FOCUS_OWNER.effect)) return amount;
+        if (thisEntity.getWorld().isClient()) return amount;
         Entity attacker = source.getAttacker();
-        if (attacker instanceof LivingEntity livingAttacker && !livingAttacker.hasStatusEffect(MRPGCEffects.DUELISTS_FOCUS_TARGET.entry)) {
-            args.set(1, (float) args.get(1) * 0.75F);
+        if (attacker instanceof LivingEntity livingAttacker && !livingAttacker.hasStatusEffect(MRPGCEffects.DUELISTS_FOCUS_TARGET.effect)) {
+            return amount * 0.75F;
         }
+        return amount;
     }
 
-    @ModifyArgs(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V"))
-    private void duelistsFocus$increaseDamageToTarget(Args args) {
+    @Unique
+    private float duelistsFocus$increaseDamageToTarget(DamageSource source, float amount) {
         LivingEntity thisEntity = (LivingEntity)(Object)this;
-        if (!thisEntity.hasStatusEffect(MRPGCEffects.DUELISTS_FOCUS_TARGET.entry)) return;
-        if (thisEntity.getWorld().isClient()) return;
-        DamageSource source = args.get(0);
+        if (!thisEntity.hasStatusEffect(MRPGCEffects.DUELISTS_FOCUS_TARGET.effect)) return amount;
+        if (thisEntity.getWorld().isClient()) return amount;
         Entity attacker = source.getAttacker();
-        if (attacker instanceof LivingEntity livingAttacker && livingAttacker.hasStatusEffect(MRPGCEffects.DUELISTS_FOCUS_OWNER.entry)) {
-            args.set(1, (float) args.get(1) * 1.25F);
+        if (attacker instanceof LivingEntity livingAttacker && livingAttacker.hasStatusEffect(MRPGCEffects.DUELISTS_FOCUS_OWNER.effect)) {
+            return amount * 1.25F;
         }
+        return amount;
     }
 
     @Inject(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V", shift = At.Shift.AFTER))
@@ -259,10 +272,10 @@ public abstract class LivingEntityMixin {
     }
 
     @Unique
-    private void applyFuse(LivingEntity attacker, LivingEntity target, RegistryEntry<EntityAttribute> fuseAttribute, SpellSchool spellSchool) {
+    private void applyFuse(LivingEntity attacker, LivingEntity target, EntityAttribute fuseAttribute, SpellSchool spellSchool) {
         EntityAttributeInstance fuseInstance = attacker.getAttributeInstance(fuseAttribute);
         if (fuseInstance == null || fuseInstance.getValue() == 100.0) return;
-        EntityAttributeInstance spellPowerInstance = attacker.getAttributeInstance(spellSchool.attributeEntry);
+        EntityAttributeInstance spellPowerInstance = attacker.getAttributeInstance(spellSchool.attributeEntry.value());
         if (spellPowerInstance == null) return;
         float magicDamage = Math.max(0.1f, (float)((fuseInstance.getValue() - 100) / 100f) * (float) spellPowerInstance.getValue());
         target.timeUntilRegen = 0;
@@ -303,19 +316,19 @@ public abstract class LivingEntityMixin {
         Long lastStrong = STRONG_EFFECT_COOLDOWN.get(attackerId);
         if (lastStrong == null || currentTick - lastStrong >= 160) {
             if (burningChance != null && burningChance.getValue() > 100.0 && random.nextFloat() < (float)(burningChance.getValue() - 100) / 100f) {
-                target.addStatusEffect(new StatusEffectInstance(MRPGCEffects.IGNITED.entry, 40, amplifier, true, false, true));
+                target.addStatusEffect(new StatusEffectInstance(MRPGCEffects.IGNITED.effect, 40, amplifier, true, false, true));
                 STRONG_EFFECT_COOLDOWN.put(attackerId, currentTick);
             }
             if (staggerChance != null && staggerChance.getValue() > 100.0 && random.nextFloat() < (float)(staggerChance.getValue() - 100) / 100f) {
-                target.addStatusEffect(new StatusEffectInstance(MRPGCEffects.STAGGER.entry, 80, amplifier, true, false, true));
+                target.addStatusEffect(new StatusEffectInstance(MRPGCEffects.STAGGER.effect, 80, amplifier, true, false, true));
                 STRONG_EFFECT_COOLDOWN.put(attackerId, currentTick);
             }
             if (stunChance != null && stunChance.getValue() > 100.0 && random.nextFloat() < (float)(stunChance.getValue() - 100) / 100f) {
-                target.addStatusEffect(new StatusEffectInstance(SpellEngineEffects.STUN.entry, 40, 0, true, false, true));
+                target.addStatusEffect(new StatusEffectInstance(SpellEngineEffects.STUN.effect, 40, 0, true, false, true));
                 STRONG_EFFECT_COOLDOWN.put(attackerId, currentTick);
             }
             if (freezeChance != null && freezeChance.getValue() > 100.0 && random.nextFloat() < (float)(freezeChance.getValue() - 100) / 100f) {
-                target.addStatusEffect(new StatusEffectInstance(MRPGCEffects.FROZEN_SOLID.entry, 60, 0, true, false, true));
+                target.addStatusEffect(new StatusEffectInstance(MRPGCEffects.FROZEN_SOLID.effect, 60, 0, true, false, true));
                 STRONG_EFFECT_COOLDOWN.put(attackerId, currentTick);
                 ParticleHelper.sendBatches(target, java.util.List.of(FREEZE_PARTICLES));
             }
@@ -329,7 +342,7 @@ public abstract class LivingEntityMixin {
                 ParticleHelper.sendBatches(target, java.util.List.of(POISON_PARTICLES));
             }
             if (bleedingChance != null && bleedingChance.getValue() > 100.0 && random.nextFloat() < (float)(bleedingChance.getValue() - 100) / 100f) {
-                target.addStatusEffect(new StatusEffectInstance(SpellEngineEffects.BLEED.entry, 120, amplifier, true, false, true));
+                target.addStatusEffect(new StatusEffectInstance(SpellEngineEffects.BLEED.effect, 120, amplifier, true, false, true));
                 WEAK_EFFECT_COOLDOWN.put(attackerId, currentTick);
                 ParticleHelper.sendBatches(target, java.util.List.of(BLEEDING_PARTICLES));
             }
@@ -337,7 +350,8 @@ public abstract class LivingEntityMixin {
     }
 
     @Unique
-    private static final net.minecraft.util.Identifier ARMOR_PIERCING_ID = net.minecraft.util.Identifier.of("more_rpg_classes", "armor_piercing_reduction");
+    private static final net.minecraft.util.Identifier ARMOR_PIERCING_ID = new net.minecraft.util.Identifier("more_rpg_classes", "armor_piercing_reduction");
+    private static final java.util.UUID ARMOR_PIERCING_UUID = net.spell_power.api.ModifierDefinitions.uuid(ARMOR_PIERCING_ID);
     // Damage handlers can re-enter before RETURN runs, so keep one modifier active until the outermost hit finishes.
     @Unique
     private final Deque<Boolean> armorPiercing$appliedStack = new ArrayDeque<>();
@@ -358,12 +372,12 @@ public abstract class LivingEntityMixin {
                         EntityAttributeInstance armorAttribute = thisEntity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR);
                         EntityAttributeInstance toughnessAttribute = thisEntity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR_TOUGHNESS);
                         if (armorAttribute != null && toughnessAttribute != null) {
-                            armorAttribute.removeModifier(ARMOR_PIERCING_ID);
-                            toughnessAttribute.removeModifier(ARMOR_PIERCING_ID);
-                            armorAttribute.addTemporaryModifier(new net.minecraft.entity.attribute.EntityAttributeModifier(
-                                    ARMOR_PIERCING_ID, -armorAttribute.getValue() * piercingPercent, net.minecraft.entity.attribute.EntityAttributeModifier.Operation.ADD_VALUE));
-                            toughnessAttribute.addTemporaryModifier(new net.minecraft.entity.attribute.EntityAttributeModifier(
-                                    ARMOR_PIERCING_ID, -toughnessAttribute.getValue() * piercingPercent, net.minecraft.entity.attribute.EntityAttributeModifier.Operation.ADD_VALUE));
+                            armorAttribute.removeModifier(ARMOR_PIERCING_UUID);
+                            toughnessAttribute.removeModifier(ARMOR_PIERCING_UUID);
+                            armorAttribute.addTemporaryModifier(net.spell_engine.utils.AttributeModifierUtil.modifier(
+                                    ARMOR_PIERCING_ID, -armorAttribute.getValue() * piercingPercent, net.minecraft.entity.attribute.EntityAttributeModifier.Operation.ADDITION));
+                            toughnessAttribute.addTemporaryModifier(net.spell_engine.utils.AttributeModifierUtil.modifier(
+                                    ARMOR_PIERCING_ID, -toughnessAttribute.getValue() * piercingPercent, net.minecraft.entity.attribute.EntityAttributeModifier.Operation.ADDITION));
                         }
                     }
                     armorPiercing$depth++;
@@ -385,8 +399,8 @@ public abstract class LivingEntityMixin {
             EntityAttributeInstance armorAttribute = thisEntity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR);
             EntityAttributeInstance toughnessAttribute = thisEntity.getAttributeInstance(EntityAttributes.GENERIC_ARMOR_TOUGHNESS);
             if (armorAttribute != null && toughnessAttribute != null) {
-                armorAttribute.removeModifier(ARMOR_PIERCING_ID);
-                toughnessAttribute.removeModifier(ARMOR_PIERCING_ID);
+                armorAttribute.removeModifier(ARMOR_PIERCING_UUID);
+                toughnessAttribute.removeModifier(ARMOR_PIERCING_UUID);
             }
         }
     }
@@ -394,24 +408,23 @@ public abstract class LivingEntityMixin {
     @Inject(method = "baseTick", at = @At("TAIL"))
     public void baseTickPowderSnowFrostedSolidEffect(CallbackInfo ci) {
         var entity = (LivingEntity)((Object)this);
-        entity.inPowderSnow = entity.inPowderSnow || hasStatusEffect(MRPGCEffects.FROSTED.entry);
+        entity.inPowderSnow = entity.inPowderSnow || hasStatusEffect(MRPGCEffects.FROSTED.effect);
     }
 
     @Inject(method = "baseTick", at = @At("TAIL"))
     public void baseTickPowderSnowFrozenSolidEffect(CallbackInfo ci) {
         var entity = (LivingEntity)((Object)this);
-        entity.inPowderSnow = entity.inPowderSnow || hasStatusEffect(MRPGCEffects.FROZEN_SOLID.entry);
+        entity.inPowderSnow = entity.inPowderSnow || hasStatusEffect(MRPGCEffects.FROZEN_SOLID.effect);
     }
 
     @Inject(method = "addStatusEffect(Lnet/minecraft/entity/effect/StatusEffectInstance;Lnet/minecraft/entity/Entity;)Z", at = @At("HEAD"), cancellable = true)
     private void tenacity$resistHarmfulEffects(StatusEffectInstance effect, Entity source, CallbackInfoReturnable<Boolean> cir) {
         LivingEntity thisEntity = (LivingEntity)(Object)this;
         if (thisEntity.getWorld().isClient()) return;
-        if (effect.getEffectType().value().isBeneficial()) return;
-        RegistryEntry<StatusEffect> effectType = effect.getEffectType();
-        if (effectType.matchesKey(StatusEffects.BAD_OMEN.getKey().get()) ||
-            effectType.matchesKey(StatusEffects.TRIAL_OMEN.getKey().get()) ||
-            effectType.matchesKey(StatusEffects.RAID_OMEN.getKey().get())) return;
+        if (effect.getEffectType().isBeneficial()) return;
+        // 1.20.1 only has BAD_OMEN; TRIAL_OMEN / RAID_OMEN arrived in 1.21.
+        StatusEffect effectType = effect.getEffectType();
+        if (effectType == StatusEffects.BAD_OMEN) return;
         EntityAttributeInstance tenacityAttribute = thisEntity.getAttributeInstance(MRPGCEntityAttributes.TENACITY);
         if (tenacityAttribute == null) return;
         double resistChance = Math.max(0.0, Math.min(1.0, (tenacityAttribute.getValue() - 100.0) / 100.0));

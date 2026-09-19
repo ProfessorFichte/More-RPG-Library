@@ -15,7 +15,7 @@ public class SoakedEffect extends SpellVulnerabilityStatusEffect {
         super(statusEffectCategory, color);
     }
 
-    public boolean applyUpdateEffect(LivingEntity pLivingEntity, int pAmplifier) {
+    public void applyUpdateEffect(LivingEntity pLivingEntity, int pAmplifier) {
         World world = pLivingEntity.getEntityWorld();
 
         if(pLivingEntity.isOnFire()){
@@ -30,7 +30,7 @@ public class SoakedEffect extends SpellVulnerabilityStatusEffect {
             }
             pLivingEntity.playSound(SoundEvents.BLOCK_FIRE_EXTINGUISH,2,1);
             pLivingEntity.extinguish();
-            pLivingEntity.removeStatusEffect(MRPGCEffects.SOAKED.entry);
+            pLivingEntity.removeStatusEffect(MRPGCEffects.SOAKED.effect);
         }
         if(pLivingEntity.isInLava()){
             if(world.isClient){
@@ -43,9 +43,9 @@ public class SoakedEffect extends SpellVulnerabilityStatusEffect {
                 }
             }
             pLivingEntity.playSound(SoundEvents.BLOCK_FIRE_EXTINGUISH,2,1);
-            pLivingEntity.removeStatusEffect(MRPGCEffects.SOAKED.entry);
+            pLivingEntity.removeStatusEffect(MRPGCEffects.SOAKED.effect);
         }
-        return true;
+        return;
     }
 
     @Override

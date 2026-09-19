@@ -1,9 +1,9 @@
 package net.more_rpg_classes.util.loot;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.annotation.Nullable;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializationContext;
+import org.jetbrains.annotations.Nullable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.context.LootContext;
@@ -12,12 +12,12 @@ import net.minecraft.loot.function.ConditionalLootFunction;
 import net.minecraft.loot.function.LootFunctionType;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.loot.provider.number.LootNumberProvider;
-import net.minecraft.loot.provider.number.LootNumberProviderTypes;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.JsonHelper;
 import net.spell_engine.api.spell.Spell;
-import net.spell_engine.api.spell.SpellDataComponents;
+import net.spell_engine.api.item.SpellItemData;
 import net.spell_engine.api.spell.container.SpellContainer;
 import net.spell_engine.api.spell.container.SpellContainerHelper;
 import net.spell_engine.api.spell.registry.SpellRegistry;
@@ -26,38 +26,16 @@ import java.util.*;
 
 public class BindSpellFromPoolsLootFunction extends ConditionalLootFunction {
     public static final String NAME = "bind_spell_from_pools";
-    public static final Identifier ID = Identifier.of("more_rpg_classes", NAME);
+    public static final Identifier ID = new Identifier("more_rpg_classes", NAME);
     private final LootNumberProvider chance;
 
-    public static final MapCodec<BindSpellFromPoolsLootFunction> CODEC =
-            RecordCodecBuilder.mapCodec(instance ->
-                    addConditionsField(instance)
-                            .and(
-                                    instance.group(
-                                            Codec.STRING.listOf()
-                                                    .fieldOf("spell_pools")
-                                                    .orElse(List.of())
-                                                    .forGetter(f -> f.pools),
-                                            LootNumberProviderTypes.CODEC
-                                                    .fieldOf("count")
-                                                    .orElse(ConstantLootNumberProvider.create(1))
-                                                    .forGetter(f -> f.count),
-                                            LootNumberProviderTypes.CODEC
-                                                    .optionalFieldOf("chance")
-                                                    .forGetter(f -> Optional.ofNullable(f.chance))
-                                    )
-                            )
-                            .apply(instance, BindSpellFromPoolsLootFunction::new)
-            );
-
-    public static final LootFunctionType<BindSpellFromPoolsLootFunction> TYPE =
-            new LootFunctionType<>(CODEC);
+    public static final LootFunctionType TYPE = new LootFunctionType(new Serializer());
 
     private final List<String> pools;
     private final LootNumberProvider count;
 
     public BindSpellFromPoolsLootFunction(
-            List<LootCondition> conditions,
+            LootCondition[] conditions,
             List<String> pools,
             LootNumberProvider count,
             Optional<LootNumberProvider> chance) {
@@ -68,7 +46,7 @@ public class BindSpellFromPoolsLootFunction extends ConditionalLootFunction {
     }
 
     @Override
-    public LootFunctionType<BindSpellFromPoolsLootFunction> getType() {
+    public LootFunctionType getType() {
         return TYPE;
     }
 
@@ -88,10 +66,10 @@ public class BindSpellFromPoolsLootFunction extends ConditionalLootFunction {
 
         for (String entry : pools) {
             if (entry.startsWith("#")) {
-                Identifier id = Identifier.of(entry.substring(1));
+                Identifier id = new Identifier(entry.substring(1));
                 tags.add(TagKey.of(SpellRegistry.KEY, id));
             } else {
-                exact.add(Identifier.of(entry));
+                exact.add(new Identifier(entry));
             }
         }
         return new PoolFilters(tags, exact);
@@ -108,7 +86,7 @@ public class BindSpellFromPoolsLootFunction extends ConditionalLootFunction {
         }
 
         List<Identifier> alreadyPresentSpells = existing.spell_ids().stream()
-                .map(Identifier::of)
+                .map(Identifier::new)
                 .toList();
 
         var poolFilters = getPools();
@@ -158,7 +136,7 @@ public class BindSpellFromPoolsLootFunction extends ConditionalLootFunction {
         var sorted = SpellContainerHelper.sortedSpells(context.getWorld(), container.spell_ids());
         container = container.copyWith(sorted);
 
-        stack.set(SpellDataComponents.SPELL_CONTAINER, container);
+        SpellItemData.setSpellContainer(stack, container);
         return stack;
     }
 
@@ -167,5 +145,34 @@ public class BindSpellFromPoolsLootFunction extends ConditionalLootFunction {
     public static ConditionalLootFunction.Builder<?> builder(
             List<String> pools, LootNumberProvider count, @Nullable LootNumberProvider chance) {
         return builder(conditions -> new BindSpellFromPoolsLootFunction(conditions, pools, count, Optional.ofNullable(chance)));
+    }
+
+    public static class Serializer extends ConditionalLootFunction.Serializer<BindSpellFromPoolsLootFunction> {
+        @Override
+        public void toJson(JsonObject json, BindSpellFromPoolsLootFunction function, JsonSerializationContext context) {
+            super.toJson(json, function, context);
+            json.add("spell_pools", context.serialize(function.pools));
+            json.add("count", context.serialize(function.count));
+            if (function.chance != null) {
+                json.add("chance", context.serialize(function.chance));
+            }
+        }
+
+        @Override
+        public BindSpellFromPoolsLootFunction fromJson(JsonObject json, JsonDeserializationContext context, LootCondition[] conditions) {
+            List<String> pools = new ArrayList<>();
+            if (json.has("spell_pools")) {
+                for (var element : JsonHelper.getArray(json, "spell_pools")) {
+                    pools.add(element.getAsString());
+                }
+            }
+            LootNumberProvider count = json.has("count")
+                    ? JsonHelper.deserialize(json, "count", context, LootNumberProvider.class)
+                    : ConstantLootNumberProvider.create(1);
+            Optional<LootNumberProvider> chance = json.has("chance")
+                    ? Optional.of(JsonHelper.deserialize(json, "chance", context, LootNumberProvider.class))
+                    : Optional.empty();
+            return new BindSpellFromPoolsLootFunction(conditions, pools, count, chance);
+        }
     }
 }

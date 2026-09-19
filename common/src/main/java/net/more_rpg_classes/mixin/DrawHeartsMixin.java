@@ -25,7 +25,7 @@ public class DrawHeartsMixin {
     @Shadow @Final private MinecraftClient client;
 
     @Inject(method = "drawHeart", at = @At(value = "HEAD"), cancellable = true)
-    private void drawHeart(DrawContext context, InGameHud.HeartType type, int x, int y, boolean hardcore, boolean blinking, boolean half, CallbackInfo ci) {
+    private void drawHeart(DrawContext context, InGameHud.HeartType type, int x, int y, int v, boolean blinking, boolean half, CallbackInfo ci) {
         // only run if normal heart or a container heart
         if (!(type.equals(InGameHud.HeartType.NORMAL) || type.equals(InGameHud.HeartType.CONTAINER))) return;
         // add a container boolean for when the heart type is a container
@@ -36,7 +36,7 @@ public class DrawHeartsMixin {
         if (player == null) return;
 
         // fatal poison
-        if (player.hasStatusEffect(MRPGCEffects.FATAL_POISON.entry)) {
+        if (player.hasStatusEffect(MRPGCEffects.FATAL_POISON.effect)) {
             render(ci,context,x,y,half,blinking,container, HeartRegistry.getHeartSetting(HeartTypes.FATAL_POISON_ID));
         }
     }
@@ -52,8 +52,15 @@ public class DrawHeartsMixin {
         if (texture == null) return; // if the texture is null, do not render
 
         // draw the texture
-        context.drawGuiTexture(texture, x, y, 9, 9);
+        // 1.20.1 has no GUI sprite atlas: resolve the sprite id to its texture file and draw it directly.
+        context.drawTexture(spriteTexture(texture), x, y, 0, 0, 9, 9, 9, 9);
         // cancel the drawing of the other texture
         ci.cancel();
+    }
+
+    /// 1.21 addresses HUD sprites by id (`<ns>:hud/heart/x`); 1.20.1 needs the texture file behind it.
+    @Unique
+    private static Identifier spriteTexture(Identifier sprite) {
+        return new Identifier(sprite.getNamespace(), "textures/gui/sprites/" + sprite.getPath() + ".png");
     }
 }
