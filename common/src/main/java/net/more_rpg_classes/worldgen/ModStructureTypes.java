@@ -15,8 +15,6 @@ public class ModStructureTypes {
 
     public static final StructureType<ConditionalJigsawStructure> CONDITIONAL_JIGSAW = () -> ConditionalJigsawStructure.CODEC;
 
-    /// Creation only — the structure types keyed by the id they register under. Forge iterates this from
-    /// its `worldgen/structure_type` `RegisterEvent` window.
     public static Map<Identifier, StructureType<?>> typesToRegister() {
         var toRegister = new LinkedHashMap<Identifier, StructureType<?>>();
         put(toRegister, MRPGCMod.id("conditional_jigsaw"), CONDITIONAL_JIGSAW);
@@ -28,7 +26,6 @@ public class ModStructureTypes {
         toRegister.put(id, type);
     }
 
-    /// The vanilla registration path, used on Fabric.
     public static void register() {
         typesToRegister().forEach((id, type) -> Registry.register(Registries.STRUCTURE_TYPE, id, type));
     }

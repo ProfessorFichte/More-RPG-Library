@@ -24,17 +24,18 @@ public class MoreSpellSchools {
     public static SpellSchool RAGE_MELEE;
 
     private static RegistryEntry<EntityAttribute> rangedDamageAttribute() {
-        if (Platform.util().isModLoaded("ranged_weapon_api")) {
+        if (Platform.util().isModLoaded("ranged_weapon_api") && EntityAttributes_RangedWeapon.DAMAGE.entry != null) {
             return EntityAttributes_RangedWeapon.DAMAGE.entry;
         } else {
-            // 1.20.1: vanilla attributes are raw objects; wrap for SpellSchool's RegistryEntry ctor.
             return Registries.ATTRIBUTE.getEntry(EntityAttributes.GENERIC_ATTACK_DAMAGE);
         }
     }
 
-    /// Adds the four magic schools to Spell Power's registry. Must run before Spell Power registers
-    /// its attributes: on Fabric that is the `SpellSchools` `<clinit>`-TAIL mixin, on Forge (where a
-    /// `<clinit>` registration mixin would hit a locked registry) it is the mod constructor.
+    public static void refreshRangedAttribute() {
+        FROST_RANGED.attributeEntry = rangedDamageAttribute();
+        FIRE_RANGED.attributeEntry = rangedDamageAttribute();
+    }
+
     public static void registerSchools() {
         SpellSchools.register(WATER);
         SpellSchools.register(AIR);

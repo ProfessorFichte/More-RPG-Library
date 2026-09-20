@@ -7,9 +7,6 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * S2C packet sent when a mob starts or stops casting a BEAM spell.
- *
- * 1.20.1 has no CustomPayload / PacketCodec: the packet is a plain record carrying its channel id
- * plus a write/read pair, per Spell Engine's {@link Packets.Payload} contract.
  */
 public record MobBeamPacket(int casterId, int targetId, @Nullable Identifier spellId) implements Packets.Payload {
 

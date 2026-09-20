@@ -190,11 +190,6 @@ public abstract class LivingEntityMixin {
         }
     }
 
-    /// Rage, and the two Duelist's Focus adjustments, all rewrite the damage passed to `applyDamage`.
-    /// They were three `@ModifyArgs` handlers on 1.21.1; on Forge 47 Mixin cannot generate the synthetic
-    /// `Args` class in the dev launch (`NoClassDefFoundError: org/spongepowered/asm/synthetic/args/Args$1`
-    /// during `Bootstrap.initialize`), so they are one MixinExtras `@WrapOperation` here, applied in the
-    /// same order they were declared in.
     @WrapOperation(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V"))
     private void mrpgc$modifyAppliedDamage(LivingEntity instance, DamageSource source, float amount, Operation<Void> original) {
         amount = rage$addRageDamage(source, amount);
@@ -422,7 +417,6 @@ public abstract class LivingEntityMixin {
         LivingEntity thisEntity = (LivingEntity)(Object)this;
         if (thisEntity.getWorld().isClient()) return;
         if (effect.getEffectType().isBeneficial()) return;
-        // 1.20.1 only has BAD_OMEN; TRIAL_OMEN / RAID_OMEN arrived in 1.21.
         StatusEffect effectType = effect.getEffectType();
         if (effectType == StatusEffects.BAD_OMEN) return;
         EntityAttributeInstance tenacityAttribute = thisEntity.getAttributeInstance(MRPGCEntityAttributes.TENACITY);

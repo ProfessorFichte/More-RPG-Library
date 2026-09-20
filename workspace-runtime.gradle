@@ -1,0 +1,78 @@
+// Dev runtime only, applied from fabric/ and forge/ when a flag in the gitignored workspace.properties is on.
+// Fabric loads the dev-shadow jars, Forge takes the production jars because its dev-shadow ones still have SRG names.
+// Every pin has to be in ~/.m2 first, run publishToMavenLocal in that mod and bump the version here.
+
+def flags = rootProject.ext.contentWorkspace
+def fabric = project.name == 'fabric'
+
+repositories {
+    mavenLocal()
+    maven {
+        url = 'https://maven.puffish.net'
+        content { includeGroup 'net.puffish' }
+    }
+}
+
+def content = { String group, String artifact, String version ->
+    if (fabric) {
+        dependencies.add('localRuntime', "${group}:${artifact}-fabric:${version}:dev-shadow") { transitive = false }
+    } else {
+        dependencies.add('modLocalRuntime', "${group}:${artifact}-forge:${version}") { transitive = false }
+    }
+}
+
+def modrinth = { String slug, String version ->
+    dependencies.add('modLocalRuntime', "maven.modrinth:${slug}:${version}-${project.name}") { transitive = false }
+}
+
+def classes = flags.workspace_classes
+def accessories = flags.workspace_accessories
+def lne = flags.workspace_lne
+def skills = flags.workspace_skills
+
+modrinth('armor-model-api', '1.0.0+1.20.1')
+modrinth('structure-pool-api', '1.2.1+1.20.1')
+modrinth('critical-strike', '1.0.4+1.20.1')
+
+if (classes || lne) {
+    modrinth('archers', '3.1.1+1.20.1')
+    modrinth('bundle-api', '1.2.0+1.20.1')
+    modrinth('wizards', '3.1.2+1.20.1')
+    content('com.elemental_wizards', 'elemental_wizards_rpg', '3.1.1+1.20.1')
+}
+
+if (classes) {
+    content('com.archers_expansion', 'archers_expansion', '3.0.0+1.20.1')
+    content('com.bards', 'bards_rpg', '3.0.0+1.20.1')
+    content('com.berserker', 'berserker_rpg', '3.1.1+1.20.1')
+    content('com.forcemaster', 'forcemaster_rpg', '3.1.1+1.20.1')
+    content('net.witcher_class', 'witcher-class-mod', '3.1.3+1.20.1')
+}
+
+if (accessories) {
+    modrinth('jewelry', '2.4.0+1.20.1')
+    modrinth('relics-rpg', '1.4.0+1.20.1')
+    content('com.additional_jewelry', 'additional_rpg_jewelry', '2.3.1+1.20.1')
+    content('com.more_relics', 'more_relics', '1.3.1+1.20.1')
+}
+
+if (lne) {
+    modrinth('paladins-and-priests', '3.1.1+1.20.1')
+    modrinth('rogues-and-warriors', '3.1.1+1.20.1')
+    modrinth('shield-api', '2.2.0+1.20.1')
+    content('com.lne_wizards', 'lne_wizards', '1.2.1+1.20.1')
+    content('com.lne_paladins', 'lne_paladins', '1.2.2+1.20.1')
+    content('com.lne_rogues', 'lne_rogues', '1.2.1+1.20.1')
+    content('com.lne_archers', 'lne_archers', '1.2.2+1.20.1')
+}
+
+if (skills) {
+    modrinth('skill-tree', '1.6.1+1.20.1')
+    modrinth('combat-roll', '1.3.3+1.20.1')
+    dependencies.add("modLocalRuntime", "net.puffish:skillsmod:0.16.7+1.20:${project.name}") { transitive = false }
+    content('com.mrpgc_skill_tree', 'mrpgc_skill_tree', '1.3.0+1.20.1')
+}
+
+if (fabric && flags.workspace_loot) {
+    dependencies.add('modLocalRuntime', 'com.example:Loot-N-Explore:1.0.22+1.20.1') { transitive = false }
+}

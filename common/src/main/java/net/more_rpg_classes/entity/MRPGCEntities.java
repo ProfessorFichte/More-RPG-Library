@@ -22,8 +22,6 @@ public class MRPGCEntities {
             .trackingTickInterval(Integer.MAX_VALUE)
             .build("friendly_lightning");
 
-    /// Creation only — the entity types keyed by the id they register under. Forge iterates this from its
-    /// `ENTITY_TYPE` `RegisterEvent` window. Skips ids already present, so it is idempotent.
     public static Map<Identifier, EntityType<?>> entitiesToRegister() {
         var toRegister = new LinkedHashMap<Identifier, EntityType<?>>();
         if (!Registries.ENTITY_TYPE.containsId(FRIENDLY_LIGHTNING_ID)) {
@@ -32,7 +30,6 @@ public class MRPGCEntities {
         return Collections.unmodifiableMap(toRegister);
     }
 
-    /// The vanilla registration path, used on Fabric.
     public static void register() {
         entitiesToRegister().forEach((id, type) -> Registry.register(Registries.ENTITY_TYPE, id, type));
     }

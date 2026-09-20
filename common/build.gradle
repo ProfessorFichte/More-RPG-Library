@@ -24,11 +24,9 @@ dependencies {
     // which get remapped to the correct annotations on each platform.
     // Do NOT use other classes from Fabric Loader.
     modImplementation "net.fabricmc:fabric-loader:$project.fabric_loader_version"
-    // There is no Forgified Fabric API on the 1.20.1 line: common/ must stay Fabric-API-free.
-    // Fabric-API-shaped call sites live behind the platform seams instead.
+// Don't add transitive = false here, cloth-config is what puts Fabric API on the remap classpath.
+// Without it runDatagen crashes with a NoSuchMethodError.
     modImplementation("me.shedaniel.cloth:cloth-config-${platform}:${project.cloth_config_version}")
-    // Ecosystem libraries: all resolved from the Modrinth maven. Modrinth serves only the per-loader
-    // jars, so `common` keeps compiling against the `-fabric` flavour (this module's dummy platform).
     modImplementation("maven.modrinth:tiny-config:${project.tiny_config_version}-${platform}") { transitive = false }
     modImplementation("maven.modrinth:spell-power:${project.spell_power_version}-${platform}") { transitive = false }
     modImplementation("maven.modrinth:spell-engine:${project.spell_engine_version}-${platform}") { transitive = false }

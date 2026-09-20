@@ -72,8 +72,11 @@ repositories {
         }
     }
     maven { url 'https://maven.fabricmc.net' }
-    // Curios (Forge accessory slots)
     maven { url 'https://maven.theillusivec4.top/' }
+}
+
+if (rootProject.ext.contentWorkspaceAny) {
+    apply from: rootProject.file("workspace-runtime.gradle")
 }
 
 dependencies {
@@ -83,19 +86,14 @@ dependencies {
 
     modImplementation("me.shedaniel.cloth:cloth-config-${platform}:${project.cloth_config_version}")
 
-    // Ecosystem libraries: all resolved from the Modrinth maven.
     modImplementation("maven.modrinth:tiny-config:${project.tiny_config_version}-${platform}") { transitive = false }
     modImplementation("maven.modrinth:spell-power:${project.spell_power_version}-${platform}") { transitive = false }
     modImplementation("maven.modrinth:spell-engine:${project.spell_engine_version}-${platform}") { transitive = false }
     modImplementation("maven.modrinth:ranged-weapon-api:${project.ranged_weapon_api_version}-${platform}") { transitive = false }
 
-    // Forge 47 does not bundle MixinExtras (Fabric Loader does) - SpellEngine's mixins need it at runtime.
     localRuntime("io.github.llamalad7:mixinextras-forge:${rootProject.mixin_extras_version}")
-    // SpellEngine's accessory integration on Forge.
     modLocalRuntime("top.theillusivec4.curios:curios-forge:${rootProject.curios_version}") { transitive = false }
-    // Spell Engine hard-depends on the player animation library at runtime.
     modLocalRuntime("dev.kosmx.player-anim:player-animation-lib-forge:${rootProject.player_anim_version}")
-    // Soft dependency, dev runtime only: without it the `runes:crafting` recipes cannot be parsed.
     modLocalRuntime("maven.modrinth:runes:${rootProject.runes_version}-forge") { transitive = false }
 }
 
@@ -103,7 +101,6 @@ processResources {
     inputs.property 'version', project.version
 
     filesMatching('META-INF/mods.toml') {
-        // Forge rejects '+<mc>' build metadata inside a version range.
         expand version: inputs.properties.version.toString().split('\\+')[0]
     }
 }
@@ -134,8 +131,6 @@ publishMods {
             : me.modmuss50.mpp.ReleaseType.BETA
     version = "${project.version}-${platform}"
     displayName = "${project.version}-${platform}"
-    // NeoForge 1.20.1 is a fork of Forge 47.1 that kept the Forge packages and FML,
-    // so the same jar loads there; both loaders are tagged.
     modLoaders.add("forge")
     modLoaders.add("neoforge")
 

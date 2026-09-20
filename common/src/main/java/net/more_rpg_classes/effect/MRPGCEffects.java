@@ -71,8 +71,6 @@ public class MRPGCEffects {
             new CustomStatusEffect(StatusEffectCategory.BENEFICIAL, 0x01d9cf),
             new EffectConfig(List.of(
                     new AttributeModifier(
-                            // Spell Power registers a school's attribute under the school id; reading `attributeEntry`
-                            // here would NPE on Forge, where <clinit> can run before the ATTRIBUTE window.
                             SpellSchools.SOUL.id.toString(),
                             0.10F,
                             EntityAttributeModifier.Operation.ADDITION
@@ -299,8 +297,6 @@ public class MRPGCEffects {
 
     private static boolean behavioursInstalled = false;
 
-    /// Everything {@link #register} does *before* touching the registry. Idempotent; all of it reads the
-    /// raw {@link Effects.Entry#effect}, never the `entry` reference, so it is safe before linking.
     private static void installBehaviours() {
         if (behavioursInstalled) { return; }
         behavioursInstalled = true;
@@ -316,15 +312,11 @@ public class MRPGCEffects {
         ActionImpairing.configure(STAGGER.effect, EntityActionsAllowed.INCAPACITATE);
     }
 
-    /// Creation only — behaviours installed, config applied, attribute modifiers attached; the effects are
-    /// returned keyed by the id they register under and nothing is written. Forge iterates this from its
-    /// `STATUS_EFFECT` `RegisterEvent` window and follows it with `Effects.linkEntries(entries)`.
     public static Map<Identifier, StatusEffect> effectsToRegister(ConfigFile.Effects config) {
         installBehaviours();
         return Effects.effectsToRegister(entries, config.effects);
     }
 
-    /// The vanilla registration path, used on Fabric.
     public static void register(ConfigFile.Effects config) {
         installBehaviours();
         Effects.register(entries, config.effects);

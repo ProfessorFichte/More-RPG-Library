@@ -150,10 +150,6 @@ public class MoreParticles {
     public static ParticleType<PopupParticleEffect> POPUP;
     public static ParticleType<PopupParticleEffect> SPELL_STOLEN_POPUP;
 
-    /// Creation only — every particle type keyed by the id it registers under. Forge iterates this from
-    /// its `PARTICLE_TYPE` `RegisterEvent` window. The two `PopupParticleEffect` types are stored in their
-    /// static fields here, because the Forge helper returns void where `Registry.register` returned the
-    /// value. Skips ids already present, so it is idempotent.
     public static Map<Identifier, ParticleType<?>> particlesToRegister() {
         var toRegister = new LinkedHashMap<Identifier, ParticleType<?>>();
         if (POPUP == null) {
@@ -185,7 +181,6 @@ public class MoreParticles {
         };
     }
 
-    /// The vanilla registration path, used on Fabric.
     public static void register() {
         particlesToRegister().forEach((id, type) -> Registry.register(Registries.PARTICLE_TYPE, id, type));
     }

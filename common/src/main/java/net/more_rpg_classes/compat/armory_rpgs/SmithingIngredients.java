@@ -104,12 +104,6 @@ public class SmithingIngredients {
     public static final boolean bardsLoaded = Platform.util().isModLoaded("bards_rpg");
     private static boolean entriesBuilt = false;
 
-    /// Creation only — the upgrade crystals keyed by the id they register under. Forge iterates this from
-    /// its `ITEM` `RegisterEvent` window.
-    ///
-    /// The conditional appends below have to happen *here*, not in the caller: the entry list is empty
-    /// until they run, so a Forge window that only copied the registration loop would silently register
-    /// nothing. Idempotent — the appends happen once, and ids already in the registry are skipped.
     public static Map<Identifier, Item> itemsToRegister() {
         buildEntries();
         var toRegister = new LinkedHashMap<Identifier, Item>();
@@ -120,7 +114,6 @@ public class SmithingIngredients {
         return Collections.unmodifiableMap(toRegister);
     }
 
-    /// The vanilla registration path, used on Fabric.
     public static void register() {
         itemsToRegister().forEach((id, item) -> Registry.register(Registries.ITEM, id, item));
     }

@@ -62,10 +62,6 @@ public class MRPGCItemGroups {
                 .orElseGet(fallback);
     }
 
-    /// Creation only — the item groups keyed by the id they register under. Forge iterates this from its
-    /// own `ITEM_GROUP` `RegisterEvent` window: `creative_mode_tab` is event 65 while `item` is event 7,
-    /// so a group registered alongside the items rides in a window that is not its own.
-    /// Both icons are `Supplier`-backed and resolved lazily, so they tolerate the later window.
     public static Map<Identifier, ItemGroup> groupsToRegister() {
         var toRegister = new LinkedHashMap<Identifier, ItemGroup>();
         if (devEnvo || (arsenalLoaded && anyContentModLoaded)) {
@@ -89,7 +85,6 @@ public class MRPGCItemGroups {
         return Collections.unmodifiableMap(toRegister);
     }
 
-    /// The vanilla registration path, used on Fabric.
     public static void register() {
         groupsToRegister().forEach((id, group) -> Registry.register(Registries.ITEM_GROUP, id, group));
     }

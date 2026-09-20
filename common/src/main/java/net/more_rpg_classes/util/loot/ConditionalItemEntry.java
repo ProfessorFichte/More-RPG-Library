@@ -21,8 +21,6 @@ import java.util.function.Consumer;
 
 import static net.more_rpg_classes.MRPGCMod.MOD_ID;
 
-/// A leaf entry naming its item by id, so a pack can reference an item that may not be registered.
-/// 1.20.1: loot pool entries serialize through JsonSerializer, not a Codec.
 public class ConditionalItemEntry extends LeafEntry {
     public static final String NAME = "conditional_item";
     public static final Identifier ID = new Identifier(MOD_ID, NAME);

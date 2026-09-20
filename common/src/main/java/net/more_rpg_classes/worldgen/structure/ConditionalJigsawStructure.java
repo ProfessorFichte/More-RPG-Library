@@ -21,8 +21,6 @@ import java.util.Optional;
 public class ConditionalJigsawStructure extends Structure {
     public static final int MAX_SIZE = 128;
 
-    // 1.20.1: StructureType#codec() returns a plain Codec, and the jigsaw structure carries no
-    // dimension padding / liquid settings (both are 1.21 additions) - those fields are simply absent here.
     public static final Codec<ConditionalJigsawStructure> CODEC = RecordCodecBuilder.<ConditionalJigsawStructure>mapCodec(instance ->
             instance.group(
                     configCodecBuilder(instance),

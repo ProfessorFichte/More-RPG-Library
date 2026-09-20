@@ -13,9 +13,6 @@ import java.util.Map;
 
 
 public class MRPGCItems {
-    /// Every item this mod owns, in declaration order, keyed by the id it registers under. Built by
-    /// `<clinit>`; nothing is written to the registry until {@link #registerModItems()} (Fabric) or the
-    /// Forge `ITEM` window iterates {@link #itemsToRegister()}.
     private static final Map<Identifier, Item> TO_REGISTER = new LinkedHashMap<>();
 
     public static final Item WOLF_FUR = registerItem("wolf_fur", new Item(new Item.Settings()));
@@ -34,8 +31,6 @@ public class MRPGCItems {
         return item;
     }
 
-    /// Creation only — the items keyed by the id they register under. Forge iterates this from its `ITEM`
-    /// `RegisterEvent` window. Skips ids already present, so it is idempotent.
     public static Map<Identifier, Item> itemsToRegister() {
         var toRegister = new LinkedHashMap<Identifier, Item>();
         TO_REGISTER.forEach((id, item) -> {
@@ -45,7 +40,6 @@ public class MRPGCItems {
         return Collections.unmodifiableMap(toRegister);
     }
 
-    /// The vanilla registration path, used on Fabric.
     public static void registerModItems(){
         itemsToRegister().forEach((id, item) -> Registry.register(Registries.ITEM, id, item));
     }

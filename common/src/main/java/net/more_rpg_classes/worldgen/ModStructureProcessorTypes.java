@@ -24,8 +24,6 @@ public class ModStructureProcessorTypes {
     public static final StructureProcessorType<TerrainBlendingProcessor> TERRAIN_BLENDING =
             () -> TerrainBlendingProcessor.CODEC;
 
-    /// Creation only — the processor types keyed by the id they register under. `worldgen/structure_processor`
-    /// is its own registry with its own `RegisterEvent` window, separate from `worldgen/structure_type`.
     public static Map<Identifier, StructureProcessorType<?>> typesToRegister() {
         var toRegister = new LinkedHashMap<Identifier, StructureProcessorType<?>>();
         put(toRegister, MRPGCMod.id("path_adaptation"), PATH_ADAPTATION);
@@ -39,7 +37,6 @@ public class ModStructureProcessorTypes {
         toRegister.put(id, type);
     }
 
-    /// The vanilla registration path, used on Fabric.
     public static void register() {
         typesToRegister().forEach((id, type) -> Registry.register(Registries.STRUCTURE_PROCESSOR, id, type));
     }

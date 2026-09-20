@@ -20,12 +20,6 @@ import java.util.Set;
 
 import static net.more_rpg_classes.MRPGCMod.MOD_ID;
 
-/// The two dual-school armor enchantments as Java classes: 1.20.1 has no data-driven enchantments,
-/// so `data/more_rpg_classes/enchantment/{typhoon,stonebloom}.json` (and the enchantment tags that
-/// referenced them) are replaced by this, mirroring Spell Power's own 1.20.1 port.
-///
-/// Numbers come straight from the modern JSON: weight 2 → `RARE`, `max_level` 5, cost `1 + 11/level`,
-/// `+0.03` multiplied-base per level on both schools, exclusive within `#spell_power:multi_school`.
 public class MRPGCEnchantments {
 
     private static final EnchantmentsConfig.PowerEnchantmentConfig CONFIG =
@@ -62,15 +56,12 @@ public class MRPGCEnchantments {
             STONEBLOOM_ID, STONEBLOOM
     ));
 
-    /// Creation only — the enchantments keyed by the id they register under. Forge iterates this from its
-    /// `ENCHANTMENT` `RegisterEvent` window. Skips ids already present, so it is idempotent.
     public static Map<Identifier, Enchantment> enchantmentsToRegister() {
         var toRegister = new LinkedHashMap<>(all);
         toRegister.keySet().removeIf(Registries.ENCHANTMENT::containsId);
         return Collections.unmodifiableMap(toRegister);
     }
 
-    /// The vanilla registration path, used on Fabric.
     public static void register() {
         enchantmentsToRegister().forEach((id, enchantment) -> Registry.register(Registries.ENCHANTMENT, id, enchantment));
     }

@@ -59,7 +59,6 @@ public abstract class RenderHeartMixin {
 
         // draw the texture
         RenderSystem.enableBlend();
-        // 1.20.1 has no GUI sprite atlas: draw the texture file the sprite id points at.
         pGuiGraphics.drawTexture(new Identifier(texture.getNamespace(), "textures/gui/sprites/" + texture.getPath() + ".png"),
                 x, y, 0, 0, 9, 9, 9, 9);
         RenderSystem.disableBlend();

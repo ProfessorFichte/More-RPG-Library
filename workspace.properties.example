@@ -1,0 +1,6 @@
+# Copy to workspace.properties (gitignored) to load the content mods from mavenLocal into the dev runtime, see workspace-runtime.gradle
+workspace_classes=true
+workspace_accessories=true
+workspace_lne=true
+workspace_skills=true
+workspace_loot=true

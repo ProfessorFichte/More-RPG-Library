@@ -18,7 +18,6 @@ import java.util.Set;
 
 import static net.more_rpg_classes.MRPGCMod.MOD_ID;
 
-// 1.20.1: loot functions serialize through JsonSerializer, not a Codec.
 public class ConditionalItemLootFunction extends ConditionalLootFunction {
     public static final String NAME = "conditional_item";
     public static final Identifier ID = new Identifier(MOD_ID, NAME);

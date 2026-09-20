@@ -75,7 +75,6 @@ public abstract class LivingEntityRenderStealth<T extends Entity> extends Entity
             float red, float green, float blue, float alpha, Operation<Void> original,
             LivingEntity entity, float f, float g, MatrixStack contextMatrixStack, VertexConsumerProvider contextVertexConsumerProvider, int contextLight
     ) {
-        // 1.20.1 passes the tint as four floats (the packed-int color argument is 1.21+).
         if (hasStealthEffect(entity) && visibleForLocalPlayer(entity)) {
             original.call(instance, matrices, vertices, light, overlay, red, green, blue, alpha * 0.15F);
         } else {

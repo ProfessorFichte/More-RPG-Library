@@ -90,9 +90,6 @@ public class MRPGCMod {
 		LootInjector.configure(id, adder);
 	}
 
-	/// Loot-table hooks, routed through Spell Engine's loader-agnostic event (1.20.1 has no Forgified
-	/// Fabric API). Creative-tab population stays per-platform: positional inserts are expressed with
-	/// loader-specific APIs that the vanilla `ItemGroup.Entries` does not carry.
 	public static void registerEvents() {
 		PlatformEvents.onLootTableModify(context -> {
 			LootPoolAdder adder = pool -> context.addPool(pool.build());
@@ -101,8 +98,6 @@ public class MRPGCMod {
 		});
 	}
 
-	/// Creation only — the loot function types keyed by the id they register under. `loot_function_type`
-	/// and `loot_pool_entry_type` are two different registries with two different `RegisterEvent` windows.
 	public static Map<Identifier, LootFunctionType> lootFunctionsToRegister() {
 		var toRegister = new LinkedHashMap<Identifier, LootFunctionType>();
 		toRegister.put(SpecificSpellScrollPoolLootFunction.ID, SpecificSpellScrollPoolLootFunction.TYPE);
@@ -113,7 +108,6 @@ public class MRPGCMod {
 		return Collections.unmodifiableMap(toRegister);
 	}
 
-	/// Creation only — see {@link #lootFunctionsToRegister()}.
 	public static Map<Identifier, LootPoolEntryType> lootPoolEntryTypesToRegister() {
 		var toRegister = new LinkedHashMap<Identifier, LootPoolEntryType>();
 		if (!Registries.LOOT_POOL_ENTRY_TYPE.containsId(ConditionalItemEntry.ID)) {
@@ -122,7 +116,6 @@ public class MRPGCMod {
 		return Collections.unmodifiableMap(toRegister);
 	}
 
-	/// The vanilla registration path, used on Fabric.
 	public static void registerLootFunction() {
 		lootFunctionsToRegister().forEach((id, type) -> Registry.register(Registries.LOOT_FUNCTION_TYPE, id, type));
 		lootPoolEntryTypesToRegister().forEach((id, type) -> Registry.register(Registries.LOOT_POOL_ENTRY_TYPE, id, type));
@@ -135,7 +128,6 @@ public class MRPGCMod {
 		MRPGLibSounds.register();
 	}
 
-	/// The upgrade crystals only exist alongside Armory RPGs (or in dev).
 	public static boolean smithingIngredientsEnabled() {
 		return Platform.util().isDevelopmentEnvironment() || Platform.util().isModLoaded("armory_rpgs");
 	}

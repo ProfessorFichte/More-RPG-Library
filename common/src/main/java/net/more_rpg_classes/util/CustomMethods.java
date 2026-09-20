@@ -29,7 +29,6 @@ import net.spell_power.api.SpellSchools;
 import java.util.*;
 
 public class CustomMethods {
-    /// 1.20.1 `EntityAttribute` carries no id accessor - resolve it through the registry.
     public static String attributeId(net.minecraft.entity.attribute.EntityAttribute attribute) {
         var id = net.minecraft.registry.Registries.ATTRIBUTE.getId(attribute);
         return id != null ? id.toString() : "";
@@ -40,7 +39,6 @@ public class CustomMethods {
         var toRemove = new java.util.ArrayList<StatusEffect>();
         for (var instance : effects) {
             var effect = instance.getEffectType();
-            // 1.20.1 has no TRIAL_OMEN (added in 1.21) - nothing to exclude besides beneficial effects.
             if (!effect.isBeneficial()) {
                 toRemove.add(effect);
             }

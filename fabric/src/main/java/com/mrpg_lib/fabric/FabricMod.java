@@ -28,7 +28,6 @@ public final class FabricMod implements ModInitializer {
         MRPGCMod.registerEntities();
         MRPGCMod.registerStructures();
 
-        // Loot tables live in common, behind Spell Engine's platform event.
         MRPGCMod.registerEvents();
 
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.INGREDIENTS).register(entries -> {

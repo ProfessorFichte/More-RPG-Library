@@ -41,7 +41,6 @@ public final class FabricClient implements ClientModInitializer {
             }
         });
 
-        // Fabric API 0.92: raw channel + PacketByteBuf, decoded through the packet's own read().
         ClientPlayNetworking.registerGlobalReceiver(MobBeamPacket.ID, (client, handler, buf, responseSender) -> {
             var payload = MobBeamPacket.read(buf);
             client.execute(() -> MobBeamTracker.handle(payload, client.world));

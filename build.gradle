@@ -8,6 +8,20 @@ architectury {
     minecraft = project.minecraft_version
 }
 
+ext.contentWorkspaceFlags = ["workspace_classes", "workspace_accessories", "workspace_lne", "workspace_skills", "workspace_loot"]
+ext.contentWorkspace = {
+    def local = rootProject.file("workspace.properties")
+    def props = new Properties()
+    if (local.exists()) { local.withInputStream { props.load(it) } }
+    def flags = [:]
+    for (name in contentWorkspaceFlags) {
+        def cli = providers.gradleProperty(name).orNull
+        flags[name] = (cli != null ? cli : props.getProperty(name, "false")).toBoolean()
+    }
+    return flags
+}()
+ext.contentWorkspaceAny = contentWorkspace.values().any { it }
+
 allprojects {
     group = rootProject.maven_group
     version = rootProject.mod_version + "+${rootProject.minecraft_version}"

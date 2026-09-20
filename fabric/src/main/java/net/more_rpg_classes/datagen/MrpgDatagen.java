@@ -55,7 +55,6 @@ public class MrpgDatagen implements DataGeneratorEntrypoint {
     }
     public static class LangGenerator extends FabricLanguageProvider {
         protected LangGenerator(FabricDataOutput dataOutput, CompletableFuture<RegistryWrapper.WrapperLookup> registryLookup) {
-            // Fabric API 0.92: the language provider is registry-independent (the lookup is unused).
             super(dataOutput, "en_us_2");
         }
 

@@ -9,8 +9,6 @@ import net.minecraft.particle.ParticleType;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 
-/// 1.20.1 particle parameters: a `Codec` plus a `ParticleEffect.Factory` (there is no `PacketCodec`,
-/// and `ParticleEffect` itself carries the buffer writer).
 public class PopupParticleEffect implements ParticleEffect {
     private final ParticleType<PopupParticleEffect> type;
     public final Identifier iconId;

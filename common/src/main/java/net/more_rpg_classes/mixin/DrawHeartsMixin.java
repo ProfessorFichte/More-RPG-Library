@@ -52,13 +52,11 @@ public class DrawHeartsMixin {
         if (texture == null) return; // if the texture is null, do not render
 
         // draw the texture
-        // 1.20.1 has no GUI sprite atlas: resolve the sprite id to its texture file and draw it directly.
         context.drawTexture(spriteTexture(texture), x, y, 0, 0, 9, 9, 9, 9);
         // cancel the drawing of the other texture
         ci.cancel();
     }
 
-    /// 1.21 addresses HUD sprites by id (`<ns>:hud/heart/x`); 1.20.1 needs the texture file behind it.
     @Unique
     private static Identifier spriteTexture(Identifier sprite) {
         return new Identifier(sprite.getNamespace(), "textures/gui/sprites/" + sprite.getPath() + ".png");
