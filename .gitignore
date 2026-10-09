@@ -44,6 +44,8 @@ replay_*.log
 
 src/main/generated/.cache
 common/src/main/generated/.cache
+.architectury-transformer
+/.architectury-transformer
 
 # local dev workspace switch (see workspace.properties.example)
 /workspace.properties
