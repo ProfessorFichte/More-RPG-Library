@@ -31,6 +31,7 @@
 - Spell casting mobs can also use summon spells correctly now
 - Spell casting mobs can now use melee weapon skills like Swift Strikes: they walk up to the target, dash forward when the skill has momentum, and hit everything in the swing's arc
 - Spell casting mobs can cast spells with a custom delivery from other mods
+- Upgrade crystals (T5 Class Armor Upgrade Crystals) are now affiliated loot: they drop more often for players carrying a spell book of a class they apply to
 
 ### Fixed
 - Mob-cast spells with an area impact now hit everything around the target and show their impact particles and sound.

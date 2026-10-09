@@ -1,0 +1,8 @@
+{
+  "values": [
+    {
+      "id": "mrpg_lib:warden_upgrade_crystal",
+      "required": false
+    }
+  ]
+}

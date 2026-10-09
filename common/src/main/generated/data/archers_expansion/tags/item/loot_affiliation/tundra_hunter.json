@@ -1,0 +1,8 @@
+{
+  "values": [
+    {
+      "id": "mrpg_lib:ravager_upgrade_crystal",
+      "required": false
+    }
+  ]
+}

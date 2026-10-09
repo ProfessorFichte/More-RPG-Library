@@ -1,0 +1,8 @@
+{
+  "values": [
+    {
+      "id": "mrpg_lib:virtuoso_upgrade_crystal",
+      "required": false
+    }
+  ]
+}

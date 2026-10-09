@@ -1,0 +1,24 @@
+{
+  "values": [
+    {
+      "id": "mrpg_lib:ascetic_upgrade_crystal",
+      "required": false
+    },
+    {
+      "id": "mrpg_lib:warden_upgrade_crystal",
+      "required": false
+    },
+    {
+      "id": "mrpg_lib:ravager_upgrade_crystal",
+      "required": false
+    },
+    {
+      "id": "mrpg_lib:general_upgrade_crystal",
+      "required": false
+    },
+    {
+      "id": "mrpg_lib:virtuoso_upgrade_crystal",
+      "required": false
+    }
+  ]
+}

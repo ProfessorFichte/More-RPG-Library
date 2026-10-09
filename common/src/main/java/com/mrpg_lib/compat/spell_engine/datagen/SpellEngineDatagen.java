@@ -1,11 +1,13 @@
 package com.mrpg_lib.compat.spell_engine.datagen;
 
+import com.mrpg_lib.compat.armory_rpgs.FightClass;
 import com.mrpg_lib.compat.armory_rpgs.SmithingIngredients;
 import com.mrpg_lib.datagen.LangCatalog;
 import com.mrpg_lib.compat.spell_engine.MrpgLibSpells;
 import com.mrpg_lib.sounds.MRPGLibSounds;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
@@ -19,6 +21,7 @@ import net.spell_engine.rpg_series.tags.RPGSeriesItemTags;
 import java.util.concurrent.CompletableFuture;
 
 import static com.mrpg_lib.MRPGCMod.MOD_ID;
+import static net.minecraft.block.DecoratedPotPatterns.ARCHER;
 
 public final class SpellEngineDatagen {
     private SpellEngineDatagen() {
@@ -44,6 +47,39 @@ public final class SpellEngineDatagen {
                 var tag = getOrCreateTagBuilder(tierTag);
                 tag.addOptional(entry.id());
             });
+
+            var epicArmorA = TagKey.of(RegistryKeys.ITEM, Identifier.of(MOD_ID, "loot/epic_armor_a"));
+            var epicArmorB = TagKey.of(RegistryKeys.ITEM, Identifier.of(MOD_ID, "loot/epic_armor_b"));
+            getOrCreateTagBuilder(epicArmorA);
+            getOrCreateTagBuilder(epicArmorB);
+            SmithingIngredients.ENTRIES.forEach(entry -> {
+                var tag = entry.name().contains("forgotten") ? epicArmorB : epicArmorA;
+                getOrCreateTagBuilder(tag).addOptional(entry.id());
+            });
+
+            SmithingIngredients.ENTRIES.forEach(entry -> {
+                for (var fightClass: entry.classes()) {
+                    var tag = TagKey.of(RegistryKeys.ITEM, lootAffiliation(fightClass));
+                    getOrCreateTagBuilder(tag).addOptional(entry.id());
+                }
+            });
+
+        }
+
+
+        private static Identifier lootAffiliation(FightClass fightClass) {
+            var folder = "loot_affiliation/";
+            return switch (fightClass) {
+                case DEADEYE -> Identifier.of("archers_expansion", folder + "deadeye");
+                case TUNDRA_HUNTER -> Identifier.of("archers_expansion", folder + "tundra_hunter");
+                case WAR_ARCHER -> Identifier.of("archers_expansion", folder + "war_archer");
+                case BARD -> Identifier.of("bards_rpg", folder + "bard");
+                case BERSERKER -> Identifier.of("berserker_rpg", folder + "berserker");
+                case AIR_WIZARD -> Identifier.of("elemental_wizards_rpg", folder + "wind");
+                case EARTH_WIZARD -> Identifier.of("elemental_wizards_rpg", folder + "terra");
+                case WATER_WIZARD -> Identifier.of("elemental_wizards_rpg", folder + "aqua");
+                case FORCEMASTER -> Identifier.of("foremaster_rpg", folder + "forcemaster");
+            };
         }
     }
 
@@ -91,4 +127,5 @@ public final class SpellEngineDatagen {
             ));
         }
     }
+
 }

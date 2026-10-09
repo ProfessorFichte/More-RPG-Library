@@ -1,2 +1,13 @@
-// 1.21.1	2026-10-03T22:53:35.2860117	More RPG Library/Tags for minecraft:item
+// 1.21.1	2026-10-09T05:15:26.1296388	More RPG Library/Tags for minecraft:item
+35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data\mrpg_lib\tags\item\loot\epic_armor_b.json
+0eb6ab31b0988e12c0ef0d8600c27a37f9a6ef69 data\elemental_wizards_rpg\tags\item\loot_affiliation\aqua.json
 c4370cefa9a116300421fd4c975194fe3dfa24ee data\rpg_series\tags\item\loot_tier\tier_5_armors.json
+113857d23d3056a36c3b489fa21a7cb5814ff321 data\bards_rpg\tags\item\loot_affiliation\bard.json
+0eb6ab31b0988e12c0ef0d8600c27a37f9a6ef69 data\elemental_wizards_rpg\tags\item\loot_affiliation\terra.json
+1f8b37146630a54904f66dfef98a40ec1f17df79 data\archers_expansion\tags\item\loot_affiliation\war_archer.json
+c05e7946a96de317a0a2b62740e87c1d4c2ad381 data\berserker_rpg\tags\item\loot_affiliation\berserker.json
+c05e7946a96de317a0a2b62740e87c1d4c2ad381 data\archers_expansion\tags\item\loot_affiliation\tundra_hunter.json
+393a75cd6343566a392e2618daf18374eb644476 data\elemental_wizards_rpg\tags\item\loot_affiliation\wind.json
+c4370cefa9a116300421fd4c975194fe3dfa24ee data\mrpg_lib\tags\item\loot\epic_armor_a.json
+1f8b37146630a54904f66dfef98a40ec1f17df79 data\archers_expansion\tags\item\loot_affiliation\deadeye.json
+393a75cd6343566a392e2618daf18374eb644476 data\foremaster_rpg\tags\item\loot_affiliation\forcemaster.json
