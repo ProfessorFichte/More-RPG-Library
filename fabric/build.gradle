@@ -29,7 +29,7 @@ architectury {
 fabricApi {
     configureDataGeneration() {
         client = true
-        modId = "more_rpg_classes"
+        modId = "mrpg_lib"
         outputDirectory = project(':common').file('src/main/generated')
     }
 }
@@ -52,6 +52,7 @@ configurations {
 }
 
 repositories {
+    mavenLocal()
     maven { url 'https://maven.kosmx.dev/' }
     maven { url 'https://maven.shedaniel.me/' }
     maven {
@@ -91,8 +92,10 @@ repositories {
 
     // Accessories
     maven { url 'https://maven.wispforest.io/releases' }
+}
 
-    mavenLocal()
+if (rootProject.ext.contentWorkspaceAny) {
+    apply from: rootProject.file("workspace-runtime.gradle")
 }
 
 dependencies {
@@ -101,21 +104,100 @@ dependencies {
     common(project(path: ':common', configuration: 'namedElements')) { transitive = false }
     shadowBundle project(path: ':common', configuration: 'transformProductionFabric')
 
-    modImplementation("dev.kosmx.player-anim:player-animation-lib-${platform}:${project.player_anim_version}")
+    modCompileOnly("dev.kosmx.player-anim:player-animation-lib-${platform}:${project.player_anim_version}")
     modImplementation("me.shedaniel.cloth:cloth-config-${platform}:${project.cloth_config_version}")
 
     modImplementation("maven.modrinth:tiny-config:${project.tiny_config_version}-${platform}")
-    modImplementation("maven.modrinth:spell-power:${project.spell_power_version}-${platform}")
-    modImplementation("maven.modrinth:spell-engine:${project.spell_engine_version}-${platform}")
-    modImplementation("maven.modrinth:ranged-weapon-api:${project.ranged_weapon_api_version}-${platform}")
+    modCompileOnly("maven.modrinth:spell-power:${project.spell_power_version}-${platform}")
+    modCompileOnly("maven.modrinth:spell-engine:${project.spell_engine_version}-${platform}")
+    modCompileOnly("maven.modrinth:ranged-weapon-api:${project.ranged_weapon_api_version}-${platform}")
+    modCompileOnly("maven.modrinth:better-combat:${project.better_combat_version}-${platform}")
+    modCompileOnly("maven.modrinth:combat-roll:${project.combat_roll_version}-${platform}")
+    modCompileOnly("maven.modrinth:runes:${project.runes_version}-${platform}")
+    if (!project.hasProperty("noCompat")) {
+        modLocalRuntime("dev.kosmx.player-anim:player-animation-lib-${platform}:${project.player_anim_version}")
+        modLocalRuntime("maven.modrinth:spell-power:${project.spell_power_version}-${platform}")
+        if (!project.hasProperty("noRunes")) {
+            modLocalRuntime("maven.modrinth:runes:${project.runes_version}-${platform}")
+        }
+        if (!project.hasProperty("spOnly")) {
+            modLocalRuntime("maven.modrinth:spell-engine:${project.spell_engine_version}-${platform}")
+            modLocalRuntime("maven.modrinth:ranged-weapon-api:${project.ranged_weapon_api_version}-${platform}")
+        }
+    }
 }
 
 processResources {
     inputs.property 'version', project.version
+    exclude '.cache/**'
 
     filesMatching("fabric.mod.json") {
         expand(project.properties)
     }
+}
+
+def generatedDir = project(':common').file('src/main/generated')
+def commonResources = project(':common').file('src/main/resources')
+def datagenSnapshot = layout.buildDirectory.file('datagen/generated.snapshot')
+def allowedHandWrittenData = ['wizards/item/wizard_runes.json']
+def datagenOwnedAssets = ['lang/en_us.json', 'models/item', 'particles']
+
+def generatedManifest = {
+    def root = generatedDir.toPath()
+    def lines = []
+    if (generatedDir.exists()) {
+        generatedDir.eachFileRecurse(groovy.io.FileType.FILES) { f ->
+            def rel = root.relativize(f.toPath()).toString().replace(File.separator, '/')
+            if (!rel.startsWith('.cache/')) {
+                lines << (rel + ' ' + java.security.MessageDigest.getInstance('MD5').digest(f.bytes).encodeHex())
+            }
+        }
+    }
+    lines.sort()
+}
+
+tasks.register('snapshotGenerated') {
+    doLast {
+        def target = datagenSnapshot.get().asFile
+        target.parentFile.mkdirs()
+        target.text = generatedManifest().join(System.lineSeparator())
+    }
+}
+
+tasks.register('verifyDatagen') {
+    dependsOn 'snapshotGenerated', 'runDatagen'
+    doLast {
+        def problems = []
+        def before = datagenSnapshot.get().asFile.text.readLines() as Set
+        def after = generatedManifest() as Set
+        (before + after).findAll { !(before.contains(it) && after.contains(it)) }.each {
+            problems << ((after.contains(it) ? 'generated differs from committed output: ' : 'stale generated file: ') + it.split(' ')[0])
+        }
+        def dataDir = new File(commonResources, 'data')
+        if (dataDir.exists()) {
+            dataDir.eachFileRecurse(groovy.io.FileType.FILES) { f ->
+                def rel = dataDir.toPath().relativize(f.toPath()).toString().replace(File.separator, '/')
+                if (!allowedHandWrittenData.contains(rel)) {
+                    problems << 'hand-written data file: data/' + rel
+                }
+            }
+        }
+        def assetsDir = new File(commonResources, 'assets/mrpg_lib')
+        datagenOwnedAssets.each { path ->
+            def target = new File(assetsDir, path)
+            if (target.isFile() || (target.isDirectory() && target.list().length > 0)) {
+                problems << 'hand-written file for datagen-owned asset: assets/mrpg_lib/' + path
+            }
+        }
+        if (problems) {
+            throw new GradleException('verifyDatagen failed:' + System.lineSeparator() + problems.unique().join(System.lineSeparator()))
+        }
+        println 'verifyDatagen: OK'
+    }
+}
+
+tasks.named('runDatagen') {
+    mustRunAfter 'snapshotGenerated'
 }
 
 shadowJar {
@@ -153,7 +235,7 @@ publishMods {
         client = true
         server = true
         changelogType = "markdown"
-        requires("spell-engine", "spell-power")
+        optional("spell-engine", "spell-power", "playeranimator", "better-combat", "combat-roll")
     }
 
     modrinth {
@@ -161,8 +243,11 @@ publishMods {
         projectId = providers.environmentVariable("MODRINTH_PROJECT_ID")
         accessToken = providers.environmentVariable("MODRINTH_API_KEY")
         minecraftVersions.add(project.minecraft_version)
-        requires { slug = "spell-engine" }
-        requires { slug = "spell-power" }
+        optional { slug = "spell-engine" }
+        optional { slug = "spell-power" }
+        optional { slug = "playeranimator" }
+        optional { slug = "better-combat" }
+        optional { slug = "combat-roll" }
     }
 
     github {

@@ -1,0 +1,97 @@
+// Dev runtime only, applied from fabric/ and neoforge/
+// when a flag in the gitignored workspace.properties is on.
+// Fabric loads the dev-shadow jars.
+// NeoForge takes the production jars, because its dev-shadow ones aren't remapped.
+// Every pin has to be in ~/.m2 first, so run publishToMavenLocal in that mod and bump the version here.
+// workspace_no_compat skips the shared compat libraries below, even with content mods loaded.
+// Fabric then refuses to boot if a loaded content mod hard-requires one of them, that's expected.
+
+def flags = rootProject.ext.contentWorkspace
+def fabric = project.name == 'fabric'
+
+repositories {
+    mavenLocal()
+    maven {
+        url = 'https://maven.puffish.net'
+        content { includeGroup 'net.puffish' }
+    }
+}
+
+def content = { String group, String artifact, String version ->
+    if (fabric) {
+        dependencies.add('localRuntime', "${group}:${artifact}-fabric:${version}:dev-shadow") { transitive = false }
+    } else {
+        dependencies.add('modLocalRuntime', "${group}:${artifact}-neoforge:${version}") { transitive = false }
+    }
+}
+
+def modrinth = { String slug, String version ->
+    dependencies.add('modLocalRuntime', "maven.modrinth:${slug}:${version}-${project.name}") { transitive = false }
+}
+
+def classes = flags.workspace_classes
+def accessories = flags.workspace_accessories
+def skills = flags.workspace_skills
+def lne = flags.workspace_lne
+def loot = flags.workspace_loot
+def noCompat = flags.workspace_no_compat
+
+if (!noCompat) {
+    modrinth('armor-model-api', '1.1.0+1.21.1')
+    modrinth('structure-pool-api', '1.2.1+1.21.1')
+    modrinth('bundle-api', '1.1.0')
+    modrinth('critical-strike', '1.0.2+1.21.1')
+    modrinth('ranged-weapon-api', rootProject.ranged_weapon_api_version)
+    modrinth('spell-power', rootProject.spell_power_version)
+    modrinth('spell-engine', rootProject.spell_engine_version)
+    modrinth('better-combat', rootProject.better_combat_version)
+    modrinth('combat-roll', rootProject.combat_roll_version)
+}
+
+if (classes) {
+    if (!noCompat) {
+        modrinth('archers', '3.1.1+1.21.1')
+        modrinth('wizards', '3.1.2+1.21.1')
+        modrinth('runes', '1.3.2+1.21.1')
+        modrinth('armory-rpg-series', '1.5.2+1.21.1')
+    }
+    content('com.archers_expansion', 'archers_expansion', '2.2.0+1.21.1')
+    content('com.bards', 'bards_rpg', '1.2.0-1.21.1')
+    content('com.berserker', 'berserker_rpg', '3.2.0+1.21.1')
+    content('com.forcemaster', 'forcemaster_rpg', '3.2.0+1.21.1')
+    content('com.elemental_wizards', 'elemental_wizards_rpg', '3.2.0+1.21.1')
+    content('net.witcher_class', 'witcher-class-mod', '3.2.0+1.21.1')
+}
+
+if (accessories) {
+    if (!noCompat) {
+        modrinth('jewelry', '2.5.1+1.21.1')
+        modrinth('relics-rpg', '1.4.0+1.21.1')
+    }
+    content('com.additional_jewelry', 'additional_rpg_jewelry', '2.4.0+1.21.1')
+    content('com.more_relics', 'more_relics', '1.4.0+1.21.1')
+}
+
+if (skills) {
+    if (!noCompat) {
+        modrinth('skill-tree', '1.6.0+1.21.1')
+    }
+    dependencies.add('modLocalRuntime', "net.puffish:skillsmod:0.16.7+1.21:${project.name}") { transitive = false }
+    content('com.mrpgc_skill_tree', 'mrpgc_skill_tree', '1.3.0+1.21.1')
+}
+
+if (lne) {
+    if (!noCompat) {
+        modrinth('paladins-and-priests', '3.1.1+1.21.1')
+        modrinth('rogues-and-warriors', '3.1.1+1.21.1')
+        modrinth('shield-api', '2.2.0')
+    }
+    content('com.lne_archers', 'lne_archers', '1.3.0+1.21.1')
+    content('com.lne_paladins', 'lne_paladins', '1.3.0+1.21.1')
+    content('com.lne_rogues', 'lne_rogues', '1.3.0+1.21.1')
+    content('com.lne_wizards', 'lne_wizards', '1.3.0+1.21.1')
+}
+
+if (loot) {
+    content('com.lne', 'loot_n_explore', '1.1.0+1.21.1')
+}

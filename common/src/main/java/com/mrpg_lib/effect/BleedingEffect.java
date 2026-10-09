@@ -1,0 +1,54 @@
+package com.mrpg_lib.effect;
+
+import com.mrpg_lib.damage.BleedingDamageSource;
+import com.mrpg_lib.util.tags.MRPGCEntityTags;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.entity.effect.StatusEffectCategory;
+
+@Deprecated
+public class BleedingEffect extends StatusEffect {
+    protected BleedingEffect(StatusEffectCategory category, int color) {
+        super(category, color);
+    }
+
+    @Override
+    public  boolean applyUpdateEffect(LivingEntity entity, int amplifier) {
+        EntityType<?> type = ((Entity) entity).getType();
+        if(type.isIn(MRPGCEntityTags.BLEEDING_IMMUNE)){
+            entity.removeStatusEffect(MRPGCEffects.BLEEDING.entry);
+        }
+        float bleedingTickDamage = 1.0F + amplifier;
+        float currentHealthPercentage = entity.getHealth() / entity.getMaxHealth();
+        if(currentHealthPercentage <= 0.75F){
+            bleedingTickDamage = bleedingTickDamage + (entity.getMaxHealth() * 0.01F);
+        }
+        if(currentHealthPercentage <= 0.5F){
+            bleedingTickDamage = bleedingTickDamage + (entity.getMaxHealth() * 0.025F);
+        }
+        if(currentHealthPercentage <= 0.25F){
+            bleedingTickDamage = bleedingTickDamage + (entity.getMaxHealth() * 0.05F);
+        }
+        entity.timeUntilRegen = 0;
+        var bleedingType = entity.getWorld().getRegistryManager()
+                .getOptional(net.minecraft.registry.RegistryKeys.DAMAGE_TYPE)
+                .<net.minecraft.registry.entry.RegistryEntry<net.minecraft.entity.damage.DamageType>>flatMap(reg -> reg.getEntry(net.minecraft.util.Identifier.of("mrpg_lib", "bleeding")))
+                .orElseGet(() -> entity.getDamageSources().starve().getTypeRegistryEntry());
+        entity.damage(new BleedingDamageSource(bleedingType), bleedingTickDamage);
+        return true;
+    }
+
+
+    @Override
+    public boolean canApplyUpdateEffect(int duration, int amplifier) {
+        int interval = 40 >> amplifier;
+        if (interval < 20) {
+            interval = 20;
+        }
+        return duration % interval == 0;
+    }
+
+}
+

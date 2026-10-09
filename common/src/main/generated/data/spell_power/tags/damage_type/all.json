@@ -1,0 +1,20 @@
+{
+  "values": [
+    {
+      "id": "spell_power:air",
+      "required": false
+    },
+    {
+      "id": "spell_power:water",
+      "required": false
+    },
+    {
+      "id": "spell_power:earth",
+      "required": false
+    },
+    {
+      "id": "spell_power:nature",
+      "required": false
+    }
+  ]
+}

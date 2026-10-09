@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "mrpg_lib:typhoon",
+      "required": false
+    },
+    {
+      "id": "mrpg_lib:stonebloom",
+      "required": false
+    }
+  ]
+}

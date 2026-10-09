@@ -1,0 +1,170 @@
+{
+  "school": "spell_power:frost",
+  "range": 32.0,
+  "tier": 8,
+  "type": "PASSIVE",
+  "passive": {
+    "triggers": [
+      {
+        "type": "ARROW_IMPACT",
+        "target_conditions": [
+          {
+            "health_percent_below": 0.0
+          }
+        ],
+        "impact": {
+          "impact_type": "DAMAGE"
+        }
+      }
+    ]
+  },
+  "release": {
+    "visuals": {
+      "particles": [
+        {
+          "id": "spell_engine:magic_frost",
+          "appearance": {
+            "color": 1724710911,
+            "motion": "BURST"
+          },
+          "batch": {
+            "count": 25.0,
+            "shape": "SPHERE",
+            "anchor": "ENTITY",
+            "min_speed": 0.2,
+            "max_speed": 0.7
+          }
+        }
+      ]
+    },
+    "sound": {
+      "id": "spell_engine:generic_frost_impact"
+    }
+  },
+  "target": {
+    "type": "FROM_TRIGGER"
+  },
+  "deliver": {
+    "type": "PROJECTILE",
+    "projectile": {
+      "direction_offsets": [
+        {},
+        {
+          "yaw": 20.0
+        },
+        {
+          "yaw": 35.0
+        },
+        {
+          "yaw": -20.0
+        },
+        {
+          "yaw": -35.0
+        }
+      ],
+      "direct_towards_target": true,
+      "launch_properties": {
+        "velocity": 1.2,
+        "extra_launch_count": 4,
+        "extra_launch_delay": 0,
+        "sound": {
+          "id": "spell_engine:generic_frost_impact",
+          "volume": 0.6
+        }
+      },
+      "projectile": {
+        "homing_angle": 0.0,
+        "client_data": {
+          "composite_model": {
+            "models": [
+              {
+                "rotate_degrees_per_tick": 0.0,
+                "fx": {
+                  "model_id": "mrpg_lib:spell_projectile/glacial_arrow",
+                  "scale": 2.0
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "impacts": [
+    {
+      "attribute": "ranged_weapon:damage",
+      "action": {
+        "type": "DAMAGE",
+        "damage": {
+          "spell_power_coefficient": 0.35,
+          "knockback": 0.5
+        }
+      },
+      "visuals": {
+        "particles": [
+          {
+            "id": "spell_engine:magic_frost",
+            "appearance": {
+              "color": 1724710911,
+              "motion": "BURST"
+            },
+            "batch": {
+              "count": 25.0,
+              "shape": "SPHERE",
+              "anchor": "ENTITY",
+              "min_speed": 0.2,
+              "max_speed": 0.7
+            }
+          }
+        ]
+      },
+      "sound": {
+        "id": "spell_engine:generic_frost_impact"
+      }
+    },
+    {
+      "target_modifiers": [
+        {
+          "conditions": [
+            {
+              "entity_type": "#minecraft:freeze_immune_entity_types"
+            }
+          ],
+          "execute": "DENY"
+        }
+      ],
+      "action": {
+        "type": "STATUS_EFFECT",
+        "status_effect": {
+          "effect_id": "mrpg_lib:frosted",
+          "duration": 5.0
+        }
+      },
+      "visuals": {
+        "particles": [
+          {
+            "id": "spell_engine:magic_frost",
+            "appearance": {
+              "color": 1724710911,
+              "motion": "BURST"
+            },
+            "batch": {
+              "count": 5.0,
+              "shape": "CIRCLE",
+              "anchor": "ENTITY",
+              "min_speed": 0.1,
+              "max_speed": 0.35
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "cost": {
+    "batching": true,
+    "cooldown": {
+      "duration": 4.0,
+      "hosting_item": false
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "itemGroup.mrpg_lib.general": "More RPG Content",
+
+  "effect.mrpg_lib.molten_armor": "Rüstungsschmelze",
+  "effect.mrpg_lib.molten_armor.description": "Reduziert Rüstung, Rüstungshärte und schädigt das Ziel, falls es Rüstung trägt.",
+  "effect.mrpg_lib.stun": "Betäubt",
+  "effect.mrpg_lib.stun.description": "Kann nicht bewegen, springen oder angreifen.",
+  "effect.mrpg_lib.frozen_solid": "Tiefgefroren",
+  "effect.mrpg_lib.frozen_solid.description": "Kann nicht bewegen, springen oder angreifen. Nimmt zusätzlichen Schaden, falls das Ziel angegriffen wird während der Effekt aktiv ist.",
+  "effect.mrpg_lib.fear": "Furcht",
+  "effect.mrpg_lib.fear.description": "Reduziert Angriffskraft.",
+  "effect.mrpg_lib.collected_soul": "Gesammelte Seele",
+  "effect.mrpg_lib.collected_soul.description": "Erhöht Seelenzauberkraft pro Stufe.",
+  "effect.mrpg_lib.grievous_wounds": "Klaffende Wunden",
+  "effect.mrpg_lib.grievous_wounds.description": "Verringert Heilung und erhöht den kommenden Schaden.",
+  "effect.mrpg_lib.frosted": "Vereist",
+  "effect.mrpg_lib.frosted.description": "Verlangsamt das Ziel.",
+  "effect.mrpg_lib.bleeding": "Bluten",
+  "effect.mrpg_lib.bleeding.description": "Verletzt das Ziel über die Zeit.",
+
+  "item.mrpg_lib.aqua_stone": "Wasser Rune",
+  "item.mrpg_lib.terra_stone": "Erd Rune",
+  "item.mrpg_lib.storm_stone": "Luft Rune",
+  "item.mrpg_lib.polar_bear_fur": "Polarbär Pelz",
+  "item.mrpg_lib.wolf_fur": "Wolfspelz",
+  "item.mrpg_lib.hardened_leather": "Gehärtetes Leder",
+
+  "death.attack.mrpgc.bleeding": "%1$s ist verblutet.",
+  "death.attack.mrpgc.molten": "%1$s ist durch seine geschmolzene Rüstung verbrannt.",
+
+  "attribute.name.mrpg_lib.rage_modifier": "Wut Kraft",
+  "attribute.name.mrpg_lib.arcane_fuse_modifier": "Arkane Faust",
+  "attribute.name.mrpg_lib.lifesteal_modifier": "Lebensraub",
+  "attribute.name.mrpg_lib.damage_reflect_modifier": "Schadens Reflektion",
+
+  "advancements.mrpg_lib.root.title": "More RPG Content!",
+  "advancements.mrpg_lib.root.description": "Erkunde die verschiedenen Pfade und Wege!",
+
+  "enchantment.mrpg_lib.elemental" : "Elementarbeherrschung",
+  "enchantment.mrpg_lib.elemental.desc" : "Erhöht deinen Luft-, Erde- und Wasserzauberschaden."
+}

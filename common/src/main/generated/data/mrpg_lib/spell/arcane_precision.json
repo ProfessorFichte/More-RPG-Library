@@ -1,0 +1,73 @@
+{
+  "school": "spell_power:arcane",
+  "tier": 8,
+  "type": "PASSIVE",
+  "passive": {
+    "triggers": [
+      {
+        "type": "SPELL_IMPACT_SPECIFIC",
+        "spell": {
+          "type": "ACTIVE"
+        },
+        "impact": {
+          "impact_type": "DAMAGE",
+          "critical": true
+        }
+      }
+    ]
+  },
+  "target": {
+    "type": "FROM_TRIGGER"
+  },
+  "impacts": [
+    {
+      "action": {
+        "type": "STATUS_EFFECT",
+        "status_effect": {
+          "effect_id": "mrpg_lib:arcane_precision",
+          "amplifier": 1,
+          "amplifier_cap": 9,
+          "apply_mode": "ADD"
+        }
+      },
+      "visuals": {
+        "particles": [
+          {
+            "id": "dragon_breath",
+            "appearance": {},
+            "batch": {
+              "count": 40.0,
+              "shape": "CIRCLE",
+              "anchor": "ENTITY",
+              "min_speed": 0.6,
+              "max_speed": 0.8
+            }
+          },
+          {
+            "id": "spell_engine:magic_arcane",
+            "appearance": {
+              "color": 4284940287,
+              "motion": "BURST"
+            },
+            "batch": {
+              "count": 10.0,
+              "shape": "SPHERE",
+              "anchor": "ENTITY",
+              "vertical_origin": 0.1,
+              "min_speed": 0.05,
+              "max_speed": 0.2,
+              "extent": 2.0
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "cost": {
+    "durability": 0,
+    "cooldown": {
+      "duration": 1.0,
+      "hosting_item": false
+    }
+  }
+}

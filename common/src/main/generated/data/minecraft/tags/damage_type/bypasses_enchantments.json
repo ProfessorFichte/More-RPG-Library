@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "mrpg_lib:bleeding",
+      "required": false
+    },
+    {
+      "id": "mrpg_lib:fatal_poison",
+      "required": false
+    }
+  ]
+}

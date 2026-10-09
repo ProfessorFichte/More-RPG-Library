@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.mrpg_lib.compat.player_animator.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "plugin": "com.mrpg_lib.mixin.MrpgMixinPlugin",
+  "mixins": [
+  ],
+  "client": [
+    "LivingEntityAnimationMixin",
+    "HeldItemFeatureRendererAnimationMixin",
+    "LivingEntityRendererAnimationMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

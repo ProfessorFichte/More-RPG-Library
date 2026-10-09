@@ -7,7 +7,7 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'more_rpg_library'
+rootProject.name = 'mrpg-lib'
 
 include 'common'
 include 'fabric'

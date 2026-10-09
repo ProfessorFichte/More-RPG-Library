@@ -1,9 +1,9 @@
 {
 	"schemaVersion": 1,
-	"id": "more_rpg_classes",
+	"id": "mrpg_lib",
 	"version": "${version}",
 	"name": "More RPG Library",
-	"description": "Library with status effects, entity attributes & Spell engine API additions.",
+	"description": "A general-purpose library for all my RPG themed content mods.",
 	"authors": ["Fichte"
 	],
 	"contact": {
@@ -23,19 +23,27 @@
           "com.mrpg_lib.fabric.FabricMod"
 		],
 		"fabric-datagen": [
-			"net.more_rpg_classes.datagen.MrpgDatagen"
+			"com.mrpg_lib.datagen.MrpgDatagen"
 		]
 	},
 	"mixins": [
-		"more-rpg-classes.mixins.json"
+		"mrpg_lib.mixins.json",
+		"mrpg_lib.spell_engine.mixins.json",
+		"mrpg_lib.spell_power.mixins.json",
+		"mrpg_lib.player_animator.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=${fabric_loader_compat_version}",
 		"fabric-api": "*",
 		"minecraft": ">=${minecraft_compat_version}",
-		"java": ">=17",
+		"java": ">=17"
+	},
+	"suggests": {
 		"spell_engine": ">=${spell_engine_version}",
-		"spell_power": ">=${spell_power_version}"
+		"spell_power": ">=${spell_power_version}",
+		"playeranimator": ">=${player_anim_version}",
+		"bettercombat": "*",
+		"combat_roll": "*"
 	},
 	"custom": {
 		"modmenu": {

@@ -1,0 +1,34 @@
+{
+  "school": "spell_power:physical_melee",
+  "tier": 1,
+  "type": "PASSIVE",
+  "passive": {
+    "triggers": [
+      {
+        "type": "ARROW_IMPACT",
+        "chance": 0.15
+      }
+    ]
+  },
+  "target": {
+    "type": "FROM_TRIGGER"
+  },
+  "impacts": [
+    {
+      "action": {
+        "type": "CUSTOM",
+        "custom": {
+          "intent": "HARMFUL",
+          "handler": "mrpg_lib:lightning"
+        }
+      }
+    }
+  ],
+  "cost": {
+    "durability": 0,
+    "cooldown": {
+      "duration": 5.0,
+      "hosting_item": false
+    }
+  }
+}

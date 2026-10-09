@@ -1,7 +1,7 @@
 {
   "values": [
     {
-      "id": "more_rpg_classes:lightning_strike_ranged",
+      "id": "mrpg_lib:lightning_strike_ranged",
       "required": false
     }
   ]

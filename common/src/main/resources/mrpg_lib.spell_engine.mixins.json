@@ -1,0 +1,20 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.mrpg_lib.compat.spell_engine.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "plugin": "com.mrpg_lib.mixin.MrpgMixinPlugin",
+  "mixins": [
+    "AbstractSkeletonEntityMixin",
+    "EntityRelationsMixin",
+    "MobRangedWeaponItemMixin",
+    "SummonedEntityOwnerMixin"
+  ],
+  "client": [
+    "HudMessagesMixin",
+    "LivingEntityRendererSpinMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

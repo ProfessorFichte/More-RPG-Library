@@ -1,0 +1,110 @@
+{
+  "school": "spell_power:physical_melee",
+  "range": 2.5,
+  "tier": 8,
+  "type": "PASSIVE",
+  "passive": {
+    "triggers": [
+      {
+        "type": "SHIELD_BLOCK",
+        "chance": 0.2
+      }
+    ]
+  },
+  "release": {
+    "visuals": {
+      "particles": [
+        {
+          "id": "spell_engine:snowflake",
+          "appearance": {},
+          "batch": {
+            "count": 60.0,
+            "shape": "CIRCLE",
+            "anchor": "ENTITY",
+            "min_speed": 0.1,
+            "max_speed": 0.3
+          }
+        },
+        {
+          "id": "spell_engine:frost_shard",
+          "appearance": {},
+          "batch": {
+            "count": 60.0,
+            "shape": "CIRCLE",
+            "anchor": "ENTITY",
+            "min_speed": 0.3,
+            "max_speed": 0.6
+          }
+        },
+        {
+          "id": "spell_engine:area_effect_293",
+          "appearance": {
+            "color": 2582052863,
+            "scale_with": "RANGE"
+          },
+          "batch": {
+            "count": 1.0,
+            "shape": "NONE",
+            "anchor": "GROUND"
+          }
+        }
+      ]
+    },
+    "sound": {
+      "id": "spell_engine:generic_frost_release"
+    }
+  },
+  "target": {
+    "type": "AREA",
+    "area": {}
+  },
+  "impacts": [
+    {
+      "action": {
+        "type": "STATUS_EFFECT",
+        "status_effect": {
+          "effect_id": "mrpg_lib:frozen_solid",
+          "duration": 3.0
+        }
+      },
+      "visuals": {
+        "particles": [
+          {
+            "id": "spell_engine:snowflake",
+            "appearance": {},
+            "batch": {
+              "count": 25.0,
+              "shape": "SPHERE",
+              "anchor": "ENTITY",
+              "min_speed": 0.1,
+              "max_speed": 0.4
+            }
+          },
+          {
+            "id": "spell_engine:magic_frost",
+            "appearance": {
+              "motion": "BURST"
+            },
+            "batch": {
+              "count": 30.0,
+              "shape": "SPHERE",
+              "anchor": "ENTITY",
+              "min_speed": 0.2,
+              "max_speed": 0.7
+            }
+          }
+        ]
+      },
+      "sound": {
+        "id": "spell_engine:generic_frost_impact"
+      }
+    }
+  ],
+  "cost": {
+    "batching": true,
+    "cooldown": {
+      "duration": 10.0,
+      "hosting_item": false
+    }
+  }
+}

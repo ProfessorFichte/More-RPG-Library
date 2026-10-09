@@ -1,0 +1,27 @@
+{
+  "criteria": {
+    "always": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "minecraft:textures/block/calcite.png",
+    "description": {
+      "translate": "advancements.mrpg_lib.root.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "minecraft:enchanted_book"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "advancements.mrpg_lib.root.title"
+    }
+  },
+  "requirements": [
+    [
+      "always"
+    ]
+  ]
+}

@@ -8,6 +8,24 @@ architectury {
     minecraft = project.minecraft_version
 }
 
+// Local dev workspace flags (see workspace-runtime.gradle). Each flag loads one group of content
+// mods, or in the case of workspace_no_compat skips the shared compat libraries, into the dev
+// runtime. Sources, in priority order: `-P<flag>=<bool>` on the command line, else the gitignored
+// `workspace.properties` (template: workspace.properties.example).
+ext.contentWorkspaceFlags = ["workspace_classes", "workspace_accessories", "workspace_skills", "workspace_lne", "workspace_loot", "workspace_no_compat"]
+ext.contentWorkspace = {
+    def local = rootProject.file("workspace.properties")
+    def props = new Properties()
+    if (local.exists()) { local.withInputStream { props.load(it) } }
+    def flags = [:]
+    for (name in contentWorkspaceFlags) {
+        def cli = providers.gradleProperty(name).orNull
+        flags[name] = (cli != null ? cli : props.getProperty(name, "false")).toBoolean()
+    }
+    return flags
+}()
+ext.contentWorkspaceAny = contentWorkspaceFlags.any { it != "workspace_no_compat" && contentWorkspace[it] }
+
 allprojects {
     group = rootProject.maven_group
     version = rootProject.mod_version + "+${rootProject.minecraft_version}"

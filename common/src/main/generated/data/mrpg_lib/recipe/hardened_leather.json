@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "R": {
+      "item": "minecraft:leather"
+    },
+    "T": {
+      "item": "minecraft:coal"
+    },
+    "W": {
+      "item": "minecraft:honeycomb"
+    }
+  },
+  "pattern": [
+    " W ",
+    "TRT",
+    " W "
+  ],
+  "result": {
+    "count": 1,
+    "id": "mrpg_lib:hardened_leather"
+  }
+}

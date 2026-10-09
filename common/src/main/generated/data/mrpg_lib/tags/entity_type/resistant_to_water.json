@@ -1,0 +1,16 @@
+{
+  "values": [
+    {
+      "id": "minecraft:elder_guardian",
+      "required": false
+    },
+    {
+      "id": "minecraft:guardian",
+      "required": false
+    },
+    {
+      "id": "minecraft:drowned",
+      "required": false
+    }
+  ]
+}

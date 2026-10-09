@@ -1,0 +1,81 @@
+{
+  "school": "spell_power:healing",
+  "range": 0.0,
+  "tier": 7,
+  "type": "PASSIVE",
+  "passive": {
+    "triggers": [
+      {
+        "type": "SPELL_IMPACT_SPECIFIC",
+        "chance": 0.3,
+        "impact": {
+          "impact_type": "HEAL"
+        }
+      }
+    ]
+  },
+  "target": {
+    "type": "FROM_TRIGGER"
+  },
+  "impacts": [
+    {
+      "action": {
+        "type": "STATUS_EFFECT",
+        "status_effect": {
+          "apply_mode": "REMOVE",
+          "remove": {
+            "id": "!minecraft:trial_omen"
+          }
+        }
+      },
+      "visuals": {
+        "particles": [
+          {
+            "id": "mrpg_lib:water_circle",
+            "appearance": {},
+            "batch": {
+              "count": 1.0,
+              "shape": "CIRCLE",
+              "anchor": "ENTITY",
+              "vertical_origin": 0.1
+            }
+          },
+          {
+            "id": "spell_engine:magic_spell",
+            "appearance": {
+              "color": 4294954239,
+              "motion": "DECELERATE"
+            },
+            "batch": {
+              "count": 15.0,
+              "shape": "PIPE",
+              "anchor": "ENTITY",
+              "vertical_origin": 0.1,
+              "min_speed": 0.3,
+              "max_speed": 0.3,
+              "width_factor": 2.0
+            }
+          }
+        ]
+      },
+      "sound": {
+        "id": "spell_engine:generic_dispel_1"
+      }
+    },
+    {
+      "action": {
+        "type": "STATUS_EFFECT",
+        "status_effect": {
+          "effect_id": "mrpg_lib:sirens_tear",
+          "duration": 6.0
+        }
+      }
+    }
+  ],
+  "cost": {
+    "batching": true,
+    "cooldown": {
+      "duration": 20.0
+    }
+  }
+}

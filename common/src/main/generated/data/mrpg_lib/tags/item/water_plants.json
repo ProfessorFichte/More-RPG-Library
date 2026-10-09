@@ -1,0 +1,24 @@
+{
+  "values": [
+    {
+      "id": "minecraft:kelp",
+      "required": false
+    },
+    {
+      "id": "minecraft:seagrass",
+      "required": false
+    },
+    {
+      "id": "minecraft:mangrove_propagule",
+      "required": false
+    },
+    {
+      "id": "minecraft:sea_pickle",
+      "required": false
+    },
+    {
+      "id": "minecraft:lily_pad",
+      "required": false
+    }
+  ]
+}

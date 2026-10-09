@@ -1,0 +1,20 @@
+{
+  "values": [
+    {
+      "id": "minecraft:kelp",
+      "required": false
+    },
+    {
+      "id": "minecraft:seagrass",
+      "required": false
+    },
+    {
+      "id": "minecraft:ink_sac",
+      "required": false
+    },
+    {
+      "id": "minecraft:sea_pickle",
+      "required": false
+    }
+  ]
+}

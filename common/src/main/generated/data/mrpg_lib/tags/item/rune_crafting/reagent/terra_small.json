@@ -1,0 +1,24 @@
+{
+  "values": [
+    {
+      "id": "minecraft:clay_ball",
+      "required": false
+    },
+    {
+      "id": "minecraft:sand",
+      "required": false
+    },
+    {
+      "id": "minecraft:red_sand",
+      "required": false
+    },
+    {
+      "id": "minecraft:gravel",
+      "required": false
+    },
+    {
+      "id": "minecraft:flint",
+      "required": false
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "spell_power"
+      ]
+    }
+  ],
+  "anvil_cost": 1,
+  "description": {
+    "translate": "enchantment.mrpg_lib.typhoon"
+  },
+  "effects": {
+    "minecraft:attributes": [
+      {
+        "amount": {
+          "type": "minecraft:linear",
+          "base": 0.03,
+          "per_level_above_first": 0.03
+        },
+        "attribute": "spell_power:air",
+        "id": "mrpg_lib:typhoon",
+        "operation": "add_multiplied_base"
+      },
+      {
+        "amount": {
+          "type": "minecraft:linear",
+          "base": 0.03,
+          "per_level_above_first": 0.03
+        },
+        "attribute": "spell_power:water",
+        "id": "mrpg_lib:typhoon",
+        "operation": "add_multiplied_base"
+      }
+    ]
+  },
+  "exclusive_set": "#spell_power:multi_school",
+  "max_cost": {
+    "base": 12,
+    "per_level_above_first": 11
+  },
+  "max_level": 5,
+  "min_cost": {
+    "base": 1,
+    "per_level_above_first": 11
+  },
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "spell_power"
+    }
+  ],
+  "slots": [
+    "armor"
+  ],
+  "supported_items": "#mrpg_lib:enchantable/typhoon",
+  "weight": 2
+}

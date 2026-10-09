@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "#spell_engine:mechanical",
+      "required": false
+    },
+    {
+      "id": "#minecraft:undead",
+      "required": false
+    }
+  ]
+}

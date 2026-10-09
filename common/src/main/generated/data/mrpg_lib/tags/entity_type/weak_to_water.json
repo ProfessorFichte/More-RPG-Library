@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "minecraft:enderman",
+      "required": false
+    },
+    {
+      "id": "minecraft:blaze",
+      "required": false
+    }
+  ]
+}

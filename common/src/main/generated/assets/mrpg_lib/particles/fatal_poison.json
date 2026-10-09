@@ -1,0 +1,11 @@
+{
+  "textures": [
+    "mrpg_lib:fatal_poison_0",
+    "mrpg_lib:fatal_poison_1",
+    "mrpg_lib:fatal_poison_2",
+    "mrpg_lib:fatal_poison_3",
+    "mrpg_lib:fatal_poison_4",
+    "mrpg_lib:fatal_poison_5",
+    "mrpg_lib:fatal_poison_6"
+  ]
+}

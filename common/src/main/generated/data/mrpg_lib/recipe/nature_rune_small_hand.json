@@ -1,0 +1,30 @@
+{
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "runes"
+      ]
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "tag": "runes:rune_crafting/base/stone"
+    },
+    {
+      "tag": "mrpg_lib:rune_crafting/reagent/nature_small"
+    }
+  ],
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "runes"
+    }
+  ],
+  "result": {
+    "count": 2,
+    "id": "mrpg_lib:nature_stone"
+  }
+}

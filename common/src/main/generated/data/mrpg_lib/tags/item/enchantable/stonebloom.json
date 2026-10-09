@@ -1,0 +1,8 @@
+{
+  "values": [
+    {
+      "id": "#spell_power:enchantable/spell_power_specialized",
+      "required": false
+    }
+  ]
+}

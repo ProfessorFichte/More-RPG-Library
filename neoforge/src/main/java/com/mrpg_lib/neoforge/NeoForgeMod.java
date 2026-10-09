@@ -1,38 +1,71 @@
 package com.mrpg_lib.neoforge;
 
+import com.mrpg_lib.MRPGCMod;
+import com.mrpg_lib.client.particle.MoreParticles;
+import com.mrpg_lib.compat.MrpgCompat;
+import com.mrpg_lib.compat.armory_rpgs.SmithingIngredients;
+import com.mrpg_lib.compat.player_animator.api.MobAnimations;
+import com.mrpg_lib.compat.player_animator.client.MobAnimationClientNetwork;
+import com.mrpg_lib.compat.player_animator.command.MobAnimationCommand;
+import com.mrpg_lib.command.MobGoalCommand;
+import com.mrpg_lib.compat.player_animator.network.MobAnimationPacket;
+import com.mrpg_lib.compat.spell_engine.client.render.MobBeamTracker;
+import com.mrpg_lib.compat.spell_engine.client.render.MobSpinTracker;
+import com.mrpg_lib.compat.spell_engine.network.MobBeamPacket;
+import com.mrpg_lib.compat.spell_engine.network.MobSpinPacket;
+import com.mrpg_lib.compat.spell_engine.particle.MoreSpellParticles;
+import com.mrpg_lib.item.MRPGCItemGroups;
+import com.mrpg_lib.item.MRPGCItems;
+import com.mrpg_lib.neoforge.network.MRPGCNetworkingImpl;
+import com.mrpg_lib.network.MRPGCNetworking;
+import com.mrpg_lib.platform.MrpgPlatform;
+import com.mrpg_lib.util.loot.MRPGCLootTableEntityModifiers;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.registry.RegistryKeys;
-import com.mrpg_lib.neoforge.network.MRPGCNetworkingImpl;
-import net.more_rpg_classes.MRPGCMod;
-import net.more_rpg_classes.client.particle.MoreParticles;
-import net.more_rpg_classes.client.render.MobBeamTracker;
-import net.more_rpg_classes.compat.armory_rpgs.SmithingIngredients;
-import net.more_rpg_classes.item.MRPGCItemGroups;
-import net.more_rpg_classes.item.MRPGCItems;
-import net.more_rpg_classes.network.MRPGCNetworking;
-import net.more_rpg_classes.network.MobBeamPacket;
-import net.more_rpg_classes.util.loot.MRPGCLootTableEntityModifiers;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.LootTableLoadEvent;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
 @Mod(MRPGCMod.MOD_ID)
 public final class NeoForgeMod {
     public NeoForgeMod(IEventBus modBus) {
+        MrpgPlatform.setUtil(new NeoForgePlatformUtil());
         MRPGCNetworking.setSender(MRPGCNetworkingImpl::sendToPlayer);
+        MRPGCNetworking.setTrackingSender(MRPGCNetworkingImpl::sendToTracking);
         MRPGCMod.init();
         modBus.addListener(RegisterEvent.class, NeoForgeMod::register);
         modBus.addListener(BuildCreativeModeTabContentsEvent.class, NeoForgeMod::buildTabContents);
         modBus.addListener(RegisterPayloadHandlersEvent.class, NeoForgeMod::registerPayloads);
         NeoForge.EVENT_BUS.addListener(NeoForgeMod::onLootTableLoad);
+        if (MrpgCompat.PLAYER_ANIMATOR) {
+            NeoForge.EVENT_BUS.addListener(NeoForgeMod::onStartTracking);
+        }
+        if (MrpgPlatform.isDevelopmentEnvironment()) {
+            NeoForge.EVENT_BUS.addListener(NeoForgeMod::onRegisterCommands);
+        }
+    }
+
+    private static void onStartTracking(PlayerEvent.StartTracking event) {
+        if (event.getTarget() instanceof LivingEntity living && event.getEntity() instanceof ServerPlayerEntity player) {
+            MobAnimations.resync(living, player);
+        }
+    }
+
+    private static void onRegisterCommands(RegisterCommandsEvent event) {
+        MobAnimationCommand.register(event.getDispatcher());
+        MobGoalCommand.register(event.getDispatcher());
     }
 
     public static void register(RegisterEvent event) {
@@ -50,6 +83,9 @@ public final class NeoForgeMod {
         });
         event.register(RegistryKeys.PARTICLE_TYPE, reg -> {
             MoreParticles.register();
+            if (MrpgCompat.SPELL_ENGINE) {
+                MoreSpellParticles.register();
+            }
         });
         event.register(RegistryKeys.ENTITY_TYPE, reg -> {
             MRPGCMod.registerEntities();
@@ -60,9 +96,18 @@ public final class NeoForgeMod {
     }
 
     private static void registerPayloads(RegisterPayloadHandlersEvent event) {
-        var registrar = event.registrar("1");
-        registrar.playToClient(MobBeamPacket.ID, MobBeamPacket.CODEC, (payload, context) ->
-                context.enqueueWork(() -> MobBeamTracker.handle(payload, context.player().getWorld())));
+        if (MrpgCompat.SPELL_ENGINE) {
+            var registrar = event.registrar("1");
+            registrar.playToClient(MobBeamPacket.ID, MobBeamPacket.CODEC, (payload, context) ->
+                    context.enqueueWork(() -> MobBeamTracker.handle(payload, context.player().getWorld())));
+            registrar.playToClient(MobSpinPacket.ID, MobSpinPacket.CODEC, (payload, context) ->
+                    context.enqueueWork(() -> MobSpinTracker.handle(payload, context.player().getWorld())));
+        }
+        if (MrpgCompat.PLAYER_ANIMATOR) {
+            var registrar = event.registrar("1").optional();
+            registrar.playToClient(MobAnimationPacket.ID, MobAnimationPacket.CODEC, (payload, context) ->
+                    context.enqueueWork(() -> MobAnimationClientNetwork.handle(payload, context.player().getWorld())));
+        }
     }
 
     private static void onLootTableLoad(LootTableLoadEvent event) {

@@ -1,15 +1,15 @@
 {
   "values": [
     {
-      "id": "more_rpg_classes:carve",
+      "id": "mrpg_lib:carve",
       "required": false
     },
     {
-      "id": "more_rpg_classes:lightning_strike_melee",
+      "id": "mrpg_lib:lightning_strike_melee",
       "required": false
     },
     {
-      "id": "more_rpg_classes:duelists_focus",
+      "id": "mrpg_lib:duelists_focus",
       "required": false
     }
   ]

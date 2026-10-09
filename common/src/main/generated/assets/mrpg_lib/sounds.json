@@ -1,0 +1,194 @@
+{
+  "air_explosion": {
+    "sounds": [
+      "mrpg_lib:air_explosion"
+    ]
+  },
+  "air_magic_cast1": {
+    "sounds": [
+      "mrpg_lib:air_magic_cast1"
+    ]
+  },
+  "air_magic_channel_1": {
+    "sounds": [
+      "mrpg_lib:air_magic_channel_1"
+    ]
+  },
+  "air_magic_impact1": {
+    "sounds": [
+      "mrpg_lib:air_magic_impact1"
+    ]
+  },
+  "air_magic_impact2": {
+    "sounds": [
+      "mrpg_lib:air_magic_impact2"
+    ]
+  },
+  "air_magic_impact3": {
+    "sounds": [
+      "mrpg_lib:air_magic_impact3"
+    ]
+  },
+  "arcane_strong_impact": {
+    "sounds": [
+      "mrpg_lib:arcane_strong_impact"
+    ]
+  },
+  "carve": {
+    "sounds": [
+      "mrpg_lib:carve"
+    ]
+  },
+  "crippling_strike": {
+    "sounds": [
+      "mrpg_lib:crippling_strike"
+    ]
+  },
+  "decapitate_impact": {
+    "sounds": [
+      "mrpg_lib:decapitate_impact"
+    ]
+  },
+  "decapitate_release": {
+    "sounds": [
+      "mrpg_lib:decapitate_release"
+    ]
+  },
+  "decapitate_swing": {
+    "sounds": [
+      "mrpg_lib:decapitate_swing"
+    ]
+  },
+  "earth_magic_cast1": {
+    "sounds": [
+      "mrpg_lib:earth_magic_cast1"
+    ]
+  },
+  "earth_magic_impact1": {
+    "sounds": [
+      "mrpg_lib:earth_magic_impact1"
+    ]
+  },
+  "earth_magic_impact2": {
+    "sounds": [
+      "mrpg_lib:earth_magic_impact2"
+    ]
+  },
+  "earth_magic_impact3": {
+    "sounds": [
+      "mrpg_lib:earth_magic_impact3"
+    ]
+  },
+  "fist_attack": {
+    "sounds": [
+      "mrpg_lib:fist_attack"
+    ]
+  },
+  "frost_crackle": {
+    "sounds": [
+      "mrpg_lib:frost_crackle"
+    ]
+  },
+  "frost_crackle_long": {
+    "sounds": [
+      "mrpg_lib:frost_crackle_long"
+    ]
+  },
+  "holy_release": {
+    "sounds": [
+      "mrpg_lib:holy_release"
+    ]
+  },
+  "icicle_crash": {
+    "sounds": [
+      "mrpg_lib:icicle_crash"
+    ]
+  },
+  "nature_cast_1": {
+    "sounds": [
+      "mrpg_lib:nature_cast_1"
+    ]
+  },
+  "nature_impact_1": {
+    "sounds": [
+      "mrpg_lib:nature_impact_1"
+    ]
+  },
+  "nature_impact_2": {
+    "sounds": [
+      "mrpg_lib:nature_impact_2"
+    ]
+  },
+  "nature_impact_3": {
+    "sounds": [
+      "mrpg_lib:nature_impact_3"
+    ]
+  },
+  "nature_impact_4": {
+    "sounds": [
+      "mrpg_lib:nature_impact_4"
+    ]
+  },
+  "nature_release_1": {
+    "sounds": [
+      "mrpg_lib:nature_release_1"
+    ]
+  },
+  "nature_release_2": {
+    "sounds": [
+      "mrpg_lib:nature_release_2"
+    ]
+  },
+  "puncture_charge": {
+    "sounds": [
+      "mrpg_lib:puncture_charge"
+    ]
+  },
+  "puncture_impact": {
+    "sounds": [
+      "mrpg_lib:puncture_impact"
+    ]
+  },
+  "stealth_vanish": {
+    "sounds": [
+      "mrpg_lib:stealth_vanish"
+    ]
+  },
+  "strong_attack": {
+    "sounds": [
+      "mrpg_lib:strong_attack"
+    ]
+  },
+  "water_bubble_explode": {
+    "sounds": [
+      "mrpg_lib:water_bubble_explode"
+    ]
+  },
+  "water_bubbles": {
+    "sounds": [
+      "mrpg_lib:water_bubbles_1",
+      "mrpg_lib:water_bubbles_2",
+      "mrpg_lib:water_bubbles_3"
+    ]
+  },
+  "water_magic_impact1": {
+    "sounds": [
+      "mrpg_lib:water_magic_impact1"
+    ]
+  },
+  "water_release_1": {
+    "sounds": [
+      "mrpg_lib:water_release_1"
+    ]
+  },
+  "water_release_2": {
+    "sounds": [
+      "mrpg_lib:water_release_2"
+    ]
+  },
+  "water_wave_release_1": {
+    "sounds": [
+      "mrpg_lib:water_wave_release_1"
+    ]
+  }
+}

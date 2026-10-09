@@ -1,0 +1,13 @@
+{
+  "textures": [
+    "mrpg_lib:water_splash_0",
+    "mrpg_lib:water_splash_1",
+    "mrpg_lib:water_splash_2",
+    "mrpg_lib:water_splash_3",
+    "mrpg_lib:water_splash_4",
+    "mrpg_lib:water_splash_5",
+    "mrpg_lib:water_splash_4",
+    "mrpg_lib:water_splash_3",
+    "mrpg_lib:water_splash_2"
+  ]
+}

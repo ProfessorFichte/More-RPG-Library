@@ -1,0 +1,27 @@
+{
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:all_mods_loaded",
+      "values": [
+        "runes"
+      ]
+    }
+  ],
+  "type": "runes:crafting",
+  "addition": {
+    "tag": "mrpg_lib:rune_crafting/reagent/terra_medium"
+  },
+  "base": {
+    "tag": "runes:rune_crafting/base/stone"
+  },
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "runes"
+    }
+  ],
+  "result": {
+    "count": 16,
+    "id": "mrpg_lib:terra_stone"
+  }
+}

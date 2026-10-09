@@ -4,39 +4,76 @@ loaderVersion = "[4,)"
 license = "MIT"
 
 [[mods]]
-modId = "more_rpg_classes"
+modId = "mrpg_lib"
 version = "${version}"
 displayName = "More RPG Library"
 authors = "Fichte"
 description = '''
-Library with status effects, entity attributes & Spell engine API additions.
+A general-purpose library for all my RPG themed content mods.
 '''
 #logoFile = ""
 
-[[dependencies.more_rpg_classes]]
+[[dependencies.mrpg_lib]]
 modId = "neoforge"
 type = "required"
 versionRange = "[21.1,)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.more_rpg_classes]]
+[[dependencies.mrpg_lib]]
 modId = "minecraft"
 type = "required"
 versionRange = "[${minecraft_compat_version},)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.more_rpg_classes]]
+[[dependencies.mrpg_lib]]
 modId = "spell_engine"
-type = "required"
+type = "optional"
 versionRange = "[${spell_engine_version},)"
 ordering = "NONE"
 side = "BOTH"
 
 
-[[mixins]]
-config="more-rpg-classes.mixins.json"
+[[dependencies.mrpg_lib]]
+modId = "spell_power"
+type = "optional"
+versionRange = "[${spell_power_version},)"
+ordering = "NONE"
+side = "BOTH"
 
 [[mixins]]
-config="more-rpg-classes-neoforge.mixins.json"
+config="mrpg_lib.mixins.json"
+
+[[mixins]]
+config="mrpg_lib.spell_engine.mixins.json"
+
+[[dependencies.mrpg_lib]]
+modId = "playeranimator"
+type = "optional"
+versionRange = "[${player_anim_version},)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.mrpg_lib]]
+modId = "bettercombat"
+type = "optional"
+versionRange = "[0,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.mrpg_lib]]
+modId = "combat_roll"
+type = "optional"
+versionRange = "[0,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[mixins]]
+config="mrpg_lib.spell_power.mixins.json"
+
+[[mixins]]
+config="mrpg_lib.player_animator.mixins.json"
+
+[[mixins]]
+config="mrpg_lib-neoforge.mixins.json"

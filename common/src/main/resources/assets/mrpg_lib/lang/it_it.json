@@ -1,0 +1,51 @@
+{
+  "itemGroup.mrpg_lib.general": "MRPGClasses",
+
+  "effect.mrpg_lib.molten_armor": "Armatura fusa",
+  "effect.mrpg_lib.molten_armor.description": "Riduce l'armatura, la sua resistenza e danneggia il bersaglio se indossa un'armatura.",
+  "effect.mrpg_lib.stun": "Stordito",
+  "effect.mrpg_lib.stun.description": "Il bersaglio non si può muovere, attaccare o saltare.",
+  "effect.mrpg_lib.frozen_solid": "Solido congelato",
+  "effect.mrpg_lib.frozen_solid.description": "Il bersaglio non può muoversi, attaccare o saltare, subisce danni aggiuntivi se colpito durante l'effetto attivo.",
+  "effect.mrpg_lib.fear": "Paura",
+  "effect.mrpg_lib.fear.description": "Riduce il danno d'attacco.",
+  "effect.mrpg_lib.collected_soul": "Anima collezionata",
+  "effect.mrpg_lib.collected_soul.description": "Aumenta la potenza degli incantesimi dell'anima per ogni accumulo.",
+  "effect.mrpg_lib.grievous_wounds": "Ferite gravi",
+  "effect.mrpg_lib.grievous_wounds.description": "Guarigione ridotta e danni in arrivo aumentati.",
+  "effect.mrpg_lib.frosted": "Congelato",
+  "effect.mrpg_lib.frosted.description": "Riduce la velocità di movimento.",
+  "effect.mrpg_lib.bleeding": "Sanguinamento",
+  "effect.mrpg_lib.bleeding.description": "Danneggia nel tempo.",
+  "effect.mrpg_lib.fatal_poison": "Veleno Fatale",
+  "effect.mrpg_lib.fatal_poison.description": "Danneggia nel tempo e può uccidere qualsiasi tipo di mob.",
+
+
+  "item.mrpg_lib.aqua_stone": "Runa dell'acqua",
+  "item.mrpg_lib.terra_stone": "Runa della terra",
+  "item.mrpg_lib.storm_stone": "Runa dell'aria",
+  "item.mrpg_lib.polar_bear_fur": "Pelliccia d'orso",
+  "item.mrpg_lib.wolf_fur": "Pelliccia di lupo",
+  "item.mrpg_lib.hardened_leather": "Pelle indurita",
+
+  "death.attack.mrpgc.bleeding": "%1$s si è dissanguato.",
+  "death.attack.mrpgc.fatal_poison": "%1$s è stato avvelenato.",
+  "death.attack.mrpgc.molten": "%1$s si è sciolto nella sua armatura.",
+
+  "attribute.name.generic.mrpg_lib.rage_modifier": "Furia",
+  "attribute.name.generic.mrpg_lib.arcane_fuse_modifier": "Arcano",
+  "attribute.name.generic.mrpg_lib.lifesteal_modifier": "Assorbimento",
+  "attribute.name.generic.mrpg_lib.damage_reflect_modifier": "Danni riflessi",
+
+  "advancements.mrpg_lib.root.title": "Più contenuti RPG!",
+  "advancements.mrpg_lib.root.description": "Esplora tutti i nuovi percorsi che puoi scegliere!",
+
+  "enchantment.mrpg_lib.elemental" : "Maestro degli elementi",
+  "enchantment.mrpg_lib.elemental.desc" : "Aumenta tutti i tipi di danni inflitti dagli incantesimi elementali",
+  "enchantment.mrpg_lib.air_mastery" : "Maestro dell'aria",
+  "enchantment.mrpg_lib.air_mastery.desc" : "Aumenta i danni inflitti dagli incantesimi d'aria",
+  "enchantment.mrpg_lib.earth_mastery" : "Maestro della terra",
+  "enchantment.mrpg_lib.earth_mastery.desc" : "Aumenta i danni inflitti dagli incantesimi di terra",
+  "enchantment.mrpg_lib.water_mastery" : "Maestro dell'acqua",
+  "enchantment.mrpg_lib.water_mastery.desc" : "Aumenta i danni inflitti dagli incantesimi d'acqua"
+}

@@ -1,0 +1,33 @@
+{
+  "itemGroup.mrpg_lib.general": "MRPGClasses",
+
+  "effect.mrpg_lib.molten_armor": "Расплавленная Броня",
+  "effect.mrpg_lib.molten_armor.description": "Уменьшает броню, твёрдость брони и наносит урон цели, если она одета в броню.",
+  "effect.mrpg_lib.stun": "Оглушенный",
+  "effect.mrpg_lib.stun.description": "Не может двигаться, атаковать или прыгать.",
+  "effect.mrpg_lib.frozen_solid": "Ледяная Твердыня",
+  "effect.mrpg_lib.frozen_solid.description": "Не может двигаться, атаковать или прыгать, получает дополнительный урон при попадании во время активного эффекта.",
+  "effect.mrpg_lib.fear": "Страх",
+  "effect.mrpg_lib.fear.description": "Уменьшает урон от атаки.",
+  "effect.mrpg_lib.collected_soul": "Коллектор Душ",
+  "effect.mrpg_lib.collected_soul.description": "Увеличивает силу заклинания души за каждый стек.",
+  "effect.mrpg_lib.grievous_wounds": "Тяжелые Раны",
+  "effect.mrpg_lib.grievous_wounds.description": "Уменьшено исцеление и увеличен наносимый урон.",
+  "effect.mrpg_lib.frosted": "Матовый",
+  "effect.mrpg_lib.frosted.description": "Снизилась скорость передвижения.",
+
+  "item.mrpg_lib.aqua_stone": "Руна Воды",
+  "item.mrpg_lib.terra_stone": "Руна Земли",
+  "item.mrpg_lib.storm_stone": "Руна Воздуха",
+  "item.mrpg_lib.polar_bear_fur": "Медвежий Мех",
+  "item.mrpg_lib.wolf_fur": "Волчий Мех",
+  "item.mrpg_lib.hardened_leather": "Закаленная Кожа",
+
+  "attribute.name.generic.mrpg_lib.rage_modifier": "Сила Ярости",
+  "attribute.name.generic.mrpg_lib.arcane_fuse_modifier": "Мистический Запал",
+  "attribute.name.generic.mrpg_lib.lifesteal_modifier": "Вампиризм",
+  "attribute.name.generic.mrpg_lib.damage_reflect_modifier": "Отражение Повреждений",
+
+  "advancements.mrpg_lib.root.title": "More RPG Content!",
+  "advancements.mrpg_lib.root.description": "Исследуйте различные пути, которые вы можете выбрать!"
+}

@@ -1,0 +1,110 @@
+{
+  "school": "spell_power:water",
+  "range": 7.5,
+  "tier": 8,
+  "type": "PASSIVE",
+  "passive": {
+    "triggers": [
+      {
+        "type": "MELEE_IMPACT",
+        "chance": 0.4,
+        "equipment_condition": "MAINHAND"
+      }
+    ]
+  },
+  "release": {
+    "visuals": {
+      "particles": [
+        {
+          "id": "mrpg_lib:big_splash",
+          "appearance": {},
+          "batch": {
+            "count": 30.0,
+            "shape": "CIRCLE",
+            "anchor": "ENTITY",
+            "vertical_origin": 0.1,
+            "min_speed": 0.5,
+            "max_speed": 0.75
+          }
+        },
+        {
+          "id": "mrpg_lib:water_circle",
+          "appearance": {},
+          "batch": {
+            "count": 1.0,
+            "shape": "CIRCLE",
+            "anchor": "ENTITY",
+            "vertical_origin": 0.1
+          }
+        }
+      ]
+    }
+  },
+  "target": {
+    "type": "AREA",
+    "area": {
+      "angle_degrees": 360.0
+    }
+  },
+  "impacts": [
+    {
+      "attribute": "minecraft:generic.attack_damage",
+      "action": {
+        "type": "DAMAGE",
+        "damage": {
+          "spell_power_coefficient": 0.4,
+          "knockback": 0.0
+        }
+      },
+      "visuals": {
+        "particles": [
+          {
+            "id": "mrpg_lib:big_splash",
+            "appearance": {},
+            "batch": {
+              "count": 20.0,
+              "shape": "PILLAR",
+              "anchor": "ENTITY",
+              "vertical_origin": 0.1,
+              "min_speed": 0.05,
+              "max_speed": 0.2
+            }
+          },
+          {
+            "id": "mrpg_lib:splash",
+            "appearance": {},
+            "batch": {
+              "count": 15.0,
+              "shape": "CIRCLE",
+              "anchor": "ENTITY",
+              "vertical_origin": 0.1,
+              "min_speed": 0.05,
+              "max_speed": 0.2
+            }
+          },
+          {
+            "id": "mrpg_lib:splash",
+            "appearance": {},
+            "batch": {
+              "count": 25.0,
+              "shape": "SPHERE",
+              "anchor": "ENTITY",
+              "min_speed": 1.0,
+              "max_speed": 1.2
+            }
+          }
+        ]
+      },
+      "sound": {
+        "id": "mrpg_lib:water_magic_impact1",
+        "volume": 0.4
+      }
+    }
+  ],
+  "cost": {
+    "durability": 0,
+    "cooldown": {
+      "duration": 5.0
+    }
+  }
+}

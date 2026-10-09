@@ -1,0 +1,22 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.mrpg_lib.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "ControlOwnerMixin",
+    "EntityAttributesMixin",
+    "LivingEntityMixin",
+    "LivingEntityStealth",
+    "MobEntityGoalsAccessor",
+    "PersistentProjectileEntityMixin",
+    "TrackTargetGoalStealth"
+  ],
+  "client": [
+    "DrawHeartsMixin",
+    "LivingEntityRenderStealth"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+	}
+}

@@ -54,13 +54,15 @@ dependencies {
     // Do NOT use other classes from Fabric Loader.
     modImplementation "net.fabricmc:fabric-loader:$project.fabric_loader_version"
     modImplementation "net.fabricmc.fabric-api:fabric-api:$project.fabric_api_version"
-    modImplementation("dev.kosmx.player-anim:player-animation-lib-${platform}:${project.player_anim_version}")
+    modCompileOnly("dev.kosmx.player-anim:player-animation-lib-${platform}:${project.player_anim_version}")
     modImplementation("me.shedaniel.cloth:cloth-config-${platform}:${project.cloth_config_version}")
     modImplementation("maven.modrinth:tiny-config:${project.tiny_config_version}-${platform}")
-    modImplementation("maven.modrinth:spell-power:${project.spell_power_version}-${platform}")
-    modImplementation("maven.modrinth:spell-engine:${project.spell_engine_version}-${platform}")
+    modCompileOnly("maven.modrinth:spell-power:${project.spell_power_version}-${platform}")
+    modCompileOnly("maven.modrinth:spell-engine:${project.spell_engine_version}-${platform}")
     /// Compat
-    modImplementation("maven.modrinth:ranged-weapon-api:${project.ranged_weapon_api_version}-${platform}")
+    modCompileOnly("maven.modrinth:ranged-weapon-api:${project.ranged_weapon_api_version}-${platform}")
+    modCompileOnly("maven.modrinth:better-combat:${project.better_combat_version}-${platform}")
+    modCompileOnly("maven.modrinth:combat-roll:${project.combat_roll_version}-${platform}")
     modCompileOnly("maven.modrinth:critical-strike:${project.critical_strike_version}-${platform}")
 
     // NeoForge specific
@@ -69,5 +71,42 @@ dependencies {
 }
 
 loom {
-    accessWidenerPath = file("src/main/resources/more-rpg-classes.accesswidener")
+    accessWidenerPath = file("src/main/resources/mrpg_lib.accesswidener")
 }
+
+tasks.register('verifyCoreIsolation') {
+    dependsOn compileJava, ':fabric:compileJava', ':neoforge:compileJava'
+    def scanned = [
+            file("build/classes/java/main"),
+            project(':fabric').file("build/classes/java/main"),
+            project(':neoforge').file("build/classes/java/main")
+    ]
+    def forbidden = ['net/spell_engine', 'net/spell_power', 'net/fabric_extras/ranged_weapon', 'net/critical_strike', 'dev/kosmx/playerAnim', 'net/bettercombat', 'net/combat_roll']
+    def serverSafeRoots = ['com/mrpg_lib/compat/player_animator/api/', 'com/mrpg_lib/compat/player_animator/network/']
+    def compatRoot = 'com/mrpg_lib/compat/'
+    def allowed = ['com/mrpg_lib/mixin/MrpgMixinPlugin', 'com/mrpg_lib/datagen/SmithingRecipeGenerator']
+    doLast {
+        def offenders = []
+        scanned.findAll { it.exists() }.each { root ->
+            root.eachFileRecurse(groovy.io.FileType.FILES) { f ->
+                if (!f.name.endsWith('.class')) return
+                def rel = root.toPath().relativize(f.toPath()).toString().replace(File.separator, '/')
+                def inCompat = rel.startsWith(compatRoot) && rel.indexOf('/', compatRoot.length()) > 0
+                def text = new String(f.bytes, 'ISO-8859-1')
+                if (serverSafeRoots.any { rel.startsWith(it) } && text.contains('dev/kosmx/playerAnim')) {
+                    offenders << "${root.parentFile.parentFile.parentFile.name}: ${rel} -> dev/kosmx/playerAnim (server-safe package)"
+                    return
+                }
+                if (inCompat || allowed.any { rel.startsWith(it) }) return
+                def hit = forbidden.find { text.contains(it) }
+                if (hit) offenders << "${root.parentFile.parentFile.parentFile.name}: ${rel} -> ${hit}"
+            }
+        }
+        if (offenders) {
+            throw new GradleException("Core classes reference compat-only libraries:\n" + offenders.join('\n'))
+        }
+        println "verifyCoreIsolation: OK"
+    }
+}
+
+check.dependsOn 'verifyCoreIsolation'

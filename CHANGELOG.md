@@ -1,3 +1,62 @@
+# 2.8.0 - 1.21.1
+
+## For players
+### ⚠️ BREAKING
+- ⚠️ Mod id and namespace renamed `more_rpg_classes` -> `mrpg_lib` (registry ids, spells, tags, loot functions and entries such as `mrpg_lib:conditional_item`, custom impact handlers such as `mrpg_lib:knock_up_fixed`)
+- Package renamed `net.more_rpg_classes` -> `com.mrpg_lib`, maven group `com.mrpg_lib`, archive base name `mrpg-lib`
+- Everything that touches Spell Engine, Spell Power, playerAnimator, Ranged Weapon API or Critical Strike moved into `com.mrpg_lib.compat.<name>`
+- `MoreParticles` split: the Spell Engine dependent particles moved to `compat.spell_engine.particle.MoreSpellParticles`; `client.particle.MoreParticles`
+- `CustomMethods` split: `spellSchoolDamageCalculation` and `isEntityProtectedCheck` moved to `SpellEngineMethods`; `isEntityProtectedCheck` is deprecated, use `AllyHelper.canHelp`, `getHighestSpellSchoolPower` to `SpellPowerMethods`
+- `StealthStatusEffect.stealthPopParticles()` is no longer abstract, it returns `Object` (default `null`) so the class no longer references Spell Engine types
+- `MobSpellCastGoal` runs in real time now: it ticks every game tick and tracks cooldowns against world time, so `updateCooldown()` is a no-op and no longer needs to be called
+
+### Changed
+- Spell Engine and Spell Power are no longer required. Both are optional now.
+- The mod id is now `mrpg_lib` it was `more_rpg_classes`.
+- The config folder moved from `config/more_rpg_classes` to `config/mrpg_lib`.
+- Frozen Solid, Soaked and Arcane Precision use standalone versions of the effects when Spell Power is not installed.
+- Spells with a cast time now go off at the end of the cast, like for players, so the whole cast animation plays.
+- Mob spells now respect the spell's delivery delay.
+- Mobs mow charge spells like players. If charging adds range, they charge just enough to reach the target and use the spell from its full charged range. 
+- Otherwise, they charge fully, or release at the minimum charge when the target is very close.
+
+### Added
+- `mrpg_lib:custom_cloud` entity, a generic lingering cloud, added mainly for Loot & Explore
+- Mobs can play player animations (needs playerAnimator). This includes villagers, wandering traders, witches and illagers.
+- Better Combat (optional): mobs that use the new melee goal attack with their weapon's combos, animations, hitboxes and weapon trails, with the same animation timing, slowdown while swinging and knockback rules as players. 
+- They can dual wield too: alternating hands, mirrored off-hand swings and Better Combat's dual-wield attack speed and damage multipliers. 
+- Weapons with a holding pose (like claymores, spears and glaives) are held in that pose whenever the mob carries them, with the same walking and two-handed rules as for players
+- Combat Roll (optional): mobs that use the new roll goal can roll away when hurt, roll towards their target and dodge projectiles
+- Spell casting mobs can cast arrow spells and stash spells
+- Spell casting mobs can also use summon spells correctly now
+- Spell casting mobs can now use melee weapon skills like Swift Strikes: they walk up to the target, dash forward when the skill has momentum, and hit everything in the swing's arc
+- Spell casting mobs can cast spells with a custom delivery from other mods
+
+### Fixed
+- Mob-cast spells with an area impact now hit everything around the target and show their impact particles and sound.
+- Mobs no longer use melee-range spells from far away
+- Mob-cast area spells with melee range  now hit everything around the mob.
+
+### Added
+- `MobSpellCastGoal`: `SpellTimings` with `withTimings(...)` (goal-wide or per spell; cast/channel seconds, cooldown seconds, channel ticks) and `withAnimations(true)` to play the spell's cast and release animations
+- `MobSpellCastGoal` casts arrow spells (`SHOOT_ARROW`, `AFFECT_ARROW`) with real arrows, and stash spells (`STASH_EFFECT`, e.g. Power Shot) like on players.
+- `MobSpellCastGoal` runs `CUSTOM` deliveries through Spell Engine, so handlers registered with `SpellHandlers.registerCustomDelivery` work for mobs (they get the mob as `caster`).
+- `SpellBehaviorRegistry.targetDistance(min, max)`: ready-made condition to only cast a spell when the target is within a distance range
+- Spell Engine summons of a mobSpellCaster treat it as their owner, so they follow and defend it and attack its target
+- playerAnimator mob bridge (`compat.player_animator.api.MobAnimations`, `MobAnimationOptions`, `MobAnimationLayer` with `POSE`, `OFF_HAND_POSE`, `MISC`, `ATTACK`, `CASTING`, `RELEASE`, `DODGE`, client `MobModelAdapters`, built-in `VillagerModelAdapter`)
+- Goals: `LongReachMeleeAttackGoal`, `WindupMeleeAttackGoal`, `PredicateGatedGoal`
+- `BetterCombatCompat.createMeleeGoal(...)` (Better Combat combo melee for mobs, a plain `MeleeAttackGoal` without the mod) with `MeleeSettings` (`baseRange`, `intervalScale`, `animations`, `resetInvulnerability`, `weaponTrails`), and `BetterCombatCompat.onGoalRemoved(goal)` to drop the weapon pose of a goal you remove
+- `MobAnimations.playWeaponPose(mob, layer, poseId, twoHanded)`: plays the Better Combat weapon pose on `POSE` or `OFF_HAND_POSE`
+- `MobGoals` (add goals to mobs you don't own, e.g. villagers) and `SpellCasterState` (cast timer to back an `ISpellCasterEntity` mixin)
+- Dev-environment commands `/mrpg_goal <targets> bettercombat|combatroll [dodge]|spellcast <spell>|shoot [count]|clear` to test the custom goals on any mob.
+- `AllyHelper` (`canHurt`, `canHelp`, `isAlly`): one ally check for projectiles, clouds, traps and AoE. Resolves owners (projectiles, pets, controlled mobs), checks teams and mob-vs-mob
+- Asks Spell Engine's entity relations first when it is installed (`setRelationBridge`)
+- `EntityAttributeConfig` / `EntityAttributeApplier`: a reusable, `ConfigManager`-backed way to give a registered entity configurable attributes
+- base values are for the easy difficulty and there separate normal/hard difficulty multipliers
+- Config entries can also carry a `custom` map of numbers (with the same difficulty multipliers) and string values (with optional `normal_string` and `hard_string` per difficulty), for mob tuning like cooldowns, projectile counts, ranges or summoned entity ids. Set defaults with `Entry.setCustom(...)` / `setCustomString(...)`, read them live with `EntityAttributeApplier.custom(entity, config, fallback)` (`getInt`, `getDouble`, `getBoolean`, `getString`)
+- `MobSpellCastGoal.withEquipmentSpells(true)` reads the caster's mainhand item for passive and modifier spells
+- `withPassiveSpellTag(tag)` grants passive spells for the SpellCasting Entity from a spell tag instead 
+
 # 2.7.2 - 1.21.1
 - Drop Forgified Fabric API (FFAPI) as a required dependency
 

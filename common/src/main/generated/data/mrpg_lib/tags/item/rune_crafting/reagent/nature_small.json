@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "#minecraft:logs",
+      "required": false
+    },
+    {
+      "id": "#minecraft:flowers",
+      "required": false
+    }
+  ]
+}

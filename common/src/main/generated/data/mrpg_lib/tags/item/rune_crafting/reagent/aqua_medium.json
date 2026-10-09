@@ -1,0 +1,20 @@
+{
+  "values": [
+    {
+      "id": "minecraft:prismarine_crystals",
+      "required": false
+    },
+    {
+      "id": "minecraft:prismarine_shard",
+      "required": false
+    },
+    {
+      "id": "minecraft:glow_ink_sac",
+      "required": false
+    },
+    {
+      "id": "minecraft:nautilus_shell",
+      "required": false
+    }
+  ]
+}

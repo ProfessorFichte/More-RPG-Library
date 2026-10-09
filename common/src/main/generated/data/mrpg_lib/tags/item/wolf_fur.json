@@ -1,0 +1,16 @@
+{
+  "values": [
+    {
+      "id": "mrpg_lib:wolf_fur",
+      "required": false
+    },
+    {
+      "id": "frostiful:wolf_fur_tuft",
+      "required": false
+    },
+    {
+      "id": "environmentz:wolf_pelt",
+      "required": false
+    }
+  ]
+}

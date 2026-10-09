@@ -1,0 +1,95 @@
+{
+  "school": "spell_power:water",
+  "range": 0.0,
+  "tier": 8,
+  "type": "PASSIVE",
+  "passive": {
+    "triggers": [
+      {
+        "type": "ARROW_IMPACT",
+        "chance": 0.5
+      }
+    ]
+  },
+  "target": {
+    "type": "FROM_TRIGGER"
+  },
+  "impacts": [
+    {
+      "attribute": "ranged_weapon:damage",
+      "action": {
+        "type": "STATUS_EFFECT",
+        "status_effect": {
+          "effect_id": "spell_engine:bleed",
+          "duration": 5.0,
+          "amplifier_power_multiplier": 0.2,
+          "amplifier_cap": 2
+        }
+      },
+      "visuals": {
+        "particles": [
+          {
+            "id": "spell_engine:dripping_blood",
+            "appearance": {},
+            "batch": {
+              "count": 10.0,
+              "shape": "SPHERE",
+              "anchor": "ENTITY",
+              "min_speed": 0.05,
+              "max_speed": 0.3
+            }
+          }
+        ]
+      }
+    },
+    {
+      "attribute": "ranged_weapon:damage",
+      "action": {
+        "type": "DAMAGE",
+        "damage": {
+          "spell_power_coefficient": 0.5,
+          "knockback": 0.5
+        }
+      },
+      "visuals": {
+        "particles": [
+          {
+            "id": "mrpg_lib:big_splash",
+            "appearance": {},
+            "batch": {
+              "count": 20.0,
+              "shape": "PILLAR",
+              "anchor": "ENTITY",
+              "vertical_origin": 0.1,
+              "min_speed": 0.05,
+              "max_speed": 0.2
+            }
+          },
+          {
+            "id": "mrpg_lib:splash",
+            "appearance": {},
+            "batch": {
+              "count": 15.0,
+              "shape": "CIRCLE",
+              "anchor": "ENTITY",
+              "vertical_origin": 0.1,
+              "min_speed": 0.05,
+              "max_speed": 0.2
+            }
+          }
+        ]
+      },
+      "sound": {
+        "id": "mrpg_lib:water_magic_impact1",
+        "volume": 0.4
+      }
+    }
+  ],
+  "cost": {
+    "batching": true,
+    "cooldown": {
+      "duration": 4.0,
+      "hosting_item": false
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "values": [
+    {
+      "id": "mrpg_lib:aqua_stone",
+      "required": false
+    },
+    {
+      "id": "mrpg_lib:terra_stone",
+      "required": false
+    },
+    {
+      "id": "mrpg_lib:storm_stone",
+      "required": false
+    },
+    {
+      "id": "mrpg_lib:nature_stone",
+      "required": false
+    }
+  ]
+}

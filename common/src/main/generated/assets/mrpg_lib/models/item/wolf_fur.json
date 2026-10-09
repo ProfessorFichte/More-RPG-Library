@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "mrpg_lib:item/wolf_fur"
+  }
+}

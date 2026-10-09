@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "mrpg_lib:polar_bear_fur"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "minecraft:white_wool"
+  }
+}
