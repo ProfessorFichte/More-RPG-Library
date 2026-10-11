@@ -114,7 +114,7 @@ dependencies {
     modCompileOnly("maven.modrinth:better-combat:${project.better_combat_version}-${platform}")
     modCompileOnly("maven.modrinth:combat-roll:${project.combat_roll_version}-${platform}")
     modCompileOnly("maven.modrinth:runes:${project.runes_version}-${platform}")
-    if (!project.hasProperty("noCompat")) {
+    if (!project.hasProperty("noCompat") && !rootProject.ext.workspaceNoCompat) {
         modLocalRuntime("dev.kosmx.player-anim:player-animation-lib-${platform}:${project.player_anim_version}")
         modLocalRuntime("maven.modrinth:spell-power:${project.spell_power_version}-${platform}")
         if (!project.hasProperty("noRunes")) {

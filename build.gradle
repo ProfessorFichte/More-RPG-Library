@@ -25,6 +25,7 @@ ext.contentWorkspace = {
     return flags
 }()
 ext.contentWorkspaceAny = contentWorkspaceFlags.any { it != "workspace_no_compat" && contentWorkspace[it] }
+ext.workspaceNoCompat = contentWorkspace["workspace_no_compat"]
 
 allprojects {
     group = rootProject.maven_group
