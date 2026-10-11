@@ -1,9 +1,12 @@
 package com.mrpg_lib.entity.config;
 
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.Difficulty;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 public class EntityAttributeConfig {
     public LinkedHashMap<String, Entry> entries = new LinkedHashMap<>();
@@ -19,6 +22,7 @@ public class EntityAttributeConfig {
     public static class Entry {
         public LinkedHashMap<String, AttributeValue> attributes = new LinkedHashMap<>();
         public LinkedHashMap<String, CustomValue> custom = null;
+        public LinkedHashMap<String, EquipmentValue> equipment = null;
 
         public Entry set(String attributeId, double base) {
             attributes.put(attributeId, new AttributeValue(base));
@@ -84,6 +88,113 @@ public class EntityAttributeConfig {
         public String getString(String id, Difficulty difficulty, String defaultValue) {
             CustomValue value = getCustom(id);
             return value != null && value.string != null ? value.resolveString(difficulty) : defaultValue;
+        }
+
+        public Entry setEquipment(String slot, String itemOrTag) {
+            return setEquipment(slot, new EquipmentValue(itemOrTag));
+        }
+
+        public Entry setEquipment(String slot, String itemOrTag, double chance, double enchantChance) {
+            return setEquipment(slot, new EquipmentValue(itemOrTag).chance(chance).enchant(enchantChance));
+        }
+
+        public Entry setEquipment(String slot, EquipmentValue value) {
+            if (equipment == null) equipment = new LinkedHashMap<>();
+            equipment.put(slot, value);
+            return this;
+        }
+
+        public Entry setEquipment(EquipmentSlot slot, String itemOrTag) {
+            return setEquipment(slot.getName(), itemOrTag);
+        }
+
+        public Entry setEquipment(EquipmentSlot slot, String itemOrTag, double chance, double enchantChance) {
+            return setEquipment(slot.getName(), itemOrTag, chance, enchantChance);
+        }
+
+        public Entry setEquipment(EquipmentSlot slot, EquipmentValue value) {
+            return setEquipment(slot.getName(), value);
+        }
+
+        public EquipmentValue getEquipment(String slot) {
+            return equipment != null ? equipment.get(slot) : null;
+        }
+    }
+
+    public static class EquipmentValue {
+        public static final String EMPTY = "minecraft:air";
+        public static final int DEFAULT_ENCHANT_LEVELS = 20;
+        public static final String DEFAULT_ENCHANT_TAG = "#minecraft:in_enchanting_table";
+
+        public String item = null;
+        public Double chance = null;
+        public Double enchant_chance = null;
+        public Integer enchant_levels = null;
+        public String enchant_tag = null;
+        public Double drop_chance = null;
+        public List<String> required_mods = null;
+        public String fallback_item = null;
+
+        public EquipmentValue() {
+        }
+
+        public EquipmentValue(String itemOrTag) {
+            this.item = itemOrTag;
+        }
+
+        public static EquipmentValue of(String itemOrTag) {
+            return new EquipmentValue(itemOrTag);
+        }
+
+        public EquipmentValue requiresAnyMod(String... modIds) {
+            this.required_mods = modIds.length > 0 ? new ArrayList<>(List.of(modIds)) : null;
+            return this;
+        }
+
+        public EquipmentValue fallback(String itemOrTag) {
+            this.fallback_item = itemOrTag;
+            return this;
+        }
+
+        public EquipmentValue chance(double chance) {
+            this.chance = chance < 1.0 ? chance : null;
+            return this;
+        }
+
+        public EquipmentValue enchant(double enchantChance) {
+            this.enchant_chance = enchantChance > 0.0 ? enchantChance : null;
+            return this;
+        }
+
+        public EquipmentValue enchant(double enchantChance, int levels) {
+            this.enchant_levels = levels;
+            return enchant(enchantChance);
+        }
+
+        public EquipmentValue enchantTag(String enchantmentTag) {
+            this.enchant_tag = enchantmentTag;
+            return this;
+        }
+
+        public EquipmentValue dropChance(double dropChance) {
+            this.drop_chance = dropChance;
+            return this;
+        }
+
+        public double chanceOrDefault() {
+            return chance != null ? chance : 1.0;
+        }
+
+        public double enchantChanceOrDefault() {
+            return enchant_chance != null ? enchant_chance : 0.0;
+        }
+
+        public int enchantLevelsOrDefault() {
+            return enchant_levels != null ? enchant_levels : DEFAULT_ENCHANT_LEVELS;
+        }
+
+        public String enchantTagOrDefault() {
+            return enchant_tag != null ? enchant_tag : DEFAULT_ENCHANT_TAG;
         }
     }
 
