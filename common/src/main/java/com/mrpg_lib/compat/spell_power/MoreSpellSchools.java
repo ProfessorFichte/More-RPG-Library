@@ -32,7 +32,11 @@ public class MoreSpellSchools {
         }
     }
 
-    public static void initialize() {
+    private static boolean initialized = false;
+
+    public static synchronized void initialize() {
+        if (initialized) return;
+        initialized = true;
         FROST_RANGED = new SpellSchool(SpellSchool.Archetype.ARCHERY,
                 Identifier.of(SpellPowerMod.ID, "frost_ranged"),
                 0xccffff,

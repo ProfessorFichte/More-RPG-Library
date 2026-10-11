@@ -3,6 +3,9 @@
 // Fabric loads the dev-shadow jars.
 // NeoForge takes the production jars, because its dev-shadow ones aren't remapped.
 // Every pin has to be in ~/.m2 first, so run publishToMavenLocal in that mod and bump the version here.
+// On NeoForge, a pin below a loaded mod's versionRange (even an optional one) drops every mod,
+// and the client then dies with NoClassDefFoundError on an owo class instead of the error screen.
+// Check the ModSorter lines in the log first.
 // workspace_no_compat skips the shared compat libraries below, even with content mods loaded.
 // Fabric then refuses to boot if a loaded content mod hard-requires one of them, that's expected.
 
@@ -40,7 +43,7 @@ if (!noCompat) {
     modrinth('armor-model-api', '1.1.0+1.21.1')
     modrinth('structure-pool-api', '1.2.1+1.21.1')
     modrinth('bundle-api', '1.1.0')
-    modrinth('critical-strike', '1.0.2+1.21.1')
+    modrinth('critical-strike', rootProject.critical_strike_version)
     modrinth('ranged-weapon-api', rootProject.ranged_weapon_api_version)
     modrinth('spell-power', rootProject.spell_power_version)
     modrinth('spell-engine', rootProject.spell_engine_version)

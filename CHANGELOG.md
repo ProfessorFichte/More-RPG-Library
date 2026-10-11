@@ -19,6 +19,7 @@
 - Mob spells now respect the spell's delivery delay.
 - Mobs mow charge spells like players. If charging adds range, they charge just enough to reach the target and use the spell from its full charged range. 
 - Otherwise, they charge fully, or release at the minimum charge when the target is very close.
+- Buffed Burstcrack's Damage Power Coefficient
 
 ### Added
 - `mrpg_lib:custom_cloud` entity, a generic lingering cloud, added mainly for Loot & Explore
@@ -34,11 +35,14 @@
 - Upgrade crystals (T5 Class Armor Upgrade Crystals) are now affiliated loot: they drop more often for players carrying a spell book of a class they apply to
 
 ### Fixed
+- Soaked now also makes targets vulnerable to lightning spells (with Spell Power), not only frost
+- Wither's Curse now only counts harmful status effects on the target
 - Mob-cast spells with an area impact now hit everything around the target and show their impact particles and sound.
 - Mobs no longer use melee-range spells from far away
 - Mob-cast area spells with melee range  now hit everything around the mob.
 
 ### Added
+- Breaking: `ISpellCasterEntity.isCastingSpell()` is now `isMobCasting()`. The old name collides with vanilla's own `isCastingSpell` on spellcasting illagers, which broke the interface on NeoForge dev environments
 - `MobSpellCastGoal`: `SpellTimings` with `withTimings(...)` (goal-wide or per spell; cast/channel seconds, cooldown seconds, channel ticks) and `withAnimations(true)` to play the spell's cast and release animations
 - `MobSpellCastGoal` casts arrow spells (`SHOOT_ARROW`, `AFFECT_ARROW`) with real arrows, and stash spells (`STASH_EFFECT`, e.g. Power Shot) like on players.
 - `MobSpellCastGoal` runs `CUSTOM` deliveries through Spell Engine, so handlers registered with `SpellHandlers.registerCustomDelivery` work for mobs (they get the mob as `caster`).
@@ -55,6 +59,7 @@
 - `EntityAttributeConfig` / `EntityAttributeApplier`: a reusable, `ConfigManager`-backed way to give a registered entity configurable attributes
 - base values are for the easy difficulty and there separate normal/hard difficulty multipliers
 - Config entries can also carry a `custom` map of numbers (with the same difficulty multipliers) and string values (with optional `normal_string` and `hard_string` per difficulty), for mob tuning like cooldowns, projectile counts, ranges or summoned entity ids. Set defaults with `Entry.setCustom(...)` / `setCustomString(...)`, read them live with `EntityAttributeApplier.custom(entity, config, fallback)` (`getInt`, `getDouble`, `getBoolean`, `getString`)
+- Config entries can also carry an `equipment` map (`mainhand`, `offhand`, `head`, `chest`, `legs`, `feet`) to equip mobs on spawn: an item id or a `#tag` (random item from the tag), with optional spawn `chance`, `enchant_chance` / `enchant_levels` / `enchant_tag`, `drop_chance`, and `required_mods` with a `fallback_item` for items from optional mods. Set defaults with `Entry.setEquipment(...)` and `EquipmentValue`
 - `MobSpellCastGoal.withEquipmentSpells(true)` reads the caster's mainhand item for passive and modifier spells
 - `withPassiveSpellTag(tag)` grants passive spells for the SpellCasting Entity from a spell tag instead 
 
