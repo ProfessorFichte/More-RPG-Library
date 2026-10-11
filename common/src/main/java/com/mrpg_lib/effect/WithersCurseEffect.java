@@ -14,13 +14,13 @@ public class WithersCurseEffect extends StatusEffect {
 
     public boolean applyUpdateEffect(LivingEntity livingEntity, int amplifier) {
         List<StatusEffectInstance> list = livingEntity.getStatusEffects().stream().toList();
-        int amount_negative = -1;
+        int amount_negative = 0;
         if (!list.isEmpty()) {
             for (StatusEffectInstance statusEffectInstance : list) {
-                StatusEffect statusEffect = statusEffectInstance.getEffectType().value();
-                if (!statusEffect.isBeneficial()) {
+                if (statusEffectInstance.getEffectType().equals(MRPGCEffects.WITHERS_CURSE.entry)) continue;
+                if (!statusEffectInstance.getEffectType().value().isBeneficial()) {
+                    amount_negative++;
                 }
-                amount_negative++;
             }
             if(amplifier < amount_negative){
                 livingEntity.addStatusEffect(new StatusEffectInstance(MRPGCEffects.WITHERS_CURSE.entry,

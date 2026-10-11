@@ -17,8 +17,8 @@ public final class SpellPowerEffects {
 
     public static StatusEffect soaked(StatusEffectCategory category, int color) {
         return new SpellPowerSoakedEffect(category, color)
-                .setVulnerability(SpellSchools.LIGHTNING, new SpellPower.Vulnerability(0.15F, 0.1F, 0))
-                .setVulnerability(SpellSchools.FROST, new SpellPower.Vulnerability(0.15F, 0, 0.3F));
+                .addVulnerability(SpellSchools.LIGHTNING, new SpellPower.Vulnerability(0.15F, 0.1F, 0))
+                .addVulnerability(SpellSchools.FROST, new SpellPower.Vulnerability(0.15F, 0, 0.3F));
     }
 
     public static StatusEffect arcanePrecision(StatusEffectCategory category) {
