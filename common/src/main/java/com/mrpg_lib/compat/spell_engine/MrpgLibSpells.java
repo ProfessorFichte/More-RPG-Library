@@ -63,6 +63,7 @@ public class MrpgLibSpells {
     }
     public static Entry decapitate = add(decapitate());
     private static Entry decapitate() {
+        MoreSpellSchools.initialize();
         var id = Identifier.of(MOD_ID, "decapitate");
         var title = "Decapitate";
         var description = "Delivers a heavy blow with forward momentum that disables shield and item usage of target.";
@@ -109,7 +110,7 @@ public class MrpgLibSpells {
     private static Entry burstcrack() {
         var id = Identifier.of(MOD_ID, "burstcrack");
         var title = "Burstcrack";
-        var description = "Charge a shockwave around you, then release it - the longer the charge, the further it reaches and the harder it hits. Knocks up enemies and deals physical {damage_1} & {damage_2} arcane-damage.";
+        var description = "Charge a shockwave around you, then release it - the longer the charge, the further it reaches and the harder it hits. Knocks up enemies and deals {damage} physical damage.";
         var spell = SpellBuilder.createWeaponSpell();
         spell.school = ExternalSpellSchools.PHYSICAL_MELEE;
         spell.range = 5.5F;
@@ -139,7 +140,7 @@ public class MrpgLibSpells {
         spell.target.area = new Spell.Target.Area();
         spell.target.area.angle_degrees = 360;
 
-        var damage = SpellBuilder.Impacts.damage(0.5F, 0F);
+        var damage = SpellBuilder.Impacts.damage(1.0F, 0F);
         damage.visuals = Fx.Visuals.of(
                 ParticleGroupBuilder.of(SpellEngineParticles.smoke_medium)
                         .batch(b -> b.shape(ParticleGroup.Shape.PIPE)
