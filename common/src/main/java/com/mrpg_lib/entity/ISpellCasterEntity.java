@@ -8,7 +8,7 @@ public interface ISpellCasterEntity {
 
     void stopSpellCast();
 
-    boolean isCastingSpell();
+    boolean isMobCasting();
 
     MobEntity asMobEntity();
 }

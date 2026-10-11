@@ -25,7 +25,7 @@ public final class SpellCastTestGoals {
             }
 
             @Override
-            public boolean isCastingSpell() {
+            public boolean isMobCasting() {
                 return state.isCasting();
             }
 

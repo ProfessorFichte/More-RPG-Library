@@ -24,7 +24,7 @@ public class BackAwayGoal<T extends MobEntity & ISpellCasterEntity> extends Goal
 
     @Override
     public boolean canStart() {
-        if (mob.isCastingSpell()) return false;
+        if (mob.isMobCasting()) return false;
         LivingEntity target = mob.getTarget();
         if (target == null || !target.isAlive()) return false;
         return mob.squaredDistanceTo(target) < minDistance * minDistance;
@@ -32,7 +32,7 @@ public class BackAwayGoal<T extends MobEntity & ISpellCasterEntity> extends Goal
 
     @Override
     public boolean shouldContinue() {
-        if (mob.isCastingSpell()) return false;
+        if (mob.isMobCasting()) return false;
         LivingEntity target = mob.getTarget();
         if (target == null || !target.isAlive()) return false;
         return mob.squaredDistanceTo(target) < minDistance * minDistance;
