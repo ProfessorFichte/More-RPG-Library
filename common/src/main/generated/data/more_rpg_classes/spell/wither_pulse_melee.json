@@ -65,7 +65,7 @@
         ]
       },
       "sound": {
-        "id": "spell_engine:generic_soul_impact"
+        "id": "minecraft:entity.wither.ambient"
       }
     },
     {

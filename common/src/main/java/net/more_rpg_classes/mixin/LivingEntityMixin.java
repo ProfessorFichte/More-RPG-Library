@@ -114,9 +114,13 @@ public abstract class LivingEntityMixin {
         ;
     }
 
+    @Unique
+    private static final ThreadLocal<Boolean> REFLECTING = ThreadLocal.withInitial(() -> false);
+
     @Inject(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V"))
     private void damageReflect$damage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
-        if (!DamageTypes.THORNS.equals(source.getType()) && !source.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+        if (REFLECTING.get()) return;
+        if (!source.isOf(DamageTypes.THORNS) && !source.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             if (source.getSource() == source.getAttacker()) {
                 LivingEntity attackedEntity = (LivingEntity)(Object)this;
                 Entity attacker = source.getAttacker();
@@ -128,7 +132,12 @@ public abstract class LivingEntityMixin {
                     float reflectDamage = amount * reflectMultiplier;
                     if (reflectDamage != 0) {
                         livingAttacker.timeUntilRegen = 0;
-                        livingAttacker.damage(source.getAttacker().getDamageSources().thorns(livingAttacker), reflectDamage);
+                        REFLECTING.set(true);
+                        try {
+                            livingAttacker.damage(attackedEntity.getDamageSources().thorns(attackedEntity), reflectDamage);
+                        } finally {
+                            REFLECTING.set(false);
+                        }
                     }
                 }
             }

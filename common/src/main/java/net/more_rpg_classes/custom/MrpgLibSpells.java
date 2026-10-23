@@ -399,7 +399,7 @@ public class MrpgLibSpells {
 
         var damage = SpellBuilder.Impacts.damage(0.5F,0);
         damage.attribute = CustomMethods.attributeId(EntityAttributes.GENERIC_ATTACK_DAMAGE);
-        damage.sound = new Sound(new Identifier("spell_engine:generic_soul_impact"));
+        damage.sound = new Sound(new Identifier("minecraft:entity.wither.ambient"));
         damage.visuals = Fx.Visuals.of(
                 ParticleGroupBuilder.magic(SpellEngineParticles.magic_skull, ParticleGroup.Motion.DECELERATE)
                         .color(858993663L)

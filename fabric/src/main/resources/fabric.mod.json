@@ -38,6 +38,9 @@
 		"spell_engine": ">=1.10.5",
 		"spell_power": ">=1.6.0"
 	},
+	"breaks": {
+		"ranged_weapon_api": "<2.0.0"
+	},
 	"custom": {
 		"modmenu": {
 			"links": {

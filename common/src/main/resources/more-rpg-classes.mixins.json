@@ -9,6 +9,7 @@
     "LivingEntityMixin",
     "LivingEntityStealth",
     "PersistentProjectileEntityMixin",
+    "SpellSchoolWeaknessMixin",
     "TrackTargetGoalStealth"
   ],
   "client": [

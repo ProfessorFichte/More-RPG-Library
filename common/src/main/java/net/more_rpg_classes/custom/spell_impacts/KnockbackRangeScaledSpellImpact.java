@@ -9,6 +9,7 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.spell_engine.api.spell.Spell;
 import net.spell_engine.api.spell.event.SpellHandlers;
 import net.spell_engine.internals.SpellExecution;
+import net.spell_engine.internals.SpellParameters;
 import net.spell_power.api.SpellPower;
 
 public class KnockbackRangeScaledSpellImpact implements SpellHandlers.CustomImpact {
@@ -23,12 +24,8 @@ public class KnockbackRangeScaledSpellImpact implements SpellHandlers.CustomImpa
     ) {
         if (!caster.getWorld().isClient && target instanceof  LivingEntity livingEntity) {
             LivingEntity attacker = caster;
-            float range = spell.value().range;
-            int poscasterX = attacker.getBlockPos().getX();
-            int poscasterZ = attacker.getBlockPos().getZ();
-            int posentityX = livingEntity.getBlockPos().getX();
-            int posentityZ = livingEntity.getBlockPos().getZ();
-            int distance_to_target = (posentityX-poscasterX) + ( poscasterZ - posentityZ);
+            float range = SpellParameters.getRange(caster, spell);
+            float distance_to_target = caster.distanceTo(livingEntity);
 
             float enchantment_power = 0.0F;
             float power_enchantment_value = 0.0F;
