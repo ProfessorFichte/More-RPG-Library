@@ -41,29 +41,27 @@ public class MoreSpellSchoolWeakness {
         var waterWeakness = new Spell.Impact.TargetModifier();
         var waterCondition = new Spell.TargetCondition();
 
-        waterCondition.entity_type = "#" + MRPGCEntityTags.WEAK_TO_WATER;
+        waterCondition.entity_type = "#" + MRPGCEntityTags.WEAK_TO_WATER.id();
         waterWeakness.conditions = List.of(waterCondition);
         waterWeakness.modifier = new Spell.Impact.Modifier();
         waterWeakness.modifier.critical_chance_bonus = 1.0f;
-        config.school_weaknesses.put(MoreSpellSchools.WATER.id.toString(), List.of(
-                new ScopedWeakness(Spell.Impact.Action.Type.DAMAGE, waterWeakness)
-        ));
 
         var waterResistance = new Spell.Impact.TargetModifier();
         var waterConditionResistance = new Spell.TargetCondition();
 
-        waterConditionResistance.entity_type = "#" + MRPGCEntityTags.RESISTANT_TO_WATER;
+        waterConditionResistance.entity_type = "#" + MRPGCEntityTags.RESISTANT_TO_WATER.id();
         waterResistance.conditions = List.of(waterConditionResistance);
         waterResistance.modifier = new Spell.Impact.Modifier();
         waterResistance.modifier.power_multiplier = -0.3f;
         config.school_weaknesses.put(MoreSpellSchools.WATER.id.toString(), List.of(
+                new ScopedWeakness(Spell.Impact.Action.Type.DAMAGE, waterWeakness),
                 new ScopedWeakness(Spell.Impact.Action.Type.DAMAGE, waterResistance)
         ));
 
         var earthWeakness = new Spell.Impact.TargetModifier();
         var earthCondition = new Spell.TargetCondition();
 
-        earthCondition.entity_type = "#" + MRPGCEntityTags.WEAK_TO_EARTH;
+        earthCondition.entity_type = "#" + MRPGCEntityTags.WEAK_TO_EARTH.id();
         earthWeakness.conditions = List.of(earthCondition);
         earthWeakness.modifier = new Spell.Impact.Modifier();
         earthWeakness.modifier.critical_chance_bonus = 0.3f;

@@ -1,3 +1,11 @@
+# 2.8.1 - 1.21.1
+
+### Fixed
+- Fixed a server crash (StackOverflow) when two players with high Damage Reflect hit each other
+- The elemental weaknesses config now actually takes effect. Its default water and earth tag conditions and the water weakness/resistance entries were broken and are fixed. Delete `config/mrpg_lib/elemental_weaknesses.json` once so it regenerates with the new defaults
+- Wither Pulse no longer uses a missing sound, which spammed the log with NullPointerExceptions
+- Range scaled knockback now uses the real distance and range bonuses
+
 # 2.8.0 - 1.21.1
 
 ## For players

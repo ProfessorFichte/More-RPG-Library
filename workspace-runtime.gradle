@@ -58,11 +58,11 @@ if (classes) {
         modrinth('runes', '1.3.2+1.21.1')
         modrinth('armory-rpg-series', '1.5.2+1.21.1')
     }
-    content('com.archers_expansion', 'archers_expansion', '2.2.0+1.21.1')
+    content('com.archers_expansion', 'archers_expansion', '2.2.1+1.21.1')
     content('com.bards', 'bards_rpg', '1.2.0-1.21.1')
     content('com.berserker', 'berserker_rpg', '3.2.0+1.21.1')
     content('com.forcemaster', 'forcemaster_rpg', '3.2.0+1.21.1')
-    content('com.elemental_wizards', 'elemental_wizards_rpg', '3.2.0+1.21.1')
+    content('com.elemental_wizards', 'elemental_wizards_rpg', '3.2.1+1.21.1')
     content('net.witcher_class', 'witcher-class-mod', '3.2.0+1.21.1')
 }
 
@@ -80,7 +80,7 @@ if (skills) {
         modrinth('skill-tree', '1.6.0+1.21.1')
     }
     dependencies.add('modLocalRuntime', "net.puffish:skillsmod:0.16.7+1.21:${project.name}") { transitive = false }
-    content('com.mrpgc_skill_tree', 'mrpgc_skill_tree', '1.3.0+1.21.1')
+    content('com.mrpgc_skill_tree', 'mrpgc_skill_tree', '1.3.1+1.21.1')
 }
 
 if (lne) {
