@@ -2,6 +2,7 @@ package com.mrpg_lib.neoforge.client;
 
 import com.mrpg_lib.MRPGCMod;
 import com.mrpg_lib.client.MoreRPGClassesClient;
+import com.mrpg_lib.client.fx.FxClient;
 import com.mrpg_lib.client.model.CustomModelHelper;
 import com.mrpg_lib.compat.MrpgCompat;
 import com.mrpg_lib.compat.spell_engine.client.render.MobBeamWorldRenderer;
@@ -19,6 +20,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
@@ -71,7 +73,13 @@ public class NeoForgeClientMod {
     }
 
     @SubscribeEvent
+    public static void onClientTick(ClientTickEvent.Post event) {
+        FxClient.tick(MinecraftClient.getInstance());
+    }
+
+    @SubscribeEvent
     public static void onLoggingOut(ClientPlayerNetworkEvent.LoggingOut event) {
+        FxClient.clear();
         if (!MrpgCompat.SPELL_ENGINE) return;
         MobBeamWorldRenderer.onDisconnect();
     }

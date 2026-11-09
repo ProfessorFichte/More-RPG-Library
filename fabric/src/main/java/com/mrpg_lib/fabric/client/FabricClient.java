@@ -1,6 +1,10 @@
 package com.mrpg_lib.fabric.client;
 
 import com.mrpg_lib.client.MoreRPGClassesClient;
+import com.mrpg_lib.client.fx.FxClient;
+import com.mrpg_lib.fx.FxPlayPayload;
+import com.mrpg_lib.fx.FxStopPayload;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import com.mrpg_lib.client.model.CustomModelHelper;
 import com.mrpg_lib.compat.MrpgCompat;
 import com.mrpg_lib.compat.player_animator.client.MobAnimationClientNetwork;
@@ -51,6 +55,13 @@ public final class FabricClient implements ClientModInitializer {
                 ParticleFactoryRegistry.getInstance().register(type, factory::create);
             }
         });
+
+        ClientPlayNetworking.registerGlobalReceiver(FxPlayPayload.ID, (payload, context) ->
+                context.client().execute(() -> FxClient.handle(payload)));
+        ClientPlayNetworking.registerGlobalReceiver(FxStopPayload.ID, (payload, context) ->
+                context.client().execute(() -> FxClient.handleStop(payload)));
+        ClientTickEvents.END_CLIENT_TICK.register(FxClient::tick);
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> FxClient.clear());
 
         if (MrpgCompat.PLAYER_ANIMATOR) {
             ClientPlayNetworking.registerGlobalReceiver(MobAnimationPacket.ID, (payload, context) ->

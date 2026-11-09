@@ -14,6 +14,7 @@ public class MoreParticles {
 
     public static final SimpleParticleType RAINBOW_MUSIC_NOTE = new SimpleParticleType(false) {};
     public static final SimpleParticleType FADING_MOTE = new SimpleParticleType(false) {};
+    public static final SimpleParticleType FLOATING_BUBBLE = new SimpleParticleType(false) {};
     public static ParticleType<PopupParticleEffect> POPUP;
     public static ParticleType<PopupParticleEffect> SPELL_STOLEN_POPUP;
 
@@ -49,5 +50,6 @@ public class MoreParticles {
         Registry.register(Registries.PARTICLE_TYPE,
                 Identifier.of(MRPGCMod.MOD_ID, "rainbow_music_note"), RAINBOW_MUSIC_NOTE);
         Registry.register(Registries.PARTICLE_TYPE, MRPGCMod.id("fading_mote"), FADING_MOTE);
+        Registry.register(Registries.PARTICLE_TYPE, MRPGCMod.id("floating_bubble"), FLOATING_BUBBLE);
     }
 }

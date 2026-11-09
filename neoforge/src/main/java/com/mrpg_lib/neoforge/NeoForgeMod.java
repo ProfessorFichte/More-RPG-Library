@@ -1,13 +1,18 @@
 package com.mrpg_lib.neoforge;
 
 import com.mrpg_lib.MRPGCMod;
+import com.mrpg_lib.client.particle.ColoredParticles;
 import com.mrpg_lib.client.particle.MoreParticles;
 import com.mrpg_lib.compat.MrpgCompat;
 import com.mrpg_lib.compat.armory_rpgs.SmithingIngredients;
 import com.mrpg_lib.compat.player_animator.api.MobAnimations;
 import com.mrpg_lib.compat.player_animator.client.MobAnimationClientNetwork;
 import com.mrpg_lib.compat.player_animator.command.MobAnimationCommand;
+import com.mrpg_lib.client.fx.FxClient;
+import com.mrpg_lib.command.FxCommand;
 import com.mrpg_lib.command.MobGoalCommand;
+import com.mrpg_lib.fx.FxPlayPayload;
+import com.mrpg_lib.fx.FxStopPayload;
 import com.mrpg_lib.compat.player_animator.network.MobAnimationPacket;
 import com.mrpg_lib.compat.spell_engine.client.render.MobBeamTracker;
 import com.mrpg_lib.compat.spell_engine.client.render.MobSpinTracker;
@@ -32,6 +37,8 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import com.mrpg_lib.worldgen.modifier.StructureBlockModifiers;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.LootTableLoadEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -49,6 +56,7 @@ public final class NeoForgeMod {
         modBus.addListener(BuildCreativeModeTabContentsEvent.class, NeoForgeMod::buildTabContents);
         modBus.addListener(RegisterPayloadHandlersEvent.class, NeoForgeMod::registerPayloads);
         NeoForge.EVENT_BUS.addListener(NeoForgeMod::onLootTableLoad);
+        NeoForge.EVENT_BUS.addListener(AddReloadListenerEvent.class, event -> event.addListener(new StructureBlockModifiers()));
         if (MrpgCompat.PLAYER_ANIMATOR) {
             NeoForge.EVENT_BUS.addListener(NeoForgeMod::onStartTracking);
         }
@@ -66,6 +74,7 @@ public final class NeoForgeMod {
     private static void onRegisterCommands(RegisterCommandsEvent event) {
         MobAnimationCommand.register(event.getDispatcher());
         MobGoalCommand.register(event.getDispatcher());
+        FxCommand.register(event.getDispatcher());
     }
 
     public static void register(RegisterEvent event) {
@@ -83,6 +92,7 @@ public final class NeoForgeMod {
         });
         event.register(RegistryKeys.PARTICLE_TYPE, reg -> {
             MoreParticles.register();
+            ColoredParticles.register();
             if (MrpgCompat.SPELL_ENGINE) {
                 MoreSpellParticles.register();
             }
@@ -96,6 +106,11 @@ public final class NeoForgeMod {
     }
 
     private static void registerPayloads(RegisterPayloadHandlersEvent event) {
+        var fxRegistrar = event.registrar("mrpg_fx_1");
+        fxRegistrar.playToClient(FxPlayPayload.ID, FxPlayPayload.CODEC, (payload, context) ->
+                context.enqueueWork(() -> FxClient.handle(payload)));
+        fxRegistrar.playToClient(FxStopPayload.ID, FxStopPayload.CODEC, (payload, context) ->
+                context.enqueueWork(() -> FxClient.handleStop(payload)));
         if (MrpgCompat.SPELL_ENGINE) {
             var registrar = event.registrar("1");
             registrar.playToClient(MobBeamPacket.ID, MobBeamPacket.CODEC, (payload, context) ->

@@ -34,6 +34,7 @@ public class MrpgParticles implements DataProvider {
         particles.put("fatal_poison", frames("fatal_poison", 0, 6));
         particles.put("freezing_snowflake", frames("freezing_snowflake"));
         particles.put("fading_mote", frames("freezing_snowflake"));
+        particles.put("floating_bubble", frames("bubble", 0, 5));
         particles.put("gust", frames("gust", 0, 11));
         particles.put("gust_emitter", frames("gust", 0, 11));
         particles.put("hot_splash", frames("hot_splash", 0, 3));
@@ -59,6 +60,18 @@ public class MrpgParticles implements DataProvider {
         particles.put("water_whip", frames("water_whip", 0, 6));
         particles.put("wave", frames("wave", 0, 7));
         particles.put("wind_vacuum", frames("wind_vacuum", 0, 7));
+        particles.put("colored_explosion", external("minecraft:explosion", 0, 15));
+        particles.put("colored_poof", external("minecraft:generic", 7, 0));
+        particles.put("colored_smoke", external("minecraft:generic", 7, 0));
+        particles.put("colored_large_smoke", external("minecraft:generic", 7, 0));
+        particles.put("colored_cloud", external("minecraft:generic", 7, 0));
+        particles.put("colored_snowflake", external("minecraft:generic", 7, 0));
+        particles.put("colored_end_rod", external("minecraft:glitter", 7, 0));
+        particles.put("colored_firework", external("minecraft:spark", 7, 0));
+        particles.put("colored_flash", List.of("minecraft:flash"));
+        particles.put("colored_witch", external("minecraft:spell", 7, 0));
+        particles.put("colored_crit", List.of("minecraft:critical_hit"));
+        particles.put("colored_enchanted_hit", List.of("minecraft:enchanted_hit"));
         return particles;
     }
 
@@ -77,7 +90,8 @@ public class MrpgParticles implements DataProvider {
 
     private static List<String> external(String prefix, int from, int to) {
         var result = new ArrayList<String>();
-        for (int i = from; i <= to; i++) {
+        int step = from <= to ? 1 : -1;
+        for (int i = from; i != to + step; i += step) {
             result.add(prefix + "_" + i);
         }
         return result;
