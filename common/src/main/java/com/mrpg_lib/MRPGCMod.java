@@ -24,6 +24,7 @@ import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
+import com.mrpg_lib.fx.MrpgFx;
 import net.tiny_config.ConfigManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +55,7 @@ public class MRPGCMod {
 
 
 	public static void init() {
+		MrpgFx.registerBuiltins();
 		effectsConfig.refresh();
 		tweaksConfig.refresh();
 		lootConfig.refresh();
@@ -76,10 +78,16 @@ public class MRPGCMod {
 	public static void registerLootFunction() {
 		if (MrpgCompat.SPELL_ENGINE) {
 			SpellEngineCompat.registerLootFunctions();
+		} else {
+			// Loot tables that use the spell functions would fail to load without Spell Engine, so they do nothing instead.
+			// spells_available is always false then.
+			Registry.register(Registries.LOOT_FUNCTION_TYPE, id("specific_spell_scroll_pool"), PlaceholderLootFunction.createType());
+			Registry.register(Registries.LOOT_FUNCTION_TYPE, id("bind_spell_from_pools"), PlaceholderLootFunction.createType());
+			Registry.register(Registries.LOOT_CONDITION_TYPE, id("spells_available"), PlaceholderLootCondition.createType());
 		}
 		Registry.register(Registries.LOOT_FUNCTION_TYPE, ConditionalItemLootFunction.ID, ConditionalItemLootFunction.TYPE);
 		Registry.register(Registries.LOOT_FUNCTION_TYPE, ItemTagPickerLootFunction.ID, ItemTagPickerLootFunction.TYPE);
-		Registry.register(Registries.LOOT_POOL_ENTRY_TYPE, ConditionalItemEntry.ID, new LootPoolEntryType(ConditionalItemEntry.CODEC));
+		Registry.register(Registries.LOOT_POOL_ENTRY_TYPE, ConditionalItemEntry.ID, ConditionalItemEntry.TYPE);
 	}
 	public static void registerSounds() {
 		MRPGLibSounds.register();

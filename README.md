@@ -31,14 +31,17 @@ Each section below says when it needs one of them.
 
 6. [Custom Spell Impacts](#6-custom-spell-impacts)
 7. [Loot Table Enhancements](#7-loot-table-enhancements)
+8. [Structure Processors](#8-structure-processors)
+9. [Structure Block Modifiers](#9-structure-block-modifiers)
 
 **For mod developers**
 
-8. [Mob Spell Casting](#8-mob-spell-casting)
-9. [Spellcaster Flee and Positioning Goals](#9-spellcaster-flee-and-positioning-goals)
-10. [Mob Animations (playerAnimator bridge)](#10-mob-animations-playeranimator-bridge)
-11. [Better Combat and Combat Roll for Mobs](#11-better-combat-and-combat-roll-for-mobs)
-12. [Entity Attribute Config](#12-entity-attribute-config)
+10. [Mob Spell Casting](#10-mob-spell-casting)
+11. [Spellcaster Flee and Positioning Goals](#11-spellcaster-flee-and-positioning-goals)
+12. [Mob Animations (playerAnimator bridge)](#12-mob-animations-playeranimator-bridge)
+13. [Better Combat and Combat Roll for Mobs](#13-better-combat-and-combat-roll-for-mobs)
+14. [Entity Attribute Config](#14-entity-attribute-config)
+15. [Particle FX (MRPG FX)](#15-particle-fx-mrpg-fx)
 
 ---
 
@@ -62,6 +65,12 @@ Needs Spell Power installed. Spell schools are Spell Power's own system, this li
 
 **🗡️Melee Spell Schools**
 - **🪓Rage Melee**
+
+**✨Dynamic Spell School** (`spell_power:dynamic`, `DynamicSpellSchool.DYNAMIC`)
+- Always uses your strongest damage school: physical melee (attack damage), physical ranged (Ranged Weapon API ranged damage) or any magic school (fire, frost, arcane, soul, lightning, water, air, earth, nature, ...). Healing and generic spell power don't count on their own.
+- Power, haste, critical chance and critical damage all come from that school: attack speed and Critical Strike for melee, ranged haste and Critical Strike for ranged, Spell Power haste and critical attributes for magic.
+- The damage type follows it too: player attack for melee, arrow for ranged, the magic school's own damage type for magic.
+- Meant for spells that should work for every class, like relic and weapon abilities.
 
 ### 3. New Entity Attributes
 These work for every living entity, players and mobs alike.
@@ -183,15 +192,56 @@ The deprecated handlers still work, but for new spells Spell Engine's own `VELOC
 Strengths like the knock up height, pull speed, dash range and the missing health multipliers can be tuned in `config/mrpg_lib/tweaks_v2.json`.
 
 ### 7. Loot Table Enhancements
-The spell scroll and spell pool functions need Spell Engine installed. The conditional item function and entry don't.
+The spell scroll and spell pool functions only do something when Spell Engine is installed. The conditional item function and entry work without it.
+
+**Loot tables that should also work without Spell Engine**
+
+Minecraft throws away the whole loot table if one part of it can't be read, for example an item or a function from a mod that isn't installed. A suspicious block or chest with that table then gives nothing at all.
+- Without Spell Engine, `mrpg_lib:specific_spell_scroll_pool` and `mrpg_lib:bind_spell_from_pools` still load, but do nothing.
+- The scroll item itself (`spell_engine:spell_scroll`) is still missing. So don't add it as a normal `minecraft:item` entry, use the conditional item entry below. Without Spell Engine the entry is left out and the other entries of the pool are rolled instead.
+```json
+{
+  "type": "mrpg_lib:conditional_item",
+  "item": "spell_engine:spell_scroll",
+  "weight": 2,
+  "functions": [
+    {
+      "function": "mrpg_lib:specific_spell_scroll_pool",
+      "spell_pools": ["#wizards:frost"],
+      "spell_tier_min": 1,
+      "spell_tier_max": 2,
+      "count": 1
+    }
+  ]
+}
+```
+With datagen: `ConditionalItemEntry.builder(Identifier.of("spell_engine", "spell_scroll"), Optional.empty())`. It works like `ItemEntry.builder`, with `.weight()` and `.apply()`.
+
+With Spell Engine but without spells in the chosen pools and tiers (for example no class mods installed), the scroll function finds nothing and the roll gives nothing.
+Add the condition `mrpg_lib:spells_available` with the same pools and tiers to the entry, then the entry only takes part when there are matching spells, otherwise one of the other entries is picked. Without Spell Engine the condition is always false.
+```json
+{
+  "type": "mrpg_lib:conditional_item",
+  "item": "spell_engine:spell_scroll",
+  "weight": 8,
+  "conditions": [
+    { "condition": "mrpg_lib:spells_available", "spell_tier_min": 3, "spell_tier_max": 4 }
+  ],
+  "functions": [
+    { "function": "mrpg_lib:specific_spell_scroll_pool", "spell_tier_min": 3, "spell_tier_max": 4, "count": 1 }
+  ]
+}
+```
+`spell_pools`, `spell_tier_min` and `spell_tier_max` of the condition are optional. With datagen: `SpellsAvailableLootCondition.builder(pools, tierMin, tierMax)` and `SpecificSpellScrollPoolLootFunction.builder(...)` (these two need Spell Engine on the datagen classpath).
 
 **Spell scroll from specific spell pools 📜**
 
 Adds a spell scroll with a spell from the given pools. You can limit the spell tier and blacklist spells.
+Without `spell_pools` every spell can be picked. This example uses a normal item entry, so the table only loads with Spell Engine installed. For tables that should also work without it, use the conditional item entry from above.
 ```json
 {
   "type": "minecraft:item",
-  "name": "spell_engine:scroll",
+  "name": "spell_engine:spell_scroll",
   "functions": [
     {
       "function": "mrpg_lib:specific_spell_scroll_pool",
@@ -247,7 +297,7 @@ Drops the conditional item if it is registered, otherwise the entry's own item i
 
 **Conditional item entry**
 
-A loot pool entry without a fallback. If the item is not registered, the entry is skipped and the loot table keeps working.
+A loot pool entry without a fallback. If the item is not registered, the entry is left out of the roll, so one of the other entries of the pool is picked instead, and the loot table keeps working.
 ```json
 {
   "type": "mrpg_lib:conditional_item",
@@ -260,11 +310,197 @@ A loot pool entry without a fallback. If the item is not registered, the entry i
 }
 ```
 
+### 8. Structure Processors
+Processors change the blocks of a structure template while it is placed. They work in every structure that places templates, jigsaw structures included.
+
+**How to use them**
+
+Put the processors in a processor list, for example `data/your_mod/worldgen/processor_list/library.json`:
+```json
+{
+  "processors": [
+    { "processor_type": "mrpg_lib:random_replace", "target": "minecraft:bookshelf", "count": 2,
+      "replacement": { "Name": "loot_n_explore:suspicious_bookshelf" }, "loot_table": "loot_n_explore:archaeology/bookshelf" }
+  ]
+}
+```
+Then point the template pool element at it with `"processors": "your_mod:library"`. You can also write the list right into the pool element instead of the id.
+Processors run in the order of the list, and each one sees the blocks the processors before it already changed.
+
+A typo or a block from a mod that isn't installed in `target`, `filler_block`, `corner_block` or `blend_block` only shows a warning in the log, and that processor is skipped.
+Blocks in `replacement` and `fallback` of random replace are checked when the datapack loads, like in vanilla processors. An unknown block there stops the processor list from loading.
+For blocks from optional mods, only load the processor list when that mod is installed (Fabric `fabric:load_conditions`, NeoForge `neoforge:conditions`).
+Give the same condition to everything that points at it (template pool, structure, structure set), otherwise those fail to load instead.
+
+**Random replace**
+
+Picks a number of random blocks from one structure piece and replaces them, for example 2 of the 60 bookshelves in a library become suspicious bookshelves with a loot table.
+
+| Field | Required | What it does |
+| --- | --- | --- |
+| `target` | yes | The block to look for: a block id or a block tag (`#minecraft:logs`) |
+| `count` | yes | How many of them get replaced: a number, or an int provider like `{ "type": "minecraft:uniform", "min_inclusive": 2, "max_inclusive": 3 }` |
+| `replacement` | yes | The new block as a block state: `{ "Name": "minecraft:chest", "Properties": { "facing": "north" } }` |
+| `loot_table` | no | Loot table for the new block. Works for chests, barrels, shulker boxes and suspicious blocks |
+| `fallback` | no | Block state for the blocks that weren't picked. Without it they stay as they are |
+| `blend_fallback` | no (`false`) | The blocks that weren't picked copy the most common full block next to them in the template, for example the wall they are in. Blocks with a block entity are never copied. If nothing is found, `fallback` is used |
+
+Library example: 2 bookshelves become suspicious bookshelves, the other bookshelves stay normal.
+```json
+{
+  "processor_type": "mrpg_lib:random_replace",
+  "target": "minecraft:bookshelf",
+  "count": 2,
+  "replacement": { "Name": "loot_n_explore:suspicious_bookshelf" },
+  "loot_table": "loot_n_explore:archaeology/bookshelf"
+}
+```
+
+Marker example: build black stained glass where a chest could be. 2 or 3 of them become loot chests, the rest blend into the wall or become stone bricks.
+```json
+{
+  "processor_type": "mrpg_lib:random_replace",
+  "target": "minecraft:black_stained_glass",
+  "count": { "type": "minecraft:uniform", "min_inclusive": 2, "max_inclusive": 3 },
+  "replacement": { "Name": "minecraft:chest", "Properties": { "facing": "north" } },
+  "loot_table": "minecraft:chests/simple_dungeon",
+  "fallback": { "Name": "minecraft:stone_bricks" },
+  "blend_fallback": true
+}
+```
+Good to know:
+- The count is per structure piece, not for the whole structure. A jigsaw structure with 4 library pieces gets 2 suspicious bookshelves in each piece.
+- If a piece has fewer target blocks than the count, all of them are replaced.
+- The replacement is rotated together with the piece, so `facing` is the direction it has in the template.
+- The same structure at the same place always picks the same blocks, so the picks don't change between the chunks a piece is placed in.
+
+**Item frame items**
+
+Gives item frames in a structure a random item from a list. Save the template with entities (structure block option "Include entities"), otherwise there are no frames in it.
+
+| Field | Required | What it does |
+| --- | --- | --- |
+| `items` | yes | Item ids and item tags (`#minecraft:swords`). Items from mods that aren't installed are skipped, so you can mix items from different mods |
+| `entities` | no (`item_frame`, `glow_item_frame`) | Which entities count as frames |
+| `only_empty` | no (`true`) | Only frames that are empty in the template get an item. Set it to `false` to also replace items you put in by hand |
+| `chance` | no (`1.0`) | Chance per frame to get an item, otherwise the frame stays empty |
+
+```json
+{
+  "processor_type": "mrpg_lib:item_frame_items",
+  "items": ["minecraft:diamond", "#minecraft:swords", "jewelry:ruby"],
+  "chance": 0.75
+}
+```
+Every frame rolls on its own, so two frames can get the same item. Every entry in the list has the same chance, and a tag counts as all of its items, so `#minecraft:swords` is picked more often than one single item. To make an item more common, list it more than once.
+Invisible frames stay invisible, the rotation of the frame and of the item stays as it was in the template.
+
+**Paths: path adaptation, water pillar and terrain blending**
+
+These three turn marker blocks in a path template into blocks that fit the ground below them. They also work with `"projection": "terrain_matching"`, they look at the ground where the block really ends up.
+
+`mrpg_lib:path_adaptation` turns every `filler_block` into the `output` of the first `terrain_mappings` entry that matches the block below it (block id or `#tag`), otherwise into `fallback_block`. Above water it becomes `water_output`. With `remove_floating_blocks` a filler block with no ground in the 2 blocks below it is left out.
+```json
+{
+  "processor_type": "mrpg_lib:path_adaptation",
+  "filler_block": "minecraft:pink_stained_glass",
+  "terrain_mappings": [
+    { "terrain": "#minecraft:dirt", "output": "minecraft:dirt_path" },
+    { "terrain": "minecraft:sand", "output": "minecraft:sandstone" }
+  ],
+  "water_output": "minecraft:oak_planks",
+  "fallback_block": "minecraft:dirt_path",
+  "remove_floating_blocks": true
+}
+```
+`stop_on_water`, `water_check_radius` and `water_threshold` are still accepted but do nothing. A processor can't stop a jigsaw path, the pieces are chosen before any block is placed.
+
+`mrpg_lib:water_pillar` is for bridge corners. If there is water below a `corner_block`, it becomes `pillar_block`, a pillar of that block goes down through the water (up to `max_pillar_depth`) and a `fence_block` is put on top. On land the corner works like a path block: `terrain_mappings`, then the surrounding terrain if `blend_with_terrain` is on, then `fallback_block`.
+```json
+{
+  "processor_type": "mrpg_lib:water_pillar",
+  "corner_block": "minecraft:yellow_stained_glass",
+  "pillar_block": "minecraft:oak_log",
+  "fence_block": "minecraft:oak_fence",
+  "max_pillar_depth": 16,
+  "terrain_mappings": [ { "terrain": "#minecraft:dirt", "output": "minecraft:dirt_path" } ],
+  "fallback_block": "minecraft:dirt_path",
+  "sample_radius": 2,
+  "blend_with_terrain": true
+}
+```
+
+`mrpg_lib:terrain_blending` turns every `blend_block` into the most common terrain block around it (dirt becomes grass), with a small random `variation_chance` (moss and podzol on grass, cobblestone, mossy cobblestone and andesite on stone, sandstone and gravel on sand, ice on snow). Only full terrain blocks count, never blocks of the structure itself. Over deep water the block is left out. Without any terrain around it becomes `fallback_block`.
+```json
+{
+  "processor_type": "mrpg_lib:terrain_blending",
+  "blend_block": "minecraft:lime_stained_glass",
+  "sample_radius": 2,
+  "fallback_block": "minecraft:grass_block",
+  "match_below": true,
+  "match_horizontal": true,
+  "variation_chance": 0.15
+}
+```
+
+### 9. Structure Block Modifiers
+Structure processors only work in structures that are built from template files. Many structures aren't: strongholds, mineshafts, nether fortresses, woodland mansions, desert and jungle temples are built in code.
+Structure block modifiers work for every structure, vanilla and modded, and you don't have to change any of its files.
+They run right after a part of a structure (a room, a corridor, a jigsaw piece) is placed and replace some of its blocks.
+
+Put the files in `data/<namespace>/mrpg_lib/structure_block_modifier/<name>.json`. `/reload` reloads them, but only new chunks use the new values.
+This is the one Loot & Explore uses for stronghold libraries:
+```json
+{
+  "structures": ["minecraft:stronghold"],
+  "pieces": ["minecraft:shli"],
+  "target": "minecraft:bookshelf",
+  "chance": 0.03,
+  "max_per_piece": 4,
+  "replacement": { "Name": "loot_n_explore:suspicious_bookshelf" },
+  "loot_table": "loot_n_explore:archaeology/stronghold_library"
+}
+```
+
+| Field | Required | What it does |
+| --- | --- | --- |
+| `structures` | yes | Structure ids or structure tags, for example `"minecraft:stronghold"` or `"#minecraft:village"` |
+| `pieces` | no (all) | Only these parts of the structure, as structure piece type ids. Stronghold library: `minecraft:shli`. Jigsaw structures use `minecraft:jigsaw` for every piece |
+| `target` | yes | The block to replace: a block id or a block tag |
+| `chance` | yes | Chance for every target block to be replaced, from `0.0` to `1.0` |
+| `max_per_piece` | no (no limit) | At most this many replacements per piece. A piece that crosses chunk borders is handled once per chunk, so it can get this many in each chunk |
+| `replacement` | yes | The new block as a block state: `{ "Name": "minecraft:chest", "Properties": { "facing": "north" } }` |
+| `loot_table` | no | Loot table for the new block. Works for chests, barrels, shulker boxes and suspicious blocks. Suspicious blocks give only one item, so use a table with one roll (type `minecraft:archaeology`) |
+| `required_mods` | no | Mod ids. If one of them isn't installed, the file is skipped without an error. Use it when `replacement` comes from another mod |
+
+Good to know:
+- It's a chance per block and not "exactly 2 per room", because code-built rooms are placed one chunk at a time and no step sees the whole room. For a fixed number in template structures, use the random replace processor.
+- The same world seed always picks the same blocks.
+- A file with an unknown block in `replacement` is skipped and the log says why. The world still loads. Unknown piece types and invalid ids show a warning.
+- Common piece type ids: stronghold library `minecraft:shli`, stronghold chest corridor `minecraft:shcc`, mineshaft corridor `minecraft:mscorridor`, nether fortress pieces start with `minecraft:ne` (for example `minecraft:nestart`, `minecraft:nebcr`; `minecraft:nefos` is the nether fossil), desert temple `minecraft:tedp`, jungle temple `minecraft:tejp`, woodland mansion `minecraft:wmp`.
+
+For mod developers: `com.mrpg_lib.datagen.StructureBlockModifierProvider` writes these files with datagen.
+```java
+public class MyModifierProvider extends StructureBlockModifierProvider {
+    public MyModifierProvider(FabricDataOutput output) {
+        super(output);
+    }
+
+    @Override
+    protected void generate(BiConsumer<Identifier, StructureBlockModifier> exporter) {
+        exporter.accept(Identifier.of("my_mod", "stronghold_bookshelves"), new StructureBlockModifier(
+                List.of("minecraft:stronghold"), List.of("minecraft:shli"), "minecraft:bookshelf", 0.03F, 4,
+                MyBlocks.SUSPICIOUS_BOOKSHELF.getDefaultState(),
+                Optional.of(Identifier.of("my_mod", "archaeology/stronghold_library")), List.of()));
+    }
+}
+```
+
 ---
 
 ## For mod developers
 
-### 8. Mob Spell Casting
+### 10. Mob Spell Casting
 Needs Spell Engine installed.
 
 `com.mrpg_lib.compat.spell_engine.MobSpellCastGoal` lets any mob cast Spell Engine spells.
@@ -332,7 +568,7 @@ MobSpellCastGoal beam = new MobSpellCastGoal(this, "#mymod:mob/wizard_spells", s
 
 The overridden cast time is what `startSpellCast(int ticks)` receives.
 If you play your own fixed-length animation, it will not stretch to fit by itself, so loop it or scale it from that tick count.
-The spell's own animations (`withAnimations(true)`, see [section 10](#10-mob-animations-playeranimator-bridge)) do follow the overridden cast time.
+The spell's own animations (`withAnimations(true)`, see [section 10](#12-mob-animations-playeranimator-bridge)) do follow the overridden cast time.
 
 ---
 
@@ -455,8 +691,8 @@ A modifier spell that matches the spell being cast extends its range (`range_add
 The rest of what a modifier can do on a player (changing the impact, boosting power, projectile perks) is not applied to mobs yet, because Spell Engine's own modifier resolution only works for `PlayerEntity` casters.
 Passive spells are resolved and exposed the same way, but their triggers (on-hit, periodic) are not auto-dispatched for the same reason.
 
-### 9. Spellcaster Flee and Positioning Goals
-Needs Spell Engine installed. These goals work with `ISpellCasterEntity` from [section 8](#8-mob-spell-casting).
+### 11. Spellcaster Flee and Positioning Goals
+Needs Spell Engine installed. These goals work with `ISpellCasterEntity` from [section 8](#10-mob-spell-casting).
 
 Ready-made AI goals for spell-casting mobs that need to keep their distance and flee when low on health.
 
@@ -520,7 +756,7 @@ protected void initGoals() {
 }
 ```
 
-### 10. Mob Animations (playerAnimator bridge)
+### 12. Mob Animations (playerAnimator bridge)
 Needs [playerAnimator](https://modrinth.com/mod/playeranimator). Without it, every call below quietly does nothing and none of its classes are loaded.
 
 Lets mobs play playerAnimator animations, the same `player_animations/*.json` files Spell Engine and Better Combat use for players.
@@ -552,7 +788,7 @@ MobAnimations.playSpellAnimation(mob, MobAnimationLayer.RELEASE, "spell_engine:o
 - `withMirror(AUTO)` mirrors the animation for left-handed mobs.
 - `withPersistent(true)` replays the animation for players who start tracking the mob later, until it is stopped.
 - `withDuration(ticks)` (optional) stretches the animation to last that long, float lengths work too.
-- `withAttackTiming(length, upswingRate, upswingMultiplier)` plays an animation with Better Combat's attack speed curve instead of a constant speed: fast during the upswing, slower afterwards, so the hit frame lines up with the moment the damage lands (`length` in ticks, `upswingRate` and `upswingMultiplier` as Better Combat computes them). The Better Combat melee goal ([section 11](#11-better-combat-and-combat-roll-for-mobs)) uses it.
+- `withAttackTiming(length, upswingRate, upswingMultiplier)` plays an animation with Better Combat's attack speed curve instead of a constant speed: fast during the upswing, slower afterwards, so the hit frame lines up with the moment the damage lands (`length` in ticks, `upswingRate` and `upswingMultiplier` as Better Combat computes them). The Better Combat melee goal ([section 11](#13-better-combat-and-combat-roll-for-mobs)) uses it.
 
 `animationId` is `<namespace>:<"name" field of the json>`, not the file name. Use `MobAnimations.isAvailable()` if you need to know whether playerAnimator is there.
 
@@ -576,7 +812,7 @@ MobModelAdapters.register(new MobModelAdapter() {
 
 **Test command** (development environment only, op level 2): `/mrpg_anim <targets> <animation id> [speed]` and `/mrpg_anim <targets> stop`, for example `/mrpg_anim @e[type=zombie] spell_engine:one_handed_projectile_charge`.
 
-### 11. Better Combat and Combat Roll for Mobs
+### 13. Better Combat and Combat Roll for Mobs
 Needs [Better Combat](https://modrinth.com/mod/better-combat) and [Combat Roll](https://modrinth.com/mod/combat-roll) respectively, both optional.
 The factories below are safe to call from `initGoals()` whether the mod is installed or not, and nothing changes for mobs you don't give these goals to.
 Nothing in the library adds these goals to mobs by itself.
@@ -670,7 +906,7 @@ The husk should hold the claymore in Better Combat's two-handed sword pose right
 Add `LeftHanded:1b` to see the mirrored pose.
 Without Paladins or Archers, a datapack file `data/minecraft/weapon_attributes/iron_axe.json` containing `{"parent": "bettercombat:claymore"}` gives the iron axe the claymore pose.
 
-### 12. Entity Attribute Config
+### 14. Entity Attribute Config
 A small config shape (`com.mrpg_lib.entity.config.EntityAttributeConfig`) for giving your registered entities configurable attributes, so players and modpack makers can retune them without touching your code.
 `EASY` is the base value you set. `NORMAL` and `HARD` each get their own multiplier on top, `PEACEFUL` uses the base value like `EASY` does.
 
@@ -748,3 +984,55 @@ Defaults go on the same `Entry`: `.setEquipment(EquipmentSlot.MAINHAND, "minecra
         .requiresAnyMod("wizards").fallback("minecraft:stick").enchant(0.25, 20).dropChance(0.0))
 ```
 Equipment is applied by `apply(...)` together with the attributes and is saved with the mob, so it only affects freshly spawned mobs, not ones already saved in a world. Only `MobEntity` subclasses can get equipment. Whether an item is visible depends on the mob's renderer: armor needs an armor feature renderer and held items a held item feature renderer, but the item's attribute bonuses apply either way. Existing config files don't gain the `equipment` map on their own (see the note above).
+
+### 15. Particle FX (MRPG FX)
+`com.mrpg_lib.fx` plays particle and sound effects with one packet per effect. The client builds the shapes, so even large effects stay cheap on the network.
+
+**Use a preset.** Presets are ready-made effects you adjust in one call: `EXPLOSION`, `BURST`, `SHOCKWAVE`, `AURA`, `SWIRL`, `BEAM`, `TRAIL`, `IMPACT`, `CAST`, `PILLAR`, `CLOUD`, `SLASH`, `STORM`.
+```java
+public static final FxEffect DRAGON_BURST = MrpgFx.register(Identifier.of("mymod", "dragon_burst"), FxPresets.EXPLOSION.tweak(t -> t
+        .radius(5.0F)
+        .color(0xB040F0, 0x300050)
+        .speed(0.3F)
+        .vanillaParticle(ParticleTypes.DRAGON_BREATH)
+        .sound(SoundEvents.ENTITY_DRAGON_FIREBALL_EXPLODE, 0.9F, 1.1F)));
+```
+Register effects in common code during mod init, so the server and the client both know them.
+
+**Play it** on the server. Players within 64 blocks receive it:
+```java
+MrpgFx.play(serverWorld, DRAGON_BURST, FxParams.at(center).radius(5.0F));
+MrpgFx.play(serverWorld, MY_AURA, FxParams.on(player));          // timed effects can follow an entity
+FxHandle handle = MrpgFx.play(serverWorld, MY_CHANNEL, params);  // handle.stop() ends a timed effect early
+```
+`FxParams` can also carry a `direction`, a `target` (beams), `length`, `scale`, `intensity` (particle count multiplier), a `color` override for colored layers a `duration` override in ticks for timed effects and a `startAge` in ticks that starts a timed effect part way through (for example to replay it in another color without restarting it). A radius passed here replaces the effect's default radius, so an effect always matches the size of your ability.
+
+**Build your own** from layers when no preset fits. A layer is a shape, how its particles move, and which particle it uses:
+```java
+public static final FxEffect FROST_NOVA = MrpgFx.register(Identifier.of("mymod", "frost_nova"), FxEffect.builder()
+        .radius(3.0F)
+        .layer(FxLayer.of(FxShape.SPHERE).radiusFromParams(0.4F).count(40)
+                .velocity(FxVelocity.OUTWARD).speed(0.1F, 0.25F).speedFromRadius().particle(ParticleTypes.SNOWFLAKE))
+        .layer(FxLayer.of(FxShape.RING).radiusFromParams(1.0F).count(32).anchor(FxAnchor.GROUND).dust(0x9FE0FF, 1.2F))
+        .sound(SoundEvents.BLOCK_GLASS_BREAK, 0.9F, 0.6F)
+        .build());
+```
+| Option | Values |
+|---|---|
+| Shapes | `POINT`, `SPHERE`, `SHELL`, `RING`, `DISC`, `ARC`, `CYLINDER`, `COLUMN`, `CONE`, `LINE`, `BEAM`, `HELIX`, `SPIRAL`, `BOX` |
+| Velocity | `NONE`, `OUTWARD`, `INWARD`, `UP`, `DOWN`, `ALONG_AXIS`, `TANGENT` (swirl), `RANDOM` |
+| Motion | `DEFAULT`, `STATIC`, `FLOAT`, `ASCEND`, `DRIFT`, `BURST` |
+| Anchor | `POSITION`, `ENTITY` (with `verticalOrigin`), `EYES`, `GROUND`, `TARGET` |
+| Orientation | `WORLD` (turns with the yaw only), `LOOK` (follows the direction), `AXIS` (the shape's up axis points along the direction) |
+
+Effects can be timed (`duration`, `interval`, `follow()`), layers can be delayed, grow over time (`growFrom`) and spin (`spin`), sounds can be delayed or repeated, and effects can start other effects as `child` with a delay.
+
+**Colored vanilla particles.** `ColoredParticles` has colorable copies of vanilla particles that use the vanilla textures: `EXPLOSION`, `EXPLOSION_EMITTER` (large explosion), `POOF`, `SMOKE`, `LARGE_SMOKE`, `CLOUD`, `END_ROD`, `FIREWORK`, `FLASH`, `WITCH`, `CRIT`, `ENCHANTED_HIT` and `SNOWFLAKE`. Use them in a layer with `.colored(ColoredParticles.END_ROD, 0xFF40C0)` or anywhere else as a particle effect with `ColoredParticles.END_ROD.of(0xFF40C0)` (an optional second value scales the particle). When a preset gets a `color`, it uses the colored copies of its own particles, and dust only for particles without a copy. Preset layers stay recolorable, so a `color` in `FxParams` recolors them when the effect is played.
+
+**Particle lifetime.** `FxLayer.lifetime(ticks)` overrides how long the particles of that layer live. A timed effect with `interval(1)` and short lived particles draws a clean shape every tick, for example a ring that shrinks with `growFrom`.
+
+**Floating bubble.** `MoreParticles.FLOATING_BUBBLE` is a bubble that floats up slowly and lives for 1.5 to 2.5 seconds. Unlike the vanilla bubble it does not need water.
+
+**Testing.** In a development environment `/mrpg_fx play <effect> [radius] [scale] [intensity] [color]` plays an effect where you look, and `/mrpg_fx list` lists all effects. Every preset is registered as `mrpg_lib:preset/<name>` and every colored particle as `mrpg_lib:demo/colored_<name>` (white, recolor it with the color argument).
+
+**Players** can lower or raise the amount of particles with `fx_density` (0.1 to 3) in `config/mrpg_lib/client_fx_v1.json`.

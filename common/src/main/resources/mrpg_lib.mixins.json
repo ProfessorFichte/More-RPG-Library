@@ -10,6 +10,8 @@
     "LivingEntityStealth",
     "MobEntityGoalsAccessor",
     "PersistentProjectileEntityMixin",
+    "StructureStartMixin",
+    "StructureTemplateMixin",
     "TrackTargetGoalStealth"
   ],
   "client": [

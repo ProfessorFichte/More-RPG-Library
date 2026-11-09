@@ -1,3 +1,33 @@
+# 2.8.2 - 1.21.1
+
+### Added
+- MRPG FX (`com.mrpg_lib.fx`): code-defined particle and sound effects sent as one packet per effect and built on the client. 
+- These defined were mainly added for the Loot & Explore Update. Relic's & Weapons with Abilities will use it. 
+- 14 shapes, velocity and motion modes, anchors, orientations, timed effects that follow an entity, delayed layers, sounds and child effects
+- 13 FX presets that are adjusted with one call: Explosion, Burst, Shockwave, Aura, Swirl, Beam, Trail, Impact, Cast, Pillar, Cloud, Slash and Storm
+- Client setting `fx_density` in `config/mrpg_lib/client_fx_v1.json`
+- Colored copies of 13 vanilla particles, that use the vanilla textures and take any color and a scale
+- `FxLayer.lifetime(ticks)` sets how long the particles of a layer live, `FxParams.startAge(ticks)` starts a timed effect part way through
+- `mrpg_lib:floating_bubble` particle: a bubble that floats and lives for a few seconds, also outside of water
+- Dynamic spell school `spell_power:dynamic`: always uses the strongest of your melee, ranged and magic schools, including that school's haste, critical chance, critical damage (Critical Strike for melee and ranged) and damage type
+- Structure processor `mrpg_lib:random_replace`: turns a random number of blocks of a structure piece into another block, optional with a loot table. The other ones can stay, become a fallback block or copy the blocks around them
+- Structure processor `mrpg_lib:item_frame_items`: gives item frames in a structure a random item from a list of item ids and tags, items of missing mods are skipped
+- Structure block modifiers (`data/<namespace>/mrpg_lib/structure_block_modifier/*.json`): replace blocks in any structure with a chance, also in structures that are built in code like strongholds, mineshafts or nether fortresses, optional with a loot table. `StructureBlockModifierProvider` creates them with datagen
+- Loot condition `mrpg_lib:spells_available`: true when Spell Engine has spells in the given pools and tiers, so a spell scroll entry is only rolled when it can get a spell (always false without Spell Engine)
+
+### Fixed
+- Crash on startup without Spell Engine: Tiny Config is now included in the jar. Before it only came with Spell Engine
+- Loot tables that use the spell scroll or spell pool function no longer stop working completely without Spell Engine. The functions just do nothing then
+- The conditional item entry no longer gives an empty roll when its item is missing, one of the other entries is picked instead.
+- The conditional item entry ran its functions twice. A spell scroll got two spells and `enchant_randomly` two enchantments. Now they run once
+- Path processors (`path_adaptation`, `water_pillar`, `terrain_blending`) now check the ground where the block really ends up, also in `terrain_matching` pieces. Before they looked at the height the template was saved at, which removed or swapped path blocks
+- `water_pillar` builds each pillar once, in the chunk of its corner. Before it was built again for every chunk the path touched, which could leave a path block on top of the pillar, no fence, and "setBlock in a far chunk" errors
+- Unknown block ids in structure processors no longer turn into air (which made every air block of the template count as a marker), they are skipped with a warning
+- `terrain_blending` only copies full terrain blocks, no more plants, stairs, slabs, bricks or ores, never blocks of the structure itself, and doesn't turn snow into powder snow anymore
+- `path_adaptation` got a `fallback_block` option. `stop_on_water` is ignored, it never had an effect
+- The conditional jigsaw structure supports `pool_aliases` and checks `max_distance_from_center` like the vanilla jigsaw structure
+- NeoForge: the rage attribute and the Duelist's Focus damage changes had no effect, NeoForge ignores the damage value they changed
+
 # 2.8.1 - 1.21.1
 
 ### Fixed

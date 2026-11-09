@@ -1,12 +1,16 @@
 package com.mrpg_lib.fabric;
 
 import com.mrpg_lib.MRPGCMod;
+import com.mrpg_lib.client.particle.ColoredParticles;
 import com.mrpg_lib.client.particle.MoreParticles;
 import com.mrpg_lib.compat.MrpgCompat;
 import com.mrpg_lib.compat.armory_rpgs.SmithingIngredients;
 import com.mrpg_lib.compat.player_animator.api.MobAnimations;
 import com.mrpg_lib.compat.player_animator.command.MobAnimationCommand;
+import com.mrpg_lib.command.FxCommand;
 import com.mrpg_lib.command.MobGoalCommand;
+import com.mrpg_lib.fx.FxPlayPayload;
+import com.mrpg_lib.fx.FxStopPayload;
 import com.mrpg_lib.compat.player_animator.network.MobAnimationPacket;
 import com.mrpg_lib.compat.spell_engine.network.MobBeamPacket;
 import com.mrpg_lib.compat.spell_engine.network.MobSpinPacket;
@@ -17,7 +21,10 @@ import com.mrpg_lib.item.MRPGCItems;
 import com.mrpg_lib.network.MRPGCNetworking;
 import com.mrpg_lib.platform.MrpgPlatform;
 import com.mrpg_lib.util.loot.MRPGCLootTableEntityModifiers;
+import com.mrpg_lib.fabric.worldgen.FabricStructureBlockModifiers;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.minecraft.resource.ResourceType;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
@@ -31,12 +38,15 @@ public final class FabricMod implements ModInitializer {
     @Override
     public void onInitialize() {
         MrpgPlatform.setUtil(new FabricPlatformUtil());
+        ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new FabricStructureBlockModifiers());
         MRPGCNetworking.setSender(MRPGCNetworkingImpl::sendToPlayer);
         if (MrpgCompat.SPELL_ENGINE) {
             PayloadTypeRegistry.playS2C().register(MobBeamPacket.ID, MobBeamPacket.CODEC);
             PayloadTypeRegistry.playS2C().register(MobSpinPacket.ID, MobSpinPacket.CODEC);
         }
         MRPGCNetworking.setTrackingSender(MRPGCNetworkingImpl::sendToTracking);
+        PayloadTypeRegistry.playS2C().register(FxPlayPayload.ID, FxPlayPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(FxStopPayload.ID, FxStopPayload.CODEC);
         if (MrpgCompat.PLAYER_ANIMATOR) {
             PayloadTypeRegistry.playS2C().register(MobAnimationPacket.ID, MobAnimationPacket.CODEC);
             EntityTrackingEvents.START_TRACKING.register((entity, player) -> {
@@ -49,6 +59,7 @@ public final class FabricMod implements ModInitializer {
             CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
                 MobAnimationCommand.register(dispatcher);
                 MobGoalCommand.register(dispatcher);
+                FxCommand.register(dispatcher);
             });
         }
 
@@ -56,6 +67,7 @@ public final class FabricMod implements ModInitializer {
 
         MRPGCMod.registerLootFunction();
         MoreParticles.register();
+        ColoredParticles.register();
         if (MrpgCompat.SPELL_ENGINE) {
             MoreSpellParticles.register();
         }
