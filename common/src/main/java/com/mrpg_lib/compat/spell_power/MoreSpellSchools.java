@@ -79,5 +79,6 @@ public class MoreSpellSchools {
         SpellSchools.register(FROST_RANGED);
         SpellSchools.register(FIRE_RANGED);
         SpellSchools.register(RAGE_MELEE);
+        DynamicSpellSchool.create();
     }
 }
