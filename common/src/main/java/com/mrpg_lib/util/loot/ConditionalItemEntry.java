@@ -9,7 +9,7 @@ import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.entry.LeafEntry;
 import net.minecraft.loot.entry.LootPoolEntryType;
-import net.minecraft.loot.entry.LootPoolEntryTypes;
+import net.minecraft.loot.LootChoice;
 import net.minecraft.loot.function.LootFunction;
 import net.minecraft.loot.function.LootFunctionTypes;
 import net.minecraft.loot.provider.number.LootNumberProvider;
@@ -43,9 +43,18 @@ public class ConditionalItemEntry extends LeafEntry {
         this.count = count;
     }
 
+    public static LeafEntry.Builder<?> builder(Identifier itemId, Optional<LootNumberProvider> count) {
+        return builder((weight, quality, conditions, functions) -> new ConditionalItemEntry(itemId, count, weight, quality, conditions, functions));
+    }
+
     @Override
     public LootPoolEntryType getType() {
-        return LootPoolEntryTypes.ITEM;
+        return TYPE;
+    }
+
+    @Override
+    public boolean expand(LootContext context, Consumer<LootChoice> choiceConsumer) {
+        return Registries.ITEM.containsId(itemId) && super.expand(context, choiceConsumer);
     }
 
     @Override
@@ -56,13 +65,7 @@ public class ConditionalItemEntry extends LeafEntry {
         int c = count.map(provider -> provider.nextInt(context)).orElse(1);
         if (c < 1) c = 1;
 
-        ItemStack stack = new ItemStack(item, c);
-
-        for (LootFunction fn : this.functions) {
-            stack = fn.apply(stack, context);
-        }
-
-        lootConsumer.accept(stack);
+        lootConsumer.accept(new ItemStack(item, c));
     }
 
     public Identifier getItemId() { return this.itemId; }
@@ -82,5 +85,7 @@ public class ConditionalItemEntry extends LeafEntry {
                     LootFunctionTypes.CODEC.listOf().optionalFieldOf("functions", List.of()).forGetter(e -> e.functions)
             ).apply(instance, ConditionalItemEntry::new)
     );
+
+    public static final LootPoolEntryType TYPE = new LootPoolEntryType(CODEC);
 
 }

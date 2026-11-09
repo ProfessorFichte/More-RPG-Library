@@ -6,6 +6,7 @@ import com.mrpg_lib.compat.CompatHooks;
 import com.mrpg_lib.compat.MrpgCompat;
 import com.mrpg_lib.compat.spell_engine.loot.BindSpellFromPoolsLootFunction;
 import com.mrpg_lib.compat.spell_engine.loot.SpecificSpellScrollPoolLootFunction;
+import com.mrpg_lib.compat.spell_engine.loot.SpellsAvailableLootCondition;
 import com.mrpg_lib.compat.spell_power.SpellPowerCompat;
 import com.mrpg_lib.effect.ControlEnemyStatusEffect;
 import com.mrpg_lib.effect.StealthStatusEffect;
@@ -52,6 +53,7 @@ public final class SpellEngineCompat {
     public static void registerLootFunctions() {
         Registry.register(Registries.LOOT_FUNCTION_TYPE, SpecificSpellScrollPoolLootFunction.ID, SpecificSpellScrollPoolLootFunction.TYPE);
         Registry.register(Registries.LOOT_FUNCTION_TYPE, BindSpellFromPoolsLootFunction.ID, BindSpellFromPoolsLootFunction.TYPE);
+        Registry.register(Registries.LOOT_CONDITION_TYPE, SpellsAvailableLootCondition.ID, SpellsAvailableLootCondition.TYPE);
     }
 
     private static void installBridges() {
