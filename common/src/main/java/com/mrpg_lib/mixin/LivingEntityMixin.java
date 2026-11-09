@@ -26,8 +26,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArgs;
-import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -177,52 +176,52 @@ public abstract class LivingEntityMixin {
         }
     }
 
-    @ModifyArgs(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V"))
-    private void rage$addRageDamage(Args args) {
-        DamageSource source = args.get(0);
-        if (source.isIn(SPELL_DAMAGE)) return;
+    @ModifyArg(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V"), index = 1)
+    private float rage$addRageDamage(DamageSource source, float amount) {
+        if (source.isIn(SPELL_DAMAGE)) return amount;
         LivingEntity attacker = getLivingAttackerFromDamageSource(source);
-        if (attacker == null || attacker.getWorld().isClient()) return;
+        if (attacker == null || attacker.getWorld().isClient()) return amount;
         long currentTick = attacker.getWorld().getTime();
         UUID attackerId = attacker.getUuid();
         Long lastTick = RAGE_COOLDOWN.get(attackerId);
-        if (lastTick != null && currentTick - lastTick < 10) return;
+        if (lastTick != null && currentTick - lastTick < 10) return amount;
         EntityAttributeInstance rage = attacker.getAttributeInstance(MRPGCEntityAttributes.RAGE_MODIFIER);
-        if (rage == null || rage.getValue() == 100.0) return;
+        if (rage == null || rage.getValue() == 100.0) return amount;
         float health = attacker.getHealth();
         float maxHealth = (float) attacker.getAttributeValue(EntityAttributes.GENERIC_MAX_HEALTH);
         if (health < maxHealth) {
             float missing = (maxHealth - health) / maxHealth;
             EntityAttributeInstance attackDamage = attacker.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE);
-            if (attackDamage == null) return;
+            if (attackDamage == null) return amount;
             float rageDamage = Math.max(0.1f, (float) attackDamage.getValue() * ((float)(rage.getValue() - 100) / 100f) * missing);
-            args.set(1, (float) args.get(1) + rageDamage);
             RAGE_COOLDOWN.put(attackerId, currentTick);
+            return amount + rageDamage;
         }
+        return amount;
     }
 
-    @ModifyArgs(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V"))
-    private void duelistsFocus$reduceDamage(Args args) {
+    @ModifyArg(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V"), index = 1)
+    private float duelistsFocus$reduceDamage(DamageSource source, float amount) {
         LivingEntity thisEntity = (LivingEntity)(Object)this;
-        if (!hasStatusEffect(MRPGCEffects.DUELISTS_FOCUS_OWNER.entry)) return;
-        if (thisEntity.getWorld().isClient()) return;
-        DamageSource source = args.get(0);
+        if (!hasStatusEffect(MRPGCEffects.DUELISTS_FOCUS_OWNER.entry)) return amount;
+        if (thisEntity.getWorld().isClient()) return amount;
         Entity attacker = source.getAttacker();
         if (attacker instanceof LivingEntity livingAttacker && !livingAttacker.hasStatusEffect(MRPGCEffects.DUELISTS_FOCUS_TARGET.entry)) {
-            args.set(1, (float) args.get(1) * 0.75F);
+            return amount * 0.75F;
         }
+        return amount;
     }
 
-    @ModifyArgs(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V"))
-    private void duelistsFocus$increaseDamageToTarget(Args args) {
+    @ModifyArg(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V"), index = 1)
+    private float duelistsFocus$increaseDamageToTarget(DamageSource source, float amount) {
         LivingEntity thisEntity = (LivingEntity)(Object)this;
-        if (!thisEntity.hasStatusEffect(MRPGCEffects.DUELISTS_FOCUS_TARGET.entry)) return;
-        if (thisEntity.getWorld().isClient()) return;
-        DamageSource source = args.get(0);
+        if (!thisEntity.hasStatusEffect(MRPGCEffects.DUELISTS_FOCUS_TARGET.entry)) return amount;
+        if (thisEntity.getWorld().isClient()) return amount;
         Entity attacker = source.getAttacker();
         if (attacker instanceof LivingEntity livingAttacker && livingAttacker.hasStatusEffect(MRPGCEffects.DUELISTS_FOCUS_OWNER.entry)) {
-            args.set(1, (float) args.get(1) * 1.25F);
+            return amount * 1.25F;
         }
+        return amount;
     }
 
     @Inject(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;applyDamage(Lnet/minecraft/entity/damage/DamageSource;F)V", shift = At.Shift.AFTER))
