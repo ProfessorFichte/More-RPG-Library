@@ -1,6 +1,7 @@
 package com.mrpg_lib.worldgen.structure;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrpg_lib.platform.MrpgPlatform;
@@ -8,7 +9,9 @@ import com.mrpg_lib.worldgen.ModStructureTypes;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.structure.pool.StructurePool;
 import net.minecraft.structure.pool.StructurePoolBasedGenerator;
+import net.minecraft.structure.pool.alias.StructurePoolAliasBinding;
 import net.minecraft.structure.pool.alias.StructurePoolAliasLookup;
+import net.minecraft.world.gen.StructureTerrainAdaptation;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -20,6 +23,7 @@ import net.minecraft.world.gen.structure.Structure;
 import net.minecraft.world.gen.structure.StructureType;
 import net.minecraft.structure.StructureLiquidSettings;
 
+import java.util.List;
 import java.util.Optional;
 
 public class ConditionalJigsawStructure extends Structure {
@@ -37,9 +41,18 @@ public class ConditionalJigsawStructure extends Structure {
                     Heightmap.Type.CODEC.optionalFieldOf("project_start_to_heightmap").forGetter(s -> s.projectStartToHeightmap),
                     Codec.intRange(1, MAX_SIZE).fieldOf("max_distance_from_center").forGetter(s -> s.maxDistanceFromCenter),
                     DimensionPadding.CODEC.optionalFieldOf("dimension_padding", DimensionPadding.NONE).forGetter(s -> s.dimensionPadding),
-                    StructureLiquidSettings.codec.optionalFieldOf("liquid_settings", StructureLiquidSettings.IGNORE_WATERLOGGING).forGetter(s -> s.liquidSettings)
+                    StructureLiquidSettings.codec.optionalFieldOf("liquid_settings", StructureLiquidSettings.IGNORE_WATERLOGGING).forGetter(s -> s.liquidSettings),
+                    StructurePoolAliasBinding.CODEC.listOf().optionalFieldOf("pool_aliases", List.of()).forGetter(s -> s.poolAliasBindings)
             ).apply(instance, ConditionalJigsawStructure::new)
-    );
+    ).validate(ConditionalJigsawStructure::validate);
+
+    private static DataResult<ConditionalJigsawStructure> validate(ConditionalJigsawStructure structure) {
+        int padding = structure.getTerrainAdaptation() == StructureTerrainAdaptation.NONE ? 0 : 12;
+        if (structure.maxDistanceFromCenter + padding > MAX_SIZE) {
+            return DataResult.error(() -> "Structure size including terrain adaptation must not exceed " + MAX_SIZE);
+        }
+        return DataResult.success(structure);
+    }
 
     private final String modId;
     private final RegistryEntry<StructurePool> startPool;
@@ -51,6 +64,7 @@ public class ConditionalJigsawStructure extends Structure {
     private final int maxDistanceFromCenter;
     private final DimensionPadding dimensionPadding;
     private final StructureLiquidSettings liquidSettings;
+    private final List<StructurePoolAliasBinding> poolAliasBindings;
 
     public ConditionalJigsawStructure(
             Config config,
@@ -63,7 +77,8 @@ public class ConditionalJigsawStructure extends Structure {
             Optional<Heightmap.Type> projectStartToHeightmap,
             int maxDistanceFromCenter,
             DimensionPadding dimensionPadding,
-            StructureLiquidSettings liquidSettings
+            StructureLiquidSettings liquidSettings,
+            List<StructurePoolAliasBinding> poolAliasBindings
     ) {
         super(config);
         this.modId = modId;
@@ -76,6 +91,7 @@ public class ConditionalJigsawStructure extends Structure {
         this.maxDistanceFromCenter = maxDistanceFromCenter;
         this.dimensionPadding = dimensionPadding;
         this.liquidSettings = liquidSettings;
+        this.poolAliasBindings = poolAliasBindings;
     }
 
     @Override
@@ -98,7 +114,7 @@ public class ConditionalJigsawStructure extends Structure {
                 this.useExpansionHack,
                 this.projectStartToHeightmap,
                 this.maxDistanceFromCenter,
-                StructurePoolAliasLookup.EMPTY,
+                StructurePoolAliasLookup.create(this.poolAliasBindings, blockPos, context.seed()),
                 this.dimensionPadding,
                 this.liquidSettings
         );

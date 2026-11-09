@@ -7,29 +7,22 @@ import com.mrpg_lib.worldgen.ModStructureProcessorTypes;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.tag.BlockTags;
-import net.minecraft.registry.tag.FluidTags;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructurePlacementData;
-import net.minecraft.structure.StructureTemplate;
+import net.minecraft.structure.StructureTemplate.StructureBlockInfo;
 import net.minecraft.structure.processor.StructureProcessor;
 import net.minecraft.structure.processor.StructureProcessorType;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.StructureWorldAccess;
-import net.minecraft.world.WorldAccess;
-import net.minecraft.world.WorldView;
+import net.minecraft.world.ServerWorldAccess;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class WaterPillarProcessor extends StructureProcessor {
-
-    private static final int BLOCK_UPDATE_FLAGS = Block.NOTIFY_ALL | Block.FORCE_STATE;
+    private static final String NAME = "mrpg_lib:water_pillar";
 
     public static final MapCodec<WaterPillarProcessor> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
@@ -55,21 +48,14 @@ public class WaterPillarProcessor extends StructureProcessor {
     private final int sampleRadius;
     private final boolean blendWithTerrain;
 
-    private final Block cornerBlock;
-    private final Block pillarBlock;
-    private final Block fenceBlock;
-    private final Block fallbackBlock;
+    private final Optional<Block> cornerBlock;
+    private final Optional<Block> pillarBlock;
+    private final Optional<Block> fenceBlock;
+    private final BlockState fallbackState;
 
-    public WaterPillarProcessor(
-            String cornerBlockId,
-            String pillarBlockId,
-            String fenceBlockId,
-            int maxPillarDepth,
-            List<PathAdaptationProcessor.TerrainMapping> terrainMappings,
-            String fallbackBlockId,
-            int sampleRadius,
-            boolean blendWithTerrain
-    ) {
+    public WaterPillarProcessor(String cornerBlockId, String pillarBlockId, String fenceBlockId, int maxPillarDepth,
+                                List<PathAdaptationProcessor.TerrainMapping> terrainMappings, String fallbackBlockId,
+                                int sampleRadius, boolean blendWithTerrain) {
         this.cornerBlockId = cornerBlockId;
         this.pillarBlockId = pillarBlockId;
         this.fenceBlockId = fenceBlockId;
@@ -79,215 +65,87 @@ public class WaterPillarProcessor extends StructureProcessor {
         this.sampleRadius = sampleRadius;
         this.blendWithTerrain = blendWithTerrain;
 
-        this.cornerBlock = Registries.BLOCK.get(Identifier.of(cornerBlockId));
-        this.pillarBlock = Registries.BLOCK.get(Identifier.of(pillarBlockId));
-        this.fenceBlock = Registries.BLOCK.get(Identifier.of(fenceBlockId));
-        this.fallbackBlock = Registries.BLOCK.get(Identifier.of(fallbackBlockId));
+        this.cornerBlock = ProcessorBlocks.resolve(cornerBlockId, NAME, "corner_block");
+        this.pillarBlock = ProcessorBlocks.resolve(pillarBlockId, NAME, "pillar_block");
+        this.fenceBlock = ProcessorBlocks.resolve(fenceBlockId, NAME, "fence_block");
+        this.fallbackState = ProcessorBlocks.resolve(fallbackBlockId, NAME, "fallback_block")
+                .orElse(Blocks.DIRT_PATH).getDefaultState();
     }
 
     @Override
-    @Nullable
-    public StructureTemplate.StructureBlockInfo process(
-            WorldView world,
-            BlockPos pos,
-            BlockPos pivot,
-            StructureTemplate.StructureBlockInfo originalBlockInfo,
-            StructureTemplate.StructureBlockInfo currentBlockInfo,
-            StructurePlacementData placementData
-    ) {
-        BlockState state = currentBlockInfo.state();
+    public List<StructureBlockInfo> reprocess(ServerWorldAccess world, BlockPos pos, BlockPos pivot,
+                                              List<StructureBlockInfo> originalBlockInfos,
+                                              List<StructureBlockInfo> currentBlockInfos,
+                                              StructurePlacementData data) {
+        if (cornerBlock.isEmpty()) return currentBlockInfos;
+        List<StructureBlockInfo> result = new ArrayList<>(currentBlockInfos);
+        Map<BlockPos, Integer> indexByPos = new HashMap<>();
+        for (int i = 0; i < result.size(); i++) indexByPos.put(result.get(i).pos(), i);
 
-        if (!state.isOf(cornerBlock)) {
-            return currentBlockInfo;
-        }
-
-        BlockPos currentPos = currentBlockInfo.pos();
-        BlockPos belowPos = currentPos.down();
-        BlockState belowState = world.getBlockState(belowPos);
-
-        boolean hasWaterBelow = isWaterAt(belowState);
-
-        if (!hasWaterBelow && (belowState.isAir() || belowState.isReplaceable())) {
-            BlockState twoBelow = world.getBlockState(currentPos.down(2));
-            hasWaterBelow = isWaterAt(twoBelow);
-        }
-
-        if (hasWaterBelow) {
-            WorldAccess worldAccess = getWorldAccess(world);
-
-            if (worldAccess != null) {
-                BlockPos abovePos = currentPos.up();
-                worldAccess.setBlockState(abovePos, fenceBlock.getDefaultState(), BLOCK_UPDATE_FLAGS);
-
-                generatePillarDownFromCorner(worldAccess, currentPos);
-            }
-
-            return new StructureTemplate.StructureBlockInfo(
-                    currentPos,
-                    pillarBlock.getDefaultState(),
-                    null
-            );
-        }
-
-        for (PathAdaptationProcessor.TerrainMapping mapping : terrainMappings) {
-            if (mapping.matches(belowState)) {
-                return new StructureTemplate.StructureBlockInfo(
-                        currentPos,
-                        mapping.getOutput(),
-                        currentBlockInfo.nbt()
-                );
-            }
-        }
-
-        if (blendWithTerrain) {
-            BlockState blendedState = sampleSurroundingTerrain(world, currentPos);
-            if (blendedState != null) {
-                return new StructureTemplate.StructureBlockInfo(
-                        currentPos,
-                        blendedState,
-                        currentBlockInfo.nbt()
-                );
-            }
-        }
-
-        return new StructureTemplate.StructureBlockInfo(
-                currentPos,
-                fallbackBlock.getDefaultState(),
-                currentBlockInfo.nbt()
-        );
-    }
-
-    @Nullable
-    private WorldAccess getWorldAccess(WorldView world) {
-        if (world instanceof StructureWorldAccess structureWorld) {
-            return structureWorld;
-        }
-        if (world instanceof ServerWorld serverWorld) {
-            return serverWorld;
-        }
-        if (world instanceof WorldAccess worldAccess) {
-            return worldAccess;
-        }
-        return null;
-    }
-
-    @Nullable
-    private BlockState sampleSurroundingTerrain(WorldView world, BlockPos pos) {
-        Map<Block, Integer> blockCounts = new HashMap<>();
-        BlockState bestCandidate = null;
-
-        BlockState belowState = world.getBlockState(pos.down());
-        if (isTerrainBlock(belowState)) {
-            addToCount(blockCounts, belowState.getBlock(), 3);
-            bestCandidate = belowState;
-        }
-
-        for (Direction dir : Direction.Type.HORIZONTAL) {
-            for (int dist = 1; dist <= sampleRadius; dist++) {
-                BlockPos checkPos = pos.offset(dir, dist);
-
-                BlockState checkState = world.getBlockState(checkPos);
-                if (isTerrainBlock(checkState)) {
-                    int weight = sampleRadius - dist + 1;
-                    addToCount(blockCounts, checkState.getBlock(), weight);
-                    if (bestCandidate == null) bestCandidate = checkState;
-                }
-
-                BlockState belowCheckState = world.getBlockState(checkPos.down());
-                if (isTerrainBlock(belowCheckState)) {
-                    int weight = sampleRadius - dist + 2;
-                    addToCount(blockCounts, belowCheckState.getBlock(), weight);
-                    if (bestCandidate == null) bestCandidate = belowCheckState;
-                }
-            }
-        }
-
-        Block mostCommon = null;
-        int highestCount = 0;
-        for (Map.Entry<Block, Integer> entry : blockCounts.entrySet()) {
-            if (entry.getValue() > highestCount) {
-                highestCount = entry.getValue();
-                mostCommon = entry.getKey();
-            }
-        }
-
-        if (mostCommon != null) {
-            if (mostCommon == Blocks.GRASS_BLOCK || mostCommon == Blocks.DIRT) {
-                return Blocks.DIRT_PATH.getDefaultState();
-            }
-            if (mostCommon == Blocks.SAND) {
-                return Blocks.SANDSTONE.getDefaultState();
-            }
-            if (mostCommon == Blocks.RED_SAND) {
-                return Blocks.RED_SANDSTONE.getDefaultState();
-            }
-            if (mostCommon == Blocks.STONE || mostCommon == Blocks.GRAVEL) {
-                return Blocks.COBBLESTONE.getDefaultState();
-            }
-            if (mostCommon == Blocks.SNOW_BLOCK || mostCommon == Blocks.POWDER_SNOW) {
-                return Blocks.PACKED_ICE.getDefaultState();
-            }
-
-            return mostCommon.getDefaultState();
-        }
-
-        return bestCandidate;
-    }
-
-    private void addToCount(Map<Block, Integer> counts, Block block, int weight) {
-        counts.merge(block, weight, Integer::sum);
-    }
-
-    private boolean isTerrainBlock(BlockState state) {
-        if (state.isAir()) return false;
-        if (isWaterAt(state)) return false;
-
-        if (state.isIn(BlockTags.DIRT)) return true;
-        if (state.isIn(BlockTags.SAND)) return true;
-        if (state.isIn(BlockTags.BASE_STONE_OVERWORLD)) return true;
-        if (state.isIn(BlockTags.TERRACOTTA)) return true;
-        if (state.isIn(BlockTags.SNOW)) return true;
-
-        if (state.isOf(Blocks.GRASS_BLOCK)) return true;
-        if (state.isOf(Blocks.DIRT_PATH)) return true;
-        if (state.isOf(Blocks.PODZOL)) return true;
-        if (state.isOf(Blocks.MYCELIUM)) return true;
-        if (state.isOf(Blocks.MUD)) return true;
-        if (state.isOf(Blocks.GRAVEL)) return true;
-        if (state.isOf(Blocks.CLAY)) return true;
-        if (state.isOf(Blocks.MOSS_BLOCK)) return true;
-        if (state.isOf(Blocks.COARSE_DIRT)) return true;
-        if (state.isOf(Blocks.COBBLESTONE)) return true;
-        if (state.isOf(Blocks.MOSSY_COBBLESTONE)) return true;
-
-        return false;
-    }
-
-    private boolean isWaterAt(BlockState state) {
-        if (state.isOf(Blocks.WATER)) return true;
-        if (state.getFluidState().isIn(FluidTags.WATER)) return true;
-        return false;
-    }
-
-    private void generatePillarDownFromCorner(WorldAccess world, BlockPos cornerPos) {
-        BlockPos.Mutable mutablePos = cornerPos.down().mutableCopy();
-
-        world.setBlockState(cornerPos, pillarBlock.getDefaultState(), BLOCK_UPDATE_FLAGS);
-
-        for (int i = 0; i < maxPillarDepth; i++) {
-            BlockState currentState = world.getBlockState(mutablePos);
-
-            boolean isWater = isWaterAt(currentState);
-            boolean isAir = currentState.isAir();
-            boolean isReplaceable = currentState.isReplaceable();
-
-            if (isWater || isAir || isReplaceable) {
-                world.setBlockState(mutablePos, pillarBlock.getDefaultState(), BLOCK_UPDATE_FLAGS);
-                mutablePos.move(Direction.DOWN);
+        for (int i = 0; i < result.size(); i++) {
+            StructureBlockInfo info = result.get(i);
+            if (!info.state().isOf(cornerBlock.get()) || !ProcessorBlocks.inChunk(data, info.pos())) continue;
+            BlockPos corner = info.pos();
+            if (pillarBlock.isPresent() && hasWaterBelow(world, corner)) {
+                result.set(i, new StructureBlockInfo(corner, pillarBlock.get().getDefaultState(), null));
+                placeFence(world, corner.up(), result, indexByPos);
+                buildPillar(world, corner.down(), indexByPos);
             } else {
-                break;
+                result.set(i, new StructureBlockInfo(corner, groundState(world, corner, indexByPos), info.nbt()));
             }
         }
+        return result;
+    }
+
+    private static boolean hasWaterBelow(ServerWorldAccess world, BlockPos corner) {
+        BlockState below = world.getBlockState(corner.down());
+        if (TerrainSampler.isWater(below)) return true;
+        return (below.isAir() || below.isReplaceable()) && TerrainSampler.isWater(world.getBlockState(corner.down(2)));
+    }
+
+    private void placeFence(ServerWorldAccess world, BlockPos above, List<StructureBlockInfo> result, Map<BlockPos, Integer> indexByPos) {
+        if (fenceBlock.isEmpty()) return;
+        BlockState fence = fenceBlock.get().getDefaultState();
+        Integer index = indexByPos.get(above);
+        if (index == null) {
+            world.setBlockState(above, fence, Block.NOTIFY_LISTENERS);
+        } else if (result.get(index).state().isAir()) {
+            result.set(index, new StructureBlockInfo(above, fence, null));
+        }
+    }
+
+    private void buildPillar(ServerWorldAccess world, BlockPos start, Map<BlockPos, Integer> indexByPos) {
+        BlockState pillar = pillarBlock.orElseThrow().getDefaultState();
+        BlockPos.Mutable current = start.mutableCopy();
+        for (int i = 0; i < maxPillarDepth; i++) {
+            if (indexByPos.containsKey(current)) break;
+            BlockState state = world.getBlockState(current);
+            if (!TerrainSampler.isWater(state) && !state.isAir() && !state.isReplaceable()) break;
+            world.setBlockState(current, pillar, Block.NOTIFY_LISTENERS);
+            current.move(0, -1, 0);
+        }
+    }
+
+    private BlockState groundState(ServerWorldAccess world, BlockPos corner, Map<BlockPos, Integer> indexByPos) {
+        BlockState mapped = PathAdaptationProcessor.TerrainMapping.map(terrainMappings, world.getBlockState(corner.down()));
+        if (mapped != null) return mapped;
+        if (blendWithTerrain) {
+            BlockState blended = pathLike(TerrainSampler.mostCommon(world, corner, sampleRadius, true, true, indexByPos.keySet()));
+            if (blended != null) return blended;
+        }
+        return fallbackState;
+    }
+
+    @Nullable
+    private static BlockState pathLike(@Nullable BlockState terrain) {
+        if (terrain == null) return null;
+        Block block = terrain.getBlock();
+        if (block == Blocks.GRASS_BLOCK || block == Blocks.DIRT) return Blocks.DIRT_PATH.getDefaultState();
+        if (block == Blocks.SAND) return Blocks.SANDSTONE.getDefaultState();
+        if (block == Blocks.RED_SAND) return Blocks.RED_SANDSTONE.getDefaultState();
+        if (block == Blocks.STONE || block == Blocks.GRAVEL) return Blocks.COBBLESTONE.getDefaultState();
+        if (block == Blocks.SNOW_BLOCK || block == Blocks.POWDER_SNOW) return Blocks.PACKED_ICE.getDefaultState();
+        return block.getDefaultState();
     }
 
     @Override

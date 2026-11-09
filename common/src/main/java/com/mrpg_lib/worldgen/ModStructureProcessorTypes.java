@@ -1,7 +1,9 @@
 package com.mrpg_lib.worldgen;
 
 import com.mrpg_lib.MRPGCMod;
+import com.mrpg_lib.worldgen.processor.ItemFrameItemsProcessor;
 import com.mrpg_lib.worldgen.processor.PathAdaptationProcessor;
+import com.mrpg_lib.worldgen.processor.RandomReplaceProcessor;
 import com.mrpg_lib.worldgen.processor.TerrainBlendingProcessor;
 import com.mrpg_lib.worldgen.processor.WaterPillarProcessor;
 import net.minecraft.registry.Registries;
@@ -19,7 +21,23 @@ public class ModStructureProcessorTypes {
     public static final StructureProcessorType<TerrainBlendingProcessor> TERRAIN_BLENDING =
             () -> TerrainBlendingProcessor.CODEC;
 
+    public static final StructureProcessorType<RandomReplaceProcessor> RANDOM_REPLACE =
+            () -> RandomReplaceProcessor.CODEC;
+
+    public static final StructureProcessorType<ItemFrameItemsProcessor> ITEM_FRAME_ITEMS =
+            () -> ItemFrameItemsProcessor.CODEC;
+
     public static void register() {
+        Registry.register(
+                Registries.STRUCTURE_PROCESSOR,
+                MRPGCMod.id("random_replace"),
+                RANDOM_REPLACE
+        );
+        Registry.register(
+                Registries.STRUCTURE_PROCESSOR,
+                MRPGCMod.id("item_frame_items"),
+                ITEM_FRAME_ITEMS
+        );
         Registry.register(
                 Registries.STRUCTURE_PROCESSOR,
                 MRPGCMod.id("path_adaptation"),
