@@ -1,0 +1,30 @@
+{
+  "baseUrl": "https://raw.githubusercontent.com/ProfessorFichte/More-RPG-Library/1.21.1/.media/small_banners/",
+  "columns": { "own": 4, "series": 3, "others": 3 },
+  "own": [
+    { "name": "Additional RPG Jewelry", "file": "additional_jewelry_banner_275x220.png", "cf": "additional-rpg-jewelry", "mr": "additional-rpg-jewelry" },
+    { "name": "Archers Expansion",      "file": "archers_expansion_banner_275x220.png",  "cf": "archers-expansion",       "mr": "archers-expansion" },
+    { "name": "Bard",                   "file": "bard_banner_275x220.png",               "cf": "bard-more-rpg-classes",   "mr": "bard-more-rpg-classes" },
+    { "name": "Berserker",              "file": "berserker_banner_275x220.png",          "cf": "berserker-rpg-class",     "mr": "berserker-rpg-class" },
+    { "name": "Elemental Wizards",      "file": "elemental_wizards_banner_275x220.png",  "cf": "elemental-wizards-rpg-class", "mr": "elemental-wizards-rpg" },
+    { "name": "Forcemaster",            "file": "forcemaster_banner_275x220.png",        "cf": "forcemaster-rpg-class",   "mr": "forcemaster-rpg-class" },
+    { "name": "Loot & Explore",         "file": "loot_n_explore_banner_275x220.png",     "cf": "loot-n-explore",          "mr": "loot-n-explore" },
+    { "name": "Witcher",                "file": "witcher_banner_275x220.png",            "cf": "witcher-rpg-class",       "mr": "witcher-rpg-class" }
+  ],
+  "series": [
+    { "name": "Archers",  "img": "https://media.forgecdn.net/attachments/755/169/archers_full_275.png",      "cf": "archers" },
+    { "name": "Paladins", "img": "https://media.forgecdn.net/attachments/755/170/paladins_full_275.png",     "cf": "paladins-and-priests" },
+    { "name": "Wizards",  "img": "https://media.forgecdn.net/attachments/755/171/wizards_full_275.png",      "cf": "wizards" },
+    { "name": "Rogues",   "img": "https://media.forgecdn.net/attachments/899/332/rogues_full_bg_275.png",    "cf": "rogues-and-warriors" },
+    { "name": "Jewelry",  "img": "https://media.forgecdn.net/attachments/760/387/jewelry_full_275.png",      "cf": "jewelry", "mr": "jewelry" },
+    { "name": "Relics",   "img": "https://media.forgecdn.net/attachments/1103/296/relics_275-png.png",       "cf": "relics-rpg" },
+    { "name": "Arsenal",  "img": "https://media.forgecdn.net/attachments/1103/295/arsenal_full_275-png.png", "cf": "arsenal-rpg-series" },
+    { "name": "Armory",   "img": "https://media.forgecdn.net/attachments/1311/866/armory_275-png.png",       "cf": "armory-rpg-series" },
+    { "name": "Skill Tree","img": "https://media.forgecdn.net/attachments/1311/865/skilltree_275-png.png",   "cf": "skill-tree" }
+  ],
+  "others": [
+    { "name": "Anarchy",                    "img": "https://media.forgecdn.net/attachments/1358/177/anarchy-png.png",    "cf": "rpg-minibosses-forsaken-adventurers" },
+    { "name": "Mercenaries and Artificers", "img": "https://media.forgecdn.net/attachments/1346/857/merc_275-png.png",   "cf": "mercenaries-and-artificers" },
+    { "name": "Death Knights",              "img": "https://media.forgecdn.net/attachments/953/998/death_knights_275_2.png", "cf": "death-knights" }
+  ]
+}
