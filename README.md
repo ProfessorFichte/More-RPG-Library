@@ -334,14 +334,16 @@ Give the same condition to everything that points at it (template pool, structur
 
 **Random replace**
 
-Picks a number of random blocks from one structure piece and replaces them, for example 2 of the 60 bookshelves in a library become suspicious bookshelves with a loot table.
+Picks random blocks from one structure piece and replaces them, for example 2 of the 60 bookshelves in a library become suspicious bookshelves with a loot table, or every bookshelf has a 15% chance to become an icy one.
 
 | Field | Required | What it does |
 | --- | --- | --- |
 | `target` | yes | The block to look for: a block id or a block tag (`#minecraft:logs`) |
-| `count` | yes | How many of them get replaced: a number, or an int provider like `{ "type": "minecraft:uniform", "min_inclusive": 2, "max_inclusive": 3 }` |
+| `count` | `count` or `chance` | How many of them get replaced: a number, or an int provider like `{ "type": "minecraft:uniform", "min_inclusive": 2, "max_inclusive": 3 }`. Together with `chance` it is the most that get replaced |
+| `chance` | `count` or `chance` | Chance for every target block to be replaced, from `0.0` to `1.0` |
 | `replacement` | yes | The new block as a block state: `{ "Name": "minecraft:chest", "Properties": { "facing": "north" } }` |
-| `loot_table` | no | Loot table for the new block. Works for chests, barrels, shulker boxes and suspicious blocks |
+| `keep_properties` | no (`false`) | The new block takes over every block state property of the old block that it has too (same name, same value), for example `facing`, `axis`, `waterlogged` or `variant`. These win over `Properties` in `replacement` |
+| `loot_table` | no | Loot table for the new block. Works for chests, barrels, shulker boxes, decorated pots and suspicious blocks |
 | `fallback` | no | Block state for the blocks that weren't picked. Without it they stay as they are |
 | `blend_fallback` | no (`false`) | The blocks that weren't picked copy the most common full block next to them in the template, for example the wall they are in. Blocks with a block entity are never copied. If nothing is found, `fallback` is used |
 
@@ -368,11 +370,48 @@ Marker example: build black stained glass where a chest could be. 2 or 3 of them
   "blend_fallback": true
 }
 ```
+Chance example: every deepslate bookshelf has a 20% chance to become an icy one. Use it in the processor list of every structure that should get it.
+```json
+{
+  "processor_type": "mrpg_lib:random_replace",
+  "target": "loot_n_explore:deepslate_bookshelf",
+  "chance": 0.2,
+  "replacement": { "Name": "loot_n_explore:icy_deepslate_bookshelf" },
+  "keep_properties": true
+}
+```
+
 Good to know:
 - The count is per structure piece, not for the whole structure. A jigsaw structure with 4 library pieces gets 2 suspicious bookshelves in each piece.
+- With `chance` every block rolls on its own, so a piece can get none or many. Add `count` to cap it.
+- To turn some bookshelves into suspicious ones and some of the rest into another look, put the suspicious one first in the list. The second processor then only sees the bookshelves that are left.
 - If a piece has fewer target blocks than the count, all of them are replaced.
 - The replacement is rotated together with the piece, so `facing` is the direction it has in the template.
 - The same structure at the same place always picks the same blocks, so the picks don't change between the chunks a piece is placed in.
+
+**Container loot**
+
+Gives blocks with an inventory a loot table, without changing the block. Everything else stays as it is in the template: the facing, the pattern, the sherds of a decorated pot.
+Works for every block that reads a `LootTable` like vanilla: chests, barrels, shulker boxes, hoppers, dispensers, droppers, decorated pots and suspicious blocks.
+
+| Field | Required | What it does |
+| --- | --- | --- |
+| `target` | yes | The block to look for: a block id or a block tag |
+| `loot_table` | yes | The loot table |
+| `chance` | no (`1.0`) | Chance for every target block to get the loot table, otherwise it stays as it is (for pots: empty) |
+| `replace_existing` | no (`false`) | Also replace a loot table that the block already has in the template |
+
+Pot example: every frozen pot has a 25% chance to hold something.
+```json
+{
+  "processor_type": "mrpg_lib:container_loot",
+  "target": "loot_n_explore:frozen_decorated_pot",
+  "loot_table": "loot_n_explore:pots/frozen_depths",
+  "chance": 0.25
+}
+```
+A decorated pot has one slot, so its loot table should give exactly one stack: one pool with one roll. The stack can be 1 item or more, for example with `minecraft:set_count`. The pot rolls it the first time its content is used (the pot breaks, a player puts an item in, a hopper pulls from it), like the pots in trial chambers.
+Loot table type `minecraft:chest` works for pots, chests and barrels, suspicious blocks use `minecraft:archaeology`.
 
 **Item frame items**
 
@@ -691,6 +730,59 @@ A modifier spell that matches the spell being cast extends its range (`range_add
 The rest of what a modifier can do on a player (changing the impact, boosting power, projectile perks) is not applied to mobs yet, because Spell Engine's own modifier resolution only works for `PlayerEntity` casters.
 Passive spells are resolved and exposed the same way, but their triggers (on-hit, periodic) are not auto-dispatched for the same reason.
 
+---
+
+**Weapon skills**
+
+`withWeaponSkills(true)` lets the mob use the active spells of the weapon in its main hand, the same skills a player gets from it: Swift Strikes on swords, Cleave on axes, Impale on spears, and so on.
+```java
+MobSpellCastGoal skills = MobSpellCastGoal.forWeaponSkills(this, spellGoals);
+this.goalSelector.add(1, skills);
+spellGoals.add(skills);
+
+MobSpellCastGoal mixed = new MobSpellCastGoal(this, "#mymod:mob/knight_spells", spellGoals)
+        .withWeaponSkills(true);
+```
+- The weapon is read every time the goal picks a spell, so a mob that gets another weapon (by a modpack maker, a command or your code) uses that weapon's skills from then on. Without a weapon, or with one that has no skills, the goal just uses its own spells.
+- Weapon skills come first: when one of them can be used, the goal picks it over its other spells. `withWeaponSkills(true, false)` puts them in the same random pick as the rest.
+- Only active spells count. Passive and modifier spells of the weapon stay with `withEquipmentSpells(true)`.
+- Melee skills (`MELEE` delivery) work like described under **Melee spells**: the mob walks up, swings and hits everything in the arc. The mob needs an attack damage attribute.
+- If the weapon leaves the mob's hand while a skill is being used, the skill stops.
+- Cooldowns are per skill and per goal. Turn this on for one goal of a mob only, otherwise each goal uses the skill on its own cooldown.
+- `forWeaponSkills(caster, otherGoals)` is a goal that only uses weapon skills. `resolvedWeaponSkills(world)` lists the skills of the current weapon.
+
+Give the goal a better priority than the mob's normal melee goal (for example the Better Combat goal from [section 13](#13-better-combat-and-combat-roll-for-mobs)), then the mob uses a skill whenever it is ready and attacks normally in between.
+
+---
+
+**Mobs with their own cast animation**
+
+For mobs that don't hold a real weapon or staff (for example a mage with a magic orb) and have their own cast animation, use `withCustomCasting`:
+```java
+MobSpellCastGoal spells = new MobSpellCastGoal(this, "#mymod:mob/orb_mage_spells", spellGoals)
+        .withCustomCasting(new CustomCasting() {
+            @Override
+            public int castTicks(MobEntity mob, Identifier spellId, int defaultTicks) {
+                return 30;
+            }
+
+            @Override
+            public void onCastStart(MobEntity mob, Identifier spellId, int castTicks) {
+                startMyCastAnimation(spellId);
+            }
+
+            @Override
+            public void onCastStop(MobEntity mob, Identifier spellId) {
+                stopMyCastAnimation();
+            }
+        });
+```
+- No Spell Engine player animation is played (cast, release and melee skill animations), even with `withAnimations(true)`. Spinning spells still spin the mob if `withAnimations(true)` is set.
+- `castTicks` decides how long every cast takes. `defaultTicks` is what the goal would use without it (the spell's own duration or your `withTimings`), so you can also scale it. `CustomCasting.ticks(30)` is a fixed length for every spell.
+- Every spell goes off at the end of that time. Channel spells release evenly over it and charge spells charge over it.
+- `onCastStart` runs right after `startSpellCast`, `onRelease` every time the spell goes off (on every release of a channel spell), `onCastStop` when the goal stops. They run on the server, so send the animation to the clients yourself (tracked data, a packet, or your animation library's server trigger).
+- Spell particles and sounds still play.
+
 ### 11. Spellcaster Flee and Positioning Goals
 Needs Spell Engine installed. These goals work with `ISpellCasterEntity` from [section 8](#10-mob-spell-casting).
 
@@ -826,11 +918,12 @@ goalSelector.add(2, BetterCombatCompat.createMeleeGoal(this, 1.0, false,
 With Better Combat installed and a weapon that has Better Combat attributes in the main hand, the mob uses that weapon's combo the way a player would:
 - Attacks cycle through the combo, and the combo resets when the mob stops swinging for a while.
 - The attack animation and weapon pose play on the mob with the same speed curve Better Combat uses for players, and the hit lands after the weapon's upswing.
-- Everything inside the weapon's hitbox is hit (not just the target), and each attack's damage multiplier is applied. Allies are never hit.
+- Everything inside the weapon's hitbox is hit (not just the target), and each attack's damage multiplier is applied. Allies are never hit, except the mob's own current target: a hostile mob that was hit by another hostile mob (a skeleton's stray arrow, for example) can fight back. The same goes for spells cast by mob casters.
 - The mob starts a swing once its target is within 80% of that attack's range, and moves slower while swinging (Better Combat's `movement_speed_while_attacking` times the attack's movement multiplier).
 - It shows the weapon trail particles players get, and fast weapons deal reduced knockback like in Better Combat.
 - If the mob's main-hand item changes mid-swing, the swing is cancelled.
 - Range and attack speed come from the weapon.
+- The weapon's attributes are read from the main-hand item at every swing, never stored, so changing the mob's weapon at any time gives it that weapon's attacks right away (Better Combat spears stab, staffs swing).
 
 Without the mod, or with a weapon that has no Better Combat attributes, it is a normal `MeleeAttackGoal`.
 
@@ -885,12 +978,35 @@ Give it a better (lower) priority than the mob's melee or movement goals so it c
 - `invulnerableTicks` -1: use Combat Roll's i-frames from its config, any other value overrides them for this mob
 - `animations` on (`withAnimations`)
 
+**Spell Engine dodging**
+
+Spell Engine's evasion already works for every living entity, not just players: an entity with the `spell_engine:evasion_chance` attribute above its base value has a chance to completely avoid a hit.
+Like for players it only works against melee attacks (player and mob), projectiles and generic damage (the `spell_engine:evadable` damage type tag), only when the hit comes from the front (Spell Engine's server config `attribute_evasion_angle`, 120° by default), and never against spells.
+The attribute is a percentage on top of its base 100: `120` is 20% dodge chance, `200` is 100%.
+
+With Spell Engine installed, this library adds what is missing for mobs:
+- The mob plays Spell Engine's `spell_engine:dodge` animation (needs playerAnimator, on the `DODGE` layer). Spell Engine itself only plays it for players. The dodge sound comes from Spell Engine for everyone.
+- A spell casting mob (`ISpellCasterEntity`) can't dodge while it casts, unless Spell Engine's config `attribute_evasion_allowed_while_spell_casting` allows it, same as players.
+
+Giving a mob dodge chance:
+- In a summon command or spawner: `attributes:[{id:"spell_engine:evasion_chance",base:130.0d}]` (30%)
+- In code: `MobEvasion.setEvasionChance(mob, 0.3)` (`com.mrpg_lib.compat.spell_engine`, only call it with Spell Engine installed). `MobEvasion.getEvasionChance(mob)` reads it back as 0 to 1.
+- `MobEvasion.setAnimationFilter(entity -> ...)` decides which mobs get the dodge animation, for mobs that have their own.
+
+Test husk with 100% dodge chance:
+```
+/summon minecraft:husk ~ ~ ~3 {PersistenceRequired:1b,attributes:[{id:"spell_engine:evasion_chance",base:200.0d}]}
+```
+Hit it from the front: it takes no damage, plays the dodge sound and animation. Hits from behind still land.
+
 **Trying it in a dev environment**
 
 The `/mrpg_goal` command (op level 2) only exists in a development environment, normal players never get it.
 - `/mrpg_goal <targets> bettercombat`, `/mrpg_goal <targets> combatroll` and `/mrpg_goal <targets> spellcast <spell_id>` add the matching goal to any mob you target (for example a zombie). `spellcast` needs Spell Engine installed.
 - `/mrpg_goal <targets> combatroll dodge` gives the roll goal with only the projectile dodge turned on (no engage or low-health retreat rolls).
 - `/mrpg_goal <targets> shoot [count]` fires that many test arrows at the targets from a ring around them, handy for testing the dodge.
+- `/mrpg_goal <targets> spellcast <spell_id> custom <ticks>` uses `withCustomCasting(CustomCasting.ticks(ticks))`: no Spell Engine animation and that cast length.
+- `/mrpg_goal <targets> weaponskills` adds a goal that uses the weapon skills of the mob's main-hand weapon (`MobSpellCastGoal.forWeaponSkills`).
 - `/mrpg_goal <targets> clear` removes the goals again.
 
 Give the mob a Better Combat weapon in its main hand to see the combos, or one in each hand to see dual wielding (for example `HandItems:[{id:"rogues:iron_dagger",count:1},{id:"rogues:iron_dagger",count:1}]`).

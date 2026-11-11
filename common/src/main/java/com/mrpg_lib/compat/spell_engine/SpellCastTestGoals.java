@@ -11,9 +11,21 @@ public final class SpellCastTestGoals {
     }
 
     public static Goal create(MobEntity mob, String spellId) {
+        return new MobSpellCastGoal(caster(mob), spellId).withAnimations(true);
+    }
+
+    public static Goal createCustomCasting(MobEntity mob, String spellId, int castTicks) {
+        return new MobSpellCastGoal(caster(mob), spellId).withAnimations(true).withCustomCasting(CustomCasting.ticks(castTicks));
+    }
+
+    public static Goal createWeaponSkills(MobEntity mob) {
+        return MobSpellCastGoal.forWeaponSkills(caster(mob), null).withAnimations(true);
+    }
+
+    private static ISpellCasterEntity caster(MobEntity mob) {
         TestSpellCasters.mark(mob);
         SpellCasterState state = new SpellCasterState(mob);
-        ISpellCasterEntity caster = new ISpellCasterEntity() {
+        return new ISpellCasterEntity() {
             @Override
             public void startSpellCast(int ticks) {
                 state.start(ticks);
@@ -34,6 +46,5 @@ public final class SpellCastTestGoals {
                 return mob;
             }
         };
-        return new MobSpellCastGoal(caster, spellId).withAnimations(true);
     }
 }

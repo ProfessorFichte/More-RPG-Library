@@ -43,6 +43,9 @@ public final class AllyHelper {
         if (source == victim || source == target || isTeammate(source, target) || isTeammate(source, victim)) {
             return false;
         }
+        if (source instanceof MobEntity mob && (mob.getTarget() == target || mob.getTarget() == victim)) {
+            return true;
+        }
         if (source instanceof MobEntity && victim instanceof MobEntity) {
             return isHostile(source) != isHostile(victim);
         }

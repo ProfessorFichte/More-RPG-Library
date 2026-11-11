@@ -44,6 +44,7 @@ public final class SpellEngineCompat {
         installBridges();
         CustomSpellImpacts.registerCustomImpacts();
         MrpgEntityRelationMatcher.register();
+        MobEvasion.register();
         if (MrpgCompat.SPELL_POWER) {
             SpellPowerCompat.init();
         }

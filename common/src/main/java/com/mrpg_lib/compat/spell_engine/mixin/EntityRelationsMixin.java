@@ -7,6 +7,7 @@ import com.mrpg_lib.entity.TestSpellCasters;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.HostileEntity;
+import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.spell_engine.internals.target.EntityRelation;
 import net.spell_engine.internals.target.EntityRelations;
@@ -29,7 +30,7 @@ public class EntityRelationsMixin {
         if (attacker == target) return;
 
         if (intent == SpellTarget.Intent.HARMFUL) {
-            if (!(target instanceof HostileEntity)) {
+            if (!(target instanceof HostileEntity) || attacker instanceof MobEntity mob && mob.getTarget() == target) {
                 cir.setReturnValue(true);
             } else {
                 cir.setReturnValue(false);

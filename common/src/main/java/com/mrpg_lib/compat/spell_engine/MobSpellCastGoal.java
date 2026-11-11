@@ -76,6 +76,11 @@ public class MobSpellCastGoal extends Goal {
     private boolean intelligentSpellcasting = false;
     private boolean animations = false;
     private boolean equipmentSpells = false;
+    private boolean weaponSkills = false;
+    private boolean preferWeaponSkills = true;
+    private final Set<Identifier> weaponSkillIds = new HashSet<>();
+    private boolean activeIsWeaponSkill;
+    @Nullable private CustomCasting customCasting = null;
     @Nullable private String passiveSpellTag = null;
 
     @Nullable private Identifier activeSpellId;
@@ -116,6 +121,10 @@ public class MobSpellCastGoal extends Goal {
         this.setControls(EnumSet.of(Control.MOVE, Control.LOOK));
     }
 
+    public static MobSpellCastGoal forWeaponSkills(ISpellCasterEntity caster, @Nullable List<MobSpellCastGoal> otherGoals) {
+        return new MobSpellCastGoal(caster, "", otherGoals).withWeaponSkills(true);
+    }
+
     public MobSpellCastGoal withIntelligentSpellcasting() {
         this.intelligentSpellcasting = true;
         return this;
@@ -128,6 +137,21 @@ public class MobSpellCastGoal extends Goal {
 
     public MobSpellCastGoal withEquipmentSpells(boolean equipmentSpells) {
         this.equipmentSpells = equipmentSpells;
+        return this;
+    }
+
+    public MobSpellCastGoal withWeaponSkills(boolean weaponSkills) {
+        return withWeaponSkills(weaponSkills, true);
+    }
+
+    public MobSpellCastGoal withWeaponSkills(boolean weaponSkills, boolean preferWeaponSkills) {
+        this.weaponSkills = weaponSkills;
+        this.preferWeaponSkills = preferWeaponSkills;
+        return this;
+    }
+
+    public MobSpellCastGoal withCustomCasting(@Nullable CustomCasting customCasting) {
+        this.customCasting = customCasting;
         return this;
     }
 
@@ -157,11 +181,37 @@ public class MobSpellCastGoal extends Goal {
     }
 
     private List<RegistryEntry<Spell>> resolveSpells(net.minecraft.world.World world) {
+        if (spellOrTag == null || spellOrTag.isEmpty()) return List.of();
         if (spellOrTag.startsWith("#")) {
             return SpellRegistry.entries(world, spellOrTag.substring(1));
         }
         var entry = SpellRegistry.from(world).getEntry(Identifier.of(spellOrTag)).orElse(null);
         return entry != null ? List.of(entry) : List.of();
+    }
+
+    private List<Identifier> mainHandSpellIds() {
+        SpellContainer container = SpellContainerHelper.containerFromItemStack(caster.asMobEntity().getMainHandStack());
+        if (container == null || container.spell_ids() == null) return List.of();
+        List<Identifier> ids = new ArrayList<>();
+        for (String spellId : container.spell_ids()) {
+            Identifier id = Identifier.tryParse(spellId);
+            if (id != null) ids.add(id);
+        }
+        return ids;
+    }
+
+    private List<RegistryEntry<Spell>> resolveWeaponSkills(net.minecraft.world.World world) {
+        if (!weaponSkills) return List.of();
+        var registry = SpellRegistry.from(world);
+        List<RegistryEntry<Spell>> result = new ArrayList<>();
+        for (Identifier id : mainHandSpellIds()) {
+            registry.getEntry(id).filter(entry -> entry.value().type == Spell.Type.ACTIVE).ifPresent(result::add);
+        }
+        return result;
+    }
+
+    public List<RegistryEntry<Spell>> resolvedWeaponSkills(net.minecraft.world.World world) {
+        return resolveWeaponSkills(world);
     }
 
     private List<RegistryEntry<Spell>> resolveEquipmentAndTagSpells(net.minecraft.world.World world) {
@@ -242,9 +292,18 @@ public class MobSpellCastGoal extends Goal {
         LivingEntity target = entity.getTarget();
         List<Identifier> candidates = new ArrayList<>();
 
-        var spells = resolveSpells(entity.getWorld());
+        Map<Identifier, RegistryEntry<Spell>> spells = new LinkedHashMap<>();
+        for (RegistryEntry<Spell> entry : resolveSpells(entity.getWorld())) {
+            spells.putIfAbsent(entry.getKey().orElseThrow().getValue(), entry);
+        }
+        weaponSkillIds.clear();
+        for (RegistryEntry<Spell> entry : resolveWeaponSkills(entity.getWorld())) {
+            Identifier id = entry.getKey().orElseThrow().getValue();
+            weaponSkillIds.add(id);
+            spells.putIfAbsent(id, entry);
+        }
 
-        for (RegistryEntry<Spell> entry : spells) {
+        for (RegistryEntry<Spell> entry : spells.values()) {
             Identifier id = entry.getKey().orElseThrow().getValue();
             if (entity.getWorld().getTime() < cooldownReadyAt.getOrDefault(id, 0L)) continue;
             Spell spell = entry.value();
@@ -298,7 +357,13 @@ public class MobSpellCastGoal extends Goal {
             if (candidates.isEmpty()) return false;
         }
 
+        if (preferWeaponSkills && !weaponSkillIds.isEmpty()) {
+            List<Identifier> skills = candidates.stream().filter(weaponSkillIds::contains).toList();
+            if (!skills.isEmpty()) candidates = skills;
+        }
+
         activeSpellId = candidates.get(entity.getRandom().nextInt(candidates.size()));
+        activeIsWeaponSkill = weaponSkillIds.contains(activeSpellId);
         return true;
     }
 
@@ -382,6 +447,7 @@ public class MobSpellCastGoal extends Goal {
 
     @Override
     public boolean shouldContinue() {
+        if (activeIsWeaponSkill && activeSpellId != null && !mainHandSpellIds().contains(activeSpellId)) return false;
         if (meleeAttacks != null) return caster.asMobEntity().isAlive();
         if (castingTime <= 0) return false;
         if (isSelfCast) return true;
@@ -412,6 +478,9 @@ public class MobSpellCastGoal extends Goal {
         int spellChannelTicks = hasCast ? spell.active.cast.channelTicks() : 0;
         castingTime = SpellTimings.resolveCastTicks(perSpell, goalTimings, spellChannelTicks > 0,
                 hasCast ? Float.valueOf(spell.active.cast.duration) : null);
+        if (customCasting != null) {
+            castingTime = Math.max(1, customCasting.castTicks(caster.asMobEntity(), activeSpellId, castingTime));
+        }
         totalCastTime = castingTime;
 
         channelReleases = SpellTimings.resolveChannelReleases(perSpell, goalTimings, spellChannelTicks);
@@ -430,7 +499,7 @@ public class MobSpellCastGoal extends Goal {
         castMovementSpeed = (spell.active != null && spell.active.cast != null) ? spell.active.cast.movement_speed : 0.2F;
         castSpellRange = spellRange(caster.asMobEntity(), entry) + modifierRangeBonus;
 
-        releaseTick = hasCastDuration(spell) ? 0 : totalCastTime / 2;
+        releaseTick = customCasting != null || hasCastDuration(spell) ? 0 : totalCastTime / 2;
         meleeRanged = usesMeleeRange(spell);
         meleeDelivery = startBehavior == DeliveryBehavior.MELEE;
         meleeNeedsGround = meleeDelivery && !spell.deliver.melee.allow_airborne;
@@ -443,6 +512,7 @@ public class MobSpellCastGoal extends Goal {
         meleeAttacks = null;
 
         caster.startSpellCast(castingTime);
+        if (customCasting != null) customCasting.onCastStart(caster.asMobEntity(), activeSpellId, castingTime);
         if (animationsEnabled() && hasCast) {
             var cast = spell.active.cast;
             float naturalTicks = cast.duration * 20F;
@@ -569,6 +639,7 @@ public class MobSpellCastGoal extends Goal {
             MobAnimations.stop(caster.asMobEntity(), MobAnimationLayer.CASTING, 5);
         }
         if (activeSpellId != null) {
+            if (customCasting != null) customCasting.onCastStop(caster.asMobEntity(), activeSpellId);
             RegistryEntry<Spell> entry = castAborted ? null
                     : SpellRegistry.from(caster.asMobEntity().getWorld()).getEntry(activeSpellId).orElse(null);
             if (entry != null) {
@@ -603,6 +674,7 @@ public class MobSpellCastGoal extends Goal {
         meleeHoldTicks = 0;
         castAborted = false;
         meleeAttacks = null;
+        activeIsWeaponSkill = false;
     }
 
     private void castSpell(int channelIndex) {
@@ -624,6 +696,7 @@ public class MobSpellCastGoal extends Goal {
             World world = entity.getWorld();
             boolean channeled = channelReleases > 0;
             boolean releaseFx = !channeled || (spell.active != null && spell.active.cast != null && spell.active.cast.channelReleaseFx());
+            if (customCasting != null) customCasting.onRelease(entity, activeSpellId);
             if (releaseFx) playReleaseAnimation(spell);
             DeliveryBehavior behavior = deriveDelivery(spell);
             SpellPower.Result power = SpellPower.getSpellPower(spell.school, entity);
@@ -1073,7 +1146,7 @@ public class MobSpellCastGoal extends Goal {
     }
 
     private boolean animationsEnabled() {
-        return animations && MrpgCompat.PLAYER_ANIMATOR;
+        return animations && customCasting == null && MrpgCompat.PLAYER_ANIMATOR;
     }
 
     private void playReleaseAnimation(Spell spell) {

@@ -38,6 +38,7 @@ public final class MobGoalCommand {
     private static final int PERMISSION_LEVEL = 2;
     private static final Map<MobEntity, List<Goal>> ADDED = new WeakHashMap<>();
     private static final int MAX_SHOTS = 8;
+    private static final int MAX_CUSTOM_CAST_TICKS = 200;
     private static final double SHOT_DISTANCE = 8.0;
     private static final float SHOT_SPEED = 1.6F;
     private static final CombatRollCompat.RollSettings ROLL_DODGE_SETTINGS = CombatRollCompat.RollSettings.DEFAULT
@@ -64,7 +65,11 @@ public final class MobGoalCommand {
                                         .executes(context -> shoot(context, IntegerArgumentType.getInteger(context, "count")))))
                         .then(literal("spellcast")
                                 .then(argument("spell", IdentifierArgumentType.identifier())
-                                        .executes(context -> addToTargets(context, "spell cast", 1, MobGoalCommand::spellCast))))
+                                        .executes(context -> addToTargets(context, "spell cast", 1, MobGoalCommand::spellCast))
+                                        .then(literal("custom")
+                                                .then(argument("ticks", IntegerArgumentType.integer(1, MAX_CUSTOM_CAST_TICKS))
+                                                        .executes(context -> addToTargets(context, "custom spell cast", 1, MobGoalCommand::customSpellCast))))))
+                        .then(literal("weaponskills").executes(context -> addToTargets(context, "weapon skill", 0, MobGoalCommand::weaponSkills)))
                         .then(literal("clear").executes(MobGoalCommand::clear))));
     }
 
@@ -116,6 +121,23 @@ public final class MobGoalCommand {
             return null;
         }
         return SpellCastTestGoals.create(mob, IdentifierArgumentType.getIdentifier(context, "spell").toString());
+    }
+
+    private static Goal customSpellCast(CommandContext<ServerCommandSource> context, MobEntity mob) {
+        if (!MrpgCompat.SPELL_ENGINE) {
+            context.getSource().sendError(Text.literal("Spell Engine is not loaded"));
+            return null;
+        }
+        return SpellCastTestGoals.createCustomCasting(mob, IdentifierArgumentType.getIdentifier(context, "spell").toString(),
+                IntegerArgumentType.getInteger(context, "ticks"));
+    }
+
+    private static Goal weaponSkills(CommandContext<ServerCommandSource> context, MobEntity mob) {
+        if (!MrpgCompat.SPELL_ENGINE) {
+            context.getSource().sendError(Text.literal("Spell Engine is not loaded"));
+            return null;
+        }
+        return SpellCastTestGoals.createWeaponSkills(mob);
     }
 
     private static int addToTargets(CommandContext<ServerCommandSource> context, String name, int priority,
