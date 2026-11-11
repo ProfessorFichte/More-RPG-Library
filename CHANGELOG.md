@@ -13,6 +13,13 @@
 - Structure processor `mrpg_lib:random_replace`: turns a random number of blocks of a structure piece into another block, optional with a loot table. The other ones can stay, become a fallback block or copy the blocks around them
 - Structure processor `mrpg_lib:item_frame_items`: gives item frames in a structure a random item from a list of item ids and tags, items of missing mods are skipped
 - Structure block modifiers (`data/<namespace>/mrpg_lib/structure_block_modifier/*.json`): replace blocks in any structure with a chance, also in structures that are built in code like strongholds, mineshafts or nether fortresses, optional with a loot table. `StructureBlockModifierProvider` creates them with datagen
+- `mrpg_lib:random_replace` can replace every target block with a `chance` (optionally capped by `count`), and `keep_properties` keeps the old block's state properties
+- Structure processor `mrpg_lib:container_loot`: gives chests, barrels, decorated pots, suspicious blocks and other lootable blocks of a structure a loot table with a chance, and keeps the rest of the block (facing, pot sherds)
+- `MobSpellCastGoal.withWeaponSkills(true)` / `MobSpellCastGoal.forWeaponSkills(...)`: mobs use the active skills of the weapon in their main hand (Swift Strikes, Cleave, Impale, ...) and prefer them over their other spells. The weapon is read every time a spell is picked
+- `MobSpellCastGoal.withCustomCasting(CustomCasting)`: for mobs with their own cast animation, no Spell Engine player animation, the mob's own cast length and hooks for cast start, release and stop
+- Hostile mobs using the Better Combat goal or casting spells can now hit their own current target even if it is another hostile mob (for example a skeleton that shot them by accident). Other hostile mobs nearby are still spared
+- Mobs with Spell Engine's evasion chance attribute play the `spell_engine:dodge` animation when they dodge (needs playerAnimator), and spell casting mobs can't dodge while casting, like players. `MobEvasion.setEvasionChance(mob, chance)` sets it from code
+- Dev command: `/mrpg_goal <targets> weaponskills` and `/mrpg_goal <targets> spellcast <spell> custom <ticks>`
 - Loot condition `mrpg_lib:spells_available`: true when Spell Engine has spells in the given pools and tiers, so a spell scroll entry is only rolled when it can get a spell (always false without Spell Engine)
 
 ### Fixed

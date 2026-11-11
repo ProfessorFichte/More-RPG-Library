@@ -1,6 +1,7 @@
 package com.mrpg_lib.worldgen.processor;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mrpg_lib.worldgen.ModStructureProcessorTypes;
@@ -27,34 +28,50 @@ import java.util.Optional;
 
 public class RandomReplaceProcessor extends StructureProcessor {
 
-    public static final MapCodec<RandomReplaceProcessor> CODEC = RecordCodecBuilder.mapCodec(instance ->
+    public static final MapCodec<RandomReplaceProcessor> CODEC = RecordCodecBuilder.<RandomReplaceProcessor>mapCodec(instance ->
             instance.group(
                     Codec.STRING.fieldOf("target").forGetter(p -> p.target),
-                    IntProvider.VALUE_CODEC.fieldOf("count").forGetter(p -> p.count),
+                    IntProvider.VALUE_CODEC.optionalFieldOf("count").forGetter(p -> p.count),
+                    Codec.floatRange(0.0F, 1.0F).optionalFieldOf("chance").forGetter(p -> p.chance),
                     BlockState.CODEC.fieldOf("replacement").forGetter(p -> p.replacement),
+                    Codec.BOOL.optionalFieldOf("keep_properties", false).forGetter(p -> p.keepProperties),
                     Identifier.CODEC.optionalFieldOf("loot_table").forGetter(p -> p.lootTable),
                     BlockState.CODEC.optionalFieldOf("fallback").forGetter(p -> p.fallback),
                     Codec.BOOL.optionalFieldOf("blend_fallback", false).forGetter(p -> p.blendFallback)
             ).apply(instance, RandomReplaceProcessor::new)
-    );
+    ).validate(p -> p.count.isEmpty() && p.chance.isEmpty()
+            ? DataResult.error(() -> "mrpg_lib:random_replace needs 'count', 'chance' or both")
+            : DataResult.success(p));
 
     private final String target;
-    private final IntProvider count;
+    private final Optional<IntProvider> count;
+    private final Optional<Float> chance;
     private final BlockState replacement;
+    private final boolean keepProperties;
     private final Optional<Identifier> lootTable;
     private final Optional<BlockState> fallback;
     private final boolean blendFallback;
     private final ProcessorBlocks.Matcher matcher;
+    private final long salt;
 
-    public RandomReplaceProcessor(String target, IntProvider count, BlockState replacement, Optional<Identifier> lootTable,
+    public RandomReplaceProcessor(String target, Optional<IntProvider> count, Optional<Float> chance, BlockState replacement,
+                                  boolean keepProperties, Optional<Identifier> lootTable,
                                   Optional<BlockState> fallback, boolean blendFallback) {
         this.target = target;
         this.count = count;
+        this.chance = chance;
         this.replacement = replacement;
+        this.keepProperties = keepProperties;
         this.lootTable = lootTable;
         this.fallback = fallback;
         this.blendFallback = blendFallback;
         this.matcher = ProcessorBlocks.Matcher.parse(target, "mrpg_lib:random_replace", "target");
+        this.salt = ProcessorBlocks.salt(target, replacement.toString(), lootTable.map(Identifier::toString).orElse(""));
+    }
+
+    public RandomReplaceProcessor(String target, IntProvider count, BlockState replacement, Optional<Identifier> lootTable,
+                                  Optional<BlockState> fallback, boolean blendFallback) {
+        this(target, Optional.of(count), Optional.empty(), replacement, false, lootTable, fallback, blendFallback);
     }
 
     private boolean matches(BlockState state) {
@@ -73,14 +90,33 @@ public class RandomReplaceProcessor extends StructureProcessor {
         if (candidates.isEmpty()) return currentBlockInfos;
 
         Random random = data.getRandom(pos);
-        int picks = Math.min(candidates.size(), Math.max(0, count.get(random)));
+        if (chance.isPresent()) {
+            long seed = world.toServerWorld().getSeed() ^ salt;
+            List<Integer> rolled = new ArrayList<>();
+            List<Integer> missed = new ArrayList<>();
+            for (int index : candidates) {
+                Random blockRandom = ProcessorBlocks.blockRandom(seed, currentBlockInfos.get(index).pos());
+                (blockRandom.nextFloat() < chance.get() ? rolled : missed).add(index);
+            }
+            Util.shuffle(rolled, random);
+            candidates = new ArrayList<>(rolled);
+            candidates.addAll(missed);
+            int max = count.map(provider -> Math.max(0, provider.get(random))).orElse(rolled.size());
+            return replace(currentBlockInfos, originalBlockInfos, candidates, Math.min(rolled.size(), max), random);
+        }
+        int picks = Math.min(candidates.size(), Math.max(0, count.orElseThrow().get(random)));
         Util.shuffle(candidates, random);
+        return replace(currentBlockInfos, originalBlockInfos, candidates, picks, random);
+    }
 
+    private List<StructureBlockInfo> replace(List<StructureBlockInfo> currentBlockInfos, List<StructureBlockInfo> originalBlockInfos,
+                                             List<Integer> candidates, int picks, Random random) {
         List<StructureBlockInfo> result = new ArrayList<>(currentBlockInfos);
         for (int i = 0; i < picks; i++) {
             int index = candidates.get(i);
             StructureBlockInfo info = currentBlockInfos.get(index);
-            result.set(index, new StructureBlockInfo(info.pos(), replacement, lootNbt(random)));
+            BlockState state = keepProperties ? ProcessorBlocks.copyProperties(info.state(), replacement) : replacement;
+            result.set(index, new StructureBlockInfo(info.pos(), state, lootNbt(random)));
         }
         if (fallback.isEmpty() && !blendFallback) return result;
 

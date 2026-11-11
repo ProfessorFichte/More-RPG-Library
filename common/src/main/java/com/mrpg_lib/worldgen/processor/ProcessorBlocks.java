@@ -6,10 +6,13 @@ import net.minecraft.block.BlockState;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.TagKey;
+import net.minecraft.state.property.Property;
 import net.minecraft.structure.StructurePlacementData;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.random.Random;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -25,6 +28,38 @@ public final class ProcessorBlocks {
             MRPGCMod.LOGGER.warn("Structure processor {}: unknown block '{}' in '{}'", processor, id, field);
         }
         return block;
+    }
+
+    public static long salt(String... parts) {
+        long salt = 1125899906842597L;
+        for (String part : parts) {
+            for (int i = 0; i < part.length(); i++) {
+                salt = 31 * salt + part.charAt(i);
+            }
+            salt = 31 * salt + '|';
+        }
+        return salt;
+    }
+
+    public static Random blockRandom(long seed, BlockPos pos) {
+        return Random.create(seed ^ MathHelper.hashCode(pos));
+    }
+
+    public static BlockState copyProperties(BlockState from, BlockState to) {
+        BlockState result = to;
+        for (Property<?> property : from.getProperties()) {
+            Property<?> target = to.getBlock().getStateManager().getProperty(property.getName());
+            if (target != null) result = copyValue(from, property, result, target);
+        }
+        return result;
+    }
+
+    private static <T extends Comparable<T>> BlockState copyValue(BlockState from, Property<T> property, BlockState to, Property<?> target) {
+        return parseInto(to, target, property.name(from.get(property)));
+    }
+
+    private static <V extends Comparable<V>> BlockState parseInto(BlockState state, Property<V> property, String value) {
+        return property.parse(value).map(parsed -> state.with(property, parsed)).orElse(state);
     }
 
     public static boolean inChunk(StructurePlacementData data, BlockPos pos) {

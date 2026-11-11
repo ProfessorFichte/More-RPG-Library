@@ -1,6 +1,7 @@
 package com.mrpg_lib.worldgen;
 
 import com.mrpg_lib.MRPGCMod;
+import com.mrpg_lib.worldgen.processor.ContainerLootProcessor;
 import com.mrpg_lib.worldgen.processor.ItemFrameItemsProcessor;
 import com.mrpg_lib.worldgen.processor.PathAdaptationProcessor;
 import com.mrpg_lib.worldgen.processor.RandomReplaceProcessor;
@@ -27,6 +28,9 @@ public class ModStructureProcessorTypes {
     public static final StructureProcessorType<ItemFrameItemsProcessor> ITEM_FRAME_ITEMS =
             () -> ItemFrameItemsProcessor.CODEC;
 
+    public static final StructureProcessorType<ContainerLootProcessor> CONTAINER_LOOT =
+            () -> ContainerLootProcessor.CODEC;
+
     public static void register() {
         Registry.register(
                 Registries.STRUCTURE_PROCESSOR,
@@ -37,6 +41,11 @@ public class ModStructureProcessorTypes {
                 Registries.STRUCTURE_PROCESSOR,
                 MRPGCMod.id("item_frame_items"),
                 ITEM_FRAME_ITEMS
+        );
+        Registry.register(
+                Registries.STRUCTURE_PROCESSOR,
+                MRPGCMod.id("container_loot"),
+                CONTAINER_LOOT
         );
         Registry.register(
                 Registries.STRUCTURE_PROCESSOR,
