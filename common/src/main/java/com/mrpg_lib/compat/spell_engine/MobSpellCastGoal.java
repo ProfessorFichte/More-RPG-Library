@@ -1,5 +1,7 @@
 package com.mrpg_lib.compat.spell_engine;
 
+import net.minecraft.world.RaycastContext;
+import net.minecraft.util.math.Box;
 import com.mrpg_lib.MRPGCMod;
 import com.mrpg_lib.entity.ISpellCasterEntity;
 import com.mrpg_lib.network.MRPGCNetworking;
@@ -19,12 +21,14 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 import net.spell_engine.api.spell.Spell;
+import net.spell_engine.api.spell.container.SpellChoice;
 import net.spell_engine.api.spell.container.SpellContainer;
 import net.spell_engine.api.spell.container.SpellContainerHelper;
 import net.spell_engine.api.spell.registry.SpellRegistry;
 import net.spell_engine.fx.ParticleHelper;
 import net.spell_engine.fx.ReleaseFx;
 import net.spell_engine.internals.SpellExecution;
+import net.spell_engine.spellbinding.spellchoice.SpellChoices;
 import net.spell_engine.entity.SummonedEntity;
 import net.spell_engine.internals.delivery.CloudPlacer;
 import net.spell_engine.internals.delivery.ProjectileLauncher;
@@ -49,6 +53,8 @@ import java.util.function.Consumer;
 
 public class MobSpellCastGoal extends Goal {
 
+    public enum WeaponSpellChoice { ON_SPAWN, PER_CAST }
+
     private enum DeliveryBehavior { PROJECTILE, ARROW, AFFECT_ARROW, STASH, METEOR, CLOUD, DIRECT, AREA, BEAM, SELF, TELEPORT, MELEE, CUSTOM }
 
     private final ISpellCasterEntity caster;
@@ -71,7 +77,11 @@ public class MobSpellCastGoal extends Goal {
     private static final int MAX_MELEE_HOLD_TICKS = 40;
     private static final double AREA_APPROACH_FACTOR = 0.5;
 
+    private static final double BEAM_HIT_RADIUS = 0.5;
+
     private long summonAssistUntil = 0L;
+    private float beamTurnDegrees = 1.5F;
+    @Nullable private Vec3d beamAim;
 
     private boolean intelligentSpellcasting = false;
     private boolean animations = false;
@@ -80,6 +90,10 @@ public class MobSpellCastGoal extends Goal {
     private boolean preferWeaponSkills = true;
     private final Set<Identifier> weaponSkillIds = new HashSet<>();
     private boolean activeIsWeaponSkill;
+    private WeaponSpellChoice weaponSpellChoice = WeaponSpellChoice.ON_SPAWN;
+    @Nullable private String chosenSpellPool;
+    @Nullable private Identifier chosenPoolSpell;
+    private int poolRolls;
     @Nullable private CustomCasting customCasting = null;
     @Nullable private String passiveSpellTag = null;
 
@@ -150,6 +164,16 @@ public class MobSpellCastGoal extends Goal {
         return this;
     }
 
+    public MobSpellCastGoal withWeaponSpellChoice(WeaponSpellChoice weaponSpellChoice) {
+        this.weaponSpellChoice = weaponSpellChoice;
+        return this;
+    }
+
+    public MobSpellCastGoal withBeamTurnSpeed(float degreesPerTick) {
+        this.beamTurnDegrees = degreesPerTick;
+        return this;
+    }
+
     public MobSpellCastGoal withCustomCasting(@Nullable CustomCasting customCasting) {
         this.customCasting = customCasting;
         return this;
@@ -207,7 +231,39 @@ public class MobSpellCastGoal extends Goal {
         for (Identifier id : mainHandSpellIds()) {
             registry.getEntry(id).filter(entry -> entry.value().type == Spell.Type.ACTIVE).ifPresent(result::add);
         }
+        RegistryEntry<Spell> chosen = chosenPoolSpell(world);
+        if (chosen != null && !result.contains(chosen)) result.add(chosen);
         return result;
+    }
+
+    @Nullable
+    private RegistryEntry<Spell> chosenPoolSpell(net.minecraft.world.World world) {
+        SpellChoice choice = SpellChoices.from(caster.asMobEntity().getMainHandStack());
+        if (choice == null) {
+            chosenSpellPool = null;
+            chosenPoolSpell = null;
+            return null;
+        }
+        if (!choice.pool().equals(chosenSpellPool)) {
+            chosenSpellPool = choice.pool();
+            chosenPoolSpell = null;
+            poolRolls = 0;
+        }
+        var registry = SpellRegistry.from(world);
+        if (chosenPoolSpell != null) {
+            var entry = registry.getEntry(chosenPoolSpell).orElse(null);
+            if (entry != null) return entry;
+        }
+        List<RegistryEntry<Spell>> pool = SpellRegistry.entries(world, choice.pool()).stream()
+                .filter(entry -> entry.value().type == Spell.Type.ACTIVE)
+                .sorted(Comparator.comparing(entry -> entry.getKey().orElseThrow().getValue()))
+                .toList();
+        if (pool.isEmpty()) return null;
+        // Seeded with the mob's UUID, so the first pick stays the same after the world is reloaded.
+        long seed = caster.asMobEntity().getUuid().getLeastSignificantBits() ^ choice.pool().hashCode() ^ poolRolls;
+        RegistryEntry<Spell> picked = pool.get(new Random(seed).nextInt(pool.size()));
+        chosenPoolSpell = picked.getKey().orElseThrow().getValue();
+        return picked;
     }
 
     public List<RegistryEntry<Spell>> resolvedWeaponSkills(net.minecraft.world.World world) {
@@ -447,7 +503,8 @@ public class MobSpellCastGoal extends Goal {
 
     @Override
     public boolean shouldContinue() {
-        if (activeIsWeaponSkill && activeSpellId != null && !mainHandSpellIds().contains(activeSpellId)) return false;
+        if (activeIsWeaponSkill && activeSpellId != null && !mainHandSpellIds().contains(activeSpellId)
+                && !(activeSpellId.equals(chosenPoolSpell) && SpellChoices.from(caster.asMobEntity().getMainHandStack()) != null)) return false;
         if (meleeAttacks != null) return caster.asMobEntity().isAlive();
         if (castingTime <= 0) return false;
         if (isSelfCast) return true;
@@ -539,7 +596,11 @@ public class MobSpellCastGoal extends Goal {
         assistSummons(entity);
         LivingEntity target = entity.getTarget();
         LivingEntity lookAt = target != null ? target : healingTarget;
-        if (lookAt != null) entity.getLookControl().lookAt(lookAt, 30.0F, 30.0F);
+        if (isBeamCast && beamAim != null) {
+            faceDirection(beamAim);
+        } else if (lookAt != null) {
+            entity.getLookControl().lookAt(lookAt, 30.0F, 30.0F);
+        }
 
         if (meleeAttacks != null) {
             meleeAttacks.tick(target);
@@ -573,12 +634,13 @@ public class MobSpellCastGoal extends Goal {
                     ParticleHelper.sendBatches(entity, spell.active.cast.particles);
                 }
                 if (isBeamCast && target != null) {
-                    sendBeamPacket(entity, target, activeSpellId);
+                    sendBeamPacket(entity, target, activeSpellId, updateBeamAim(entity, target));
+                    faceDirection(beamAim);
                 }
             }
             int elapsed = totalCastTime - castingTime;
             if (releasesDone < channelReleases && elapsed >= channelIntervalTicks * (releasesDone + 0.5F)) {
-                faceTarget(target != null ? target : healingTarget);
+                if (!isBeamCast) faceTarget(target != null ? target : healingTarget);
                 castSpell(releasesDone);
                 releasesDone++;
             }
@@ -651,6 +713,10 @@ public class MobSpellCastGoal extends Goal {
                     cooldownReadyAt.remove(activeSpellId);
                 }
             }
+            if (weaponSpellChoice == WeaponSpellChoice.PER_CAST && activeSpellId.equals(chosenPoolSpell)) {
+                chosenPoolSpell = null;
+                poolRolls = caster.asMobEntity().getRandom().nextInt();
+            }
             activeSpellId = null;
         }
         castingTime = 0;
@@ -663,6 +729,7 @@ public class MobSpellCastGoal extends Goal {
         isBeamCast = false;
         isChargeCast = false;
         chargeReleased = false;
+        beamAim = null;
         healingTarget = null;
         healingSpellRange = 8.0;
         castMovementSpeed = 0.2F;
@@ -803,21 +870,24 @@ public class MobSpellCastGoal extends Goal {
                         SpellImpacts.performImpacts(world, entity, entity, entity, entry, spell.impacts, selfCtx, false, Spell.Impact.Action.Type.SPAWN);
                     }
                     List<SpellExecution.DeliveryTarget> beamTargets = new ArrayList<>();
-                    beamTargets.add(new SpellExecution.DeliveryTarget(target, base));
                     double beamRange = spell.range > 0 ? spell.range : 32.0;
                     Vec3d beamFrom = entity.getEyePos();
-                    Vec3d beamDir = target.getEyePos().subtract(beamFrom).normalize();
+                    Vec3d beamDir = beamAim != null ? beamAim : target.getEyePos().subtract(beamFrom).normalize();
+                    Vec3d beamTo = world.raycast(new RaycastContext(beamFrom, beamFrom.add(beamDir.multiply(beamRange)),
+                            RaycastContext.ShapeType.COLLIDER, RaycastContext.FluidHandling.NONE, entity)).getPos();
                     for (Entity candidate : world.getOtherEntities(entity,
                             entity.getBoundingBox().expand(beamRange),
-                            e -> e instanceof LivingEntity && e.isAlive() && e != target)) {
-                        Vec3d toCandidate = candidate.getBoundingBox().getCenter().subtract(beamFrom);
-                        double projection = toCandidate.dotProduct(beamDir);
-                        if (projection < 0 || projection > beamRange) continue;
-                        double lateralDistSq = toCandidate.subtract(beamDir.multiply(projection)).lengthSquared();
-                        if (lateralDistSq > 2.0 * 2.0) continue;
-                        beamTargets.add(new SpellExecution.DeliveryTarget(candidate, base));
+                            e -> e instanceof LivingEntity && e.isAlive())) {
+                        Box box = candidate.getBoundingBox().expand(BEAM_HIT_RADIUS);
+                        if (box.contains(beamFrom) || box.raycast(beamFrom, beamTo).isPresent()) {
+                            beamTargets.add(new SpellExecution.DeliveryTarget(candidate, base));
+                        }
                     }
-                    SpellDelivery.deliver(world, entry, entity, beamTargets, base, null, completion);
+                    if (beamTargets.isEmpty()) {
+                        fx.run();
+                    } else {
+                        SpellDelivery.deliver(world, entry, entity, beamTargets, base, null, completion);
+                    }
                 }
                 case DIRECT -> {
                     LivingEntity target = entity.getTarget();
@@ -913,6 +983,23 @@ public class MobSpellCastGoal extends Goal {
         } catch (Exception e) {
             MRPGCMod.LOGGER.error("Failed to cast spell {}", activeSpellId, e);
         }
+    }
+
+    private Vec3d updateBeamAim(MobEntity entity, LivingEntity target) {
+        Vec3d wanted = target.getEyePos().subtract(entity.getEyePos()).normalize();
+        if (beamAim == null || beamTurnDegrees <= 0) {
+            beamAim = wanted;
+            return beamAim;
+        }
+        double angle = Math.acos(MathHelper.clamp(beamAim.dotProduct(wanted), -1.0, 1.0));
+        double step = Math.toRadians(beamTurnDegrees);
+        if (angle <= step) {
+            beamAim = wanted;
+        } else {
+            Vec3d turned = beamAim.lerp(wanted, step / angle);
+            beamAim = turned.lengthSquared() < 1.0E-6 ? wanted : turned.normalize();
+        }
+        return beamAim;
     }
 
     private void finishChannel(MobEntity entity) {
@@ -1156,6 +1243,17 @@ public class MobSpellCastGoal extends Goal {
                 spell.release.animation.speed);
     }
 
+    private void faceDirection(Vec3d direction) {
+        MobEntity entity = caster.asMobEntity();
+        double hDist = Math.sqrt(direction.x * direction.x + direction.z * direction.z);
+        float yaw = (float) (Math.atan2(direction.z, direction.x) * (180.0 / Math.PI)) - 90.0F;
+        float pitch = (float) (-(Math.atan2(direction.y, hDist) * (180.0 / Math.PI)));
+        entity.setYaw(yaw);
+        entity.setPitch(pitch);
+        entity.headYaw = yaw;
+        entity.bodyYaw = yaw;
+    }
+
     private void faceTarget(@Nullable LivingEntity target) {
         if (target == null) return;
         MobEntity entity = caster.asMobEntity();
@@ -1171,9 +1269,9 @@ public class MobSpellCastGoal extends Goal {
         entity.bodyYaw = yaw;
     }
 
-    private static void sendBeamPacket(MobEntity caster, LivingEntity target, Identifier spellId) {
+    private static void sendBeamPacket(MobEntity caster, LivingEntity target, Identifier spellId, Vec3d direction) {
         if (!(caster.getWorld() instanceof ServerWorld sw)) return;
-        var packet = new MobBeamPacket(caster.getId(), target.getId(), spellId);
+        var packet = new MobBeamPacket(caster.getId(), target.getId(), spellId, direction);
         sw.getPlayers().forEach(player -> MRPGCNetworking.sendToPlayer(player, packet));
     }
 

@@ -41,7 +41,7 @@ public class MobBeamWorldRenderer {
             var target = world.getEntityById(activeBeam.targetId());
             if (!(target instanceof LivingEntity livingTarget) || !livingTarget.isAlive()) continue;
 
-            renderMobBeam(matrices, consumers, caster, livingTarget, activeBeam.beam(), activeBeam.range(), time, delta);
+            renderMobBeam(matrices, consumers, caster, livingTarget, activeBeam, time, delta);
             rendered = true;
         }
 
@@ -56,7 +56,9 @@ public class MobBeamWorldRenderer {
 
     private static void renderMobBeam(MatrixStack matrices, VertexConsumerProvider consumers,
                                       LivingEntity caster, LivingEntity target,
-                                      Spell.Target.Beam beam, float spellRange, long time, float delta) {
+                                      MobBeamTracker.ActiveBeam activeBeam, long time, float delta) {
+        Spell.Target.Beam beam = activeBeam.beam();
+        float spellRange = activeBeam.range();
         Vec3d casterPos = new Vec3d(
                 caster.prevX + (caster.getX() - caster.prevX) * delta,
                 caster.prevY + (caster.getY() - caster.prevY) * delta,
@@ -65,7 +67,9 @@ public class MobBeamWorldRenderer {
         Vec3d from = casterPos.add(0, caster.getStandingEyeHeight() * 0.9, 0);
         Vec3d targetEye = target.getEyePos();
 
-        Vec3d beamVector = targetEye.subtract(from);
+        Vec3d beamVector = activeBeam.direction() != null && activeBeam.previousDirection() != null
+                ? activeBeam.previousDirection().lerp(activeBeam.direction(), delta)
+                : targetEye.subtract(from);
         float length = (float) beamVector.length();
         if (length < 0.01f) return;
         beamVector = beamVector.normalize();

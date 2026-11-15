@@ -1,5 +1,6 @@
 package com.mrpg_lib.compat.spell_engine.client.render;
 
+import net.minecraft.util.math.Vec3d;
 import com.mrpg_lib.compat.spell_engine.network.MobBeamPacket;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -14,7 +15,7 @@ import java.util.Map;
 @Environment(EnvType.CLIENT)
 public class MobBeamTracker {
 
-    public record ActiveBeam(int targetId, Spell.Target.Beam beam, float range) {}
+    public record ActiveBeam(int targetId, Spell.Target.Beam beam, float range, @Nullable Vec3d previousDirection, @Nullable Vec3d direction) {}
 
     private static final Map<Integer, ActiveBeam> activeBeams = new HashMap<>();
 
@@ -28,7 +29,9 @@ public class MobBeamTracker {
         if (entry == null) return;
         Spell spell = entry.value();
         if (spell.target == null || spell.target.beam == null) return;
-        activeBeams.put(payload.casterId(), new ActiveBeam(payload.targetId(), spell.target.beam, spell.range));
+        ActiveBeam previous = activeBeams.get(payload.casterId());
+        Vec3d previousDirection = previous != null && previous.direction() != null ? previous.direction() : payload.direction();
+        activeBeams.put(payload.casterId(), new ActiveBeam(payload.targetId(), spell.target.beam, spell.range, previousDirection, payload.direction()));
     }
 
     @Nullable

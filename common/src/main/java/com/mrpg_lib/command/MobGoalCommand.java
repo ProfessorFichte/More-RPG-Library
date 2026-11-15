@@ -69,7 +69,9 @@ public final class MobGoalCommand {
                                         .then(literal("custom")
                                                 .then(argument("ticks", IntegerArgumentType.integer(1, MAX_CUSTOM_CAST_TICKS))
                                                         .executes(context -> addToTargets(context, "custom spell cast", 1, MobGoalCommand::customSpellCast))))))
-                        .then(literal("weaponskills").executes(context -> addToTargets(context, "weapon skill", 0, MobGoalCommand::weaponSkills)))
+                        .then(literal("weaponskills")
+                                .executes(context -> addToTargets(context, "weapon skill", 0, (c, mob) -> weaponSkills(c, mob, false)))
+                                .then(literal("reroll").executes(context -> addToTargets(context, "weapon skill", 0, (c, mob) -> weaponSkills(c, mob, true)))))
                         .then(literal("clear").executes(MobGoalCommand::clear))));
     }
 
@@ -132,12 +134,12 @@ public final class MobGoalCommand {
                 IntegerArgumentType.getInteger(context, "ticks"));
     }
 
-    private static Goal weaponSkills(CommandContext<ServerCommandSource> context, MobEntity mob) {
+    private static Goal weaponSkills(CommandContext<ServerCommandSource> context, MobEntity mob, boolean rerollPerCast) {
         if (!MrpgCompat.SPELL_ENGINE) {
             context.getSource().sendError(Text.literal("Spell Engine is not loaded"));
             return null;
         }
-        return SpellCastTestGoals.createWeaponSkills(mob);
+        return SpellCastTestGoals.createWeaponSkills(mob, rerollPerCast);
     }
 
     private static int addToTargets(CommandContext<ServerCommandSource> context, String name, int priority,

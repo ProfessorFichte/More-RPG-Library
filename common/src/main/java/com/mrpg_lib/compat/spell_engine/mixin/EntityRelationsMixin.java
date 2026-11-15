@@ -4,6 +4,7 @@ import com.mrpg_lib.effect.ControlEnemyStatusEffect;
 import com.mrpg_lib.entity.ControlledOwnerAccess;
 import com.mrpg_lib.entity.ISpellCasterEntity;
 import com.mrpg_lib.entity.TestSpellCasters;
+import com.mrpg_lib.util.AllyHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.HostileEntity;
@@ -28,6 +29,13 @@ public class EntityRelationsMixin {
                                                   CallbackInfoReturnable<Boolean> cir) {
         if (!(attacker instanceof ISpellCasterEntity) && !TestSpellCasters.isMarked(attacker)) return;
         if (attacker == target) return;
+
+        if (AllyHelper.resolveOwner(attacker) instanceof LivingEntity owner && owner != attacker && AllyHelper.resolveOwner(owner) == owner) {
+            cir.setReturnValue(target == owner
+                    ? intent != SpellTarget.Intent.HARMFUL
+                    : EntityRelations.actionAllowed(focusMode, intent, owner, target));
+            return;
+        }
 
         if (intent == SpellTarget.Intent.HARMFUL) {
             if (!(target instanceof HostileEntity) || attacker instanceof MobEntity mob && mob.getTarget() == target) {

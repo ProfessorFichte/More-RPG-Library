@@ -732,6 +732,17 @@ Passive spells are resolved and exposed the same way, but their triggers (on-hit
 
 ---
 
+**Beam spells**
+
+A mob doesn't hit you with a beam just because it targets you. The beam follows the target with a limited turn speed, 1.5 degrees per tick by default.
+The mob turns with its beam, so you can outrun both by moving sideways, especially up close. It only hits entities it really touches and it stops at blocks.
+```java
+new MobSpellCastGoal(this, "wizards:arcane_beam", spellGoals).withBeamTurnSpeed(5.0F);
+```
+- A higher value makes the beam harder to dodge, `0` snaps it onto the target every tick like before.
+
+---
+
 **Weapon skills**
 
 `withWeaponSkills(true)` lets the mob use the active spells of the weapon in its main hand, the same skills a player gets from it: Swift Strikes on swords, Cleave on axes, Impale on spears, and so on.
@@ -748,6 +759,7 @@ MobSpellCastGoal mixed = new MobSpellCastGoal(this, "#mymod:mob/knight_spells", 
 - Only active spells count. Passive and modifier spells of the weapon stay with `withEquipmentSpells(true)`.
 - Melee skills (`MELEE` delivery) work like described under **Melee spells**: the mob walks up, swings and hits everything in the arc. The mob needs an attack damage attribute.
 - If the weapon leaves the mob's hand while a skill is being used, the skill stops.
+- Weapons with a spell choice pool (the ones where a player picks one skill out of a list, like the Wizards staffs or the Bard lutes) work too. The mob gets one random active spell from that pool. By default it's picked once and the mob keeps it, also after a world reload. With `.withWeaponSpellChoice(MobSpellCastGoal.WeaponSpellChoice.PER_CAST)` a new one is picked after every cast of it.
 - Cooldowns are per skill and per goal. Turn this on for one goal of a mob only, otherwise each goal uses the skill on its own cooldown.
 - `forWeaponSkills(caster, otherGoals)` is a goal that only uses weapon skills. `resolvedWeaponSkills(world)` lists the skills of the current weapon.
 
@@ -1006,7 +1018,7 @@ The `/mrpg_goal` command (op level 2) only exists in a development environment, 
 - `/mrpg_goal <targets> combatroll dodge` gives the roll goal with only the projectile dodge turned on (no engage or low-health retreat rolls).
 - `/mrpg_goal <targets> shoot [count]` fires that many test arrows at the targets from a ring around them, handy for testing the dodge.
 - `/mrpg_goal <targets> spellcast <spell_id> custom <ticks>` uses `withCustomCasting(CustomCasting.ticks(ticks))`: no Spell Engine animation and that cast length.
-- `/mrpg_goal <targets> weaponskills` adds a goal that uses the weapon skills of the mob's main-hand weapon (`MobSpellCastGoal.forWeaponSkills`).
+- `/mrpg_goal <targets> weaponskills` adds a goal that uses the weapon skills of the mob's main-hand weapon (`MobSpellCastGoal.forWeaponSkills`). Add `reroll` at the end to pick a new spell from the weapon's choice pool after every cast.
 - `/mrpg_goal <targets> clear` removes the goals again.
 
 Give the mob a Better Combat weapon in its main hand to see the combos, or one in each hand to see dual wielding (for example `HandItems:[{id:"rogues:iron_dagger",count:1},{id:"rogues:iron_dagger",count:1}]`).

@@ -18,8 +18,9 @@ public final class SpellCastTestGoals {
         return new MobSpellCastGoal(caster(mob), spellId).withAnimations(true).withCustomCasting(CustomCasting.ticks(castTicks));
     }
 
-    public static Goal createWeaponSkills(MobEntity mob) {
-        return MobSpellCastGoal.forWeaponSkills(caster(mob), null).withAnimations(true);
+    public static Goal createWeaponSkills(MobEntity mob, boolean rerollPerCast) {
+        return MobSpellCastGoal.forWeaponSkills(caster(mob), null).withAnimations(true)
+                .withWeaponSpellChoice(rerollPerCast ? MobSpellCastGoal.WeaponSpellChoice.PER_CAST : MobSpellCastGoal.WeaponSpellChoice.ON_SPAWN);
     }
 
     private static ISpellCasterEntity caster(MobEntity mob) {

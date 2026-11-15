@@ -16,13 +16,19 @@
 - `mrpg_lib:random_replace` can replace every target block with a `chance` (optionally capped by `count`), and `keep_properties` keeps the old block's state properties
 - Structure processor `mrpg_lib:container_loot`: gives chests, barrels, decorated pots, suspicious blocks and other lootable blocks of a structure a loot table with a chance, and keeps the rest of the block (facing, pot sherds)
 - `MobSpellCastGoal.withWeaponSkills(true)` / `MobSpellCastGoal.forWeaponSkills(...)`: mobs use the active skills of the weapon in their main hand (Swift Strikes, Cleave, Impale, ...) and prefer them over their other spells. The weapon is read every time a spell is picked
+- Spell casting mobs with an owner (`Ownable`, tamed or controlled) now hit and help the same targets their owner would, so a player's summon doesn't hit its owner or other players with area spells
+- Beam spells of mobs don't stick to the target anymore. The beam turns towards the target with a limited speed (1.5 degrees per tick, `withBeamTurnSpeed(degrees)`, 0 = old behaviour) and the mob turns with it, only hits what it really touches and stops at walls, so a fast target can outrun it
+- Mobs also use weapons with a spell choice pool: one random spell of the pool is picked when the mob spawns, or a new one after every cast with `withWeaponSpellChoice(WeaponSpellChoice.PER_CAST)`
 - `MobSpellCastGoal.withCustomCasting(CustomCasting)`: for mobs with their own cast animation, no Spell Engine player animation, the mob's own cast length and hooks for cast start, release and stop
 - Hostile mobs using the Better Combat goal or casting spells can now hit their own current target even if it is another hostile mob (for example a skeleton that shot them by accident). Other hostile mobs nearby are still spared
 - Mobs with Spell Engine's evasion chance attribute play the `spell_engine:dodge` animation when they dodge (needs playerAnimator), and spell casting mobs can't dodge while casting, like players. `MobEvasion.setEvasionChance(mob, chance)` sets it from code
-- Dev command: `/mrpg_goal <targets> weaponskills` and `/mrpg_goal <targets> spellcast <spell> custom <ticks>`
+- Dev command: `/mrpg_goal <targets> weaponskills [reroll]` and `/mrpg_goal <targets> spellcast <spell> custom <ticks>`
 - Loot condition `mrpg_lib:spells_available`: true when Spell Engine has spells in the given pools and tiers, so a spell scroll entry is only rolled when it can get a spell (always false without Spell Engine)
 
 ### Fixed
+- Lifesteal, Spell Vampire, Rage, Fuse and the burning / poison chances could stop working for a long time after switching to another singleplayer world.
+  Their cooldowns are now kept per entity, so nothing carries over into another world and old entries are cleaned up
+- With Critical Strike installed, mobs couldn't cast spells of the Frost Ranged, Fire Ranged and Rage Melee schools
 - Crash on startup without Spell Engine: Tiny Config is now included in the jar. Before it only came with Spell Engine
 - Loot tables that use the spell scroll or spell pool function no longer stop working completely without Spell Engine. The functions just do nothing then
 - The conditional item entry no longer gives an empty roll when its item is missing, one of the other entries is picked instead.
