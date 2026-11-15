@@ -32,10 +32,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import java.util.UUID;
+import java.util.WeakHashMap;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
@@ -44,12 +43,12 @@ public abstract class LivingEntityMixin {
     @Unique private float actualDamageDealt = 0;
     @Unique private float healthBeforeDamage = 0;
 
-    @Unique private static final Map<UUID, Long> SPELL_VAMPIRE_COOLDOWN = new HashMap<>();
-    @Unique private static final Map<UUID, Long> LIFESTEAL_COOLDOWN = new HashMap<>();
-    @Unique private static final Map<UUID, Long> RAGE_COOLDOWN = new HashMap<>();
-    @Unique private static final Map<UUID, Long> FUSE_COOLDOWN = new HashMap<>();
-    @Unique private static final Map<UUID, Long> STRONG_EFFECT_COOLDOWN = new HashMap<>();
-    @Unique private static final Map<UUID, Long> WEAK_EFFECT_COOLDOWN = new HashMap<>();
+    @Unique private static final Map<Entity, Long> SPELL_VAMPIRE_COOLDOWN = new WeakHashMap<>();
+    @Unique private static final Map<Entity, Long> LIFESTEAL_COOLDOWN = new WeakHashMap<>();
+    @Unique private static final Map<Entity, Long> RAGE_COOLDOWN = new WeakHashMap<>();
+    @Unique private static final Map<Entity, Long> FUSE_COOLDOWN = new WeakHashMap<>();
+    @Unique private static final Map<Entity, Long> STRONG_EFFECT_COOLDOWN = new WeakHashMap<>();
+    @Unique private static final Map<Entity, Long> WEAK_EFFECT_COOLDOWN = new WeakHashMap<>();
 
     @Unique private static final TagKey<DamageType> SPELL_DAMAGE = TagKey.of(RegistryKeys.DAMAGE_TYPE, Identifier.of("spell_power", "all"));
 
@@ -141,9 +140,8 @@ public abstract class LivingEntityMixin {
         LivingEntity attacker = getLivingAttackerFromDamageSource(source);
         if (attacker == null || attacker.getWorld().isClient()) return;
         long currentTick = attacker.getWorld().getTime();
-        UUID attackerId = attacker.getUuid();
-        Long lastTick = SPELL_VAMPIRE_COOLDOWN.get(attackerId);
-        if (lastTick != null && currentTick - lastTick < MRPGCMod.tweaksConfig.value.spellVampireCooldownTicks) return;
+        Long lastTick = SPELL_VAMPIRE_COOLDOWN.get(attacker);
+        if (lastTick != null && lastTick <= currentTick && currentTick - lastTick < MRPGCMod.tweaksConfig.value.spellVampireCooldownTicks) return;
         EntityAttributeInstance spellVampire = attacker.getAttributeInstance(MRPGCEntityAttributes.SPELL_VAMPIRE);
         if (spellVampire != null) {
             int value = (int) spellVampire.getValue();
@@ -151,7 +149,7 @@ public abstract class LivingEntityMixin {
                 float heal = amount * ((float)(value - 100) / 100f);
                 attacker.heal(heal);
                 CompatHooks.fx().lifesteal(attacker);
-                SPELL_VAMPIRE_COOLDOWN.put(attackerId, currentTick);
+                SPELL_VAMPIRE_COOLDOWN.put(attacker, currentTick);
             }
         }
     }
@@ -161,9 +159,8 @@ public abstract class LivingEntityMixin {
         LivingEntity attacker = getLivingAttackerFromDamageSource(source);
         if (attacker == null || attacker.getWorld().isClient()) return;
         long currentTick = attacker.getWorld().getTime();
-        UUID attackerId = attacker.getUuid();
-        Long lastTick = LIFESTEAL_COOLDOWN.get(attackerId);
-        if (lastTick != null && currentTick - lastTick < MRPGCMod.tweaksConfig.value.lifestealCooldownTicks) return;
+        Long lastTick = LIFESTEAL_COOLDOWN.get(attacker);
+        if (lastTick != null && lastTick <= currentTick && currentTick - lastTick < MRPGCMod.tweaksConfig.value.lifestealCooldownTicks) return;
         EntityAttributeInstance lifesteal = attacker.getAttributeInstance(MRPGCEntityAttributes.LIFESTEAL_MODIFIER);
         if (lifesteal != null) {
             int value = (int) lifesteal.getValue();
@@ -171,7 +168,7 @@ public abstract class LivingEntityMixin {
                 float heal = actualDamageDealt * ((float)(value - 100) / 100f);
                 attacker.heal(heal);
                 CompatHooks.fx().lifesteal(attacker);
-                LIFESTEAL_COOLDOWN.put(attackerId, currentTick);
+                LIFESTEAL_COOLDOWN.put(attacker, currentTick);
             }
         }
     }
@@ -182,9 +179,8 @@ public abstract class LivingEntityMixin {
         LivingEntity attacker = getLivingAttackerFromDamageSource(source);
         if (attacker == null || attacker.getWorld().isClient()) return amount;
         long currentTick = attacker.getWorld().getTime();
-        UUID attackerId = attacker.getUuid();
-        Long lastTick = RAGE_COOLDOWN.get(attackerId);
-        if (lastTick != null && currentTick - lastTick < 10) return amount;
+        Long lastTick = RAGE_COOLDOWN.get(attacker);
+        if (lastTick != null && lastTick <= currentTick && currentTick - lastTick < 10) return amount;
         EntityAttributeInstance rage = attacker.getAttributeInstance(MRPGCEntityAttributes.RAGE_MODIFIER);
         if (rage == null || rage.getValue() == 100.0) return amount;
         float health = attacker.getHealth();
@@ -194,7 +190,7 @@ public abstract class LivingEntityMixin {
             EntityAttributeInstance attackDamage = attacker.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE);
             if (attackDamage == null) return amount;
             float rageDamage = Math.max(0.1f, (float) attackDamage.getValue() * ((float)(rage.getValue() - 100) / 100f) * missing);
-            RAGE_COOLDOWN.put(attackerId, currentTick);
+            RAGE_COOLDOWN.put(attacker, currentTick);
             return amount + rageDamage;
         }
         return amount;
@@ -231,10 +227,9 @@ public abstract class LivingEntityMixin {
         if (attacker == null || attacker.getWorld().isClient()) return;
         LivingEntity target = (LivingEntity)(Object)this;
         long currentTick = attacker.getWorld().getTime();
-        UUID attackerId = attacker.getUuid();
-        Long lastTick = FUSE_COOLDOWN.get(attackerId);
-        if (lastTick != null && currentTick - lastTick < 20) return;
-        FUSE_COOLDOWN.put(attackerId, currentTick);
+        Long lastTick = FUSE_COOLDOWN.get(attacker);
+        if (lastTick != null && lastTick <= currentTick && currentTick - lastTick < 20) return;
+        FUSE_COOLDOWN.put(attacker, currentTick);
         CompatHooks.applyFuse(attacker, target, true);
     }
 
@@ -261,44 +256,43 @@ public abstract class LivingEntityMixin {
 
         LivingEntity target = (LivingEntity)(Object)this;
         long currentTick = attacker.getWorld().getTime();
-        UUID attackerId = attacker.getUuid();
         EntityAttributeInstance attackDamageInstance = attacker.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE);
         int amplifier = attackDamageInstance != null ? (int)(attackDamageInstance.getValue() * 0.15) : 0;
         Random random = new Random();
 
-        Long lastStrong = STRONG_EFFECT_COOLDOWN.get(attackerId);
-        if (lastStrong == null || currentTick - lastStrong >= 160) {
+        Long lastStrong = STRONG_EFFECT_COOLDOWN.get(attacker);
+        if (lastStrong == null || lastStrong > currentTick || currentTick - lastStrong >= 160) {
             if (burningChance != null && burningChance.getValue() > 100.0 && random.nextFloat() < (float)(burningChance.getValue() - 100) / 100f) {
                 target.addStatusEffect(new StatusEffectInstance(MRPGCEffects.IGNITED.entry, 40, amplifier, true, false, true));
-                STRONG_EFFECT_COOLDOWN.put(attackerId, currentTick);
+                STRONG_EFFECT_COOLDOWN.put(attacker, currentTick);
             }
             if (staggerChance != null && staggerChance.getValue() > 100.0 && random.nextFloat() < (float)(staggerChance.getValue() - 100) / 100f) {
                 target.addStatusEffect(new StatusEffectInstance(MRPGCEffects.STAGGER.entry, 80, amplifier, true, false, true));
-                STRONG_EFFECT_COOLDOWN.put(attackerId, currentTick);
+                STRONG_EFFECT_COOLDOWN.put(attacker, currentTick);
             }
             var stunEffect = CompatHooks.stunEffect();
             if (stunEffect != null && stunChance != null && stunChance.getValue() > 100.0 && random.nextFloat() < (float)(stunChance.getValue() - 100) / 100f) {
                 target.addStatusEffect(new StatusEffectInstance(stunEffect, 40, 0, true, false, true));
-                STRONG_EFFECT_COOLDOWN.put(attackerId, currentTick);
+                STRONG_EFFECT_COOLDOWN.put(attacker, currentTick);
             }
             if (freezeChance != null && freezeChance.getValue() > 100.0 && random.nextFloat() < (float)(freezeChance.getValue() - 100) / 100f) {
                 target.addStatusEffect(new StatusEffectInstance(MRPGCEffects.FROZEN_SOLID.entry, 60, 0, true, false, true));
-                STRONG_EFFECT_COOLDOWN.put(attackerId, currentTick);
+                STRONG_EFFECT_COOLDOWN.put(attacker, currentTick);
                 CompatHooks.fx().freeze(target);
             }
         }
 
-        Long lastWeak = WEAK_EFFECT_COOLDOWN.get(attackerId);
-        if (lastWeak == null || currentTick - lastWeak >= 80) {
+        Long lastWeak = WEAK_EFFECT_COOLDOWN.get(attacker);
+        if (lastWeak == null || lastWeak > currentTick || currentTick - lastWeak >= 80) {
             if (poisonChance != null && poisonChance.getValue() > 100.0 && random.nextFloat() < (float)(poisonChance.getValue() - 100) / 100f) {
                 target.addStatusEffect(new StatusEffectInstance(StatusEffects.POISON, 120, amplifier, true, false, true));
-                WEAK_EFFECT_COOLDOWN.put(attackerId, currentTick);
+                WEAK_EFFECT_COOLDOWN.put(attacker, currentTick);
                 CompatHooks.fx().poison(target);
             }
             var bleedEffect = CompatHooks.bleedEffect();
             if (bleedEffect != null && bleedingChance != null && bleedingChance.getValue() > 100.0 && random.nextFloat() < (float)(bleedingChance.getValue() - 100) / 100f) {
                 target.addStatusEffect(new StatusEffectInstance(bleedEffect, 120, amplifier, true, false, true));
-                WEAK_EFFECT_COOLDOWN.put(attackerId, currentTick);
+                WEAK_EFFECT_COOLDOWN.put(attacker, currentTick);
                 CompatHooks.fx().bleed(target);
             }
         }

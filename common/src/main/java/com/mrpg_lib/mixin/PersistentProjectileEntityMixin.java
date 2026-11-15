@@ -16,10 +16,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import java.util.UUID;
+import java.util.WeakHashMap;
 
 import static com.mrpg_lib.util.CustomMethods.getRangedDamageAttribute;
 
@@ -27,11 +26,11 @@ import static com.mrpg_lib.util.CustomMethods.getRangedDamageAttribute;
 public abstract class PersistentProjectileEntityMixin {
 
     @Unique
-    private static final Map<UUID, Long> lastFuseTickMap = new HashMap<>();
+    private static final Map<Entity, Long> lastFuseTickMap = new WeakHashMap<>();
     @Unique
-    private static final Map<UUID, Long> lastStrongEffectTickMap = new HashMap<>();
+    private static final Map<Entity, Long> lastStrongEffectTickMap = new WeakHashMap<>();
     @Unique
-    private static final Map<UUID, Long> lastWeakEffectTickMap = new HashMap<>();
+    private static final Map<Entity, Long> lastWeakEffectTickMap = new WeakHashMap<>();
 
     @Inject(method = "onEntityHit", at = @At("TAIL"))
     private void mrpgc$applyAttributeEffectsOnHit(EntityHitResult entityHitResult, CallbackInfo ci) {
@@ -50,12 +49,11 @@ public abstract class PersistentProjectileEntityMixin {
             return;
         }
 
-        UUID attackerUUID = attacker.getUuid();
         long currentTick = attacker.getWorld().getTime();
 
-        long lastFuseTick = lastFuseTickMap.getOrDefault(attackerUUID, 0L);
-        if (currentTick - lastFuseTick >= 20) {
-            lastFuseTickMap.put(attackerUUID, currentTick);
+        long lastFuseTick = lastFuseTickMap.getOrDefault(attacker, 0L);
+        if (currentTick - lastFuseTick >= 20 || lastFuseTick > currentTick) {
+            lastFuseTickMap.put(attacker, currentTick);
             CompatHooks.applyFuse(attacker, target, false);
         }
 
@@ -77,14 +75,14 @@ public abstract class PersistentProjectileEntityMixin {
         Random random = new Random();
         int amplifier = (int)((float) getRangedDamageAttribute(attacker) * 0.15);
 
-        long lastStrongTick = lastStrongEffectTickMap.getOrDefault(attackerUUID, 0L);
-        if (currentTick - lastStrongTick >= 160) {
+        long lastStrongTick = lastStrongEffectTickMap.getOrDefault(attacker, 0L);
+        if (currentTick - lastStrongTick >= 160 || lastStrongTick > currentTick) {
             if (burningChance != null && burningChance.getValue() > 100.0) {
                 float chance = (float)(burningChance.getValue() - 100) / 100f;
                 if (random.nextFloat() < chance) {
                     target.addStatusEffect(new StatusEffectInstance(
                             MRPGCEffects.IGNITED.entry, 40, amplifier, true, false, true));
-                    lastStrongEffectTickMap.put(attackerUUID, currentTick);
+                    lastStrongEffectTickMap.put(attacker, currentTick);
                 }
             }
 
@@ -93,7 +91,7 @@ public abstract class PersistentProjectileEntityMixin {
                 if (random.nextFloat() < chance) {
                     target.addStatusEffect(new StatusEffectInstance(
                             MRPGCEffects.STAGGER.entry, 80, amplifier, true, false, true));
-                    lastStrongEffectTickMap.put(attackerUUID, currentTick);
+                    lastStrongEffectTickMap.put(attacker, currentTick);
                 }
             }
 
@@ -103,7 +101,7 @@ public abstract class PersistentProjectileEntityMixin {
                 if (random.nextFloat() < chance) {
                     target.addStatusEffect(new StatusEffectInstance(
                             stunEffect, 40, 0, true, false, true));
-                    lastStrongEffectTickMap.put(attackerUUID, currentTick);
+                    lastStrongEffectTickMap.put(attacker, currentTick);
                 }
             }
 
@@ -112,19 +110,19 @@ public abstract class PersistentProjectileEntityMixin {
                 if (random.nextFloat() < chance) {
                     target.addStatusEffect(new StatusEffectInstance(
                             MRPGCEffects.FROZEN_SOLID.entry, 60, 0, true, false, true));
-                    lastStrongEffectTickMap.put(attackerUUID, currentTick);
+                    lastStrongEffectTickMap.put(attacker, currentTick);
                 }
             }
         }
 
-        long lastWeakTick = lastWeakEffectTickMap.getOrDefault(attackerUUID, 0L);
-        if (currentTick - lastWeakTick >= 80) {
+        long lastWeakTick = lastWeakEffectTickMap.getOrDefault(attacker, 0L);
+        if (currentTick - lastWeakTick >= 80 || lastWeakTick > currentTick) {
             if (poisonChance != null && poisonChance.getValue() > 100.0) {
                 float chance = (float)(poisonChance.getValue() - 100) / 100f;
                 if (random.nextFloat() < chance) {
                     target.addStatusEffect(new StatusEffectInstance(
                             StatusEffects.POISON, 120, amplifier, true, false, true));
-                    lastWeakEffectTickMap.put(attackerUUID, currentTick);
+                    lastWeakEffectTickMap.put(attacker, currentTick);
                 }
             }
 
@@ -134,7 +132,7 @@ public abstract class PersistentProjectileEntityMixin {
                 if (random.nextFloat() < chance) {
                     target.addStatusEffect(new StatusEffectInstance(
                             bleedEffect, 120, amplifier, true, false, true));
-                    lastWeakEffectTickMap.put(attackerUUID, currentTick);
+                    lastWeakEffectTickMap.put(attacker, currentTick);
                 }
             }
         }
