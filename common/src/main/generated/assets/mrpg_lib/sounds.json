@@ -94,6 +94,21 @@
       "mrpg_lib:frost_crackle_long"
     ]
   },
+  "frost_teleport": {
+    "sounds": [
+      "mrpg_lib:frost_teleport"
+    ]
+  },
+  "frozen_wall": {
+    "sounds": [
+      "mrpg_lib:frozen_wall"
+    ]
+  },
+  "glacial_spikes": {
+    "sounds": [
+      "mrpg_lib:glacial_spikes"
+    ]
+  },
   "holy_release": {
     "sounds": [
       "mrpg_lib:holy_release"
@@ -102,6 +117,11 @@
   "icicle_crash": {
     "sounds": [
       "mrpg_lib:icicle_crash"
+    ]
+  },
+  "icicle_hit": {
+    "sounds": [
+      "mrpg_lib:icicle_hit"
     ]
   },
   "nature_cast_1": {
@@ -147,6 +167,11 @@
   "puncture_impact": {
     "sounds": [
       "mrpg_lib:puncture_impact"
+    ]
+  },
+  "slash_impact": {
+    "sounds": [
+      "mrpg_lib:slash_impact"
     ]
   },
   "stealth_vanish": {

@@ -76,6 +76,10 @@ public class MRPGLibSounds {
     public static final Entry ARCANE_STRONG_IMPACT = add(new Entry("arcane_strong_impact"));
     public static final Entry HOLY_RELEASE = add(new Entry("holy_release"));
     public static final Entry FROST_CRACKLE_LONG = add(new Entry("frost_crackle_long"));
+    public static final Entry FROST_TELEPORT = add(new Entry("frost_teleport"));
+    public static final Entry FROZEN_WALL = add(new Entry("frozen_wall"));
+    public static final Entry GLACIAL_SPIKES = add(new Entry("glacial_spikes"));
+    public static final Entry ICICLE_HIT = add(new Entry("icicle_hit"));
     public static final Entry NATURE_RELEASE_1 = add(new Entry("nature_release_1"));
     public static final Entry NATURE_RELEASE_2 = add(new Entry("nature_release_2"));
     public static final Entry NATURE_IMPACT_1 = add(new Entry("nature_impact_1"));
@@ -84,6 +88,7 @@ public class MRPGLibSounds {
     public static final Entry NATURE_IMPACT_4 = add(new Entry("nature_impact_4"));
     public static final Entry NATURE_CAST_1 = add(new Entry("nature_cast_1"));
     public static final Entry CARVE = add(new Entry("carve"));
+    public static final Entry SLASH_IMPACT = add(new Entry("slash_impact"));
     public static final Entry DECAPITATE_IMPACT = add(new Entry("decapitate_impact"));
     public static final Entry DECAPITATE_RELEASE = add(new Entry("decapitate_release"));
     public static final Entry DECAPITATE_SWING = add(new Entry("decapitate_swing"));
