@@ -30,6 +30,11 @@ import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
+import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistryBuilder;
+import com.mrpg_lib.compat.spell_power.TavernPotions;
+import net.minecraft.registry.Registries;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.Items;
@@ -64,6 +69,10 @@ public final class FabricMod implements ModInitializer {
         }
 
         MRPGCMod.init();
+        if (MrpgCompat.SPELL_POWER && MrpgPlatform.isModLoaded("village_taverns")) {
+            ServerLifecycleEvents.SERVER_STARTING.register(server -> registerTavernTrades());
+            FabricBrewingRecipeRegistryBuilder.BUILD.register(TavernPotions::registerBrewing);
+        }
 
         MRPGCMod.registerLootFunction();
         MoreParticles.register();
@@ -97,5 +106,17 @@ public final class FabricMod implements ModInitializer {
             MRPGCMod.modifyLootTable(registries, key, tableBuilder::pool);
             MRPGCLootTableEntityModifiers.modifyLootEntityTables(key, tableBuilder::pool);
         });
+    }
+
+    private static boolean tavernTradesRegistered;
+
+    private static void registerTavernTrades() {
+        if (tavernTradesRegistered) {
+            return;
+        }
+        tavernTradesRegistered = true;
+        Registries.VILLAGER_PROFESSION.getOrEmpty(TavernPotions.BARTENDER).ifPresent(profession ->
+                TradeOfferHelper.registerVillagerOffers(profession, TavernPotions.LEVEL,
+                        factories -> factories.addAll(TavernPotions.offers())));
     }
 }

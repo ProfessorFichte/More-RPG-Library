@@ -147,5 +147,6 @@
   "spell.mrpg_lib.wither_shield.description": "On shield block: {trigger_chance} chance to shoot 3 wither skulls dealing {damage} damage and inflicting wither.",
   "spell.mrpg_lib.wither_shield.name": "Wither Shield",
   "spell.mrpg_lib.zephyrs_speed.description": "On dealing damage with an active spell, gain a stack of Zephyr's Speed for {effect_duration} seconds. Increasing spell crit chance by {bonus} and movement speed by {bonus2}.",
-  "spell.mrpg_lib.zephyrs_speed.name": "Zephyr's Speed"
+  "spell.mrpg_lib.zephyrs_speed.name": "Zephyr's Speed",
+  "tooltip.mrpg_lib.underwater_shooting": "Shoots normally underwater"
 }

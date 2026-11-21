@@ -40,6 +40,9 @@ import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import com.mrpg_lib.worldgen.modifier.StructureBlockModifiers;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.LootTableLoadEvent;
+import net.neoforged.neoforge.event.village.VillagerTradesEvent;
+import net.neoforged.neoforge.event.brewing.RegisterBrewingRecipesEvent;
+import com.mrpg_lib.compat.spell_power.TavernPotions;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -56,6 +59,10 @@ public final class NeoForgeMod {
         modBus.addListener(BuildCreativeModeTabContentsEvent.class, NeoForgeMod::buildTabContents);
         modBus.addListener(RegisterPayloadHandlersEvent.class, NeoForgeMod::registerPayloads);
         NeoForge.EVENT_BUS.addListener(NeoForgeMod::onLootTableLoad);
+        if (MrpgCompat.SPELL_POWER && MrpgPlatform.isModLoaded("village_taverns")) {
+            NeoForge.EVENT_BUS.addListener(VillagerTradesEvent.class, NeoForgeMod::onVillagerTrades);
+            NeoForge.EVENT_BUS.addListener(RegisterBrewingRecipesEvent.class, event -> TavernPotions.registerBrewing(event.getBuilder()));
+        }
         NeoForge.EVENT_BUS.addListener(AddReloadListenerEvent.class, event -> event.addListener(new StructureBlockModifiers()));
         if (MrpgCompat.PLAYER_ANIMATOR) {
             NeoForge.EVENT_BUS.addListener(NeoForgeMod::onStartTracking);
@@ -122,6 +129,16 @@ public final class NeoForgeMod {
             var registrar = event.registrar("1").optional();
             registrar.playToClient(MobAnimationPacket.ID, MobAnimationPacket.CODEC, (payload, context) ->
                     context.enqueueWork(() -> MobAnimationClientNetwork.handle(payload, context.player().getWorld())));
+        }
+    }
+
+    private static void onVillagerTrades(VillagerTradesEvent event) {
+        if (!TavernPotions.isBartender(event.getType())) {
+            return;
+        }
+        var trades = event.getTrades().get(TavernPotions.LEVEL);
+        if (trades != null) {
+            trades.addAll(TavernPotions.offers());
         }
     }
 

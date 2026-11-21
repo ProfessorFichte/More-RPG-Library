@@ -3,6 +3,7 @@ package com.mrpg_lib.datagen;
 import com.mrpg_lib.compat.MrpgCompat;
 import com.mrpg_lib.compat.armory_rpgs.SmithingIngredients;
 import com.mrpg_lib.effect.MRPGCEffects;
+import com.mrpg_lib.util.UnderwaterProjectiles;
 import com.mrpg_lib.item.MRPGCItemGroups;
 import com.mrpg_lib.item.MRPGCItems;
 import net.minecraft.item.Item;
@@ -93,6 +94,7 @@ public final class LangCatalog {
         sink.add("itemGroup." + MOD_ID + ".general", "MRPGClasses");
         sink.add(itemGroupKey(MRPGCItemGroups.ARSENAL_ID), "More Arsenal");
         sink.add(itemGroupKey(MRPGCItemGroups.ARMORY_ID), "More Armory");
+        sink.add(UnderwaterProjectiles.TOOLTIP_KEY, "Shoots normally underwater");
         HUD.forEach((name, text) -> sink.add("hud." + MOD_ID + "." + name, text));
         DEATH_MESSAGES.forEach((id, text) -> sink.add("death.attack." + id, text));
         ATTRIBUTES.forEach((name, text) -> sink.add(attributeKey(name), text));
