@@ -72,9 +72,10 @@ public class MobSpellCastGoal extends Goal {
     private static final int AFFECT_ARROW_WINDOW_TICKS = 100;
     private static final int SUMMON_ASSIST_TICKS = 40;
     private static final double SUMMON_ASSIST_RANGE = 24.0;
-    private static final double MELEE_START_MARGIN = 3.0;
     private static final double MELEE_AIM_TOLERANCE = 0.5;
-    private static final int MAX_MELEE_HOLD_TICKS = 40;
+    private static final int MAX_RELEASE_HOLD_TICKS = 40;
+    private static final int MAX_LEAD_TICKS = 10;
+    private static final int RELEASE_LEAD_TICKS = 3;
     private static final double AREA_APPROACH_FACTOR = 0.5;
 
     private static final double BEAM_HIT_RADIUS = 0.5;
@@ -120,7 +121,9 @@ public class MobSpellCastGoal extends Goal {
     private double meleeReach;
     private double meleeStrikeReach;
     private double meleeApproachSpeed = 1.0;
-    private int meleeHoldTicks;
+    private double releaseReach;
+    private boolean releaseReachToBox;
+    private int releaseHoldTicks;
     private boolean castAborted;
     @Nullable private MobMeleeSpellAttacks meleeAttacks;
 
@@ -370,10 +373,11 @@ public class MobSpellCastGoal extends Goal {
                     || targetType == Spell.Target.Type.FROM_TRIGGER) continue;
 
             double range = startRange(entity, entry) + matchingModifierRangeBonus(id, entity.getWorld());
+            int lead = startLeadTicks(id, spell);
 
             if (needsCombatTarget(spell)) {
                 boolean hasCombatTarget = target != null && target.isAlive()
-                        && Math.sqrt(entity.squaredDistanceTo(target)) <= range;
+                        && closingInto(entity, target, range, lead, false);
                 if (hasCombatTarget && (!isArrowDelivery(spell) || !entity.getMainHandStack().isEmpty())) {
                     candidates.add(id);
                 }
@@ -384,7 +388,7 @@ public class MobSpellCastGoal extends Goal {
                     }
                 } else if (hasOffensiveImpact(spell)) {
                     boolean hasCombatTarget = target != null && target.isAlive()
-                            && Math.sqrt(entity.squaredDistanceTo(target)) <= range;
+                            && closingInto(entity, target, range, lead, false);
                     if (hasCombatTarget) {
                         candidates.add(id);
                     }
@@ -393,7 +397,7 @@ public class MobSpellCastGoal extends Goal {
                 }
             } else {
                 boolean hasCombatTarget = target != null && target.isAlive()
-                        && Math.sqrt(entity.squaredDistanceTo(target)) <= range;
+                        && closingInto(entity, target, range, lead, false);
                 if (hasCombatTarget && !onlyHasHealingImpacts(spell)) {
                     candidates.add(id);
                 } else if (hasHealingImpact(spell)) {
@@ -434,14 +438,56 @@ public class MobSpellCastGoal extends Goal {
     private static double startRange(MobEntity entity, RegistryEntry<Spell> entry) {
         Spell spell = entry.value();
         if (!usesMeleeRange(spell)) return spellRange(entity, entry);
-        double reach = MobMeleeSpellAttacks.meleeRange(entity, entry);
-        return hasCastDuration(spell)
-                ? reach + MELEE_AIM_TOLERANCE
-                : reach + MobMeleeSpellAttacks.momentumReach(spell) + MELEE_START_MARGIN;
+        return MobMeleeSpellAttacks.meleeRange(entity, entry) + MobMeleeSpellAttacks.momentumReach(spell) + MELEE_AIM_TOLERANCE;
     }
 
     private static double spellRange(MobEntity entity, RegistryEntry<Spell> entry) {
-        return entry.value().range > 0 ? SpellParameters.getRangeCurved(entity, entry, 1F) : 16.0;
+        if (entry.value().range > 0) return SpellParameters.getRangeCurved(entity, entry, 1F);
+        double cloudReach = casterCloudReach(entry.value());
+        return cloudReach > 0 ? cloudReach : 16.0;
+    }
+
+    private static double casterCloudReach(Spell spell) {
+        if (spell.deliver == null || spell.deliver.type != Spell.Delivery.Type.CLOUD || spell.deliver.clouds == null) return 0;
+        if (spell.target != null && spell.target.type != Spell.Target.Type.CASTER) return 0;
+        double reach = 0;
+        for (var cloud : spell.deliver.clouds) {
+            double radius = cloud.volume != null ? cloud.volume.radius : 0;
+            List<Spell.EntityPlacement> placements = new ArrayList<>();
+            if (cloud.placement != null) placements.add(cloud.placement);
+            if (cloud.additional_placements != null) placements.addAll(cloud.additional_placements);
+            reach = Math.max(reach, radius);
+            for (var placement : placements) {
+                double offset = Math.hypot(placement.location_offset_by_look,
+                        Math.hypot(placement.location_offset_x, placement.location_offset_z));
+                reach = Math.max(reach, offset + radius);
+            }
+        }
+        return reach;
+    }
+
+    private int startLeadTicks(Identifier id, Spell spell) {
+        boolean hasCast = spell.active != null && spell.active.cast != null;
+        boolean channel = hasCast && spell.active.cast.channelTicks() > 0;
+        int castTicks = SpellTimings.resolveCastTicks(spellTimings.get(id), goalTimings, channel,
+                hasCast ? Float.valueOf(spell.active.cast.duration) : null);
+        if (customCasting != null) castTicks = Math.max(1, customCasting.castTicks(caster.asMobEntity(), id, castTicks));
+        int untilRelease = customCasting != null || hasCastDuration(spell) ? castTicks : castTicks / 2;
+        return Math.min(untilRelease, MAX_LEAD_TICKS);
+    }
+
+    // Also true when the target is still outside but will be in reach within leadTicks at the current closing speed.
+    // Uses the position change since the last tick, because the server barely knows a walking player's velocity.
+    private static boolean closingInto(MobEntity entity, LivingEntity target, double reach, int leadTicks, boolean toBox) {
+        double now = toBox ? MobMeleeSpellAttacks.distanceToBox(entity, target) : Math.sqrt(entity.squaredDistanceTo(target));
+        if (now <= reach) return true;
+        if (leadTicks <= 0) return false;
+        Vec3d toCaster = new Vec3d(entity.getX() - target.getX(), 0, entity.getZ() - target.getZ());
+        if (toCaster.lengthSquared() < 1.0E-6) return false;
+        Vec3d relativeStep = new Vec3d(target.getX() - target.prevX - (entity.getX() - entity.prevX), 0,
+                target.getZ() - target.prevZ - (entity.getZ() - entity.prevZ));
+        double closing = relativeStep.dotProduct(toCaster.normalize());
+        return closing > 0 && now - closing * leadTicks <= reach;
     }
 
     private float chargeReleaseRatio(MobEntity entity, RegistryEntry<Spell> entry, @Nullable LivingEntity target) {
@@ -564,7 +610,16 @@ public class MobSpellCastGoal extends Goal {
         meleeStrikeReach = meleeReach + MobMeleeSpellAttacks.momentumReach(spell);
         if (startBehavior == DeliveryBehavior.AREA) meleeReach *= AREA_APPROACH_FACTOR;
         meleeApproachSpeed = hasCastDuration(spell) ? castMovementSpeed : 1.0;
-        meleeHoldTicks = 0;
+        releaseReachToBox = meleeRanged;
+        if (meleeRanged) {
+            releaseReach = meleeStrikeReach;
+        } else if (!isSelfCast && healingTarget == null && hasOffensiveImpact(spell)
+                && (startBehavior == DeliveryBehavior.AREA || casterCloudReach(spell) > 0)) {
+            releaseReach = castSpellRange;
+        } else {
+            releaseReach = 0;
+        }
+        releaseHoldTicks = 0;
         castAborted = false;
         meleeAttacks = null;
 
@@ -660,8 +715,8 @@ public class MobSpellCastGoal extends Goal {
                 castingTime = 0;
             }
         } else if (castingTime == releaseTick) {
-            if (meleeDelivery && !meleeReady(entity, target)) {
-                if (++meleeHoldTicks <= MAX_MELEE_HOLD_TICKS) {
+            if (!readyToRelease(entity, target)) {
+                if (++releaseHoldTicks <= MAX_RELEASE_HOLD_TICKS) {
                     castingTime = releaseTick + 1;
                 } else {
                     castAborted = true;
@@ -674,10 +729,11 @@ public class MobSpellCastGoal extends Goal {
         }
     }
 
-    private boolean meleeReady(MobEntity entity, @Nullable LivingEntity target) {
+    private boolean readyToRelease(MobEntity entity, @Nullable LivingEntity target) {
+        if (releaseReach <= 0) return true;
         if (target == null || !target.isAlive()) return false;
         if (meleeNeedsGround && !entity.isOnGround()) return false;
-        return MobMeleeSpellAttacks.distanceToBox(entity, target) <= meleeStrikeReach;
+        return closingInto(entity, target, releaseReach, RELEASE_LEAD_TICKS, releaseReachToBox);
     }
 
     private void handleMeleeApproach(LivingEntity target) {
@@ -738,7 +794,9 @@ public class MobSpellCastGoal extends Goal {
         meleeRanged = false;
         meleeDelivery = false;
         meleeNeedsGround = false;
-        meleeHoldTicks = 0;
+        releaseReach = 0;
+        releaseReachToBox = false;
+        releaseHoldTicks = 0;
         castAborted = false;
         meleeAttacks = null;
         activeIsWeaponSkill = false;
@@ -1222,7 +1280,9 @@ public class MobSpellCastGoal extends Goal {
                 entity.getNavigation().stop();
             }
         } else {
-            if (dist < MIN_CAST_DISTANCE) {
+            if (releaseHoldTicks > 0 && dist > releaseReach) {
+                entity.getNavigation().startMovingTo(target, 1.0);
+            } else if (dist < MIN_CAST_DISTANCE) {
                 Vec3d awayDir = entity.getPos().subtract(target.getPos()).normalize();
                 Vec3d dest = target.getPos().add(awayDir.multiply(MIN_CAST_DISTANCE + 1.5));
                 entity.getNavigation().startMovingTo(dest.x, dest.y, dest.z, castMovementSpeed);
