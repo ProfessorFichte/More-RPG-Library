@@ -2,6 +2,7 @@ package com.mrpg_lib.datagen;
 
 import com.mrpg_lib.compat.MrpgCompat;
 import com.mrpg_lib.item.MRPGCItems;
+import com.mrpg_lib.util.UnderwaterProjectiles;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 import net.minecraft.item.Item;
@@ -41,6 +42,7 @@ public class MrpgItemTags extends FabricTagProvider.ItemTagProvider {
 
     @Override
     protected void configure(RegistryWrapper.WrapperLookup wrapperLookup) {
+        getOrCreateTagBuilder(UnderwaterProjectiles.WEAPONS);
         MrpgTagBuilders.addOptional(getOrCreateTagBuilder(tag("coral_blocks")), Registries.ITEM,
                 Items.TUBE_CORAL_BLOCK, Items.BRAIN_CORAL_BLOCK, Items.BUBBLE_CORAL_BLOCK,
                 Items.FIRE_CORAL_BLOCK, Items.HORN_CORAL_BLOCK);
