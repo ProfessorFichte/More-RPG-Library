@@ -44,6 +44,7 @@ jobs:
     outputs:
       loaders: ${{ steps.plan.outputs.loaders }}
       destinations: ${{ steps.plan.outputs.destinations }}
+      build: ${{ steps.plan.outputs.build }}
     steps:
       - name: Resolve build plan
         id: plan
@@ -63,9 +64,20 @@ jobs:
           loaders="${loaders# }"
           destinations="${destinations# }"
 
+          # No loader ticked = nothing is built or uploaded, only the ticked follow-up steps run (e.g. a Discord test).
           if [ -z "$loaders" ]; then
-            echo "::error::No loader selected - tick at least one of Fabric / NeoForge."
-            exit 1
+            followups=""
+            if [ "${{ inputs.announce_discord }}" = "true" ]; then followups="$followups Discord"; fi
+            if [ "${{ inputs.modrinth }}" = "true" ] && [ "${{ inputs.sync_description }}" = "true" ]; then followups="$followups Modrinth-description"; fi
+            if [ -z "$followups" ]; then
+              echo "::error::Nothing to do - tick a loader (Fabric / NeoForge) to publish, or only Discord / Modrinth description to run those alone."
+              exit 1
+            fi
+            echo "loaders=[]" >> "$GITHUB_OUTPUT"
+            echo "destinations=$destinations" >> "$GITHUB_OUTPUT"
+            echo "build=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::No loader selected - nothing is built or uploaded, only:$followups"
+            exit 0
           fi
           if [ -z "$destinations" ]; then
             echo "::error::No platform selected - tick at least one of CurseForge / Modrinth / GitHub Release."
@@ -77,6 +89,7 @@ jobs:
 
           echo "loaders=[$json]" >> "$GITHUB_OUTPUT"
           echo "destinations=$destinations" >> "$GITHUB_OUTPUT"
+          echo "build=true" >> "$GITHUB_OUTPUT"
           echo "Loaders: $loaders | Platforms: $destinations | Release: ${{ inputs.release_type }}"
       - uses: actions/checkout@v4
         if: ${{ inputs.modrinth && inputs.sync_description }}
@@ -96,11 +109,12 @@ jobs:
 
   build:
     needs: plan
+    if: ${{ needs.plan.outputs.build == 'true' }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false   # never cancel a sibling mid-upload
       matrix:
-        loader: ${{ fromJSON(needs.plan.outputs.loaders) }}
+        loader: ${{ fromJSON(needs.plan.outputs.build == 'true' && needs.plan.outputs.loaders || '["none"]') }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/checkout@v4
@@ -147,9 +161,10 @@ jobs:
           GH_OWNER: ${{ github.repository_owner }}
           GH_REPO: ${{ github.event.repository.name }}
 
+  # !cancelled() + the result checks: still runs when build was skipped on purpose (no loader ticked), never after a failed build.
   modrinth-description:
     needs: [plan, build]
-    if: ${{ inputs.modrinth && inputs.sync_description }}
+    if: ${{ !cancelled() && needs.plan.result == 'success' && contains(fromJSON('["success","skipped"]'), needs.build.result) && inputs.modrinth && inputs.sync_description }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -170,7 +185,7 @@ jobs:
   # Runs once, after all matrix builds succeeded -> one message instead of one per loader and platform.
   announce-discord:
     needs: [plan, build]
-    if: ${{ inputs.announce_discord }}
+    if: ${{ !cancelled() && needs.plan.result == 'success' && contains(fromJSON('["success","skipped"]'), needs.build.result) && inputs.announce_discord }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

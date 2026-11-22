@@ -134,7 +134,8 @@ def discord_payload(root):
     properties = (root / "gradle.properties").read_text(encoding="utf-8")
     version = read_property(properties, "mod_version", "version") or "unknown"
     minecraft = read_property(properties, "minecraft_version")
-    loaders = " · ".join("NeoForge" if l == "neoforge" else "Fabric" for l in json.loads(env("LOADERS_JSON", "[]")))
+    built = json.loads(env("LOADERS_JSON", "[]")) or [l for l in ("fabric", "neoforge") if (root / l).is_dir()]
+    loaders = " · ".join("NeoForge" if l == "neoforge" else "Fabric" for l in built)
     release_type = env("RELEASE_TYPE", "release").capitalize()
 
     to_modrinth = env("TO_MODRINTH") == "true" and env("MR_ID")
