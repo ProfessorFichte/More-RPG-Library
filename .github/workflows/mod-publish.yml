@@ -68,7 +68,7 @@ jobs:
           if [ -z "$loaders" ]; then
             followups=""
             if [ "${{ inputs.announce_discord }}" = "true" ]; then followups="$followups Discord"; fi
-            if [ "${{ inputs.modrinth }}" = "true" ] && [ "${{ inputs.sync_description }}" = "true" ]; then followups="$followups Modrinth-description"; fi
+            if [ "${{ inputs.sync_description }}" = "true" ]; then followups="$followups Modrinth-description"; fi
             if [ -z "$followups" ]; then
               echo "::error::Nothing to do - tick a loader (Fabric / NeoForge) to publish, or only Discord / Modrinth description to run those alone."
               exit 1
@@ -92,16 +92,16 @@ jobs:
           echo "build=true" >> "$GITHUB_OUTPUT"
           echo "Loaders: $loaders | Platforms: $destinations | Release: ${{ inputs.release_type }}"
       - uses: actions/checkout@v4
-        if: ${{ inputs.modrinth && inputs.sync_description }}
+        if: ${{ inputs.sync_description }}
       - uses: actions/checkout@v4
-        if: ${{ inputs.modrinth && inputs.sync_description }}
+        if: ${{ inputs.sync_description }}
         with:
           repository: ProfessorFichte/More-RPG-Library
           ref: ${{ inputs.tools_ref }}
           path: .mod-tools
           sparse-checkout: .github/scripts
       - name: Check README.md for Modrinth before uploading anything
-        if: ${{ inputs.modrinth && inputs.sync_description }}
+        if: ${{ inputs.sync_description }}
         env:
           REPOSITORY: ${{ github.repository }}
           COMMIT_SHA: ${{ github.sha }}
@@ -164,7 +164,7 @@ jobs:
   # !cancelled() + the result checks: still runs when build was skipped on purpose (no loader ticked), never after a failed build.
   modrinth-description:
     needs: [plan, build]
-    if: ${{ !cancelled() && needs.plan.result == 'success' && contains(fromJSON('["success","skipped"]'), needs.build.result) && inputs.modrinth && inputs.sync_description }}
+    if: ${{ !cancelled() && needs.plan.result == 'success' && contains(fromJSON('["success","skipped"]'), needs.build.result) && inputs.sync_description }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
