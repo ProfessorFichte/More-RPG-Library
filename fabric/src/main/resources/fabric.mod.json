@@ -7,7 +7,9 @@
 	"authors": ["Fichte"
 	],
 	"contact": {
-		"sources": "https://github.com/ProfessorFichte/More-RPG-Classes"
+		"homepage": "https://modrinth.com/mod/more-rpg-library",
+		"sources": "https://github.com/ProfessorFichte/More-RPG-Library",
+		"issues": "https://github.com/ProfessorFichte/More-RPG-Library/issues"
 	},
 	"contributors": [
 		"Rulft44 (Leaf particle & Nature Rune)"
@@ -36,7 +38,7 @@
 		"fabricloader": ">=${fabric_loader_compat_version}",
 		"fabric-api": "*",
 		"minecraft": ">=${minecraft_compat_version}",
-		"java": ">=17"
+		"java": ">=21"
 	},
 	"suggests": {
 		"spell_engine": ">=${spell_engine_version}",
@@ -48,7 +50,11 @@
 	"custom": {
 		"modmenu": {
 			"links": {
-				"modmenu.discord": "https://discord.gg/AShKd5XrTu"
+				"modmenu.discord": "https://discord.gg/AShKd5XrTu",
+				"modmenu.kofi": "https://ko-fi.com/fichteee",
+				"modmenu.wiki": "https://github.com/ProfessorFichte/More-RPG-Library/wiki",
+				"modmenu.modrinth": "https://modrinth.com/mod/more-rpg-library",
+				"modmenu.curseforge": "https://www.curseforge.com/minecraft/mc-mods/more-rpg-library"
 			}
 		}
 	}

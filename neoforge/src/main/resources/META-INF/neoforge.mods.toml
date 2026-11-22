@@ -1,17 +1,18 @@
 modLoader = "javafml"
 loaderVersion = "[4,)"
-#issueTrackerURL = ""
+issueTrackerURL = "https://github.com/ProfessorFichte/More-RPG-Library/issues"
 license = "MIT"
 
 [[mods]]
 modId = "mrpg_lib"
 version = "${version}"
 displayName = "More RPG Library"
+displayURL = "https://modrinth.com/mod/more-rpg-library"
 authors = "Fichte"
 description = '''
 A general-purpose library for all my RPG themed content mods.
 '''
-#logoFile = ""
+logoFile = "icon.png"
 
 [[dependencies.mrpg_lib]]
 modId = "neoforge"
