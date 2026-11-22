@@ -1,0 +1,23 @@
+{
+  "discord": "https://discord.gg/AShKd5XrTu",
+  "kofi": "https://ko-fi.com/fichteee",
+  "mods": {
+    "mrpg_lib": {"name": "More RPG Library", "github": "ProfessorFichte/More-RPG-Library", "modrinth": "more-rpg-library", "curseforge": "more-rpg-library", "wiki": true},
+    "bards_rpg": {"name": "Bard", "github": "ProfessorFichte/Bards", "modrinth": "bard-more-rpg-classes", "curseforge": "bard-more-rpg-classes", "wiki": true},
+    "additional_rpg_jewelry": {"name": "Additional RPG Jewelry", "github": "ProfessorFichte/Additional-RPG-Jewelry", "modrinth": "additional-rpg-jewelry", "curseforge": "additional-rpg-jewelry", "wiki": false},
+    "archers_expansion": {"name": "Archers Expansion", "github": "ProfessorFichte/Archers-Expansion", "modrinth": "archers-expansion", "curseforge": "archers-expansion", "wiki": false},
+    "berserker_rpg": {"name": "Berserker", "github": "ProfessorFichte/Berserker", "modrinth": "berserker-rpg-class", "curseforge": "berserker-rpg-class", "wiki": false},
+    "elemental_wizards_rpg": {"name": "Elemental Wizards", "github": "ProfessorFichte/Elemental-Wizards", "modrinth": "elemental-wizards-rpg", "curseforge": "elemental-wizards-rpg-class", "wiki": false},
+    "forcemaster_rpg": {"name": "Forcemaster", "github": "ProfessorFichte/Forcemaster", "modrinth": "forcemaster-rpg-class", "curseforge": "forcemaster-rpg-class", "wiki": false},
+    "witcher_rpg": {"name": "Witcher", "github": "ProfessorFichte/Witcher", "modrinth": "witcher-rpg-class", "curseforge": "witcher-rpg-class", "wiki": false},
+    "loot_n_explore": {"name": "Loot & Explore", "github": "ProfessorFichte/Loot-N-Explore", "modrinth": "loot-n-explore", "curseforge": "loot-n-explore", "wiki": false},
+    "lne_archers": {"name": "L&E Archers Add-On", "github": "ProfessorFichte/LNE-Archers-Add-On", "modrinth": "lne-archers", "curseforge": "", "wiki": false},
+    "lne_paladins": {"name": "L&E Paladins Add-On", "github": "ProfessorFichte/LNE-Paladins-Add-On", "modrinth": "lne-paladins", "curseforge": "", "wiki": false},
+    "lne_rogues": {"name": "L&E Rogues Add-On", "github": "ProfessorFichte/LNE-Rogues-Add-On", "modrinth": "lne-rogues", "curseforge": "", "wiki": false},
+    "lne_wizards": {"name": "L&E Wizards Add-On", "github": "ProfessorFichte/LNE-Wizards-Add-On", "modrinth": "lne-wizards", "curseforge": "", "wiki": false},
+    "more_relics": {"name": "More Relics", "github": "ProfessorFichte/More-Relics", "modrinth": "more-relics-rpg", "curseforge": "", "wiki": false},
+    "mrpgc_skill_tree": {"name": "MRPG Skill Tree Add-On", "github": "ProfessorFichte/MRPG-SkillTree-Add-On", "modrinth": "more-rpg-classes-skill-tree", "curseforge": "", "wiki": false},
+    "quest_api": {"name": "Quest Entity API", "github": "ProfessorFichte/Quest-Entity-API", "modrinth": "", "curseforge": "", "wiki": false},
+    "origins_se": {"name": "Origins x Spell Engine", "github": "ProfessorFichte/Origins-x-Spell-Engine", "modrinth": "", "curseforge": "", "wiki": false}
+  }
+}

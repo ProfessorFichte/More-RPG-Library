@@ -60,14 +60,20 @@ foreach ($p in $srcPages) {
 
 git -C $clone add -A
 git -C $clone diff --cached --quiet
-if ($LASTEXITCODE -eq 0) { Write-Host "   Wiki: keine Aenderungen"; return }
-git -C $clone diff --cached --stat
-git -C $clone commit -q -m $Message
-Write-Host "   Wiki committed ($clone)" -ForegroundColor Green
+if ($LASTEXITCODE -eq 0) {
+    Write-Host "   Wiki: keine neuen Aenderungen"
+} else {
+    git -C $clone diff --cached --stat
+    git -C $clone commit -q -m $Message
+    Write-Host "   Wiki committed ($clone)" -ForegroundColor Green
+}
+$ahead = [int](git -C $clone rev-list --count "@{u}..HEAD")
+if ($ahead -eq 0) { Write-Host "   Wiki ist online aktuell"; return }
 if ($Push) {
+    Remove-Item Env:GIT_TERMINAL_PROMPT, Env:GCM_INTERACTIVE -ErrorAction SilentlyContinue
     git -C $clone push -q
     if ($LASTEXITCODE -ne 0) { throw "git push fuer das Wiki fehlgeschlagen" }
     Write-Host "   Wiki pushed" -ForegroundColor Green
 } else {
-    Write-Host "   Nicht gepusht (mit -Push hochladen)"
+    Write-Host "   $ahead Wiki-Commit(s) noch nicht online (mit -Push hochladen)"
 }

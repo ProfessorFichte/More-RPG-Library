@@ -12,7 +12,8 @@
   .\update-all.ps1 -Root D:\Repos                     # other PC with a different repo folder
 
 .NOTES
-  repos.json lists every repo: "folder" (relative to "root"), "name" (as in banners.json), "github" and "branch".
+  repos.json lists every repo: "name" (as in banners.json), "id" (mod id), "github" and "branch". The folder of each
+  mod id is in mod_folders.json (local only, git-ignored, relative to "root").
   "root" is relative to this tools folder, so the same file works on every PC as long as the folder layout matches;
   otherwise pass -Root. Repos whose README has no BANNERS marker yet are skipped (not migrated to the new layout).
   Modrinth token: modrinth.com -> Settings -> Personal access tokens, scope "Write projects".
@@ -39,6 +40,9 @@ $bannersFile = Resolve-Full "..\small_banners\banners.json" $PSScriptRoot
 $cfg = Read-Json (Join-Path $PSScriptRoot "repos.json")
 $banners = Read-Json $bannersFile
 $rootDir = if ($Root) { Resolve-Full $Root } else { Resolve-Full $cfg.root $PSScriptRoot }
+$foldersFile = Join-Path $PSScriptRoot "mod_folders.json"
+if (-not (Test-Path -LiteralPath $foldersFile)) { throw "mod_folders.json fehlt in $PSScriptRoot (Mod-ID -> Ordner, nur lokal)" }
+$folders = Read-Json $foldersFile
 
 if ($Modrinth -and -not $env:MODRINTH_TOKEN) { throw "MODRINTH_TOKEN ist nicht gesetzt" }
 
@@ -53,8 +57,10 @@ function Send-Modrinth([string]$slug, [string]$readme) {
 
 $ok = 0; $skipped = @(); $failed = @()
 foreach ($r in $cfg.repos) {
-    if ($Only -and $r.name -ne $Only -and $r.folder -ne $Only) { continue }
-    $dir = Join-Path $rootDir $r.folder
+    if ($Only -and $r.name -ne $Only -and $r.id -ne $Only) { continue }
+    $folder = [string](Get-Prop $folders $r.id)
+    if (-not $folder) { Write-Warning "Uebersprungen (kein Ordner fuer $($r.id) in mod_folders.json): $($r.name)"; $skipped += $r.name; continue }
+    $dir = Join-Path $rootDir $folder
     $readme = Join-Path $dir "README.md"
     if (-not (Test-Path -LiteralPath $readme)) { Write-Warning "Uebersprungen (keine README.md): $($r.name)"; $skipped += $r.name; continue }
     if ((Read-Text $readme) -notmatch '<!-- BANNERS:') { Write-Warning "Uebersprungen (README noch im alten Format): $($r.name)"; $skipped += $r.name; continue }
@@ -92,6 +98,8 @@ foreach ($r in $cfg.repos) {
             if (-not $slug) { $slug = [string](Get-Prop $entry "mr") }
             if (-not $slug) { Write-Warning "Kein Modrinth-Slug fuer $($r.name) in repos.json oder banners.json" }
             else { Send-Modrinth $slug (Read-Text $readme); Write-Host "   Modrinth-Beschreibung aktualisiert ($slug)" -ForegroundColor Green }
+            python (Join-Path $PSScriptRoot "..\..\.github\scripts\mod_release.py") modrinth-links --only $r.name
+            if ($LASTEXITCODE -ne 0) { throw "Modrinth-Links fuer $($r.name) fehlgeschlagen" }
         }
         $ok++
     } catch {

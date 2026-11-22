@@ -1,6 +1,6 @@
 <div align="center" style="text-align:center">
 <img src="https://raw.githubusercontent.com/ProfessorFichte/More-RPG-Library/1.21.1/.media/images/mrpg_lib_banner.png" alt="More RPG Library">
-<h1>📚 The shared library behind the More RPG Classes &amp; Content mods!</h1>
+<h1>📚 Library for several RPG Content mods!</h1>
 <a href="https://www.curseforge.com/minecraft/mc-mods/more-rpg-library"><img src="https://img.shields.io/badge/curseforge-black?style=for-the-badge&amp;logo=curseforge&amp;labelColor=black&amp;color=grey" alt="CurseForge"></a> <a href="https://modrinth.com/mod/more-rpg-library"><img src="https://img.shields.io/badge/modrinth-black?style=for-the-badge&amp;logo=modrinth&amp;labelColor=black&amp;color=grey" alt="Modrinth"></a> <a href="https://discord.com/invite/AShKd5XrTu"><img src="https://img.shields.io/discord/1209063880790376468?style=for-the-badge&amp;logo=discord&amp;label=discord&amp;labelColor=black&amp;color=grey" alt="Discord"></a> <a href="https://ko-fi.com/fichteee"><img src="https://img.shields.io/badge/donations-black?style=for-the-badge&amp;logo=kofi&amp;labelColor=black&amp;color=grey" alt="Ko-fi"></a> <a href="https://github.com/ProfessorFichte/More-RPG-Library"><img src="https://img.shields.io/badge/github-black?style=for-the-badge&amp;logo=github&amp;labelColor=black&amp;color=grey" alt="GitHub"></a>
 </div>
 

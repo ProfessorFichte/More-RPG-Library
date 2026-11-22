@@ -1,14 +1,14 @@
 {
   "root": "..\\..\\..\\..",
   "repos": [
-    { "name": "More RPG Library",       "folder": "More_RPG_Library\\more-rpg-classes-template-1.20.1",         "github": "ProfessorFichte/More-RPG-Library",       "branch": "1.21.1", "mr": "more-rpg-library" },
-    { "name": "Bard",                   "folder": "Bards\\bards-rpg-1.21.1-fabric-neoforge-template",              "github": "ProfessorFichte/Bards",                  "branch": "1.21.1" },
-    { "name": "Additional RPG Jewelry", "folder": "Additional Jewelry\\additional-jewelry-template-1.20.1",      "github": "ProfessorFichte/Additional-RPG-Jewelry", "branch": "1.21.1" },
-    { "name": "Archers Expansion",      "folder": "Archers Expansion\\archers-expansion-template-1.20.1",        "github": "ProfessorFichte/Archers-Expansion",      "branch": "1.21.1" },
-    { "name": "Witcher",                "folder": "Witcher_class\\witcher-class-mod-template-1.20.1",            "github": "ProfessorFichte/Witcher",                "branch": "1.21.1" },
-    { "name": "Loot & Explore",         "folder": "RPG_Loot\\rpg-loot-template-1.20.1",                          "github": "ProfessorFichte/Loot-N-Explore",         "branch": "1.21.1" },
-    { "name": "Berserker",              "folder": "Berserker_class\\berserker-class-mod-template-1.20.1",        "github": "ProfessorFichte/berserker-class-mod-template-1.20.1",         "branch": "1.21.1" },
-    { "name": "Elemental Wizards",      "folder": "Elemental_Wizards\\elemental-wizards-rpg-class-template-1.20.1", "github": "ProfessorFichte/elemental-wizards-rpg-class-template-1.20.1", "branch": "1.21.1" },
-    { "name": "Forcemaster",            "folder": "Forcemaster_class\\forcemaster-class-mod-template-1.20.1",    "github": "ProfessorFichte/forcemaster-class-mod-template-1.20.1",       "branch": "1.21.1" }
+    {"name": "More RPG Library", "id": "mrpg_lib", "github": "ProfessorFichte/More-RPG-Library", "branch": "1.21.1", "mr": "more-rpg-library"},
+    {"name": "Bard", "id": "bards_rpg", "github": "ProfessorFichte/Bards", "branch": "1.21.1"},
+    {"name": "Additional RPG Jewelry", "id": "additional_rpg_jewelry", "github": "ProfessorFichte/Additional-RPG-Jewelry", "branch": "1.21.1"},
+    {"name": "Archers Expansion", "id": "archers_expansion", "github": "ProfessorFichte/Archers-Expansion", "branch": "1.21.1"},
+    {"name": "Witcher", "id": "witcher_rpg", "github": "ProfessorFichte/Witcher", "branch": "1.21.1"},
+    {"name": "Loot & Explore", "id": "loot_n_explore", "github": "ProfessorFichte/Loot-N-Explore", "branch": "1.21.1"},
+    {"name": "Berserker", "id": "berserker_rpg", "github": "ProfessorFichte/berserker-class-mod-template-1.20.1", "branch": "1.21.1"},
+    {"name": "Elemental Wizards", "id": "elemental_wizards_rpg", "github": "ProfessorFichte/elemental-wizards-rpg-class-template-1.20.1", "branch": "1.21.1"},
+    {"name": "Forcemaster", "id": "forcemaster_rpg", "github": "ProfessorFichte/forcemaster-class-mod-template-1.20.1", "branch": "1.21.1"}
   ]
 }

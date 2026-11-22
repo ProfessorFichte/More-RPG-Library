@@ -51,3 +51,4 @@ common/src/main/generated/.cache
 
 # local dev workspace switch (see workspace.properties.example)
 /workspace.properties
+.media/tools/mod_folders.json

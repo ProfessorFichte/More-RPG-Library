@@ -170,7 +170,7 @@ def discord_payload(root):
         buttons.append(button("View on CurseForge", f"https://www.curseforge.com/projects/{env('CF_ID')}", "EMOJI_CURSEFORGE"))
     if to_github:
         buttons.append(button("View on GitHub", f"https://github.com/{env('REPOSITORY')}/releases", "EMOJI_GITHUB"))
-    buttons.append(button("Support on Ko-fi", KOFI_URL, "EMOJI_KOFI", "☕"))
+    buttons.append(button("Support on Ko-fi", load_links().get("kofi") or KOFI_URL, "EMOJI_KOFI", "☕"))
 
     page = f"https://modrinth.com/mod/{env('MR_ID')}" if to_modrinth else f"https://github.com/{env('REPOSITORY')}/releases"
     author = {"name": "From " + " & ".join(sources) if sources else "Mod Update"}
@@ -197,6 +197,242 @@ def discord_payload(root):
         "embeds": [embed, *gallery],
         "components": [{"type": 1, "components": buttons}],
     }
+
+
+LINKS_FILE = Path(__file__).resolve().parent / "mod_links.json"
+FOLDERS_FILE = LINKS_FILE.parents[2] / ".media" / "tools" / "mod_folders.json"
+MODMENU_KEYS = ("modmenu.discord", "modmenu.kofi", "modmenu.wiki", "modmenu.modrinth", "modmenu.curseforge")
+CONTACT_KEYS = ("homepage", "sources", "issues")
+
+
+def load_links():
+    return json.loads(LINKS_FILE.read_text(encoding="utf-8"))
+
+
+def mod_links(config, mod):
+    github = f"https://github.com/{mod['github']}"
+    modrinth = f"https://modrinth.com/mod/{mod['modrinth']}" if mod.get("modrinth") else ""
+    return {
+        "homepage": modrinth or github,
+        "sources": github,
+        "issues": f"{github}/issues",
+        "wiki": f"{github}/wiki" if mod.get("wiki") else "",
+        "discord": config["discord"],
+        "kofi": config["kofi"],
+        "modrinth": modrinth,
+        "curseforge": f"https://www.curseforge.com/minecraft/mc-mods/{mod['curseforge']}" if mod.get("curseforge") else "",
+    }
+
+
+def links_for_repo(root):
+    config = load_links()
+    mod = config["mods"].get(fabric_mod_json(root).get("id", ""))
+    return mod_links(config, mod) if mod else None
+
+
+def json_spans(text):
+    spans = {}
+
+    def skip(i):
+        while text[i] in " \t\r\n":
+            i += 1
+        return i
+
+    def string_end(i):
+        i += 1
+        while text[i] != '"':
+            i += 2 if text[i] == "\\" else 1
+        return i + 1
+
+    def value(i, path):
+        i = skip(i)
+        start = i
+        if text[i] == "{":
+            i = skip(i + 1)
+            while text[i] != "}":
+                key_start = i
+                key_end = string_end(i)
+                key = json.loads(text[key_start:key_end])
+                i = skip(key_end) + 1
+                value_start, i = value(i, path + (key,))
+                spans[path + (key,)] = (key_start, value_start, i)
+                i = skip(i)
+                if text[i] == ",":
+                    i = skip(i + 1)
+            return start, i + 1
+        if text[i] == "[":
+            i = skip(i + 1)
+            index = 0
+            while text[i] != "]":
+                _, i = value(i, path + (index,))
+                index += 1
+                i = skip(i)
+                if text[i] == ",":
+                    i = skip(i + 1)
+            return start, i + 1
+        if text[i] == '"':
+            return start, string_end(i)
+        while text[i] not in ",}] \t\r\n":
+            i += 1
+        return start, i
+
+    spans[()] = (0,) + value(0, ())
+    return spans
+
+
+def render_json(obj, indent, unit):
+    if not isinstance(obj, dict):
+        return json.dumps(obj, ensure_ascii=False)
+    if not obj:
+        return "{}"
+    inner = indent + unit
+    items = ",\n".join(f"{inner}{json.dumps(k, ensure_ascii=False)}: {render_json(v, inner, unit)}" for k, v in obj.items())
+    return "{\n" + items + "\n" + indent + "}"
+
+
+def line_indent(text, position):
+    line_start = text.rfind("\n", 0, position) + 1
+    return re.match(r"[ \t]*", text[line_start:]).group(0)
+
+
+def set_json_object(text, path, obj, unit, after=("authors", "description", "name")):
+    spans = json_spans(text)
+    if path in spans:
+        key_start, value_start, value_end = spans[path]
+        return text[:value_start] + render_json(obj, line_indent(text, key_start), unit) + text[value_end:]
+    parent = path[:-1]
+    _, parent_start, parent_end = spans[parent]
+    siblings = [spans[p] for p in spans if len(p) == len(path) and p[:-1] == parent]
+    indent = line_indent(text, siblings[0][0]) if siblings else line_indent(text, parent_start) + unit
+    entry = f'{json.dumps(path[-1])}: {render_json(obj, indent, unit)}'
+    anchor = next((spans[parent + (key,)] for key in after if parent + (key,) in spans), None) if not parent else None
+    if anchor:
+        return text[:anchor[2]] + f",\n{indent}{entry}" + text[anchor[2]:]
+    if siblings:
+        last_end = max(s[2] for s in siblings)
+        return text[:last_end] + f",\n{indent}{entry}" + text[last_end:]
+    close = parent_end - 1
+    return text[:parent_start + 1] + f"\n{indent}{entry}\n{line_indent(text, parent_start)}" + text[close:]
+
+
+def update_fabric_mod_json(text, links):
+    newline = "\r\n" if "\r\n" in text else "\n"
+    text = text.replace("\r\n", "\n")
+    data = json.loads(text)
+    unit = re.search(r"\n([ \t]+)\S", text).group(1)
+    contact = {k: links[k] for k in CONTACT_KEYS}
+    contact.update({k: v for k, v in (data.get("contact") or {}).items() if k not in CONTACT_KEYS})
+    text = set_json_object(text, ("contact",), contact, unit)
+    wanted = {"modmenu.discord": links["discord"], "modmenu.kofi": links["kofi"], "modmenu.wiki": links["wiki"],
+              "modmenu.modrinth": links["modrinth"], "modmenu.curseforge": links["curseforge"]}
+    old = ((data.get("custom") or {}).get("modmenu") or {}).get("links") or {}
+    modmenu_links = {k: v for k, v in wanted.items() if v}
+    modmenu_links.update({k: v for k, v in old.items() if k not in MODMENU_KEYS})
+    data = json.loads(text)
+    if "custom" not in data:
+        text = set_json_object(text, ("custom",), {"modmenu": {"links": modmenu_links}}, unit, after=())
+    elif "modmenu" not in data["custom"]:
+        text = set_json_object(text, ("custom", "modmenu"), {"links": modmenu_links}, unit)
+    else:
+        text = set_json_object(text, ("custom", "modmenu", "links"), modmenu_links, unit)
+    json.loads(text)
+    return text.replace("\n", newline)
+
+
+def update_mods_toml(text, links):
+    newline = "\r\n" if "\r\n" in text else "\n"
+    lines = text.replace("\r\n", "\n").split("\n")
+    issue = f'issueTrackerURL = "{links["issues"]}"'
+    found = [i for i, line in enumerate(lines) if re.match(r"\s*#?\s*issueTrackerURL\s*=", line) and not any(l.startswith("[") for l in lines[:i])]
+    if found:
+        lines[found[0]] = issue
+    else:
+        anchor = next((i for i, line in enumerate(lines) if re.match(r"\s*(license|loaderVersion)\s*=", line)), 0)
+        lines.insert(anchor + 1, issue)
+    start = next((i for i, line in enumerate(lines) if line.strip() == "[[mods]]"), None)
+    if start is not None:
+        end = next((i for i in range(start + 1, len(lines)) if lines[i].startswith("[")), len(lines))
+        display = f'displayURL = "{links["homepage"]}"'
+        found = [i for i in range(start + 1, end) if re.match(r"\s*#?\s*displayURL\s*=", lines[i])]
+        if found:
+            lines[found[0]] = display
+        else:
+            anchor = next((i for i in range(start + 1, end) if re.match(r"\s*displayName\s*=", lines[i])), start)
+            lines.insert(anchor + 1, display)
+    return newline.join(lines)
+
+
+def metadata_files(folder):
+    fabric = [folder / "fabric/src/main/resources/fabric.mod.json", folder / "src/main/resources/fabric.mod.json"]
+    neoforge = [folder / "neoforge/src/main/resources/META-INF/neoforge.mods.toml"]
+    return [(p, update_fabric_mod_json) for p in fabric if p.exists()][:1] + [(p, update_mods_toml) for p in neoforge if p.exists()]
+
+
+def modrinth_links_payload(links):
+    return {
+        "issues_url": links["issues"],
+        "source_url": links["sources"],
+        "wiki_url": links["wiki"] or None,
+        "discord_url": links["discord"],
+        "donation_urls": [{"id": "ko-fi", "platform": "Ko-fi", "url": links["kofi"]}],
+    }
+
+
+def selected_mods(config, only):
+    mods = config["mods"]
+    if not only:
+        return mods
+    chosen = {k: v for k, v in mods.items() if only.lower() in (k.lower(), v["name"].lower())}
+    if not chosen:
+        raise SystemExit(f"No mod '{only}' in {LINKS_FILE.name} (use the mod id or name)")
+    return chosen
+
+
+def cmd_links(root, args):
+    config = load_links()
+    if not FOLDERS_FILE.exists():
+        raise SystemExit(f"{FOLDERS_FILE} is missing: it maps every mod id to its folder on this PC (local only, not in git)")
+    folders = json.loads(FOLDERS_FILE.read_text(encoding="utf-8"))
+    base = Path(args.root) if args.root else LINKS_FILE.parents[4]
+    changed = 0
+    for mod_id, mod in selected_mods(config, args.only).items():
+        if mod_id not in folders:
+            print(f"[skip] {mod['name']}: no folder for '{mod_id}' in {FOLDERS_FILE.name}")
+            continue
+        folder = base / folders[mod_id]
+        if not folder.is_dir():
+            print(f"[skip] {mod['name']}: folder not found ({folder})")
+            continue
+        links = mod_links(config, mod)
+        for path, update in metadata_files(folder):
+            old = path.read_bytes().decode("utf-8")
+            new = update(old, links)
+            rel = path.relative_to(folder).as_posix()
+            if new == old:
+                print(f"[ok]      {mod['name']}: {rel}")
+                continue
+            changed += 1
+            if not args.check:
+                path.write_bytes(new.encode("utf-8"))
+            print(f"[{'would' if args.check else 'updated'}] {mod['name']}: {rel}")
+    print(f"\n{changed} file(s) {'need an update' if args.check else 'updated'}")
+
+
+def cmd_modrinth_links(root, args):
+    config = load_links()
+    token = env("MODRINTH_API_KEY") or env("MODRINTH_TOKEN")
+    if not args.check and not token:
+        raise SystemExit("Set $env:MODRINTH_TOKEN (Modrinth PAT with Write projects) first")
+    for mod in selected_mods(config, args.only).values():
+        if not mod.get("modrinth"):
+            print(f"[skip] {mod['name']}: no Modrinth project")
+            continue
+        payload = modrinth_links_payload(mod_links(config, mod))
+        if args.check:
+            print(f"[check] {mod['name']} ({mod['modrinth']}): {json.dumps(payload, ensure_ascii=False)}")
+            continue
+        status = post_json(f"{env('MODRINTH_API', 'https://api.modrinth.com/v2')}/project/{mod['modrinth']}", payload, "PATCH", {"Authorization": token})
+        print(f"[updated] {mod['name']} ({mod['modrinth']}): HTTP {status}")
 
 
 def modrinth_body(root):
@@ -233,8 +469,10 @@ def cmd_modrinth_description(root, args):
     project, token = env("MR_ID"), env("MODRINTH_API_KEY")
     if not project or not token:
         raise SystemExit("MODRINTH_PROJECT_ID variable or MODRINTH_API_KEY secret is missing")
-    status = post_json(f"{env('MODRINTH_API', 'https://api.modrinth.com/v2')}/project/{project}", {"body": body}, "PATCH", {"Authorization": token})
-    print(f"Modrinth description updated ({len(body)} characters, HTTP {status})")
+    links = links_for_repo(root)
+    payload = {"body": body, **(modrinth_links_payload(links) if links else {})}
+    status = post_json(f"{env('MODRINTH_API', 'https://api.modrinth.com/v2')}/project/{project}", payload, "PATCH", {"Authorization": token})
+    print(f"Modrinth description updated ({len(body)} characters{', links too' if links else ''}, HTTP {status})")
 
 
 def main():
@@ -248,6 +486,15 @@ def main():
     modrinth = sub.add_parser("modrinth-description", help="upload README.md as the Modrinth description")
     modrinth.add_argument("--check", action="store_true", help="only build and check the text, upload nothing")
     modrinth.set_defaults(run=cmd_modrinth_description)
+    links = sub.add_parser("links", help=f"write the links from {LINKS_FILE.name} into fabric.mod.json and neoforge.mods.toml of every mod")
+    links.add_argument("--check", action="store_true", help="only list what would change")
+    links.add_argument("--only", default="", help="one mod (mod id or name)")
+    links.add_argument("--root", default="", help="folder that contains all mod folders")
+    links.set_defaults(run=cmd_links)
+    mr_links = sub.add_parser("modrinth-links", help=f"set the project links of every Modrinth project from {LINKS_FILE.name}")
+    mr_links.add_argument("--check", action="store_true", help="only print what would be sent")
+    mr_links.add_argument("--only", default="", help="one mod (mod id or name)")
+    mr_links.set_defaults(run=cmd_modrinth_links)
     args = parser.parse_args()
     args.run(Path.cwd(), args)
 
