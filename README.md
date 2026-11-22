@@ -1,1166 +1,143 @@
-# More RPG Library
-![Title](.media/mrpg_lib_title.png)
-A general-purpose library for all my RPG content mods:
-new entity attributes, status effects, weapon skills, mob AI goals, mob animations, an entity attribute config system and more.
+<div align="center" style="text-align:center">
+<img src="https://raw.githubusercontent.com/ProfessorFichte/More-RPG-Library/1.21.1/.media/images/mrpg_lib_banner.png" alt="More RPG Library">
+<h1>📚 The shared library behind the More RPG Classes &amp; Content mods!</h1>
+<a href="https://www.curseforge.com/minecraft/mc-mods/more-rpg-library"><img src="https://img.shields.io/badge/curseforge-black?style=for-the-badge&amp;logo=curseforge&amp;labelColor=black&amp;color=grey" alt="CurseForge"></a> <a href="https://modrinth.com/mod/more-rpg-library"><img src="https://img.shields.io/badge/modrinth-black?style=for-the-badge&amp;logo=modrinth&amp;labelColor=black&amp;color=grey" alt="Modrinth"></a> <a href="https://discord.com/invite/AShKd5XrTu"><img src="https://img.shields.io/discord/1209063880790376468?style=for-the-badge&amp;logo=discord&amp;label=discord&amp;labelColor=black&amp;color=grey" alt="Discord"></a> <a href="https://ko-fi.com/fichteee"><img src="https://img.shields.io/badge/donations-black?style=for-the-badge&amp;logo=kofi&amp;labelColor=black&amp;color=grey" alt="Ko-fi"></a> <a href="https://github.com/ProfessorFichte/More-RPG-Library"><img src="https://img.shields.io/badge/github-black?style=for-the-badge&amp;logo=github&amp;labelColor=black&amp;color=grey" alt="GitHub"></a>
+</div>
+
+---
+
+## 📂 Installation
+
+### 🚨 Required Mods
+
+<table>
+<thead><tr><th>Mod</th><th>Download</th></tr></thead>
+<tbody>
+<tr><td><b>Fabric API</b> (Fabric only)</td><td><a href="https://www.curseforge.com/minecraft/mc-mods/fabric-api"><img src="https://img.shields.io/badge/-CurseForge-F16436?style=flat-square&logo=curseforge&logoColor=white" alt="CurseForge"></a> <a href="https://modrinth.com/mod/fabric-api"><img src="https://img.shields.io/badge/-Modrinth-00AF5C?style=flat-square&logo=modrinth&logoColor=white" alt="Modrinth"></a></td></tr>
+</tbody></table>
+
+Everything else is optional. Install a mod from the list below and the matching parts of the library turn on, everything else keeps working without it.
+
+### 👍 Highly Recommended / Compatibility Mods
+
+<details>
+<summary><b>Show recommended &amp; compatible mods</b></summary>
+
+<table>
+<thead><tr><th>Mod</th><th>Compatibility Info</th><th>Download</th></tr></thead>
+<tbody>
+<tr><td><b>Spell Engine</b></td><td>Weapon skills, custom spell impacts, mob spell casting and the Spell Engine parts of the status effects</td><td><a href="https://www.curseforge.com/minecraft/mc-mods/spell-engine"><img src="https://img.shields.io/badge/-CurseForge-F16436?style=flat-square&logo=curseforge&logoColor=white" alt="CurseForge"></a> <a href="https://modrinth.com/mod/spell-engine"><img src="https://img.shields.io/badge/-Modrinth-00AF5C?style=flat-square&logo=modrinth&logoColor=white" alt="Modrinth"></a></td></tr>
+<tr><td><b>Spell Power Attributes</b></td><td>New spell schools, Fuse attributes, school potions and the spell power parts of the status effects</td><td><a href="https://www.curseforge.com/minecraft/mc-mods/spell-power"><img src="https://img.shields.io/badge/-CurseForge-F16436?style=flat-square&logo=curseforge&logoColor=white" alt="CurseForge"></a> <a href="https://modrinth.com/mod/spell-power"><img src="https://img.shields.io/badge/-Modrinth-00AF5C?style=flat-square&logo=modrinth&logoColor=white" alt="Modrinth"></a></td></tr>
+<tr><td><b>playerAnimator</b></td><td>Plays the library animations on players and mobs</td><td><a href="https://www.curseforge.com/minecraft/mc-mods/playeranimator"><img src="https://img.shields.io/badge/-CurseForge-F16436?style=flat-square&logo=curseforge&logoColor=white" alt="CurseForge"></a> <a href="https://modrinth.com/mod/playeranimator"><img src="https://img.shields.io/badge/-Modrinth-00AF5C?style=flat-square&logo=modrinth&logoColor=white" alt="Modrinth"></a></td></tr>
+<tr><td><b>Better Combat</b></td><td>Better Combat attacks for mobs</td><td><a href="https://www.curseforge.com/minecraft/mc-mods/better-combat-by-daedelus"><img src="https://img.shields.io/badge/-CurseForge-F16436?style=flat-square&logo=curseforge&logoColor=white" alt="CurseForge"></a> <a href="https://modrinth.com/mod/better-combat"><img src="https://img.shields.io/badge/-Modrinth-00AF5C?style=flat-square&logo=modrinth&logoColor=white" alt="Modrinth"></a></td></tr>
+<tr><td><b>Combat Roll</b></td><td>Combat rolls for mobs</td><td><a href="https://www.curseforge.com/minecraft/mc-mods/combat-roll"><img src="https://img.shields.io/badge/-CurseForge-F16436?style=flat-square&logo=curseforge&logoColor=white" alt="CurseForge"></a> <a href="https://modrinth.com/mod/combat-roll"><img src="https://img.shields.io/badge/-Modrinth-00AF5C?style=flat-square&logo=modrinth&logoColor=white" alt="Modrinth"></a></td></tr>
+<tr><td><b>Ranged Weapon API</b></td><td>Ranged damage for the Dynamic spell school and the chance attributes</td><td><a href="https://www.curseforge.com/minecraft/mc-mods/ranged-weapon-api"><img src="https://img.shields.io/badge/-CurseForge-F16436?style=flat-square&logo=curseforge&logoColor=white" alt="CurseForge"></a> <a href="https://modrinth.com/mod/ranged-weapon-api"><img src="https://img.shields.io/badge/-Modrinth-00AF5C?style=flat-square&logo=modrinth&logoColor=white" alt="Modrinth"></a></td></tr>
+<tr><td><b>Critical Strike</b></td><td>Critical chance and damage for melee and ranged hits of the Dynamic school</td><td><a href="https://www.curseforge.com/minecraft/mc-mods/critical-strike"><img src="https://img.shields.io/badge/-CurseForge-F16436?style=flat-square&logo=curseforge&logoColor=white" alt="CurseForge"></a> <a href="https://modrinth.com/mod/critical-strike"><img src="https://img.shields.io/badge/-Modrinth-00AF5C?style=flat-square&logo=modrinth&logoColor=white" alt="Modrinth"></a></td></tr>
+<tr><td><b>Runes</b></td><td>Water, Nature, Air and Earth Runes can be crafted by hand and at the rune crafting altar</td><td><a href="https://www.curseforge.com/minecraft/mc-mods/runes"><img src="https://img.shields.io/badge/-CurseForge-F16436?style=flat-square&logo=curseforge&logoColor=white" alt="CurseForge"></a> <a href="https://modrinth.com/mod/runes"><img src="https://img.shields.io/badge/-Modrinth-00AF5C?style=flat-square&logo=modrinth&logoColor=white" alt="Modrinth"></a></td></tr>
+<tr><td><b>Armory (RPG Series)</b></td><td>Lost Crystals that upgrade the armor of my class mods at the smithing table</td><td><a href="https://www.curseforge.com/minecraft/mc-mods/armory-rpg-series"><img src="https://img.shields.io/badge/-CurseForge-F16436?style=flat-square&logo=curseforge&logoColor=white" alt="CurseForge"></a> <a href="https://modrinth.com/mod/armory-rpg-series"><img src="https://img.shields.io/badge/-Modrinth-00AF5C?style=flat-square&logo=modrinth&logoColor=white" alt="Modrinth"></a></td></tr>
+<tr><td><b>Village Taverns</b></td><td>The Taverns bartender sells the Earth, Water, Air and Nature potions (needs Spell Power)</td><td><a href="https://www.curseforge.com/minecraft/mc-mods/village-taverns"><img src="https://img.shields.io/badge/-CurseForge-F16436?style=flat-square&logo=curseforge&logoColor=white" alt="CurseForge"></a> <a href="https://modrinth.com/mod/village-taverns"><img src="https://img.shields.io/badge/-Modrinth-00AF5C?style=flat-square&logo=modrinth&logoColor=white" alt="Modrinth"></a></td></tr>
+</tbody></table>
+
+</details>
+
+---
+
+## 🕹️ Features
+
+More RPG Library is the base of my RPG class and content mods. 
+On its own it adds no classes and no spells, but it gives every mod that uses it the same attributes, status effects, spell schools, weapon skills and mob AI. 
 Feel free to use it as a dependency for your own mod!
 
-**Optional mods.** Nothing here is required except the library itself.
-[Spell Engine](https://github.com/ZsoltMolnarrr/SpellEngine), Spell Power, [playerAnimator](https://modrinth.com/mod/playeranimator), [Better Combat](https://modrinth.com/mod/better-combat), [Combat Roll](https://modrinth.com/mod/combat-roll), Runes, Ranged Weapon API and Critical Strike are all optional.
-Install one and the matching parts light up, everything else keeps working without it.
-Each section below says when it needs one of them.
+- Spell Schools: with Spell Power installed the library adds new magic schools: <b>🌪️ Air</b>, <b>🪨 Earth</b>, <b>🌊 Water</b> and <b>🍃 Nature</b>, <b>🔥 Fire Ranged</b>,  <b>❄️ Frost Ranged</b> and <b>🪓Melee Rage</b> .
+- New Entity Attributes: Lifesteal, Spell Vampire, Damage Reflect, Rage, Armor Piercing, Tenacity, the Fuse attributes that add magic damage to your hits, and on-hit chances.
+- Status Effects: Many harmful effects and some Beneficial Effects.
+- Weapon Skills: Burstcrack, Decapitate and Puncture: shared melee weapon skills that any weapon can get through Spell Engine.
 
-[![Fabric](https://img.shields.io/badge/loader-fabric-black?style=for-the-badge&labelColor=black&color=grey)](https://fabricmc.net/)
-[![Curseforge](https://img.shields.io/badge/curseforge-black?style=for-the-badge&logo=curseforge&labelColor=black&color=grey)](https://www.curseforge.com/minecraft/mc-mods/more-rpg-library)
-[![Modrinth](https://img.shields.io/badge/modrinth-black?style=for-the-badge&logo=modrinth&labelColor=black&color=grey)](https://modrinth.com/mod/more-rpg-library)
-[![Discord](https://img.shields.io/discord/1209063880790376468?style=for-the-badge&logo=discord&label=discord&labelColor=black&color=grey)](https://discord.com/invite/AShKd5XrTu)
-[![KoFi](https://img.shields.io/badge/donations-black?style=for-the-badge&logo=kofi&labelColor=black&color=grey)](https://ko-fi.com/fichteee)
+All details, IDs and numbers are in the <a href="https://github.com/ProfessorFichte/More-RPG-Library/wiki/Home">wiki</a>.
 
----
+### For Datapack Makers &amp; Mod Developers
 
-## Contents
-
-**For players and modpack makers**
-
-1. [Assets](#1-assets)
-2. [New Spell Schools](#2-new-spell-schools)
-3. [New Entity Attributes](#3-new-entity-attributes)
-4. [Status Effects](#4-status-effects)
-5. [Weapon Skills](#5-weapon-skills)
-
-**For datapack makers**
-
-6. [Custom Spell Impacts](#6-custom-spell-impacts)
-7. [Loot Table Enhancements](#7-loot-table-enhancements)
-8. [Structure Processors](#8-structure-processors)
-9. [Structure Block Modifiers](#9-structure-block-modifiers)
-
-**For mod developers**
-
-10. [Mob Spell Casting](#10-mob-spell-casting)
-11. [Spellcaster Flee and Positioning Goals](#11-spellcaster-flee-and-positioning-goals)
-12. [Mob Animations (playerAnimator bridge)](#12-mob-animations-playeranimator-bridge)
-13. [Better Combat and Combat Roll for Mobs](#13-better-combat-and-combat-roll-for-mobs)
-14. [Entity Attribute Config](#14-entity-attribute-config)
-15. [Particle FX (MRPG FX)](#15-particle-fx-mrpg-fx)
+- <a href="https://github.com/ProfessorFichte/More-RPG-Library/wiki/Custom-Spell-Impacts">Custom spell impacts</a>, <a href="https://github.com/ProfessorFichte/More-RPG-Library/wiki/Loot-Table-Enhancements">loot table enhancements</a>, <a href="https://github.com/ProfessorFichte/More-RPG-Library/wiki/Structure-Processors">structure processors</a> and <a href="https://github.com/ProfessorFichte/More-RPG-Library/wiki/Structure-Block-Modifiers">structure block modifiers</a> for datapacks
+- <a href="https://github.com/ProfessorFichte/More-RPG-Library/wiki/Mob-Spell-Casting">Mob spell casting</a>, <a href="https://github.com/ProfessorFichte/More-RPG-Library/wiki/Spellcaster-Flee-and-Positioning-Goals">spellcaster positioning goals</a>, <a href="https://github.com/ProfessorFichte/More-RPG-Library/wiki/Mob-Animations">mob animations</a> and <a href="https://github.com/ProfessorFichte/More-RPG-Library/wiki/Better-Combat-and-Combat-Roll-for-Mobs">Better Combat &amp; Combat Roll for mobs</a>
+- An <a href="https://github.com/ProfessorFichte/More-RPG-Library/wiki/Entity-Attribute-Config">entity attribute config</a> system and <a href="https://github.com/ProfessorFichte/More-RPG-Library/wiki/Particle-FX">MRPG FX</a>, a particle and sound effect system that sends one packet per effect
+- New animations, sound effects and particles shared by all my mods, plus the Water, Nature, Air and Earth Runes (Runes) and the Lost Crystal armor upgrades (Armory)
 
 ---
 
-### 1. Assets
-- New **Animations** (played through the playerAnimator mod)
-- New **Sound Effects**
-- Several new **Particle Effects**
+## ⚙️ Configuration
 
-### 2. New Spell Schools
-Needs Spell Power installed. Spell schools are Spell Power's own system, this library just adds more of them.
+<details>
+<summary><b>Show config files</b></summary>
 
-**🧙‍♂️Magic Spell Schools**
-- **🌪️Air Magic**
-- **🪨Earth Magic**
-- **🌊Water Magic**
-- **🍃Nature Magic**
+<table>
+<thead><tr><th>Setting</th><th>File</th></tr></thead>
+<tbody>
+<tr><td>Status effect attribute modifiers</td><td><code>config/mrpg_lib/effects_v4.json</code></td></tr>
+<tr><td>Attribute cooldowns and weapon skill strength</td><td><code>config/mrpg_lib/tweaks_v2.json</code></td></tr>
+<tr><td>Loot</td><td><code>config/mrpg_lib/loot.json</code></td></tr>
+<tr><td>Elemental weaknesses (Spell Engine)</td><td><code>config/mrpg_lib/elemental_weaknesses.json</code></td></tr>
+<tr><td>Particle amount (client)</td><td><code>config/mrpg_lib/client_fx_v1.json</code></td></tr>
+</tbody></table>
 
-**🏹Ranged Spell Schools**
-- **🔥Fire Ranged**
-- **❄️Frost Ranged**
-
-**🗡️Melee Spell Schools**
-- **🪓Rage Melee**
-
-**✨Dynamic Spell School** (`spell_power:dynamic`, `DynamicSpellSchool.DYNAMIC`)
-- Always uses your strongest damage school: physical melee (attack damage), physical ranged (Ranged Weapon API ranged damage) or any magic school (fire, frost, arcane, soul, lightning, water, air, earth, nature, ...). Healing and generic spell power don't count on their own.
-- Power, haste, critical chance and critical damage all come from that school: attack speed and Critical Strike for melee, ranged haste and Critical Strike for ranged, Spell Power haste and critical attributes for magic.
-- The damage type follows it too: player attack for melee, arrow for ranged, the magic school's own damage type for magic.
-- Meant for spells that should work for every class, like relic and weapon abilities.
-
-### 3. New Entity Attributes
-These work for every living entity, players and mobs alike.
-All of them start at 100, which means "off". Everything above 100 is the strength in percent, so 150 = 50% and 200 = 100%.
-
-| Attribute | ID | What it does |
-|---|---|---|
-| Damage Reflect | `mrpg_lib:damage_reflect_modifier` | Direct hits you take are reflected back at the attacker as thorns damage. 200 = 100% of the damage is reflected. |
-| Lifesteal | `mrpg_lib:lifesteal_modifier` | Heals you for part of the health your hits actually removed. 200 = 100%. |
-| Spell Vampire | `mrpg_lib:spell_vampire` | Heals you for part of the spell damage you deal. 200 = 100%. |
-| Rage | `mrpg_lib:rage_modifier` | Extra damage for non-spell attacks, the lower your health the more. Bonus = attack damage × (Rage − 100)% × missing health %. |
-| Fuse | `mrpg_lib:<school>_fuse_modifier` | Your non-spell hits also deal magic damage of that school: spell power × (Fuse − 100)%. At most once per second. Exists for `air`, `arcane`, `earth`, `fire`, `frost`, `healing` and `water`.<br>*Needs Spell Power.* |
-| Burning Chance | `mrpg_lib:burning_chance` | Chance to apply [Ignited](#4-status-effects) for 2 seconds. |
-| Stagger Chance | `mrpg_lib:stagger_chance` | Chance to apply [Stagger](#4-status-effects) for 4 seconds. |
-| Stun Chance | `mrpg_lib:stun_chance` | Chance to apply Spell Engine's Stun for 2 seconds.<br>*Needs Spell Engine.* |
-| Freeze Chance | `mrpg_lib:freeze_chance` | Chance to apply [Frozen Solid](#4-status-effects) for 3 seconds. |
-| Poison Chance | `mrpg_lib:poison_chance` | Chance to apply vanilla Poison for 6 seconds. |
-| Bleeding Chance | `mrpg_lib:bleeding_chance` | Chance to apply Spell Engine's Bleed for 6 seconds.<br>*Needs Spell Engine.* |
-| Armor Piercing | `mrpg_lib:armor_piercing` | Your non-spell hits ignore part of the target's armor and armor toughness. 200 = armor is ignored completely. |
-| Tenacity | `mrpg_lib:tenacity` | Chance to resist a harmful status effect when it gets applied. 150 = 50% chance, 200 = immune. Bad Omen, Trial Omen and Raid Omen are never resisted. |
-
-About the chance attributes:
-- They trigger on melee hits and projectile hits, never on spells.
-- The level of Ignited, Stagger, Poison and Bleed scales with the attacker's damage (15% of attack damage, or of ranged damage for projectiles).
-- Ignited, Stagger, Stun and Frozen Solid share an 8 second cooldown per attacker. Poison and Bleed share a 4 second cooldown.
-
-Lifesteal and Spell Vampire have a 1 second cooldown each, `lifestealCooldownTicks` and `spellVampireCooldownTicks` in `config/mrpg_lib/tweaks_v2.json`.
-
-### 4. Status Effects
-Status effects that spells, weapons and mobs of my content mods (and yours) can apply.
-Numbers are per level unless the text says otherwise.
-The attribute modifiers of every effect can be changed in `config/mrpg_lib/effects_v4.json`.
-
-Several effects change Spell Engine's `damage_taken` / `healing_taken` attributes or Spell Power's spell vulnerability.
-Those parts only work when that mod is installed, the rest of the effect still works without it.
-Frozen Solid, Soaked and Arcane Precision switch to a standalone version without Spell Power.
-
-**Harmful effects**
-
-| Icon | Effect | ID | Description |
-|---|---|---|---|
-| <img src="common/src/main/resources/assets/mrpg_lib/textures/mob_effect/molten_armor.png" width="32"> | Molten Armor | `mrpg_lib:molten_armor` | Melts the target's armor: −10% armor and −1 armor toughness. Burns for 1.5 damage every 2 seconds while wearing a full armor set, 0.5 with only some pieces (every second from level II on). Ends in water or when the target wears no armor. |
-| <img src="common/src/main/resources/assets/mrpg_lib/textures/mob_effect/frozen_solid.png" width="32"> | Frozen Solid | `mrpg_lib:frozen_solid` | Freezes the target in a block of ice and builds up freezing like powder snow. Fire or lava thaws it, freeze-immune mobs can't be frozen.<br>*With Spell Engine: the target can't move, jump, attack, use items or cast spells, mobs stop thinking, it takes 15% more damage and the first direct hit breaks the ice.*<br>*With Spell Power: frost spells get +10% critical chance and +20% critical damage against it.* |
-| <img src="common/src/main/resources/assets/mrpg_lib/textures/mob_effect/frosted.png" width="32"> | Frosted | `mrpg_lib:frosted` | −5% movement speed and builds up freezing like powder snow. When it is applied at level V it turns into Frozen Solid for 5 seconds (the level is `effect_frosted_amplifier_frozen_solid_conversion` in `tweaks_v2.json`, 4 = level V). Can't be applied to frozen or freeze-immune targets, fire and lava remove it. |
-| <img src="common/src/main/resources/assets/mrpg_lib/textures/mob_effect/ignited.png" width="32"> | Ignited | `mrpg_lib:ignited` | Burns the target for 1 fire damage every half second (+0.1 per level above I).<br>*With Spell Engine: −10% healing taken, and the target can't move, attack, use items or cast spells (it can still jump), mobs stop thinking.* |
-| <img src="common/src/main/resources/assets/mrpg_lib/textures/mob_effect/stagger.png" width="32"> | Stagger | `mrpg_lib:stagger` | −80% attack damage, armor and movement speed.<br>*With Spell Engine: the target can't attack, use items or cast spells, mobs stop thinking.* |
-| <img src="common/src/main/resources/assets/mrpg_lib/textures/mob_effect/fear.png" width="32"> | Fear | `mrpg_lib:fear` | −25% attack damage.<br>*With Spell Engine: the target can't attack, use items or cast spells, mobs stop thinking.* |
-| <img src="common/src/main/resources/assets/mrpg_lib/textures/mob_effect/grievous_wounds.png" width="32"> | Grievous Wounds | `mrpg_lib:grievous_wounds` | +5% damage taken and −10% healing taken.<br>*Needs Spell Engine.* |
-| <img src="common/src/main/resources/assets/mrpg_lib/textures/mob_effect/carve.png" width="32"> | Carve | `mrpg_lib:carve` | −10% armor and +5% damage taken.<br>*The damage taken part needs Spell Engine.* |
-| <img src="common/src/main/resources/assets/mrpg_lib/textures/mob_effect/withers_curse.png" width="32"> | Wither's Curse | `mrpg_lib:withers_curse` | +5% damage taken. Its level grows with the number of harmful status effects on the target (not counting itself), and every time it grows it lasts 2 seconds longer.<br>*Needs Spell Engine.* |
-| <img src="common/src/main/resources/assets/mrpg_lib/textures/mob_effect/soaked.png" width="32"> | Soaked | `mrpg_lib:soaked` | Soaks the target with water. If it is on fire, the fire goes out and Soaked ends. Lava also ends it.<br>*With Spell Power: frost spells deal +15% damage and +30% critical damage against it, lightning spells +15% damage and +10% critical chance.* |
-| <img src="common/src/main/resources/assets/mrpg_lib/textures/mob_effect/arcane_precision.png" width="32"> | Arcane Precision | `mrpg_lib:arcane_precision` | Makes the target more vulnerable to arcane spells: +2.5% damage, +5% critical chance and +10% critical damage.<br>*Needs Spell Power, without it the effect does nothing.* |
-| <img src="common/src/main/resources/assets/mrpg_lib/textures/mob_effect/fatal_poison.png" width="32"> | Fatal Poison | `mrpg_lib:fatal_poison` | Poison that can kill: 1 damage every 1.25 seconds (+1 per level above I). Unlike vanilla Poison it also hurts undead. Mobs in `#mrpg_lib:poison_immune` (bogged and witches by default) are immune. |
-| <img src="common/src/main/resources/assets/mrpg_lib/textures/mob_effect/duelists_focus_target.png" width="32"> | Marked by the Duelist | `mrpg_lib:duelists_focus_target` | Takes 25% more damage from the Duelist who marked it. Applied together with Duelist's Focus. |
-| <img src="common/src/main/resources/assets/mrpg_lib/textures/mob_effect/bleeding.png" width="32"> | Bleeding | `mrpg_lib:bleeding` | **Deprecated**, use Spell Engine's `spell_engine:bleed` instead. Only kept so old worlds still load. Damage over time that gets stronger the lower the target's health is. |
-
-**Beneficial effects**
-
-| Icon | Effect | ID | Description |
-|---|---|---|---|
-| <img src="common/src/main/resources/assets/mrpg_lib/textures/mob_effect/collected_soul.png" width="32"> | Collected Soul | `mrpg_lib:collected_soul` | +0.1 Soul spell power per stack.<br>*Needs Spell Power.* |
-| <img src="common/src/main/resources/assets/mrpg_lib/textures/mob_effect/zephyrs_speed.png" width="32"> | Zephyr's Speed | `mrpg_lib:zephyrs_speed` | +5% movement speed and higher critical chance.<br>*The critical chance part needs Spell Power.* |
-| <img src="common/src/main/resources/assets/mrpg_lib/textures/mob_effect/dragonslayers_fury.png" width="32"> | Dragonslayer's Fury | `mrpg_lib:dragonslayers_fury` | Increases critical damage.<br>*Needs Spell Power or Critical Strike.* |
-| <img src="common/src/main/resources/assets/mrpg_lib/textures/mob_effect/sirens_tear.png" width="32"> | Siren's Tear | `mrpg_lib:sirens_tear` | Heals every second, more the lower your health is: 5% of max health × your missing health share (2.5% at half health). Below 5% health it heals the full 5%. |
-| <img src="common/src/main/resources/assets/mrpg_lib/textures/mob_effect/duelists_focus_owner.png" width="32"> | Duelist's Focus | `mrpg_lib:duelists_focus_owner` | You take 25% less damage from everyone except your marked target, and the marked target takes 25% more damage from you. |
-
-### 5. Weapon Skills
-Melee weapon skills in the `mrpg_lib` namespace, ready to be assigned to any weapon through a Spell Engine spell container.
-They live in this library so several content mods can share them without depending on each other.
-Needs Spell Engine.
-
-All three use the shared `weapon` cooldown group.
-
-| Icon | Skill | ID | Description |
-|---|---|---|---|
-| <img src="common/src/main/resources/assets/mrpg_lib/textures/spell/burstcrack.png" width="32"> | Burstcrack | `mrpg_lib:burstcrack` | Charged (up to 1.5 s) — release a shockwave around you that hits every enemy nearby for 50% of your attack damage and knocks them up (bosses are not knocked up). The longer you charge, the further it reaches (5.5 blocks, up to +3 at full charge) and the harder it hits. You move at 25% speed while charging. Cooldown: 15 s.<br>*Typically assigned to: knuckles (Forcemaster).* |
-| <img src="common/src/main/resources/assets/mrpg_lib/textures/spell/decapitate.png" width="32"> | Decapitate | `mrpg_lib:decapitate` | Cast (0.75 s) — a heavy 180° swing with forward momentum, dealing 25% bonus damage. Disables the target's shield and stops its item use for 2 seconds. Cooldown: 15 s.<br>*Typically assigned to: berserker axes (Berserker).* |
-| <img src="common/src/main/resources/assets/mrpg_lib/textures/spell/puncture.png" width="32"> | Puncture | `mrpg_lib:puncture` | Cast (0.7 s) — dash forward in a series of 6 quick thrusts with 20% bonus damage each, striking every enemy along your path once. Can't be used in the air. Cooldown: 10 s.<br>*Typically assigned to: rapiers (Bards).* |
+</details>
 
 ---
 
-## For datapack makers
+## 🙌 Credits
 
-### 6. Custom Spell Impacts
-Needs Spell Engine installed. These handlers are referenced from a spell's `impacts` list in its spell JSON:
-```json
-  "impacts": [
-    {
-      "action": {
-        "type": "CUSTOM",
-        "custom": {
-          "intent": "HARMFUL",
-          "handler": "mrpg_lib:knock_up_fixed"
-        }
-      }
-    }
-  ]
-```
+<details>
+<summary><b>Show credits</b></summary>
 
-| Handler | What it does |
-|---|---|
-| `mrpg_lib:knock_up` | Knocks the target up (scalable). |
-| `mrpg_lib:knock_up_fixed` | Knocks the target up by a fixed amount (0.75 Y velocity by default). |
-| `mrpg_lib:stop_arrows` | Stops arrows, their velocity is set to 0. |
-| `mrpg_lib:lightning` | Summons a lightning strike on the target. |
-| `mrpg_lib:trembling` | Throws the target around in random directions. |
-| `mrpg_lib:range_scaled_knockback` | Knockback that gets stronger the closer the target is to the caster. |
-| `mrpg_lib:frozen_ticks` | Adds freezing ticks to the target. |
-| `mrpg_lib:damage_according_to_missing_health` | Damage based on the target's missing health, scaled with the caster's spell school power: 0.25× above 50% health, 1.0× below 50%, 1.75× below 25%. |
-| `mrpg_lib:spellthief_impact` | Steals all beneficial status effects of the target, then casts one of the target's spells: a random active spell of a player, or a random spell from a spell-casting mob's `<namespace>:mob/<entity>/...` spell tags. |
-| `mrpg_lib:pull_to_caster_direct` | **Deprecated.** Pulls the target directly in front of the caster. |
-| `mrpg_lib:pull_to_caster_slow` | **Deprecated.** Pulls the target slowly to the caster (for channeled spells). |
-| `mrpg_lib:rush_forward_to_target` | **Deprecated.** The caster rushes forward to the target. |
-| `mrpg_lib:backward_dash_fixed` | **Deprecated.** The caster dashes back a fixed distance. |
-| `mrpg_lib:backward_dash_range` | **Deprecated.** The caster dashes back, scaled with the spell's `range`. |
-| `mrpg_lib:forward_dash_range` | **Deprecated.** The caster dashes forward, scaled with the spell's `range`. |
+<table>
+<thead><tr><th>Who</th><th>Contribution</th></tr></thead>
+<tbody>
+<tr><td><a href="https://linktr.ee/danielsoundsgood">Daniel Soundsgood</a></td><td>Frost sound effects from the FREE Frost Mage SFX Library</td></tr>
+<tr><td>NuttiesNuts / Rulft44</td><td>Nature Rune Stone and several particles</td></tr>
+</tbody></table>
 
-The deprecated handlers still work, but for new spells Spell Engine's own `VELOCITY` impact is the better choice.
-Strengths like the knock up height, pull speed, dash range and the missing health multipliers can be tuned in `config/mrpg_lib/tweaks_v2.json`.
-
-### 7. Loot Table Enhancements
-The spell scroll and spell pool functions only do something when Spell Engine is installed. The conditional item function and entry work without it.
-
-**Loot tables that should also work without Spell Engine**
-
-Minecraft throws away the whole loot table if one part of it can't be read, for example an item or a function from a mod that isn't installed. A suspicious block or chest with that table then gives nothing at all.
-- Without Spell Engine, `mrpg_lib:specific_spell_scroll_pool` and `mrpg_lib:bind_spell_from_pools` still load, but do nothing.
-- The scroll item itself (`spell_engine:spell_scroll`) is still missing. So don't add it as a normal `minecraft:item` entry, use the conditional item entry below. Without Spell Engine the entry is left out and the other entries of the pool are rolled instead.
-```json
-{
-  "type": "mrpg_lib:conditional_item",
-  "item": "spell_engine:spell_scroll",
-  "weight": 2,
-  "functions": [
-    {
-      "function": "mrpg_lib:specific_spell_scroll_pool",
-      "spell_pools": ["#wizards:frost"],
-      "spell_tier_min": 1,
-      "spell_tier_max": 2,
-      "count": 1
-    }
-  ]
-}
-```
-With datagen: `ConditionalItemEntry.builder(Identifier.of("spell_engine", "spell_scroll"), Optional.empty())`. It works like `ItemEntry.builder`, with `.weight()` and `.apply()`.
-
-With Spell Engine but without spells in the chosen pools and tiers (for example no class mods installed), the scroll function finds nothing and the roll gives nothing.
-Add the condition `mrpg_lib:spells_available` with the same pools and tiers to the entry, then the entry only takes part when there are matching spells, otherwise one of the other entries is picked. Without Spell Engine the condition is always false.
-```json
-{
-  "type": "mrpg_lib:conditional_item",
-  "item": "spell_engine:spell_scroll",
-  "weight": 8,
-  "conditions": [
-    { "condition": "mrpg_lib:spells_available", "spell_tier_min": 3, "spell_tier_max": 4 }
-  ],
-  "functions": [
-    { "function": "mrpg_lib:specific_spell_scroll_pool", "spell_tier_min": 3, "spell_tier_max": 4, "count": 1 }
-  ]
-}
-```
-`spell_pools`, `spell_tier_min` and `spell_tier_max` of the condition are optional. With datagen: `SpellsAvailableLootCondition.builder(pools, tierMin, tierMax)` and `SpecificSpellScrollPoolLootFunction.builder(...)` (these two need Spell Engine on the datagen classpath).
-
-**Spell scroll from specific spell pools 📜**
-
-Adds a spell scroll with a spell from the given pools. You can limit the spell tier and blacklist spells.
-Without `spell_pools` every spell can be picked. This example uses a normal item entry, so the table only loads with Spell Engine installed. For tables that should also work without it, use the conditional item entry from above.
-```json
-{
-  "type": "minecraft:item",
-  "name": "spell_engine:spell_scroll",
-  "functions": [
-    {
-      "function": "mrpg_lib:specific_spell_scroll_pool",
-      "spell_pools": ["#wizards:frost", "#wizards:fire"],
-      "spell_tier_min": 3,
-      "spell_tier_max": 4,
-      "count": 1,
-      "blacklist_spells": ["wizards:frost_blizzard", "wizards:fire_meteor"]
-    }
-  ]
-}
-```
-
-**Bind spells from spell pools on an item**
-
-Binds a random spell from the pools to the item. If the item is not a spell container yet, it becomes one.
-```json
-{
-  "type": "minecraft:item",
-  "name": "minecraft:diamond_sword",
-  "functions": [
-    {
-      "function": "mrpg_lib:bind_spell_from_pools",
-      "spell_pools": ["#wizards:arcane", "#wizards:frost"],
-      "count": 1
-    }
-  ]
-}
-```
-
-**Conditional item with fallback**
-
-Drops the conditional item if it is registered, otherwise the entry's own item is used as the fallback.
-```json
-{
-  "type": "minecraft:item",
-  "name": "minecraft:diamond",
-  "functions": [
-    {
-      "function": "mrpg_lib:conditional_item",
-      "conditional_item": "your_mod:jade_gem"
-    },
-    {
-      "function": "minecraft:set_count",
-      "count": {
-        "min": 1,
-        "max": 4
-      }
-    }
-  ]
-}
-```
-
-**Conditional item entry**
-
-A loot pool entry without a fallback. If the item is not registered, the entry is left out of the roll, so one of the other entries of the pool is picked instead, and the loot table keeps working.
-```json
-{
-  "type": "mrpg_lib:conditional_item",
-  "item": "your_mod:jade_gem",
-  "count": {
-    "type": "minecraft:uniform",
-    "min": 1,
-    "max": 3
-  }
-}
-```
-
-### 8. Structure Processors
-Processors change the blocks of a structure template while it is placed. They work in every structure that places templates, jigsaw structures included.
-
-**How to use them**
-
-Put the processors in a processor list, for example `data/your_mod/worldgen/processor_list/library.json`:
-```json
-{
-  "processors": [
-    { "processor_type": "mrpg_lib:random_replace", "target": "minecraft:bookshelf", "count": 2,
-      "replacement": { "Name": "loot_n_explore:suspicious_bookshelf" }, "loot_table": "loot_n_explore:archaeology/bookshelf" }
-  ]
-}
-```
-Then point the template pool element at it with `"processors": "your_mod:library"`. You can also write the list right into the pool element instead of the id.
-Processors run in the order of the list, and each one sees the blocks the processors before it already changed.
-
-A typo or a block from a mod that isn't installed in `target`, `filler_block`, `corner_block` or `blend_block` only shows a warning in the log, and that processor is skipped.
-Blocks in `replacement` and `fallback` of random replace are checked when the datapack loads, like in vanilla processors. An unknown block there stops the processor list from loading.
-For blocks from optional mods, only load the processor list when that mod is installed (Fabric `fabric:load_conditions`, NeoForge `neoforge:conditions`).
-Give the same condition to everything that points at it (template pool, structure, structure set), otherwise those fail to load instead.
-
-**Random replace**
-
-Picks random blocks from one structure piece and replaces them, for example 2 of the 60 bookshelves in a library become suspicious bookshelves with a loot table, or every bookshelf has a 15% chance to become an icy one.
-
-| Field | Required | What it does |
-| --- | --- | --- |
-| `target` | yes | The block to look for: a block id or a block tag (`#minecraft:logs`) |
-| `count` | `count` or `chance` | How many of them get replaced: a number, or an int provider like `{ "type": "minecraft:uniform", "min_inclusive": 2, "max_inclusive": 3 }`. Together with `chance` it is the most that get replaced |
-| `chance` | `count` or `chance` | Chance for every target block to be replaced, from `0.0` to `1.0` |
-| `replacement` | yes | The new block as a block state: `{ "Name": "minecraft:chest", "Properties": { "facing": "north" } }` |
-| `keep_properties` | no (`false`) | The new block takes over every block state property of the old block that it has too (same name, same value), for example `facing`, `axis`, `waterlogged` or `variant`. These win over `Properties` in `replacement` |
-| `loot_table` | no | Loot table for the new block. Works for chests, barrels, shulker boxes, decorated pots and suspicious blocks |
-| `fallback` | no | Block state for the blocks that weren't picked. Without it they stay as they are |
-| `blend_fallback` | no (`false`) | The blocks that weren't picked copy the most common full block next to them in the template, for example the wall they are in. Blocks with a block entity are never copied. If nothing is found, `fallback` is used |
-
-Library example: 2 bookshelves become suspicious bookshelves, the other bookshelves stay normal.
-```json
-{
-  "processor_type": "mrpg_lib:random_replace",
-  "target": "minecraft:bookshelf",
-  "count": 2,
-  "replacement": { "Name": "loot_n_explore:suspicious_bookshelf" },
-  "loot_table": "loot_n_explore:archaeology/bookshelf"
-}
-```
-
-Marker example: build black stained glass where a chest could be. 2 or 3 of them become loot chests, the rest blend into the wall or become stone bricks.
-```json
-{
-  "processor_type": "mrpg_lib:random_replace",
-  "target": "minecraft:black_stained_glass",
-  "count": { "type": "minecraft:uniform", "min_inclusive": 2, "max_inclusive": 3 },
-  "replacement": { "Name": "minecraft:chest", "Properties": { "facing": "north" } },
-  "loot_table": "minecraft:chests/simple_dungeon",
-  "fallback": { "Name": "minecraft:stone_bricks" },
-  "blend_fallback": true
-}
-```
-Chance example: every deepslate bookshelf has a 20% chance to become an icy one. Use it in the processor list of every structure that should get it.
-```json
-{
-  "processor_type": "mrpg_lib:random_replace",
-  "target": "loot_n_explore:deepslate_bookshelf",
-  "chance": 0.2,
-  "replacement": { "Name": "loot_n_explore:icy_deepslate_bookshelf" },
-  "keep_properties": true
-}
-```
-
-Good to know:
-- The count is per structure piece, not for the whole structure. A jigsaw structure with 4 library pieces gets 2 suspicious bookshelves in each piece.
-- With `chance` every block rolls on its own, so a piece can get none or many. Add `count` to cap it.
-- To turn some bookshelves into suspicious ones and some of the rest into another look, put the suspicious one first in the list. The second processor then only sees the bookshelves that are left.
-- If a piece has fewer target blocks than the count, all of them are replaced.
-- The replacement is rotated together with the piece, so `facing` is the direction it has in the template.
-- The same structure at the same place always picks the same blocks, so the picks don't change between the chunks a piece is placed in.
-
-**Container loot**
-
-Gives blocks with an inventory a loot table, without changing the block. Everything else stays as it is in the template: the facing, the pattern, the sherds of a decorated pot.
-Works for every block that reads a `LootTable` like vanilla: chests, barrels, shulker boxes, hoppers, dispensers, droppers, decorated pots and suspicious blocks.
-
-| Field | Required | What it does |
-| --- | --- | --- |
-| `target` | yes | The block to look for: a block id or a block tag |
-| `loot_table` | yes | The loot table |
-| `chance` | no (`1.0`) | Chance for every target block to get the loot table, otherwise it stays as it is (for pots: empty) |
-| `replace_existing` | no (`false`) | Also replace a loot table that the block already has in the template |
-
-Pot example: every frozen pot has a 25% chance to hold something.
-```json
-{
-  "processor_type": "mrpg_lib:container_loot",
-  "target": "loot_n_explore:frozen_decorated_pot",
-  "loot_table": "loot_n_explore:pots/frozen_depths",
-  "chance": 0.25
-}
-```
-A decorated pot has one slot, so its loot table should give exactly one stack: one pool with one roll. The stack can be 1 item or more, for example with `minecraft:set_count`. The pot rolls it the first time its content is used (the pot breaks, a player puts an item in, a hopper pulls from it), like the pots in trial chambers.
-Loot table type `minecraft:chest` works for pots, chests and barrels, suspicious blocks use `minecraft:archaeology`.
-
-**Item frame items**
-
-Gives item frames in a structure a random item from a list. Save the template with entities (structure block option "Include entities"), otherwise there are no frames in it.
-
-| Field | Required | What it does |
-| --- | --- | --- |
-| `items` | yes | Item ids and item tags (`#minecraft:swords`). Items from mods that aren't installed are skipped, so you can mix items from different mods |
-| `entities` | no (`item_frame`, `glow_item_frame`) | Which entities count as frames |
-| `only_empty` | no (`true`) | Only frames that are empty in the template get an item. Set it to `false` to also replace items you put in by hand |
-| `chance` | no (`1.0`) | Chance per frame to get an item, otherwise the frame stays empty |
-
-```json
-{
-  "processor_type": "mrpg_lib:item_frame_items",
-  "items": ["minecraft:diamond", "#minecraft:swords", "jewelry:ruby"],
-  "chance": 0.75
-}
-```
-Every frame rolls on its own, so two frames can get the same item. Every entry in the list has the same chance, and a tag counts as all of its items, so `#minecraft:swords` is picked more often than one single item. To make an item more common, list it more than once.
-Invisible frames stay invisible, the rotation of the frame and of the item stays as it was in the template.
-
-**Paths: path adaptation, water pillar and terrain blending**
-
-These three turn marker blocks in a path template into blocks that fit the ground below them. They also work with `"projection": "terrain_matching"`, they look at the ground where the block really ends up.
-
-`mrpg_lib:path_adaptation` turns every `filler_block` into the `output` of the first `terrain_mappings` entry that matches the block below it (block id or `#tag`), otherwise into `fallback_block`. Above water it becomes `water_output`. With `remove_floating_blocks` a filler block with no ground in the 2 blocks below it is left out.
-```json
-{
-  "processor_type": "mrpg_lib:path_adaptation",
-  "filler_block": "minecraft:pink_stained_glass",
-  "terrain_mappings": [
-    { "terrain": "#minecraft:dirt", "output": "minecraft:dirt_path" },
-    { "terrain": "minecraft:sand", "output": "minecraft:sandstone" }
-  ],
-  "water_output": "minecraft:oak_planks",
-  "fallback_block": "minecraft:dirt_path",
-  "remove_floating_blocks": true
-}
-```
-`stop_on_water`, `water_check_radius` and `water_threshold` are still accepted but do nothing. A processor can't stop a jigsaw path, the pieces are chosen before any block is placed.
-
-`mrpg_lib:water_pillar` is for bridge corners. If there is water below a `corner_block`, it becomes `pillar_block`, a pillar of that block goes down through the water (up to `max_pillar_depth`) and a `fence_block` is put on top. On land the corner works like a path block: `terrain_mappings`, then the surrounding terrain if `blend_with_terrain` is on, then `fallback_block`.
-```json
-{
-  "processor_type": "mrpg_lib:water_pillar",
-  "corner_block": "minecraft:yellow_stained_glass",
-  "pillar_block": "minecraft:oak_log",
-  "fence_block": "minecraft:oak_fence",
-  "max_pillar_depth": 16,
-  "terrain_mappings": [ { "terrain": "#minecraft:dirt", "output": "minecraft:dirt_path" } ],
-  "fallback_block": "minecraft:dirt_path",
-  "sample_radius": 2,
-  "blend_with_terrain": true
-}
-```
-
-`mrpg_lib:terrain_blending` turns every `blend_block` into the most common terrain block around it (dirt becomes grass), with a small random `variation_chance` (moss and podzol on grass, cobblestone, mossy cobblestone and andesite on stone, sandstone and gravel on sand, ice on snow). Only full terrain blocks count, never blocks of the structure itself. Over deep water the block is left out. Without any terrain around it becomes `fallback_block`.
-```json
-{
-  "processor_type": "mrpg_lib:terrain_blending",
-  "blend_block": "minecraft:lime_stained_glass",
-  "sample_radius": 2,
-  "fallback_block": "minecraft:grass_block",
-  "match_below": true,
-  "match_horizontal": true,
-  "variation_chance": 0.15
-}
-```
-
-### 9. Structure Block Modifiers
-Structure processors only work in structures that are built from template files. Many structures aren't: strongholds, mineshafts, nether fortresses, woodland mansions, desert and jungle temples are built in code.
-Structure block modifiers work for every structure, vanilla and modded, and you don't have to change any of its files.
-They run right after a part of a structure (a room, a corridor, a jigsaw piece) is placed and replace some of its blocks.
-
-Put the files in `data/<namespace>/mrpg_lib/structure_block_modifier/<name>.json`. `/reload` reloads them, but only new chunks use the new values.
-This is the one Loot & Explore uses for stronghold libraries:
-```json
-{
-  "structures": ["minecraft:stronghold"],
-  "pieces": ["minecraft:shli"],
-  "target": "minecraft:bookshelf",
-  "chance": 0.03,
-  "max_per_piece": 4,
-  "replacement": { "Name": "loot_n_explore:suspicious_bookshelf" },
-  "loot_table": "loot_n_explore:archaeology/stronghold_library"
-}
-```
-
-| Field | Required | What it does |
-| --- | --- | --- |
-| `structures` | yes | Structure ids or structure tags, for example `"minecraft:stronghold"` or `"#minecraft:village"` |
-| `pieces` | no (all) | Only these parts of the structure, as structure piece type ids. Stronghold library: `minecraft:shli`. Jigsaw structures use `minecraft:jigsaw` for every piece |
-| `target` | yes | The block to replace: a block id or a block tag |
-| `chance` | yes | Chance for every target block to be replaced, from `0.0` to `1.0` |
-| `max_per_piece` | no (no limit) | At most this many replacements per piece. A piece that crosses chunk borders is handled once per chunk, so it can get this many in each chunk |
-| `replacement` | yes | The new block as a block state: `{ "Name": "minecraft:chest", "Properties": { "facing": "north" } }` |
-| `loot_table` | no | Loot table for the new block. Works for chests, barrels, shulker boxes and suspicious blocks. Suspicious blocks give only one item, so use a table with one roll (type `minecraft:archaeology`) |
-| `required_mods` | no | Mod ids. If one of them isn't installed, the file is skipped without an error. Use it when `replacement` comes from another mod |
-
-Good to know:
-- It's a chance per block and not "exactly 2 per room", because code-built rooms are placed one chunk at a time and no step sees the whole room. For a fixed number in template structures, use the random replace processor.
-- The same world seed always picks the same blocks.
-- A file with an unknown block in `replacement` is skipped and the log says why. The world still loads. Unknown piece types and invalid ids show a warning.
-- Common piece type ids: stronghold library `minecraft:shli`, stronghold chest corridor `minecraft:shcc`, mineshaft corridor `minecraft:mscorridor`, nether fortress pieces start with `minecraft:ne` (for example `minecraft:nestart`, `minecraft:nebcr`; `minecraft:nefos` is the nether fossil), desert temple `minecraft:tedp`, jungle temple `minecraft:tejp`, woodland mansion `minecraft:wmp`.
-
-For mod developers: `com.mrpg_lib.datagen.StructureBlockModifierProvider` writes these files with datagen.
-```java
-public class MyModifierProvider extends StructureBlockModifierProvider {
-    public MyModifierProvider(FabricDataOutput output) {
-        super(output);
-    }
-
-    @Override
-    protected void generate(BiConsumer<Identifier, StructureBlockModifier> exporter) {
-        exporter.accept(Identifier.of("my_mod", "stronghold_bookshelves"), new StructureBlockModifier(
-                List.of("minecraft:stronghold"), List.of("minecraft:shli"), "minecraft:bookshelf", 0.03F, 4,
-                MyBlocks.SUSPICIOUS_BOOKSHELF.getDefaultState(),
-                Optional.of(Identifier.of("my_mod", "archaeology/stronghold_library")), List.of()));
-    }
-}
-```
+</details>
 
 ---
 
-## For mod developers
+<div align="center" style="text-align:center">
+<h3>🧙‍♂️ Check out my RPG-themed mods using this library!</h3>
+<!-- BANNERS:own -->
+<table>
+<tbody>
+<tr><td align="center" style="text-align:center"><a href="https://modrinth.com/mod/additional-rpg-jewelry"><img src="https://raw.githubusercontent.com/ProfessorFichte/More-RPG-Library/1.21.1/.media/small_banners/additional_jewelry_banner_275x220.png" alt="Additional RPG Jewelry"></a></td><td align="center" style="text-align:center"><a href="https://modrinth.com/mod/archers-expansion"><img src="https://raw.githubusercontent.com/ProfessorFichte/More-RPG-Library/1.21.1/.media/small_banners/archers_expansion_banner_275x220.png" alt="Archers Expansion"></a></td><td align="center" style="text-align:center"><a href="https://modrinth.com/mod/bard-more-rpg-classes"><img src="https://raw.githubusercontent.com/ProfessorFichte/More-RPG-Library/1.21.1/.media/small_banners/bard_banner_275x220.png" alt="Bard"></a></td></tr>
+<tr><td align="center" style="text-align:center"><a href="https://modrinth.com/mod/berserker-rpg-class"><img src="https://raw.githubusercontent.com/ProfessorFichte/More-RPG-Library/1.21.1/.media/small_banners/berserker_banner_275x220.png" alt="Berserker"></a></td><td align="center" style="text-align:center"><a href="https://modrinth.com/mod/elemental-wizards-rpg"><img src="https://raw.githubusercontent.com/ProfessorFichte/More-RPG-Library/1.21.1/.media/small_banners/elemental_wizards_banner_275x220.png" alt="Elemental Wizards"></a></td><td align="center" style="text-align:center"><a href="https://modrinth.com/mod/forcemaster-rpg-class"><img src="https://raw.githubusercontent.com/ProfessorFichte/More-RPG-Library/1.21.1/.media/small_banners/forcemaster_banner_275x220.png" alt="Forcemaster"></a></td></tr>
+<tr><td align="center" style="text-align:center"><a href="https://modrinth.com/mod/loot-n-explore"><img src="https://raw.githubusercontent.com/ProfessorFichte/More-RPG-Library/1.21.1/.media/small_banners/loot_n_explore_banner_275x220.png" alt="Loot &amp; Explore"></a></td><td align="center" style="text-align:center"><a href="https://modrinth.com/mod/witcher-rpg-class"><img src="https://raw.githubusercontent.com/ProfessorFichte/More-RPG-Library/1.21.1/.media/small_banners/witcher_banner_275x220.png" alt="Witcher"></a></td></tr>
+</tbody>
+</table>
+<!-- /BANNERS:own -->
+</div>
 
-### 10. Mob Spell Casting
-Needs Spell Engine installed.
+<div align="center" style="text-align:center">
+<h3>✨ Discover more of the RPG Series by Daedelus</h3>
+<!-- BANNERS:series -->
+<table>
+<tbody>
+<tr><td align="center" style="text-align:center"><a href="https://modrinth.com/mod/archers"><img src="https://media.forgecdn.net/attachments/755/169/archers_full_275.png" alt="Archers"></a></td><td align="center" style="text-align:center"><a href="https://modrinth.com/mod/paladins-and-priests"><img src="https://media.forgecdn.net/attachments/755/170/paladins_full_275.png" alt="Paladins"></a></td><td align="center" style="text-align:center"><a href="https://modrinth.com/mod/wizards"><img src="https://media.forgecdn.net/attachments/755/171/wizards_full_275.png" alt="Wizards"></a></td></tr>
+<tr><td align="center" style="text-align:center"><a href="https://modrinth.com/mod/rogues-and-warriors"><img src="https://media.forgecdn.net/attachments/899/332/rogues_full_bg_275.png" alt="Rogues"></a></td><td align="center" style="text-align:center"><a href="https://modrinth.com/mod/jewelry"><img src="https://media.forgecdn.net/attachments/760/387/jewelry_full_275.png" alt="Jewelry"></a></td><td align="center" style="text-align:center"><a href="https://modrinth.com/mod/relics-rpg"><img src="https://media.forgecdn.net/attachments/1103/296/relics_275-png.png" alt="Relics"></a></td></tr>
+<tr><td align="center" style="text-align:center"><a href="https://modrinth.com/mod/arsenal-rpg-series"><img src="https://media.forgecdn.net/attachments/1103/295/arsenal_full_275-png.png" alt="Arsenal"></a></td><td align="center" style="text-align:center"><a href="https://modrinth.com/mod/armory-rpg-series"><img src="https://media.forgecdn.net/attachments/1311/866/armory_275-png.png" alt="Armory"></a></td><td align="center" style="text-align:center"><a href="https://modrinth.com/mod/skill-tree"><img src="https://media.forgecdn.net/attachments/1311/865/skilltree_275-png.png" alt="Skill Tree"></a></td></tr>
+</tbody>
+</table>
+<!-- /BANNERS:series -->
+</div>
 
-`com.mrpg_lib.compat.spell_engine.MobSpellCastGoal` lets any mob cast Spell Engine spells.
-Delivery type, particles, sounds, channeling and cooldown all come from the spell JSON, so there is nothing to configure by hand.
-
-**Setup**
-
-1. Implement `ISpellCasterEntity`
-```java
-public class MyWizard extends HostileEntity implements ISpellCasterEntity {
-
-    private boolean isCasting = false;
-    private int castingTicks = 0;
-
-    @Override public void startSpellCast(int ticks) { isCasting = true;  castingTicks = ticks; }
-    @Override public void stopSpellCast()           { isCasting = false; castingTicks = 0;     }
-    @Override public boolean isMobCasting()        { return isCasting; }
-    @Override public MobEntity asMobEntity()        { return this; }
-}
-```
-2. Add the goals in `initGoals()`.
-The spell argument is a plain spell ID string or a `#`-prefixed tag. Passing the shared `spellGoals` list prevents two goals from firing at the same time.
-```java
-private final List<MobSpellCastGoal> spellGoals = new ArrayList<>();
-
-@Override
-protected void initGoals() {
-    MobSpellCastGoal fireball  = new MobSpellCastGoal(this, "mymod:fireball",  spellGoals);
-    MobSpellCastGoal frostbolt = new MobSpellCastGoal(this, "mymod:frostbolt", spellGoals);
-
-    this.goalSelector.add(1, fireball);
-    this.goalSelector.add(2, frostbolt);
-
-    spellGoals.add(fireball);
-    spellGoals.add(frostbolt);
-}
-```
-To pick randomly from a group of spells, pass a tag instead of a single ID:
-```java
-new MobSpellCastGoal(this, "#mymod:mob/wizard_spells", spellGoals)
-```
-The mob picks one available (off-cooldown) spell from the tag each cast.
-The goal tracks cooldowns against world time itself, you don't need to call anything. `updateCooldown()` still exists but does nothing.
+<div align="center" style="text-align:center">
+<h3>🌟 More RPG content by other Spell Engine devs</h3>
+<!-- BANNERS:others -->
+<table>
+<tbody>
+<tr><td align="center" style="text-align:center"><a href="https://modrinth.com/mod/anarchy-rpg"><img src="https://media.forgecdn.net/attachments/1358/177/anarchy-png.png" alt="Anarchy"></a></td><td align="center" style="text-align:center"><a href="https://www.curseforge.com/minecraft/mc-mods/mercenaries-and-artificers"><img src="https://media.forgecdn.net/attachments/1346/857/merc_275-png.png" alt="Mercenaries and Artificers"></a></td><td align="center" style="text-align:center"><a href="https://modrinth.com/mod/death-knights"><img src="https://media.forgecdn.net/attachments/953/998/death_knights_275_2.png" alt="Death Knights"></a></td></tr>
+</tbody>
+</table>
+<!-- /BANNERS:others -->
+</div>
 
 ---
 
-**Custom timings (optional)**
-
-By default the goal uses the spell's own cast/channel duration and cooldown. To give a mob its own values, use `withTimings`:
-
-```java
-MobSpellCastGoal fireball = new MobSpellCastGoal(this, "mymod:fireball", spellGoals)
-        .withTimings(SpellTimings.builder().castSeconds(1.2F).cooldownSeconds(6F).build());
-
-MobSpellCastGoal beam = new MobSpellCastGoal(this, "#mymod:mob/wizard_spells", spellGoals)
-        .withTimings(SpellTimings.cooldown(4F))
-        .withTimings("mymod:death_ray", SpellTimings.channel(3F));
-```
-
-- `withTimings(timings)` applies to every spell of the goal, `withTimings(spellId, timings)` to one spell only. Per-spell wins over goal-wide, which wins over the spell's own value.
-- `castSeconds` replaces the cast duration. For channel spells it is the total channel length, and `channelSeconds` (channel spells only) wins if both are set.
-- `cooldownSeconds` replaces the cooldown. `0` means no cooldown.
-- `channelTicks` (optional) changes how many times a channel spell releases. Default is the spell's own count, so damage per cast stays the same when you only change the duration.
-- Anything you leave unset falls back to the spell. Cast time is never below 1 tick.
-
-The overridden cast time is what `startSpellCast(int ticks)` receives.
-If you play your own fixed-length animation, it will not stretch to fit by itself, so loop it or scale it from that tick count.
-The spell's own animations (`withAnimations(true)`, see [section 10](#12-mob-animations-playeranimator-bridge)) do follow the overridden cast time.
-
----
-
-**What works automatically**
-
-| Feature | Driven by |
-|---|---|
-| Projectile, Meteor, Cloud, Direct, Area, Beam, Teleport | `spell.json` delivery + target type |
-| Custom deliveries (`deliver.type: CUSTOM`) | the handler registered with Spell Engine's `SpellHandlers.registerCustomDelivery`, see **Custom deliveries** below |
-| Delivery delay | `spell.deliver.delay` |
-| Arrow spells (`SHOOT_ARROW`, `AFFECT_ARROW`) and stash spells (`STASH_EFFECT`) | see **Arrow, stash and summon spells** below |
-| Melee weapon skills (`MELEE`) and melee-range spells (`range_mechanic: MELEE`) | see **Melee spells** below |
-| Area impacts (`area_impact`) of direct spells | `spell.area_impact` |
-| Cast duration, channeling & charging (timed like for players: a spell with a cast time goes off at the end of the cast, a channel spell releases every interval starting half an interval in, and each release deals its share of the spell, not the full amount) | `spell.active.cast.duration` / `type` (`CHANNEL` / `CHARGE`) |
-| Cast start sound & particles | `spell.active.cast.start_sound` / `particles` |
-| Release particles & sound (for channel spells once at the end, or on every release with `channel.release_fx`) | `spell.release.particles` / `sound` |
-| Impact handling | SpellEngine internals |
-| Cooldown | `spell.cost.cooldown.duration` (or `withTimings`) |
-| `particles_scaled_with_ranged` | scaled by `spell.range` automatically |
-
----
-
-**Healing spells**
-
-Spells whose **entire** impact list is `HEAL` are cast on the nearest wounded ally instead of the combat target.
-
-Spells that mix `HEAL` with damage or other impacts target the combat target normally. Spell Engine's relation system prevents the heal from applying to enemies.
-
----
-
-**Charge spells**
-
-For a spell authored with `spell.active.cast.type = CHARGE`, the mob charges like a player holding the key: the charge fills over the cast duration and the mob lets go when it has charged enough.
-- If the charge adds range (`charge.bonus.range_add`, e.g. Venom Cask), the mob charges just enough for the spell to reach its target, and starts the cast when the target is within the fully charged range.
-- Otherwise it charges fully, unless the target is within 3 blocks, then it releases at `min_release_ratio`.
-- It never releases below `min_release_ratio`.
-
----
-
-**Arrow, stash and summon spells**
-
-- `SHOOT_ARROW` spells (e.g. Barrage) fire real arrows, including the extra arrows of the spell, with the spell's arrow perks and on-hit impacts. The mob needs a combat target and something in its main hand (any item, a bow is the natural choice), otherwise the spell is not picked. Mobs don't need arrows in their inventory.
-- `AFFECT_ARROW` spells change the mob's next arrow fired within 5 seconds.
-- `STASH_EFFECT` spells (e.g. Power Shot) put the stash effect on the mob just like on a player, and the stashed spell is only used when its trigger fires. Mobs support `ARROW_SHOT` stashes: skeletons, strays, bogged, and any mob shooting through a bow or crossbow (pillagers, piglins, arrow spells) use up the stash and carry its spell on the arrow. A self-targeted stash spell is only cast while the mob has a combat target. Other trigger types (melee hit, damage taken, ...) are still player-only in Spell Engine.
-- Summons (e.g. Spirit Wolf) treat the casting mob as their owner: they follow it, defend it, attack what it attacks and are scaled from its attributes. Summons of a mob using `ISpellCasterEntity` don't attack other mobs unless provoked, the same way the caster itself treats them.
-
----
-
-**Melee spells**
-
-- Spell Engine runs `MELEE` weapon skills (e.g. Swift Strikes, Swipe) on the player's client, so for mobs the goal runs them on the server instead. It uses the same data: every attack in `deliver.melee.attacks` with its delay, extra strikes, hitbox (length, width, height, roll, arc), `forward_momentum`, `movement_slipperiness`, `damage_bonus`, animation, swing and impact sounds. Each hit is a normal mob attack (`tryAttack`, so the mob needs an attack damage attribute), followed by the spell's own impacts.
-- Reach is Spell Engine's melee range for non-players (3 blocks plus `spell.range`). The mob walks to its target before swinging, and only swings once the target is in reach (plus the dash distance for skills with `forward_momentum`). If it can't get there within 2 seconds it gives up without going on cooldown.
-- Attack length follows the mob's attack speed attribute, or a sword-like 1.6 attacks per second if the mob has none.
-- Spells with `range_mechanic: MELEE` (e.g. Ground Slam) are only started when the target is within that reach, and the mob moves towards the target instead of backing away while casting. If the target escapes before the release, an area impact still lands in front of the mob, like a player's missed slam.
-- Area impacts of direct spells hit everything around the target that the caster may hurt (for a hostile caster: players, villagers and other non-hostile mobs, never other hostile mobs), with the area's particles and sound.
-- Area spells with melee range (e.g. Whirlwind) use the same 3 block reach. While channeling, the mob keeps walking into its target and every release hits everything around it that it may hurt.
-
----
-
-**Custom deliveries**
-
-Spells with `deliver.type: CUSTOM` run the same handler as for players. The content mod registers it once at startup, for example `SpellHandlers.registerCustomDelivery(Identifier.of("mymod", "my_delivery"), (world, spellEntry, caster, targets, context, targetLocation) -> { ... })`, and sets `spell.deliver.custom.handler = "mymod:my_delivery"`. Nothing extra is needed for mobs, but the handler gets the mob as `caster`, so it must not assume a player.
-- Targets are found like for players, from where the mob looks (it faces its target before the release). For `AIM` spells the combat target is used if the look ray misses.
-- Spells with target type `NONE` are cast too when they use a custom delivery, while the mob has a target in range.
-- Spells with target type `FROM_TRIGGER` are never picked, they only run from a trigger.
-
----
-
-**Intelligent Spellcasting**
-
-Enable situational spell selection per goal by calling `.withIntelligentSpellcasting()`:
-```java
-MobSpellCastGoal fireball = new MobSpellCastGoal(this, "mymod:fireball", spellGoals)
-        .withIntelligentSpellcasting();
-```
-
-When enabled, before casting the goal runs these filters in order:
-- **Self-heal priority**: if the caster is below 50% HP and has a pure heal spell available, only heal spells are considered.
-- **Ally-heal priority**: if an ally is below 60% HP and a heal spell is available, only heal spells are considered.
-- **Kill priority**: if the target is below 30% HP, pure heal spells are skipped so the mob focuses on finishing the target.
-- **`SpellBehaviorRegistry`**: any custom per-spell condition registered externally (see below).
-
----
-
-**SpellBehaviorRegistry**
-
-Register custom cast conditions for specific spells. Conditions registered here are checked when intelligent spellcasting is active:
-```java
-SpellBehaviorRegistry.register(
-    Identifier.of("mymod", "updraft"),
-    (caster, target, spellId) -> target != null && !target.isOnGround()
-);
-```
-
-The condition receives the caster, the current target (nullable) and the spell ID. Return `false` to skip this spell this tick, the goal moves on to the next available spell.
-
-For a distance gate there is a ready-made condition. For example, only throw Venom Cask when the target is 6 to 14 blocks away:
-```java
-SpellBehaviorRegistry.register(
-    Identifier.of("archers_expansion", "venom_cask"),
-    SpellBehaviorRegistry.targetDistance(6.0, 14.0)
-);
-```
-
----
-
-**Equipment and passive-tag spells**
-
-Off by default, so existing mobs keep casting exactly as before. Turn either on per goal:
-```java
-MobSpellCastGoal fireball = new MobSpellCastGoal(this, "mymod:fireball", spellGoals)
-        .withEquipmentSpells(true)
-        .withPassiveSpellTag("#mymod:mob/wizard_passives");
-```
-- `withEquipmentSpells(true)` reads the caster's mainhand item for passive and modifier spells, the same way a player wielding it would benefit from them.
-- `withPassiveSpellTag(tag)` grants passive spells straight from a spell tag, independent of any weapon. Same idea as the spell tag you already pass in as the mob's castable spells, just for passives.
-- Call `resolvedPassiveSpells(world)` to read everything currently granted from either source.
-
-A modifier spell that matches the spell being cast extends its range (`range_add`).
-The rest of what a modifier can do on a player (changing the impact, boosting power, projectile perks) is not applied to mobs yet, because Spell Engine's own modifier resolution only works for `PlayerEntity` casters.
-Passive spells are resolved and exposed the same way, but their triggers (on-hit, periodic) are not auto-dispatched for the same reason.
-
----
-
-**Beam spells**
-
-A mob doesn't hit you with a beam just because it targets you. The beam follows the target with a limited turn speed, 1.5 degrees per tick by default.
-The mob turns with its beam, so you can outrun both by moving sideways, especially up close. It only hits entities it really touches and it stops at blocks.
-```java
-new MobSpellCastGoal(this, "wizards:arcane_beam", spellGoals).withBeamTurnSpeed(5.0F);
-```
-- A higher value makes the beam harder to dodge, `0` snaps it onto the target every tick like before.
-
----
-
-**Weapon skills**
-
-`withWeaponSkills(true)` lets the mob use the active spells of the weapon in its main hand, the same skills a player gets from it: Swift Strikes on swords, Cleave on axes, Impale on spears, and so on.
-```java
-MobSpellCastGoal skills = MobSpellCastGoal.forWeaponSkills(this, spellGoals);
-this.goalSelector.add(1, skills);
-spellGoals.add(skills);
-
-MobSpellCastGoal mixed = new MobSpellCastGoal(this, "#mymod:mob/knight_spells", spellGoals)
-        .withWeaponSkills(true);
-```
-- The weapon is read every time the goal picks a spell, so a mob that gets another weapon (by a modpack maker, a command or your code) uses that weapon's skills from then on. Without a weapon, or with one that has no skills, the goal just uses its own spells.
-- Weapon skills come first: when one of them can be used, the goal picks it over its other spells. `withWeaponSkills(true, false)` puts them in the same random pick as the rest.
-- Only active spells count. Passive and modifier spells of the weapon stay with `withEquipmentSpells(true)`.
-- Melee skills (`MELEE` delivery) work like described under **Melee spells**: the mob walks up, swings and hits everything in the arc. The mob needs an attack damage attribute.
-- If the weapon leaves the mob's hand while a skill is being used, the skill stops.
-- Weapons with a spell choice pool (the ones where a player picks one skill out of a list, like the Wizards staffs or the Bard lutes) work too. The mob gets one random active spell from that pool. By default it's picked once and the mob keeps it, also after a world reload. With `.withWeaponSpellChoice(MobSpellCastGoal.WeaponSpellChoice.PER_CAST)` a new one is picked after every cast of it.
-- Cooldowns are per skill and per goal. Turn this on for one goal of a mob only, otherwise each goal uses the skill on its own cooldown.
-- `forWeaponSkills(caster, otherGoals)` is a goal that only uses weapon skills. `resolvedWeaponSkills(world)` lists the skills of the current weapon.
-
-Give the goal a better priority than the mob's normal melee goal (for example the Better Combat goal from [section 13](#13-better-combat-and-combat-roll-for-mobs)), then the mob uses a skill whenever it is ready and attacks normally in between.
-
----
-
-**Mobs with their own cast animation**
-
-For mobs that don't hold a real weapon or staff (for example a mage with a magic orb) and have their own cast animation, use `withCustomCasting`:
-```java
-MobSpellCastGoal spells = new MobSpellCastGoal(this, "#mymod:mob/orb_mage_spells", spellGoals)
-        .withCustomCasting(new CustomCasting() {
-            @Override
-            public int castTicks(MobEntity mob, Identifier spellId, int defaultTicks) {
-                return 30;
-            }
-
-            @Override
-            public void onCastStart(MobEntity mob, Identifier spellId, int castTicks) {
-                startMyCastAnimation(spellId);
-            }
-
-            @Override
-            public void onCastStop(MobEntity mob, Identifier spellId) {
-                stopMyCastAnimation();
-            }
-        });
-```
-- No Spell Engine player animation is played (cast, release and melee skill animations), even with `withAnimations(true)`. Spinning spells still spin the mob if `withAnimations(true)` is set.
-- `castTicks` decides how long every cast takes. `defaultTicks` is what the goal would use without it (the spell's own duration or your `withTimings`), so you can also scale it. `CustomCasting.ticks(30)` is a fixed length for every spell.
-- Every spell goes off at the end of that time. Channel spells release evenly over it and charge spells charge over it.
-- `onCastStart` runs right after `startSpellCast`, `onRelease` every time the spell goes off (on every release of a channel spell), `onCastStop` when the goal stops. They run on the server, so send the animation to the clients yourself (tracked data, a packet, or your animation library's server trigger).
-- Spell particles and sounds still play.
-
-### 11. Spellcaster Flee and Positioning Goals
-Needs Spell Engine installed. These goals work with `ISpellCasterEntity` from [section 8](#10-mob-spell-casting).
-
-Ready-made AI goals for spell-casting mobs that need to keep their distance and flee when low on health.
-
-**`IConditionalFleeEntity`**
-
-Implement this interface on your entity to unlock the two goals below. Your entity must extend `PathAwareEntity` (or any subclass) to use `LowHealthFleeGoal`. All methods have defaults, so override only what you need:
-
-```java
-public class MyWizard extends PathAwareEntity implements ISpellCasterEntity, IConditionalFleeEntity {
-
-    @Override public float getFleeDistance()         { return 4.0F; }
-    @Override public float getLowHealthFleeDistance() { return 6.0F; }
-
-    @Override public List<Identifier> getFleeImmuneEffects() {
-        return List.of(Identifier.of("mymod", "arcane_shield"));
-    }
-
-    @Override public List<Identifier> getFleeIgnoreIfTargetHasEffects() {
-        return List.of(Identifier.of("mymod", "frost_snare"));
-    }
-
-    @Override public float getFleeIgnoreTargetHpThreshold() { return 0.3f; }
-}
-```
-- `getFleeImmuneEffects`: effects on the caster that stop it from fleeing (e.g. a damage immunity shield).
-- `getFleeIgnoreIfTargetHasEffects`: effects on the target that stop the caster from fleeing (e.g. a snare or root).
-- `getFleeIgnoreTargetHpThreshold`: if the target's health share is below this value, the caster keeps attacking instead of fleeing. `0` turns it off.
-
-**`LowHealthFleeGoal<T extends PathAwareEntity & IConditionalFleeEntity>`**
-
-Flees from players when the mob drops below **35% HP**. Fleeing is skipped when any of the three conditions above is met (caster is immune, target is snared, or target is nearly dead).
-
-```java
-this.goalSelector.add(1, new LowHealthFleeGoal<>(this));
-```
-
-**`BackAwayGoal<T extends MobEntity & ISpellCasterEntity>`**
-
-Backs away from the combat target whenever it gets closer than `minDistance` blocks. Stops as soon as it is safe, so spells can fire right away. Does nothing while the mob is already casting.
-
-```java
-this.goalSelector.add(2, new BackAwayGoal<>(this, 4.0F, 1.2));
-```
-The arguments are the mob, `minDistance` and the movement speed.
-
-**Full example**
-
-```java
-@Override
-protected void initGoals() {
-    this.goalSelector.add(0, new SwimGoal(this));
-    this.goalSelector.add(1, new LowHealthFleeGoal<>(this));
-    this.goalSelector.add(2, new BackAwayGoal<>(this, 4.0F, 1.2));
-
-    MobSpellCastGoal fireball  = new MobSpellCastGoal(this, "mymod:fireball",  spellGoals);
-    MobSpellCastGoal frostbolt = new MobSpellCastGoal(this, "mymod:frostbolt", spellGoals);
-    this.goalSelector.add(3, fireball);
-    this.goalSelector.add(4, frostbolt);
-    spellGoals.add(fireball);
-    spellGoals.add(frostbolt);
-}
-```
-
-### 12. Mob Animations (playerAnimator bridge)
-Needs [playerAnimator](https://modrinth.com/mod/playeranimator). Without it, every call below quietly does nothing and none of its classes are loaded.
-
-Lets mobs play playerAnimator animations, the same `player_animations/*.json` files Spell Engine and Better Combat use for players.
-
-**How it works.**
-The server sends a small packet (`mrpg_lib:mob_animation`) to the players tracking the mob.
-The client keeps a playerAnimator animation stack on the entity and applies it to the mob's model right after vanilla poses it, so armor and held items follow.
-Players are never touched, playerAnimator and Spell Engine keep handling those.
-Players who start tracking a mob mid-animation get `persistent` animations replayed from the start.
-
-**Server-safe API** (`com.mrpg_lib.compat.player_animator.api`, safe to call from goals even if playerAnimator is missing):
-```java
-MobAnimations.play(mob, Identifier.of("spell_engine", "one_handed_projectile_charge"));
-
-MobAnimations.play(mob, animationId, MobAnimationOptions.DEFAULT
-        .withLayer(MobAnimationLayer.CASTING)
-        .withSpeed(1.5F)
-        .withFadeTicks(4)
-        .withMirror(MobAnimationOptions.Mirror.AUTO)
-        .withPersistent(true)
-        .withDuration(12));
-
-MobAnimations.stop(mob, MobAnimationLayer.CASTING, 5);
-MobAnimations.stopAll(mob, 5);
-MobAnimations.playSpellAnimation(mob, MobAnimationLayer.RELEASE, "spell_engine:one_handed_projectile_release", 1F);
-```
-- `withLayer`: `OFF_HAND_POSE` < `POSE` < `MISC` < `ATTACK` < `CASTING` < `RELEASE` < `DODGE`, higher layers win. Default is `MISC`.
-- `withFadeTicks`: `-1` uses the animation's own begin tick.
-- `withMirror(AUTO)` mirrors the animation for left-handed mobs.
-- `withPersistent(true)` replays the animation for players who start tracking the mob later, until it is stopped.
-- `withDuration(ticks)` (optional) stretches the animation to last that long, float lengths work too.
-- `withAttackTiming(length, upswingRate, upswingMultiplier)` plays an animation with Better Combat's attack speed curve instead of a constant speed: fast during the upswing, slower afterwards, so the hit frame lines up with the moment the damage lands (`length` in ticks, `upswingRate` and `upswingMultiplier` as Better Combat computes them). The Better Combat melee goal ([section 11](#13-better-combat-and-combat-roll-for-mobs)) uses it.
-
-`animationId` is `<namespace>:<"name" field of the json>`, not the file name. Use `MobAnimations.isAvailable()` if you need to know whether playerAnimator is there.
-
-**Spell casting mobs.** `MobSpellCastGoal` can play the spell's own animations: `.withAnimations(true)` plays `spell.active.cast.animation` while casting and `spell.release.animation` on release.
-It is off by default so existing mobs look exactly as before. The cast animation speed follows an overridden cast time (`withTimings`).
-Spells with `animation_spin` (e.g. Whirlwind) also spin the whole mob while casting, like players (this part works without playerAnimator).
-
-**Custom models.** Models extending `BipedEntityModel` (zombie, skeleton, piglin, player-style models), `IllagerEntityModel` (vindicator, evoker, illusioner) and `VillagerResemblingModel` (villager, wandering trader, witch) work out of the box. For any other model, register an adapter on the client that maps your model parts to the animation bones:
-```java
-MobModelAdapters.register(new MobModelAdapter() {
-    @Override
-    public MobModelParts parts(EntityModel<?> model) {
-        if (!(model instanceof MyMobModel m)) return null;
-        return new MobModelParts(m.head, m.body, m.leftArm, m.rightArm, m.leftLeg, m.rightLeg);
-    }
-});
-```
-`prepare(model)` runs after vanilla posing and before the animation (fix visibility flags there), `finish(model)` runs after (copy transforms to overlay parts there). The adapter never sees playerAnimator types, so it keeps working if the bridge is later moved to another animation library.
-
-**Limits.** Illager arms are shown uncrossed while an animation is active. Villagers and witches only have one crossed-arms part, so it follows the right arm of the animation (rotation and offset on top of its normal pose) and the left arm is ignored. The pitch adjustment Spell Engine applies to player casts is not used. Bend (elbow/knee) only works on biped models.
-
-**Test command** (development environment only, op level 2): `/mrpg_anim <targets> <animation id> [speed]` and `/mrpg_anim <targets> stop`, for example `/mrpg_anim @e[type=zombie] spell_engine:one_handed_projectile_charge`.
-
-### 13. Better Combat and Combat Roll for Mobs
-Needs [Better Combat](https://modrinth.com/mod/better-combat) and [Combat Roll](https://modrinth.com/mod/combat-roll) respectively, both optional.
-The factories below are safe to call from `initGoals()` whether the mod is installed or not, and nothing changes for mobs you don't give these goals to.
-Nothing in the library adds these goals to mobs by itself.
-
-**Better Combat melee** (`com.mrpg_lib.compat.better_combat.BetterCombatCompat`):
-```java
-goalSelector.add(2, BetterCombatCompat.createMeleeGoal(this, 1.0, false));
-goalSelector.add(2, BetterCombatCompat.createMeleeGoal(this, 1.0, false,
-        BetterCombatCompat.MeleeSettings.DEFAULT.withIntervalScale(1.5F)));
-```
-With Better Combat installed and a weapon that has Better Combat attributes in the main hand, the mob uses that weapon's combo the way a player would:
-- Attacks cycle through the combo, and the combo resets when the mob stops swinging for a while.
-- The attack animation and weapon pose play on the mob with the same speed curve Better Combat uses for players, and the hit lands after the weapon's upswing.
-- Everything inside the weapon's hitbox is hit (not just the target), and each attack's damage multiplier is applied. Allies are never hit, except the mob's own current target: a hostile mob that was hit by another hostile mob (a skeleton's stray arrow, for example) can fight back. The same goes for spells cast by mob casters.
-- The mob starts a swing once its target is within 80% of that attack's range, and moves slower while swinging (Better Combat's `movement_speed_while_attacking` times the attack's movement multiplier).
-- It shows the weapon trail particles players get, and fast weapons deal reduced knockback like in Better Combat.
-- If the mob's main-hand item changes mid-swing, the swing is cancelled.
-- Range and attack speed come from the weapon.
-- The weapon's attributes are read from the main-hand item at every swing, never stored, so changing the mob's weapon at any time gives it that weapon's attacks right away (Better Combat spears stab, staffs swing).
-
-Without the mod, or with a weapon that has no Better Combat attributes, it is a normal `MeleeAttackGoal`.
-
-`MeleeSettings.DEFAULT` options:
-- `baseRange` 3: reach before the weapon's range bonus, like a player
-- `intervalScale` 1: above 1 makes the mob attack slower than a player with the same weapon
-- `animations` on
-- `resetInvulnerability` on: with Better Combat's `allow_fast_attacks`, a victim's hurt-cooldown is cleared before the hit, but only if this mob was the last one to hurt it, so a pack of mobs can't stack damage
-- `weaponTrails` on
-
-**Dual wielding**: with Better Combat weapons in both hands (neither two-handed) the mob alternates hands like a player: main, off, main, off, each hand going through its own combo, so dual-wield-only attacks such as the dagger's double stab show up too.
-Off-hand swings use the off-hand weapon's attacks, range, damage, enchantments and trail, play the attack animation mirrored, and the off-hand weapon's pose (if it has one) is shown on the other arm.
-Better Combat's `dual_wielding_attack_speed_multiplier` and the main/off-hand damage multipliers apply. While dual wielding, a change to either hand cancels the swing.
-
-**Weapon poses**: if the weapon's Better Combat attributes have a `pose`, the mob holds the weapon in that stance the whole time it has the goal, not only in combat, and the pose changes or goes away as soon as the weapon does.
-In Better Combat itself the claymore, hammer, heavy axe, katana, twin blade, scythe, spear, glaive, halberd, soul knife, heavy bow and heavy crossbow presets have one (so e.g. Paladins claymores and great hammers, Archers spears and Rogues glaives). Vanilla items have none.
-It follows Better Combat's player rules:
-- Two-handed weapons keep the full pose while walking. One-handed ones let the arms swing while the mob walks or sneaks and only keep the weapon itself posed.
-- There is no pose while swimming, climbing, gliding, using an item, doing a vanilla arm swing, casting a spell or holding a loaded crossbow. The legs are left alone while riding.
-- Left-handed mobs get it mirrored, and when dual wielding the off-hand weapon's pose goes on the other arm.
-
-The weapon is checked whenever the mob's AI looks at the goal, so a mob with `NoAI` never gets a pose. If you remove the goal from a mob yourself, call `BetterCombatCompat.onGoalRemoved(goal)` to drop the pose.
-
-**Attack speed**: the swing length is the same as a player's: `20 / attack speed` ticks, at least Better Combat's `attack_interval_cap`, times `intervalScale`.
-If the mob has an attack speed attribute its value is used. Otherwise it is worked out like a player's would be: base 4.0 plus the attack speed modifiers of everything the mob wears and holds and of its status effects, with all modifier operations.
-When dual wielding, `dual_wielding_attack_speed_multiplier - 1` (default 1.2, so +20%) is added as an `add_multiplied_base` modifier, which is how Better Combat does it for players. Both hands use this main-hand speed, as for players.
-
-Better Combat's sweeping damage penalty is not applied to mobs.
-
-**Combat Roll dodging** (`com.mrpg_lib.compat.combat_roll.CombatRollCompat`):
-```java
-CombatRollCompat.createRollGoal(this, CombatRollCompat.RollSettings.DEFAULT
-        .withDefensiveHealthThreshold(0.4F)
-        .withEngage(true, 5.0, 0.15F)
-        .withDodgeProjectiles(true))
-        .ifPresent(goal -> goalSelector.add(1, goal));
-```
-Returns an empty `Optional` without Combat Roll, so the mob simply never rolls.
-With it, the mob rolls exactly like a player: roll count, recharge and distance come from the `combat_roll:count/recharge/distance` attributes if the mob has them (otherwise their default values), cooldown, roll duration, extra distance and invulnerability frames come from Combat Roll's server config, and it plays the `combat_roll:roll` animation and sound.
-- It rolls away from its target when its health drops below the threshold.
-- It can roll towards a target that is a few blocks away (`withEngage`).
-- It can sidestep projectiles flying at it (`withDodgeProjectiles`).
-- It never rolls into lava, fire, cactus, magma, berry bushes, powder snow or deep water, or off a drop of more than 3 blocks. If no direction is safe it doesn't roll.
-
-Give it a better (lower) priority than the mob's melee or movement goals so it can interrupt them.
-
-`RollSettings.DEFAULT`:
-- `defensiveHealthThreshold` 0.35: roll away below 35% health
-- `engage` off, `engageMinDistance` 5 blocks, `engageChance` 0.1 (`withEngage`)
-- `dodgeProjectiles` off
-- `cooldownTicks` 40: minimum time between rolls on top of the charges
-- `invulnerableTicks` -1: use Combat Roll's i-frames from its config, any other value overrides them for this mob
-- `animations` on (`withAnimations`)
-
-**Spell Engine dodging**
-
-Spell Engine's evasion already works for every living entity, not just players: an entity with the `spell_engine:evasion_chance` attribute above its base value has a chance to completely avoid a hit.
-Like for players it only works against melee attacks (player and mob), projectiles and generic damage (the `spell_engine:evadable` damage type tag), only when the hit comes from the front (Spell Engine's server config `attribute_evasion_angle`, 120° by default), and never against spells.
-The attribute is a percentage on top of its base 100: `120` is 20% dodge chance, `200` is 100%.
-
-With Spell Engine installed, this library adds what is missing for mobs:
-- The mob plays Spell Engine's `spell_engine:dodge` animation (needs playerAnimator, on the `DODGE` layer). Spell Engine itself only plays it for players. The dodge sound comes from Spell Engine for everyone.
-- A spell casting mob (`ISpellCasterEntity`) can't dodge while it casts, unless Spell Engine's config `attribute_evasion_allowed_while_spell_casting` allows it, same as players.
-
-Giving a mob dodge chance:
-- In a summon command or spawner: `attributes:[{id:"spell_engine:evasion_chance",base:130.0d}]` (30%)
-- In code: `MobEvasion.setEvasionChance(mob, 0.3)` (`com.mrpg_lib.compat.spell_engine`, only call it with Spell Engine installed). `MobEvasion.getEvasionChance(mob)` reads it back as 0 to 1.
-- `MobEvasion.setAnimationFilter(entity -> ...)` decides which mobs get the dodge animation, for mobs that have their own.
-
-Test husk with 100% dodge chance:
-```
-/summon minecraft:husk ~ ~ ~3 {PersistenceRequired:1b,attributes:[{id:"spell_engine:evasion_chance",base:200.0d}]}
-```
-Hit it from the front: it takes no damage, plays the dodge sound and animation. Hits from behind still land.
-
-**Trying it in a dev environment**
-
-The `/mrpg_goal` command (op level 2) only exists in a development environment, normal players never get it.
-- `/mrpg_goal <targets> bettercombat`, `/mrpg_goal <targets> combatroll` and `/mrpg_goal <targets> spellcast <spell_id>` add the matching goal to any mob you target (for example a zombie). `spellcast` needs Spell Engine installed.
-- `/mrpg_goal <targets> combatroll dodge` gives the roll goal with only the projectile dodge turned on (no engage or low-health retreat rolls).
-- `/mrpg_goal <targets> shoot [count]` fires that many test arrows at the targets from a ring around them, handy for testing the dodge.
-- `/mrpg_goal <targets> spellcast <spell_id> custom <ticks>` uses `withCustomCasting(CustomCasting.ticks(ticks))`: no Spell Engine animation and that cast length.
-- `/mrpg_goal <targets> weaponskills` adds a goal that uses the weapon skills of the mob's main-hand weapon (`MobSpellCastGoal.forWeaponSkills`). Add `reroll` at the end to pick a new spell from the weapon's choice pool after every cast.
-- `/mrpg_goal <targets> clear` removes the goals again.
-
-Give the mob a Better Combat weapon in its main hand to see the combos, or one in each hand to see dual wielding (for example `HandItems:[{id:"rogues:iron_dagger",count:1},{id:"rogues:iron_dagger",count:1}]`).
-
-Weapon poses (needs playerAnimator):
-```
-/summon minecraft:husk ~3 ~ ~ {Tags:["goaltest"],PersistenceRequired:1b,HandItems:[{id:"paladins:iron_claymore",count:1},{}]}
-/mrpg_goal @e[tag=goaltest] bettercombat
-/item replace entity @e[tag=goaltest] weapon.mainhand with archers:iron_spear
-/item replace entity @e[tag=goaltest] weapon.mainhand with minecraft:iron_sword
-```
-The husk should hold the claymore in Better Combat's two-handed sword pose right away, switch to the polearm pose with the spear and drop the pose with the iron sword.
-Add `LeftHanded:1b` to see the mirrored pose.
-Without Paladins or Archers, a datapack file `data/minecraft/weapon_attributes/iron_axe.json` containing `{"parent": "bettercombat:claymore"}` gives the iron axe the claymore pose.
-
-### 14. Entity Attribute Config
-A small config shape (`com.mrpg_lib.entity.config.EntityAttributeConfig`) for giving your registered entities configurable attributes, so players and modpack makers can retune them without touching your code.
-`EASY` is the base value you set. `NORMAL` and `HARD` each get their own multiplier on top, `PEACEFUL` uses the base value like `EASY` does.
-
-Build your defaults once, keyed by entity id:
-```java
-public static final EntityAttributeConfig DEFAULTS = new EntityAttributeConfig();
-static {
-    DEFAULTS.entries.put("mymod:frost_wraith", new EntityAttributeConfig.Entry()
-            .set("minecraft:generic.max_health", 40.0, 1.25, 1.5)
-            .set("spell_power:frost", 3.0, 1.25, 1.5));
-}
-```
-Persist it the same way you already persist any other config in your mod, with `ConfigManager<EntityAttributeConfig>` (TinyConfig):
-```java
-public static final ConfigManager<EntityAttributeConfig> entityAttributeConfig =
-        new ConfigManager<>("entity_attributes_v1", DEFAULTS).builder().setDirectory(MOD_ID).sanitize(true).build();
-```
-Call `entityAttributeConfig.refresh()` once during `init()` so the json file on disk exists and is loaded, then apply it whenever the entity is created or its attributes are set up:
-```java
-EntityAttributeApplier.apply(this, Identifier.of("mymod", "frost_wraith"),
-        entityAttributeConfig.value, DEFAULTS.entries.get("mymod:frost_wraith"));
-```
-This reads the live persisted entry if the user has one, and only falls back to your hardcoded `Entry` if the config has nothing for that id yet.
-`EntityAttributeApplier.apply(entity, entry)` on its own is there too, if you already have the right `Entry` and don't need the config lookup.
-
-If an entity needs an attribute that isn't already on it (a custom one like `spell_power:frost`, or one the entity type doesn't carry by default), add it to the attribute container while you build it: `EntityAttributeApplier.registerCustomAttribute(builder, "spell_power:frost", 0.0)` inside `createAttributes()`.
-The value you pass there is just a placeholder, the real value comes from `apply(...)` afterwards.
-
-**Custom values.** Besides attributes, an entry can carry a `custom` map for any other number or string your mob code wants to make tunable: ability cooldowns, projectile or summon counts, ranges, damage multipliers, entity ids. Numbers use the same `base` / `normal_multiplier` / `hard_multiplier` shape as attributes, strings go into `string`, and `normal_string` and `hard_string` can replace it on Normal and Hard difficulty (anything you leave out falls back to `string`). The attribute applier ignores this map; your own code reads it.
-```json
-"mymod:frost_wraith": {
-  "attributes": { "minecraft:generic.max_health": { "base": 40.0 } },
-  "custom": {
-    "salvo_arrow_count": { "base": 5.0, "hard_multiplier": 1.4 },
-    "summon_entity": { "string": "mymod:ice_wisp", "normal_string": "mymod:frost_wisp", "hard_string": "mymod:storm_wisp" }
-  }
-}
-```
-Add the defaults to the same `Entry`: `.setCustom("salvo_arrow_count", 5)`, `.setCustom(id, base, normal, hard)` or `.setCustomString("summon_entity", "mymod:ice_wisp")`. The map is left out of the JSON when an entry has none.
-Read them where the value is used, not once in `initialize()`, because mobs loaded from a saved world never run `initialize()` again:
-```java
-CustomValues tuning = EntityAttributeApplier.custom(this, entityAttributeConfig.value, DEFAULTS.entries.get("mymod:frost_wraith"));
-int arrows = tuning.getInt("salvo_arrow_count", 5);
-String summon = tuning.getString("summon_entity", "mymod:ice_wisp");
-```
-`getInt` (rounded), `getDouble` and `getBoolean` (0 = false) apply the multiplier for the mob's current world difficulty. Each key is looked up in the config entry first, then in the fallback `Entry`, then the default you pass, so a config being `null` is fine too. `Entry` itself has the same getters with an explicit `Difficulty`.
-
-> **Note:** a config file that already exists does not get new custom keys added automatically: the file is loaded as it is and saved back unchanged. Missing keys silently use the fallback `Entry`, so nothing breaks, but players only see the new keys after deleting the file and letting it regenerate, or by adding them by hand.
-
-**Equipment.** An entry can also carry an `equipment` map that gives the mob items when it spawns. The keys are the slot names `mainhand`, `offhand`, `head`, `chest`, `legs` and `feet`. `item` is an item id, or an item tag written as `#namespace:tag`, in which case a random item from that tag is picked for every spawn. `minecraft:air` empties the slot on purpose.
-```json
-"mymod:frost_wraith": {
-  "equipment": {
-    "mainhand": { "item": "minecraft:iron_sword", "drop_chance": 0.0 },
-    "head": { "item": "#minecraft:head_armor", "chance": 0.5, "enchant_chance": 0.25, "enchant_levels": 20 },
-    "offhand": { "item": "wizards:wand_frost", "required_mods": ["wizards"], "fallback_item": "minecraft:stick" }
-  }
-}
-```
-| Field | Default | Meaning |
-|---|---|---|
-| `item` | required | item id or `#tag` |
-| `chance` | `1.0` | chance (0 to 1) that the slot gets equipped at all. If the roll fails the slot is left as it was |
-| `enchant_chance` | `0.0` | chance (0 to 1) that the item gets enchanted |
-| `enchant_levels` | `20` | enchanting power, like the level cost at an enchanting table (30 is the table's maximum) |
-| `enchant_tag` | `#minecraft:in_enchanting_table` | enchantment tag the enchantments are picked from |
-| `drop_chance` | vanilla | chance to drop the item on death (`0.0` never, `1.0` always) |
-| `required_mods` | none | list of mod ids; the item is only used if at least one of them is loaded |
-| `fallback_item` | none | item id or `#tag` used instead when no required mod is loaded or `item` does not exist. It uses the same chance and enchant settings. Without it, the slot is left as it was |
-
-Unknown items, empty tags and unknown slot names are skipped with a single warning in the log. Slots you leave out keep whatever the mob already has, and an entry without an `equipment` map does not touch the mob's equipment at all. Config slots are merged with the fallback `Entry` slot by slot, so a config entry that only lists `head` still gets the fallback's `mainhand`.
-Defaults go on the same `Entry`: `.setEquipment(EquipmentSlot.MAINHAND, "minecraft:iron_sword")`, `.setEquipment("head", "#minecraft:head_armor", 0.5, 0.25)` (chance, enchant chance), or a full `EquipmentValue`:
-```java
-.setEquipment(EquipmentSlot.MAINHAND, EntityAttributeConfig.EquipmentValue.of("wizards:wand_frost")
-        .requiresAnyMod("wizards").fallback("minecraft:stick").enchant(0.25, 20).dropChance(0.0))
-```
-Equipment is applied by `apply(...)` together with the attributes and is saved with the mob, so it only affects freshly spawned mobs, not ones already saved in a world. Only `MobEntity` subclasses can get equipment. Whether an item is visible depends on the mob's renderer: armor needs an armor feature renderer and held items a held item feature renderer, but the item's attribute bonuses apply either way. Existing config files don't gain the `equipment` map on their own (see the note above).
-
-### 15. Particle FX (MRPG FX)
-`com.mrpg_lib.fx` plays particle and sound effects with one packet per effect. The client builds the shapes, so even large effects stay cheap on the network.
-
-**Use a preset.** Presets are ready-made effects you adjust in one call: `EXPLOSION`, `BURST`, `SHOCKWAVE`, `AURA`, `SWIRL`, `BEAM`, `TRAIL`, `IMPACT`, `CAST`, `PILLAR`, `CLOUD`, `SLASH`, `STORM`.
-```java
-public static final FxEffect DRAGON_BURST = MrpgFx.register(Identifier.of("mymod", "dragon_burst"), FxPresets.EXPLOSION.tweak(t -> t
-        .radius(5.0F)
-        .color(0xB040F0, 0x300050)
-        .speed(0.3F)
-        .vanillaParticle(ParticleTypes.DRAGON_BREATH)
-        .sound(SoundEvents.ENTITY_DRAGON_FIREBALL_EXPLODE, 0.9F, 1.1F)));
-```
-Register effects in common code during mod init, so the server and the client both know them.
-
-**Play it** on the server. Players within 64 blocks receive it:
-```java
-MrpgFx.play(serverWorld, DRAGON_BURST, FxParams.at(center).radius(5.0F));
-MrpgFx.play(serverWorld, MY_AURA, FxParams.on(player));          // timed effects can follow an entity
-FxHandle handle = MrpgFx.play(serverWorld, MY_CHANNEL, params);  // handle.stop() ends a timed effect early
-```
-`FxParams` can also carry a `direction`, a `target` (beams), `length`, `scale`, `intensity` (particle count multiplier), a `color` override for colored layers a `duration` override in ticks for timed effects and a `startAge` in ticks that starts a timed effect part way through (for example to replay it in another color without restarting it). A radius passed here replaces the effect's default radius, so an effect always matches the size of your ability.
-
-**Build your own** from layers when no preset fits. A layer is a shape, how its particles move, and which particle it uses:
-```java
-public static final FxEffect FROST_NOVA = MrpgFx.register(Identifier.of("mymod", "frost_nova"), FxEffect.builder()
-        .radius(3.0F)
-        .layer(FxLayer.of(FxShape.SPHERE).radiusFromParams(0.4F).count(40)
-                .velocity(FxVelocity.OUTWARD).speed(0.1F, 0.25F).speedFromRadius().particle(ParticleTypes.SNOWFLAKE))
-        .layer(FxLayer.of(FxShape.RING).radiusFromParams(1.0F).count(32).anchor(FxAnchor.GROUND).dust(0x9FE0FF, 1.2F))
-        .sound(SoundEvents.BLOCK_GLASS_BREAK, 0.9F, 0.6F)
-        .build());
-```
-| Option | Values |
-|---|---|
-| Shapes | `POINT`, `SPHERE`, `SHELL`, `RING`, `DISC`, `ARC`, `CYLINDER`, `COLUMN`, `CONE`, `LINE`, `BEAM`, `HELIX`, `SPIRAL`, `BOX` |
-| Velocity | `NONE`, `OUTWARD`, `INWARD`, `UP`, `DOWN`, `ALONG_AXIS`, `TANGENT` (swirl), `RANDOM` |
-| Motion | `DEFAULT`, `STATIC`, `FLOAT`, `ASCEND`, `DRIFT`, `BURST` |
-| Anchor | `POSITION`, `ENTITY` (with `verticalOrigin`), `EYES`, `GROUND`, `TARGET` |
-| Orientation | `WORLD` (turns with the yaw only), `LOOK` (follows the direction), `AXIS` (the shape's up axis points along the direction) |
-
-Effects can be timed (`duration`, `interval`, `follow()`), layers can be delayed, grow over time (`growFrom`) and spin (`spin`), sounds can be delayed or repeated, and effects can start other effects as `child` with a delay.
-
-**Colored vanilla particles.** `ColoredParticles` has colorable copies of vanilla particles that use the vanilla textures: `EXPLOSION`, `EXPLOSION_EMITTER` (large explosion), `POOF`, `SMOKE`, `LARGE_SMOKE`, `CLOUD`, `END_ROD`, `FIREWORK`, `FLASH`, `WITCH`, `CRIT`, `ENCHANTED_HIT` and `SNOWFLAKE`. Use them in a layer with `.colored(ColoredParticles.END_ROD, 0xFF40C0)` or anywhere else as a particle effect with `ColoredParticles.END_ROD.of(0xFF40C0)` (an optional second value scales the particle). When a preset gets a `color`, it uses the colored copies of its own particles, and dust only for particles without a copy. Preset layers stay recolorable, so a `color` in `FxParams` recolors them when the effect is played.
-
-**Particle lifetime.** `FxLayer.lifetime(ticks)` overrides how long the particles of that layer live. A timed effect with `interval(1)` and short lived particles draws a clean shape every tick, for example a ring that shrinks with `growFrom`.
-
-**Floating bubble.** `MoreParticles.FLOATING_BUBBLE` is a bubble that floats up slowly and lives for 1.5 to 2.5 seconds. Unlike the vanilla bubble it does not need water.
-
-**Testing.** In a development environment `/mrpg_fx play <effect> [radius] [scale] [intensity] [color]` plays an effect where you look, and `/mrpg_fx list` lists all effects. Every preset is registered as `mrpg_lib:preset/<name>` and every colored particle as `mrpg_lib:demo/colored_<name>` (white, recolor it with the color argument).
-
-**Players** can lower or raise the amount of particles with `fx_density` (0.1 to 3) in `config/mrpg_lib/client_fx_v1.json`.
+<div align="center" style="text-align:center">
+<p>💬 Questions, bugs or ideas? Join the <a href="https://discord.com/invite/AShKd5XrTu">Discord</a> or open an issue on <a href="https://github.com/ProfessorFichte/More-RPG-Library/issues">GitHub</a>.</p>
+</div>

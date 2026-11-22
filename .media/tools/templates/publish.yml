@@ -1,0 +1,75 @@
+name: Publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      fabric:
+        type: boolean
+        description: 'Loader: Fabric'
+        default: true
+      neoforge:
+        type: boolean
+        description: 'Loader: NeoForge'
+        default: true
+      release_type:
+        type: choice
+        description: Release type
+        options:
+          - release
+          - beta
+          - alpha
+      curseforge:
+        type: boolean
+        description: 'Platform: CurseForge'
+        default: true
+      modrinth:
+        type: boolean
+        description: 'Platform: Modrinth'
+        default: true
+      github:
+        type: boolean
+        description: 'Platform: GitHub Release'
+        default: true
+      sync_description:
+        type: boolean
+        description: 'Modrinth: overwrite the project description with README.md'
+        default: false
+      announce_discord:
+        type: boolean
+        description: 'Discord: post one update message after all uploads'
+        default: true
+      changelog:
+        type: string
+        description: 'Discord: changelog text (empty = newest CHANGELOG.md section)'
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    uses: ProfessorFichte/More-RPG-Library/.github/workflows/mod-publish.yml@1.21.1
+    with:
+      fabric: ${{ inputs.fabric }}
+      neoforge: ${{ inputs.neoforge }}
+      release_type: ${{ inputs.release_type }}
+      curseforge: ${{ inputs.curseforge }}
+      modrinth: ${{ inputs.modrinth }}
+      github: ${{ inputs.github }}
+      sync_description: ${{ inputs.sync_description }}
+      announce_discord: ${{ inputs.announce_discord }}
+      changelog: ${{ inputs.changelog }}
+      curseforge_project_id: ${{ vars.CURSEFORGE_PROJECT_ID }}
+      modrinth_project_id: ${{ vars.MODRINTH_PROJECT_ID || vars.MODRINTH_PROJECT_RAW_ID }}
+      discord_role_id: ${{ vars.DISCORD_ROLE_ID }}
+      discord_icon_url: ${{ vars.DISCORD_ICON_URL }}
+      discord_image_url: ${{ vars.DISCORD_IMAGE_URL }}
+      discord_emoji_modrinth: ${{ vars.DISCORD_EMOJI_MODRINTH }}
+      discord_emoji_curseforge: ${{ vars.DISCORD_EMOJI_CURSEFORGE }}
+      discord_emoji_github: ${{ vars.DISCORD_EMOJI_GITHUB }}
+      discord_emoji_kofi: ${{ vars.DISCORD_EMOJI_KOFI }}
+    secrets:
+      CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
+      MODRINTH_API_KEY: ${{ secrets.MODRINTH_API_KEY }}
+      GH_API_KEY: ${{ secrets.GH_API_KEY }}
+      DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}

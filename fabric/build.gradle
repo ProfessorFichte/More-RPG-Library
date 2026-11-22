@@ -5,20 +5,17 @@ plugins {
 
 def platform = project.name;
 
-// Function to read the last section from CHANGELOG.md
 def changelog_last_section() {
     def changelogFile = rootProject.file('CHANGELOG.md')
     if (!changelogFile.exists()) {
         return "No changelog available"
     }
-
     def content = changelogFile.text
-    def sections = content.split(/(?m)(?=^# )/)
-
-    // Return the first section (most recent) after the split
-    // Remove the first empty element if it exists
-    def recentSection = sections.find { it.trim().startsWith('#') }
-    return recentSection ?: "No changelog available"
+    def releases = content.split(/(?m)(?=^## \[)/).findAll { it.startsWith('## [') && !it.startsWith('## [Unreleased]') }
+    if (releases) {
+        return releases.first().replaceAll(/(?m)^\[[^\]]+\]: .*$/, '').trim()
+    }
+    return "No changelog available"
 }
 
 architectury {
@@ -221,7 +218,7 @@ tasks.register("publishMod") {
 
 publishMods {
     file = remapJar.archiveFile
-    changelog = providers.provider { changelog_last_section() }
+    changelog = providers.environmentVariable("MOD_CHANGELOG").orElse(providers.provider { changelog_last_section() })
     type = releaseTypeName == "release" ? me.modmuss50.mpp.ReleaseType.STABLE
             : releaseTypeName == "alpha" ? me.modmuss50.mpp.ReleaseType.ALPHA
             : me.modmuss50.mpp.ReleaseType.BETA
@@ -236,7 +233,7 @@ publishMods {
         client = true
         server = true
         changelogType = "markdown"
-        optional("spell-engine", "spell-power", "playeranimator", "better-combat", "combat-roll")
+        optional("spell-engine", "spell-power", "playeranimator", "better-combat-by-daedelus", "combat-roll")
     }
 
     modrinth {
