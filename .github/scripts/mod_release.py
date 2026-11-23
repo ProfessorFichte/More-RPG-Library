@@ -24,6 +24,19 @@ def env(name, default=""):
     return os.environ.get(name, "").strip() or default
 
 
+def role_ids():
+    roles = []
+    for role in re.split(r"[\s,;]+", env("ROLE_ID")):
+        if not role:
+            continue
+        if not role.isdigit():
+            print(f"::warning::Ignoring invalid Discord role ID '{role}'")
+            continue
+        if role not in roles:
+            roles.append(role)
+    return roles[:100]
+
+
 def read_property(text, *keys):
     for key in keys:
         match = re.search(rf"^{re.escape(key)}\s*=\s*(.+?)\s*$", text, re.MULTILINE)
@@ -190,10 +203,10 @@ def discord_payload(root):
         embed["image"] = {"url": images[0]}
     gallery = [{"url": page, "image": {"url": image}} for image in images[1:]]
 
-    role = env("ROLE_ID")
+    roles = role_ids()
     return {
-        "content": f"<@&{role}>" if role else "",
-        "allowed_mentions": {"parse": [], "roles": [role] if role else []},
+        "content": " ".join(f"<@&{role}>" for role in roles),
+        "allowed_mentions": {"parse": [], "roles": roles},
         "embeds": [embed, *gallery],
         "components": [{"type": 1, "components": buttons}],
     }
