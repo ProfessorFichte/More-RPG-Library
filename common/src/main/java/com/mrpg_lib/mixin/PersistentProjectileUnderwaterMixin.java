@@ -4,7 +4,6 @@ import com.mrpg_lib.util.UnderwaterProjectiles;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -23,18 +22,16 @@ public abstract class PersistentProjectileUnderwaterMixin implements UnderwaterP
 
     @Shadow @Final private static TrackedData<Byte> PROJECTILE_FLAGS;
 
-    @Shadow public abstract ItemStack getWeaponStack();
-
     @Inject(method = "<init>(Lnet/minecraft/entity/EntityType;DDDLnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ItemStack;)V", at = @At("TAIL"))
     private void mrpg$markFromWeapon(CallbackInfo ci) {
-        if (UnderwaterProjectiles.isWeapon(getWeaponStack())) {
+        if (UnderwaterProjectiles.isWeapon(((Entity) (Object) this).getWeaponStack())) {
             mrpg$setUnderwaterProjectile(true);
         }
     }
 
     @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
     private void mrpg$markAfterLoad(NbtCompound nbt, CallbackInfo ci) {
-        if (UnderwaterProjectiles.isWeapon(getWeaponStack())) {
+        if (UnderwaterProjectiles.isWeapon(((Entity) (Object) this).getWeaponStack())) {
             mrpg$setUnderwaterProjectile(true);
         }
     }

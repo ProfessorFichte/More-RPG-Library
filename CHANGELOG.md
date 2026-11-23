@@ -3,6 +3,12 @@
 All notable changes to More RPG Library are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.8.4+1.21.1]
+
+### Fixed
+
+- Crash on startup on Fabric outside the dev environment (`PersistentProjectileUnderwaterMixin` could not find `getWeaponStack`)
+
 ## [2.8.3+1.21.1]
 
 ### Added
