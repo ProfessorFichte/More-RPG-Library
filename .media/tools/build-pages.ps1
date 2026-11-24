@@ -14,6 +14,7 @@
      grids link to CurseForge, marker comments removed.
   4. Warns about tags CurseForge does not allow, Markdown tables, unbalanced <div> and missing images.
   -Exclude = name of the current mod (as in banners.json), hidden in the "own" grid.
+  Without -Exclude/-RawBase both come from the repos.json entry whose "github" matches the repo's origin remote.
 #>
 param(
     [string]$Source  = "README.md",
@@ -31,6 +32,16 @@ $repoDir = Split-Path -Parent $src
 
 $warn = New-Object System.Collections.Generic.List[string]
 $data = Read-Json $bnr
+
+if (-not $Exclude -or -not $RawBase) {
+    $origin = [string](git -C $repoDir remote get-url origin 2>$null)
+    $repo = @((Read-Json (Join-Path $PSScriptRoot "repos.json")).repos) |
+        Where-Object { $origin -match ('github\.com[/:]' + [regex]::Escape($_.github) + '(\.git)?/?$') } | Select-Object -First 1
+    if ($repo) {
+        if (-not $Exclude) { $Exclude = $repo.name }
+        if (-not $RawBase) { $RawBase = "https://raw.githubusercontent.com/$($repo.github)/$($repo.branch)" }
+    } elseif (-not $Exclude) { $warn.Add("Repo nicht in repos.json gefunden - eigener Banner wird nicht ausgeblendet (-Exclude angeben)") }
+}
 
 function New-Grid($items, [int]$cols, [string]$platform) {
     $rows = New-Object System.Collections.Generic.List[string]
