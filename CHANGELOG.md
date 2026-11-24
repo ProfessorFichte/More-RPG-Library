@@ -3,6 +3,12 @@
 All notable changes to More RPG Library are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Fixed
+
+- `SmithingRecipeGenerator`: recipes that need more than one mod wrote an invalid `neoforge:and` condition (`conditions` instead of `values`), so NeoForge logged parsing errors for them
+
 ## [2.8.4+1.21.1]
 
 ### Fixed
