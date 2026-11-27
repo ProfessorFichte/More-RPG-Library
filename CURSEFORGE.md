@@ -1,6 +1,6 @@
 <div align="center" style="text-align:center">
 <img src="https://raw.githubusercontent.com/ProfessorFichte/More-RPG-Library/1.21.1/.media/images/mrpg_lib_banner.png" alt="More RPG Library">
-<h1>📚 The shared library behind the More RPG Classes &amp; Content mods!</h1>
+<h1>Library for several RPG Content mods!</h1>
 <a href="https://www.curseforge.com/minecraft/mc-mods/more-rpg-library"><img src="https://img.shields.io/badge/curseforge-black?style=for-the-badge&amp;logo=curseforge&amp;labelColor=black&amp;color=grey" alt="CurseForge"></a> <a href="https://modrinth.com/mod/more-rpg-library"><img src="https://img.shields.io/badge/modrinth-black?style=for-the-badge&amp;logo=modrinth&amp;labelColor=black&amp;color=grey" alt="Modrinth"></a> <a href="https://discord.com/invite/AShKd5XrTu"><img src="https://img.shields.io/discord/1209063880790376468?style=for-the-badge&amp;logo=discord&amp;label=discord&amp;labelColor=black&amp;color=grey" alt="Discord"></a> <a href="https://ko-fi.com/fichteee"><img src="https://img.shields.io/badge/donations-black?style=for-the-badge&amp;logo=kofi&amp;labelColor=black&amp;color=grey" alt="Ko-fi"></a> <a href="https://github.com/ProfessorFichte/More-RPG-Library"><img src="https://img.shields.io/badge/github-black?style=for-the-badge&amp;logo=github&amp;labelColor=black&amp;color=grey" alt="GitHub"></a>
 </div>
 
@@ -8,7 +8,7 @@
 
 ## 📂 Installation
 
-### 🚨 Required Mods
+### Required Mods
 
 <table>
 <thead><tr><th>Mod</th><th>Download</th></tr></thead>
@@ -18,7 +18,7 @@
 
 Everything else is optional. Install a mod from the list below and the matching parts of the library turn on, everything else keeps working without it.
 
-### 👍 Highly Recommended / Compatibility Mods
+### Highly Recommended / Compatibility Mods
 
 <div class="spoiler"><table><thead><tr><th>Mod</th><th>Compatibility Info</th><th>Download</th></tr></thead><tbody><tr><td><b>Spell Engine</b></td><td>Weapon skills, custom spell impacts, mob spell casting and the Spell Engine parts of the status effects</td><td><a href="https://www.curseforge.com/minecraft/mc-mods/spell-engine"><img src="https://img.shields.io/badge/-CurseForge-F16436?style=flat-square&logo=curseforge&logoColor=white" alt="CurseForge"></a> <a href="https://modrinth.com/mod/spell-engine"><img src="https://img.shields.io/badge/-Modrinth-00AF5C?style=flat-square&logo=modrinth&logoColor=white" alt="Modrinth"></a></td></tr><tr><td><b>Spell Power Attributes</b></td><td>New spell schools, Fuse attributes, school potions and the spell power parts of the status effects</td><td><a href="https://www.curseforge.com/minecraft/mc-mods/spell-power"><img src="https://img.shields.io/badge/-CurseForge-F16436?style=flat-square&logo=curseforge&logoColor=white" alt="CurseForge"></a> <a href="https://modrinth.com/mod/spell-power"><img src="https://img.shields.io/badge/-Modrinth-00AF5C?style=flat-square&logo=modrinth&logoColor=white" alt="Modrinth"></a></td></tr><tr><td><b>playerAnimator</b></td><td>Plays the library animations on players and mobs</td><td><a href="https://www.curseforge.com/minecraft/mc-mods/playeranimator"><img src="https://img.shields.io/badge/-CurseForge-F16436?style=flat-square&logo=curseforge&logoColor=white" alt="CurseForge"></a> <a href="https://modrinth.com/mod/playeranimator"><img src="https://img.shields.io/badge/-Modrinth-00AF5C?style=flat-square&logo=modrinth&logoColor=white" alt="Modrinth"></a></td></tr><tr><td><b>Better Combat</b></td><td>Better Combat attacks for mobs</td><td><a href="https://www.curseforge.com/minecraft/mc-mods/better-combat-by-daedelus"><img src="https://img.shields.io/badge/-CurseForge-F16436?style=flat-square&logo=curseforge&logoColor=white" alt="CurseForge"></a> <a href="https://modrinth.com/mod/better-combat"><img src="https://img.shields.io/badge/-Modrinth-00AF5C?style=flat-square&logo=modrinth&logoColor=white" alt="Modrinth"></a></td></tr><tr><td><b>Combat Roll</b></td><td>Combat rolls for mobs</td><td><a href="https://www.curseforge.com/minecraft/mc-mods/combat-roll"><img src="https://img.shields.io/badge/-CurseForge-F16436?style=flat-square&logo=curseforge&logoColor=white" alt="CurseForge"></a> <a href="https://modrinth.com/mod/combat-roll"><img src="https://img.shields.io/badge/-Modrinth-00AF5C?style=flat-square&logo=modrinth&logoColor=white" alt="Modrinth"></a></td></tr><tr><td><b>Ranged Weapon API</b></td><td>Ranged damage for the Dynamic spell school and the chance attributes</td><td><a href="https://www.curseforge.com/minecraft/mc-mods/ranged-weapon-api"><img src="https://img.shields.io/badge/-CurseForge-F16436?style=flat-square&logo=curseforge&logoColor=white" alt="CurseForge"></a> <a href="https://modrinth.com/mod/ranged-weapon-api"><img src="https://img.shields.io/badge/-Modrinth-00AF5C?style=flat-square&logo=modrinth&logoColor=white" alt="Modrinth"></a></td></tr><tr><td><b>Critical Strike</b></td><td>Critical chance and damage for melee and ranged hits of the Dynamic school</td><td><a href="https://www.curseforge.com/minecraft/mc-mods/critical-strike"><img src="https://img.shields.io/badge/-CurseForge-F16436?style=flat-square&logo=curseforge&logoColor=white" alt="CurseForge"></a> <a href="https://modrinth.com/mod/critical-strike"><img src="https://img.shields.io/badge/-Modrinth-00AF5C?style=flat-square&logo=modrinth&logoColor=white" alt="Modrinth"></a></td></tr><tr><td><b>Runes</b></td><td>Water, Nature, Air and Earth Runes can be crafted by hand and at the rune crafting altar</td><td><a href="https://www.curseforge.com/minecraft/mc-mods/runes"><img src="https://img.shields.io/badge/-CurseForge-F16436?style=flat-square&logo=curseforge&logoColor=white" alt="CurseForge"></a> <a href="https://modrinth.com/mod/runes"><img src="https://img.shields.io/badge/-Modrinth-00AF5C?style=flat-square&logo=modrinth&logoColor=white" alt="Modrinth"></a></td></tr><tr><td><b>Armory (RPG Series)</b></td><td>Lost Crystals that upgrade the armor of my class mods at the smithing table</td><td><a href="https://www.curseforge.com/minecraft/mc-mods/armory-rpg-series"><img src="https://img.shields.io/badge/-CurseForge-F16436?style=flat-square&logo=curseforge&logoColor=white" alt="CurseForge"></a> <a href="https://modrinth.com/mod/armory-rpg-series"><img src="https://img.shields.io/badge/-Modrinth-00AF5C?style=flat-square&logo=modrinth&logoColor=white" alt="Modrinth"></a></td></tr><tr><td><b>Village Taverns</b></td><td>The Taverns bartender sells the Earth, Water, Air and Nature potions (needs Spell Power)</td><td><a href="https://www.curseforge.com/minecraft/mc-mods/village-taverns"><img src="https://img.shields.io/badge/-CurseForge-F16436?style=flat-square&logo=curseforge&logoColor=white" alt="CurseForge"></a> <a href="https://modrinth.com/mod/village-taverns"><img src="https://img.shields.io/badge/-Modrinth-00AF5C?style=flat-square&logo=modrinth&logoColor=white" alt="Modrinth"></a></td></tr></tbody></table></div>
 
@@ -30,7 +30,7 @@ More RPG Library is the base of my RPG class and content mods.
 On its own it adds no classes and no spells, but it gives every mod that uses it the same attributes, status effects, spell schools, weapon skills and mob AI. 
 Feel free to use it as a dependency for your own mod!
 
-- Spell Schools: with Spell Power installed the library adds new magic schools: <b>🌪️ Air</b>, <b>🪨 Earth</b>, <b>🌊 Water</b> and <b>🍃 Nature</b>, <b>🔥 Fire Ranged</b>,  <b>❄️ Frost Ranged</b> and <b>🪓Melee Rage</b> .
+- Spell Schools: with Spell Power installed the library adds new magic schools: <b>Air</b>, <b>Earth</b>, <b>Water</b> and <b>Nature</b>, <b>Fire Ranged</b>, <b>Frost Ranged</b> and <b>Melee Rage</b>.
 - New Entity Attributes: Lifesteal, Spell Vampire, Damage Reflect, Rage, Armor Piercing, Tenacity, the Fuse attributes that add magic damage to your hits, and on-hit chances.
 - Status Effects: Many harmful effects and some Beneficial Effects.
 - Weapon Skills: Burstcrack, Decapitate and Puncture: shared melee weapon skills that any weapon can get through Spell Engine.
@@ -59,7 +59,7 @@ All details, IDs and numbers are in the <a href="https://github.com/ProfessorFic
 ---
 
 <div align="center" style="text-align:center">
-<h3>🧙‍♂️ Check out my RPG-themed mods using this library!</h3>
+<h3>Check out my RPG-themed mods using this library!</h3>
 <table>
 <tbody>
 <tr><td align="center" style="text-align:center"><a href="https://www.curseforge.com/minecraft/mc-mods/additional-rpg-jewelry"><img src="https://raw.githubusercontent.com/ProfessorFichte/More-RPG-Library/1.21.1/.media/small_banners/additional_jewelry_banner_275x220.png" alt="Additional RPG Jewelry"></a></td><td align="center" style="text-align:center"><a href="https://www.curseforge.com/minecraft/mc-mods/archers-expansion"><img src="https://raw.githubusercontent.com/ProfessorFichte/More-RPG-Library/1.21.1/.media/small_banners/archers_expansion_banner_275x220.png" alt="Archers Expansion"></a></td><td align="center" style="text-align:center"><a href="https://www.curseforge.com/minecraft/mc-mods/bard-more-rpg-classes"><img src="https://raw.githubusercontent.com/ProfessorFichte/More-RPG-Library/1.21.1/.media/small_banners/bard_banner_275x220.png" alt="Bard"></a></td></tr>
@@ -70,7 +70,7 @@ All details, IDs and numbers are in the <a href="https://github.com/ProfessorFic
 </div>
 
 <div align="center" style="text-align:center">
-<h3>✨ Discover more of the RPG Series by Daedelus</h3>
+<h3>Discover more of the RPG Series by Daedelus</h3>
 <table>
 <tbody>
 <tr><td align="center" style="text-align:center"><a href="https://www.curseforge.com/minecraft/mc-mods/archers"><img src="https://media.forgecdn.net/attachments/755/169/archers_full_275.png" alt="Archers"></a></td><td align="center" style="text-align:center"><a href="https://www.curseforge.com/minecraft/mc-mods/paladins-and-priests"><img src="https://media.forgecdn.net/attachments/755/170/paladins_full_275.png" alt="Paladins"></a></td><td align="center" style="text-align:center"><a href="https://www.curseforge.com/minecraft/mc-mods/wizards"><img src="https://media.forgecdn.net/attachments/755/171/wizards_full_275.png" alt="Wizards"></a></td></tr>
@@ -81,7 +81,7 @@ All details, IDs and numbers are in the <a href="https://github.com/ProfessorFic
 </div>
 
 <div align="center" style="text-align:center">
-<h3>🌟 More RPG content by other Spell Engine devs</h3>
+<h3>More RPG content by other Spell Engine devs</h3>
 <table>
 <tbody>
 <tr><td align="center" style="text-align:center"><a href="https://www.curseforge.com/minecraft/mc-mods/rpg-minibosses-forsaken-adventurers"><img src="https://media.forgecdn.net/attachments/1358/177/anarchy-png.png" alt="Anarchy"></a></td><td align="center" style="text-align:center"><a href="https://www.curseforge.com/minecraft/mc-mods/mercenaries-and-artificers"><img src="https://media.forgecdn.net/attachments/1346/857/merc_275-png.png" alt="Mercenaries and Artificers"></a></td><td align="center" style="text-align:center"><a href="https://www.curseforge.com/minecraft/mc-mods/death-knights"><img src="https://media.forgecdn.net/attachments/953/998/death_knights_275_2.png" alt="Death Knights"></a></td></tr>
@@ -92,5 +92,5 @@ All details, IDs and numbers are in the <a href="https://github.com/ProfessorFic
 ---
 
 <div align="center" style="text-align:center">
-<p>💬 Questions, bugs or ideas? Join the <a href="https://discord.com/invite/AShKd5XrTu">Discord</a> or open an issue on <a href="https://github.com/ProfessorFichte/More-RPG-Library/issues">GitHub</a>.</p>
+<p>Questions, bugs or ideas? Join the <a href="https://discord.com/invite/AShKd5XrTu">Discord</a> or open an issue on <a href="https://github.com/ProfessorFichte/More-RPG-Library/issues">GitHub</a>.</p>
 </div>

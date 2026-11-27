@@ -40,9 +40,6 @@ repositories {
         }
     }
 
-    // For Accessories:
-    maven { url 'https://maven.wispforest.io/releases' }
-    maven { url 'https://maven.su5ed.dev/releases' }
     maven { url 'https://maven.fabricmc.net' }
 
     mavenLocal()
@@ -65,9 +62,6 @@ dependencies {
     modCompileOnly("maven.modrinth:combat-roll:${project.combat_roll_version}-${platform}")
     modCompileOnly("maven.modrinth:critical-strike:${project.critical_strike_version}-${platform}")
 
-    // NeoForge specific
-    modCompileOnly "io.wispforest:owo-lib:${project.owo_version}" // Accessories needs this
-    modImplementation("io.wispforest:accessories-common:${project.accessories_version}")
 }
 
 loom {

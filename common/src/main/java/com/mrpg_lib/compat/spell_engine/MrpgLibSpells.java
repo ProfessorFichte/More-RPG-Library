@@ -5,8 +5,10 @@ import com.mrpg_lib.compat.spell_engine.particle.MoreSpellParticles;
 import com.mrpg_lib.compat.spell_power.MoreSpellSchools;
 import com.mrpg_lib.effect.MRPGCEffects;
 import com.mrpg_lib.sounds.MRPGLibSounds;
+import com.mrpg_lib.util.tags.MRPGCEntityTags;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.spell_engine.api.datagen.SpellBuilder;
 import net.spell_engine.api.effect.SpellEngineEffects;
@@ -125,7 +127,7 @@ public class MrpgLibSpells {
         spell.active.cast.animation = PlayerAnimation.of("mrpg_lib:burstcrack_cast");
 
         spell.release.animation = PlayerAnimation.of("mrpg_lib:burstcrack_release");
-        spell.release.sound = Sound.withVolume(Identifier.of("entity.generic.explode"), 0.4F);
+        spell.release.sound = Sound.withVolume(SoundEvents.ENTITY_GENERIC_EXPLODE.value().getId(), 0.4F);
         spell.release.visuals = Fx.Visuals.of(
                 ParticleGroupBuilder.of(SpellEngineParticles.smoke_medium)
                         .batch(b -> b.shape(ParticleGroup.Shape.CIRCLE)
@@ -351,7 +353,7 @@ public class MrpgLibSpells {
 
         var damage = SpellBuilder.Impacts.damage( 0.4F,0);
         damage.attribute = EntityAttributes.GENERIC_ATTACK_DAMAGE.getIdAsString();
-        damage.sound = Sound.withVolume(Identifier.of("mrpg_lib:water_magic_impact1"), 0.4F);
+        damage.sound = Sound.withVolume(MRPGLibSounds.WATER_MAGIC_IMPACT_1.id(), 0.4F);
         damage.visuals = Fx.Visuals.of(
                 ParticleGroupBuilder.of(MoreSpellParticles.BIG_SPLASH)
                         .batch(b -> b.shape(ParticleGroup.Shape.PILLAR)
@@ -401,7 +403,7 @@ public class MrpgLibSpells {
 
         var damage = SpellBuilder.Impacts.damage(0.5F,0);
         damage.attribute = EntityAttributes.GENERIC_ATTACK_DAMAGE.getIdAsString();
-        damage.sound = new Sound(Identifier.of("minecraft:entity.wither.ambient"));
+        damage.sound = new Sound(SoundEvents.ENTITY_WITHER_AMBIENT.getId());
         damage.visuals = Fx.Visuals.of(
                 ParticleGroupBuilder.magic(SpellEngineParticles.magic_skull, ParticleGroup.Motion.DECELERATE)
                         .color(858993663L)
@@ -455,7 +457,7 @@ public class MrpgLibSpells {
         projectile.client_data.composite_model = SpellBuilder.ProjectileModels.single("mrpg_lib:spell_projectile/small_avalanche");
         spell.deliver.meteor.projectile = projectile;
 
-        var freezingEffect = SpellBuilder.Impacts.effectAdd("mrpg_lib:frosted", 10.0F,1,3);
+        var freezingEffect = SpellBuilder.Impacts.effectAdd(MRPGCEffects.FROSTED.id.toString(), 10.0F,1,3);
         freezingEffect.action.status_effect.refresh_duration = false;
         freezingEffect.action.status_effect.show_particles = false;
         freezingEffect.target_modifiers = List.of(
@@ -467,7 +469,7 @@ public class MrpgLibSpells {
                 ParticleGroupBuilder.magic(SpellEngineParticles.magic_frost, ParticleGroup.Motion.BURST, Color.FROST)
                         .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
                                 .count(15).speed(0.2F, 0.4F)));
-        damage.sound = new Sound(Identifier.of("spell_engine", "generic_frost_impact"));
+        damage.sound = new Sound(SpellEngineSounds.GENERIC_FROST_IMPACT.id());
 
         spell.impacts = List.of(freezingEffect, damage);
 
@@ -568,7 +570,7 @@ public class MrpgLibSpells {
         cloud.volume.radius = 5.0F;
         cloud.volume.area = new Spell.Target.Area();
         cloud.volume.area.vertical_range_multiplier = 0.5F;
-        cloud.volume.sound = new Sound(Identifier.of("entity.ender_dragon.ambient"));
+        cloud.volume.sound = new Sound(SoundEvents.ENTITY_ENDER_DRAGON_AMBIENT.getId());
         cloud.time_to_live_seconds = 4.0F;
         cloud.impact_tick_interval = 8;
 
@@ -585,7 +587,7 @@ public class MrpgLibSpells {
                                 .verticalOrigin(ParticleGroupBuilder.Batches.FEET)));
 
         cloud.spawn = new Spell.Delivery.Cloud.Spawn();
-        cloud.spawn.sound = new Sound(Identifier.of("entity.ender_dragon.shoot"));
+        cloud.spawn.sound = new Sound(SoundEvents.ENTITY_ENDER_DRAGON_SHOOT.getId());
 
         spell.deliver.clouds = List.of(cloud);
 
@@ -649,7 +651,7 @@ public class MrpgLibSpells {
                         .batch(b -> b.shape(ParticleGroup.Shape.CIRCLE)
                                 .count(15F).speed(0.05F, 0.2F)
                                 .verticalOrigin(ParticleGroupBuilder.Batches.FEET)));
-        damage.sound = Sound.withVolume(Identifier.of("mrpg_lib:water_magic_impact1"), 0.4F);
+        damage.sound = Sound.withVolume(MRPGLibSounds.WATER_MAGIC_IMPACT_1.id(), 0.4F);
 
         spell.impacts = List.of(bleedingEffect, damage);
 
@@ -709,7 +711,7 @@ public class MrpgLibSpells {
         spell.deliver.projectile.launch_properties.extra_launch_count = 4;
         spell.deliver.projectile.launch_properties.extra_launch_delay = 0;
         spell.deliver.projectile.launch_properties.sound = Sound.withVolume(
-                Identifier.of("spell_engine:generic_frost_impact"), 0.6F
+                SpellEngineSounds.GENERIC_FROST_IMPACT.id(), 0.6F
         );
 
         spell.deliver.projectile.projectile = new Spell.ProjectileData();
@@ -724,7 +726,7 @@ public class MrpgLibSpells {
                 ParticleGroupBuilder.magic(SpellEngineParticles.magic_frost, ParticleGroup.Motion.BURST, Color.FROST)
                         .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
                                 .count(25F).speed(0.2F, 0.7F)));
-        spell.release.sound = new Sound(Identifier.of("spell_engine:generic_frost_impact"));
+        spell.release.sound = new Sound(SpellEngineSounds.GENERIC_FROST_IMPACT.id());
 
         var damage = SpellBuilder.Impacts.damage(0.35F);
         damage.attribute = "ranged_weapon:damage";
@@ -733,9 +735,9 @@ public class MrpgLibSpells {
                 ParticleGroupBuilder.magic(SpellEngineParticles.magic_frost, ParticleGroup.Motion.BURST, Color.FROST)
                         .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
                                 .count(25F).speed(0.2F, 0.7F)));
-        damage.sound = new Sound(Identifier.of("spell_engine:generic_frost_impact"));
+        damage.sound = new Sound(SpellEngineSounds.GENERIC_FROST_IMPACT.id());
 
-        var frostedEffect = SpellBuilder.Impacts.effectSet("mrpg_lib:frosted", 5.0F, 0);
+        var frostedEffect = SpellBuilder.Impacts.effectSet(MRPGCEffects.FROSTED.id.toString(), 5.0F, 0);
         frostedEffect.target_modifiers = List.of(
                 SpellBuilderHelper.targetModifier("#minecraft:freeze_immune_entity_types", TriState.DENY)
         );
@@ -773,7 +775,7 @@ public class MrpgLibSpells {
 
         spell.target.type = Spell.Target.Type.FROM_TRIGGER;
 
-        var witherEffect = SpellBuilder.Impacts.effectSet("mrpg_lib:withers_curse", 10.0F, 0);
+        var witherEffect = SpellBuilder.Impacts.effectSet(MRPGCEffects.WITHERS_CURSE.id.toString(), 10.0F, 0);
         witherEffect.action.status_effect.show_particles = true;
         witherEffect.visuals = Fx.Visuals.of(
                 ParticleGroupBuilder.magic(SpellEngineParticles.magic_skull, ParticleGroup.Motion.DECELERATE)
@@ -783,7 +785,7 @@ public class MrpgLibSpells {
                 ParticleGroupBuilder.of("sculk_soul")
                         .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
                                 .count(20F).speed(0.3F, 0.4F)));
-        witherEffect.sound = new Sound(Identifier.of("entity.wither.ambient"));
+        witherEffect.sound = new Sound(SoundEvents.ENTITY_WITHER_AMBIENT.getId());
 
         var damage = SpellBuilder.Impacts.damage(0.2F);
         damage.attribute = "ranged_weapon:damage";
@@ -864,7 +866,7 @@ public class MrpgLibSpells {
         spell.target.area = new Spell.Target.Area();
         spell.target.area.vertical_range_multiplier = 1.0F;
 
-        spell.release.sound = new Sound(Identifier.of("spell_engine:generic_frost_release"));
+        spell.release.sound = new Sound(SpellEngineSounds.GENERIC_FROST_RELEASE.id());
         spell.release.visuals = Fx.Visuals.of(
                 ParticleGroupBuilder.of(SpellEngineParticles.snowflake)
                         .batch(b -> b.shape(ParticleGroup.Shape.CIRCLE)
@@ -877,7 +879,7 @@ public class MrpgLibSpells {
                         .scaleWith(Fx.ScaleWith.RANGE)
                         .batch(ParticleGroupBuilder.Batches.ground(1F)));
 
-        var frozenEffect = SpellBuilder.Impacts.effectSet("mrpg_lib:frozen_solid",3,0);
+        var frozenEffect = SpellBuilder.Impacts.effectSet(MRPGCEffects.FROZEN_SOLID.id.toString(),3,0);
         frozenEffect.action.status_effect.show_particles = false;
         frozenEffect.visuals = Fx.Visuals.of(
                 ParticleGroupBuilder.of(SpellEngineParticles.snowflake)
@@ -886,7 +888,7 @@ public class MrpgLibSpells {
                 ParticleGroupBuilder.magic(SpellEngineParticles.magic_frost, ParticleGroup.Motion.BURST)
                         .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
                                 .count(30F).speed(0.2F, 0.7F)));
-        frozenEffect.sound = new Sound(Identifier.of("spell_engine:generic_frost_impact"));
+        frozenEffect.sound = new Sound(SpellEngineSounds.GENERIC_FROST_IMPACT.id());
 
         spell.impacts = List.of(frozenEffect);
 
@@ -968,7 +970,7 @@ public class MrpgLibSpells {
                 ParticleGroupBuilder.of("smoke")
                         .batch(b -> b.shape(ParticleGroup.Shape.SPHERE)
                                 .count(10F).speed(0.3F, 0.35F)));
-        damage.sound = new Sound(Identifier.of("entity.generic.explode"));
+        damage.sound = new Sound(SoundEvents.ENTITY_GENERIC_EXPLODE.value().getId());
 
         spell.impacts = List.of(witherEffect, damage);
 
@@ -1001,7 +1003,7 @@ public class MrpgLibSpells {
         spell.target.area = new Spell.Target.Area();
         spell.target.area.vertical_range_multiplier = 1.0F;
 
-        spell.release.sound = new Sound(Identifier.of("entity.generic.explode"));
+        spell.release.sound = new Sound(SoundEvents.ENTITY_GENERIC_EXPLODE.value().getId());
         spell.release.visuals = Fx.Visuals.of(
                 ParticleGroupBuilder.magic(SpellEngineParticles.magic_arcane, ParticleGroup.Motion.BURST, Color.ARCANE)
                         .batch(b -> b.shape(ParticleGroup.Shape.CIRCLE)
@@ -1209,7 +1211,7 @@ public class MrpgLibSpells {
         var cloud = new Spell.Delivery.Cloud();
         cloud.volume.radius = 3.0F;
         cloud.volume.area.vertical_range_multiplier = 0.5F;
-        cloud.volume.sound = new Sound("mrpg_lib:frost_crackle_long");
+        cloud.volume.sound = new Sound(MRPGLibSounds.FROST_CRACKLE_LONG.id());
         cloud.time_to_live_seconds = 7.0F;
         cloud.impact_tick_interval = 5;
         cloud.client_data.light_level = 6;
@@ -1228,7 +1230,7 @@ public class MrpgLibSpells {
         denyModifier.conditions = List.of(freezeImmuneCondition);
         denyModifier.execute = TriState.DENY;
 
-        var freezing = SpellBuilder.Impacts.effectAdd("mrpg_lib:frosted", 2, 1, 4);
+        var freezing = SpellBuilder.Impacts.effectAdd(MRPGCEffects.FROSTED.id.toString(), 2, 1, 4);
         freezing.action.status_effect.refresh_duration = true;
         freezing.action.status_effect.show_particles = false;
         freezing.target_modifiers = List.of(denyModifier);
@@ -1266,7 +1268,7 @@ public class MrpgLibSpells {
         spell.target.area.include_caster = true;
         spell.target.area.vertical_range_multiplier = 1.0F;
 
-        spell.release.sound = new Sound(Identifier.ofVanilla("ambient.underwater.exit").toString());
+        spell.release.sound = new Sound(SoundEvents.AMBIENT_UNDERWATER_EXIT.getId().toString());
         spell.release.visuals = Fx.Visuals.of(
                 ParticleGroupBuilder.of(SpellEngineParticles.area_effect_293)
                         .scaleWith(Fx.ScaleWith.RANGE).color(2816865791L)
@@ -1274,11 +1276,11 @@ public class MrpgLibSpells {
                                 .anchor(ParticleGroup.Anchor.GROUND)
                                 .count(1).speed(0.0F, 0.0F)));
 
-        var vulnerableModifier = SpellBuilder.ImpactModifiers.create("#mrpg_lib:vulnerable_to_water_spells");
+        var vulnerableModifier = SpellBuilder.ImpactModifiers.create("#" + MRPGCEntityTags.WEAK_TO_WATER.id());
         vulnerableModifier.modifier = new Spell.Impact.Modifier();
         vulnerableModifier.modifier.critical_chance_bonus = 0.3F;
 
-        var resistantModifier = SpellBuilder.ImpactModifiers.create("#mrpg_lib:resistant_to_water_spells");
+        var resistantModifier = SpellBuilder.ImpactModifiers.create("#" + MRPGCEntityTags.RESISTANT_TO_WATER.id());
         resistantModifier.modifier = new Spell.Impact.Modifier();
         resistantModifier.modifier.power_multiplier = -0.3F;
 
@@ -1288,7 +1290,7 @@ public class MrpgLibSpells {
                 ParticleGroupBuilder.of(MoreSpellParticles.SPLASH)
                         .batch(b -> b.shape(ParticleGroup.Shape.CIRCLE)
                                 .verticalOrigin(0.1F).count(15).speed(0.05F, 0.2F)));
-        damage.sound = Sound.withVolume(Identifier.of("mrpg_lib:water_magic_impact1"), 0.4F);
+        damage.sound = Sound.withVolume(MRPGLibSounds.WATER_MAGIC_IMPACT_1.id(), 0.4F);
 
         var heal = SpellBuilder.Impacts.heal(0.15F);
         heal.visuals = Fx.Visuals.of(
@@ -1383,7 +1385,7 @@ public class MrpgLibSpells {
         spell.deliver.projectile.launch_properties.extra_launch_count = 7;
         spell.deliver.projectile.launch_properties.extra_launch_delay = 0;
         spell.deliver.projectile.launch_properties.sound =
-                Sound.withVolume(Identifier.of("mrpg_lib:earth_magic_cast1"), 0.6F);
+                Sound.withVolume(MRPGLibSounds.EARTH_MAGIC_CAST_1.id(), 0.6F);
 
         var projectile = new Spell.ProjectileData();
         projectile.homing_angle = 0.0F;
@@ -1403,7 +1405,7 @@ public class MrpgLibSpells {
                 ParticleGroupBuilder.of("campfire_cosy_smoke")
                         .batch(b -> b.shape(ParticleGroup.Shape.CIRCLE)
                                 .count(3).speed(0.005F, 0.008F)));
-        damage.sound = Sound.withVolume(Identifier.ofVanilla("block.pointed_dripstone.break"), 1.5F);
+        damage.sound = Sound.withVolume(SoundEvents.BLOCK_POINTED_DRIPSTONE_BREAK.getId(), 1.5F);
 
         spell.impacts = List.of(damage);
         SpellBuilder.Cost.cooldown(spell, 5);

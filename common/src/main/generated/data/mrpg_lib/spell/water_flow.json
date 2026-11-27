@@ -46,7 +46,7 @@
         {
           "conditions": [
             {
-              "entity_type": "#mrpg_lib:vulnerable_to_water_spells"
+              "entity_type": "#mrpg_lib:weak_to_water"
             }
           ],
           "modifier": {
@@ -56,7 +56,7 @@
         {
           "conditions": [
             {
-              "entity_type": "#mrpg_lib:resistant_to_water_spells"
+              "entity_type": "#mrpg_lib:resistant_to_water"
             }
           ],
           "modifier": {

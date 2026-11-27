@@ -11,6 +11,7 @@
      with a grid from banners.json. README links go to Modrinth (fallback CurseForge).
   3. CURSEFORGE.md: <details><summary>..</summary>...</details> -> <div class="spoiler">...</div> on a single line
      without blank lines (CurseForge's Markdown mode only renders the spoiler as one HTML block),
+     Markdown inside (headings, lists, bold, italic, links, code) is converted to HTML,
      grids link to CurseForge, marker comments removed.
   4. Warns about tags CurseForge does not allow, Markdown tables, unbalanced <div> and missing images.
   -Exclude = name of the current mod (as in banners.json), hidden in the "own" grid.
@@ -77,6 +78,44 @@ function Set-Banners([string]$text, [string]$platform, [bool]$keepMarkers) {
     return $text
 }
 
+function ConvertTo-InlineHtml([string]$s) {
+    $s = [regex]::Replace($s, '`([^`]+)`', '<code>$1</code>')
+    $s = [regex]::Replace($s, '!\[([^\]]*)\]\(([^)\s]+)\)', '<img src="$2" alt="$1">')
+    $s = [regex]::Replace($s, '\[([^\]]+)\]\(([^)\s]+)\)', '<a href="$2">$1</a>')
+    $s = [regex]::Replace($s, '\*\*(.+?)\*\*', '<strong>$1</strong>')
+    $s = [regex]::Replace($s, '__(.+?)__', '<strong>$1</strong>')
+    $s = [regex]::Replace($s, '(?<![\w*])\*(?!\s)(.+?)(?<!\s)\*(?![\w*])', '<em>$1</em>')
+    $s = [regex]::Replace($s, '(?<![\w_])_(?!\s)(.+?)(?<!\s)_(?![\w_])', '<em>$1</em>')
+    return $s
+}
+
+function ConvertTo-SpoilerHtml([string]$inner) {
+    $parts = New-Object System.Collections.Generic.List[string]
+    $inList = $false
+    foreach ($line in ($inner -split "`n")) {
+        $l = $line.Trim()
+        if (-not $l) { continue }
+        $item = [regex]::Match($l, '^[*\-+]\s+(.*)$')
+        if ($item.Success) {
+            if (-not $inList) { $parts.Add('<ul>'); $inList = $true }
+            $parts.Add('<li>' + (ConvertTo-InlineHtml $item.Groups[1].Value) + '</li>')
+            continue
+        }
+        if ($inList) { $parts.Add('</ul>'); $inList = $false }
+        $head = [regex]::Match($l, '^(#{1,6})\s+(.*?)\s*#*$')
+        if ($head.Success) {
+            $n = $head.Groups[1].Value.Length
+            $parts.Add("<h$n>" + (ConvertTo-InlineHtml $head.Groups[2].Value) + "</h$n>")
+        } elseif ($l.StartsWith('<')) {
+            $parts.Add($l)
+        } else {
+            $parts.Add('<p>' + (ConvertTo-InlineHtml $l) + '</p>')
+        }
+    }
+    if ($inList) { $parts.Add('</ul>') }
+    return ($parts -join '')
+}
+
 $text = (Read-Text $src) -replace "`r`n", "`n"
 
 $master = Expand-Images $text $repoDir $RawBase $warn
@@ -86,14 +125,7 @@ if ($master -ne $text) { Write-Text $src $master }
 $cfText = [regex]::Replace($master, '(?s)<details[^>]*>\s*<summary[^>]*>.*?</summary>(.*?)</details>', [System.Text.RegularExpressions.MatchEvaluator]{
     param($m)
     $inner = [regex]::Replace($m.Groups[1].Value, '(?s)<!--.*?-->', '')
-    $out = ""
-    foreach ($line in ($inner -split "`n")) {
-        $l = $line.Trim()
-        if (-not $l) { continue }
-        if ($out -and -not ($out.EndsWith('>') -and $l.StartsWith('<'))) { $out += " " }
-        $out += $l
-    }
-    '<div class="spoiler">' + $out + '</div>'
+    '<div class="spoiler">' + (ConvertTo-SpoilerHtml $inner) + '</div>'
 })
 $cfText = Set-Banners $cfText "cf" $false
 $cfText = [regex]::Replace($cfText, '(?m)^[ \t]*<!--\s*IMAGE:.*?-->[ \t]*\n', '')

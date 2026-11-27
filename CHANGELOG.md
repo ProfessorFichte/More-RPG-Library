@@ -7,7 +7,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Fixed
 
+- Italian and Russian attribute names show up again (their translation keys still used the old format), and leftover translations for removed effects and enchantments are gone
 - `SmithingRecipeGenerator`: recipes that need more than one mod wrote an invalid `neoforge:and` condition (`conditions` instead of `values`), so NeoForge logged parsing errors for them
+- Water Flow: the bonus crit chance against water-weak mobs and the damage reduction against water-resistant mobs pointed at tags that do not exist, so neither ever applied. They now use `mrpg_lib:weak_to_water` and `mrpg_lib:resistant_to_water`
 
 ## [2.8.4+1.21.1]
 

@@ -9,6 +9,6 @@
     {"name": "Loot & Explore", "id": "loot_n_explore", "github": "ProfessorFichte/Loot-N-Explore", "branch": "1.21.1"},
     {"name": "Berserker", "id": "berserker_rpg", "github": "ProfessorFichte/berserker-class-mod-template-1.20.1", "branch": "1.21.1"},
     {"name": "Elemental Wizards", "id": "elemental_wizards_rpg", "github": "ProfessorFichte/elemental-wizards-rpg-class-template-1.20.1", "branch": "1.21.1"},
-    {"name": "Forcemaster", "id": "forcemaster_rpg", "github": "ProfessorFichte/forcemaster-class-mod-template-1.20.1", "branch": "1.21.1"}
+    {"name": "Forcemaster", "id": "forcemaster_rpg", "github": "ProfessorFichte/Forcemaster", "branch": "1.21.1"}
   ]
 }
