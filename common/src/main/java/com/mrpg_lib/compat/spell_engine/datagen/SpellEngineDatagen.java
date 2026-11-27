@@ -78,7 +78,7 @@ public final class SpellEngineDatagen {
                 case AIR_WIZARD -> Identifier.of("elemental_wizards_rpg", folder + "wind");
                 case EARTH_WIZARD -> Identifier.of("elemental_wizards_rpg", folder + "terra");
                 case WATER_WIZARD -> Identifier.of("elemental_wizards_rpg", folder + "aqua");
-                case FORCEMASTER -> Identifier.of("foremaster_rpg", folder + "forcemaster");
+                case FORCEMASTER -> Identifier.of("forcemaster_rpg", folder + "forcemaster");
             };
         }
     }
